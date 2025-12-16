@@ -32,7 +32,11 @@ export default function RegisterPage() {
         } else {
             // Success
             alert("Conta criada com sucesso!");
-            router.push("/admin");
+            if (email.trim() === "admin@gmail.com") {
+                router.push("/admin");
+            } else {
+                router.push("/");
+            }
         }
     };
 

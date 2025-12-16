@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, ShoppingBag, FolderOpen, Package, Image, Home, LogOut, Tag } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function AdminSidebar() {
     const pathname = usePathname();
+    const { signOut } = useAuth();
 
     const menuItems = [
         { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -55,7 +57,8 @@ export function AdminSidebar() {
                     Ver Loja
                 </Link>
                 <button
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                    onClick={() => signOut()}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-colors text-left"
                 >
                     <LogOut size={18} />
                     Sair

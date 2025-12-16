@@ -14,7 +14,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const { signIn, signInWithSocial } = useAuth();
+    const { signIn, signInWithSocial, isAdmin } = useAuth();
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -28,7 +28,19 @@ export default function LoginPage() {
             setError("E-mail ou senha incorretos.");
             setLoading(false);
         } else {
-            router.push("/admin"); // Redirect to admin dash
+            // Success - Redirect based on role
+            // We need to check the user role again or trust the context update
+            // Ideally context updates fast enough, but safe bet is checking the target email or just default to home
+            // For now, let's look at the email we just signed in with or the context
+            // Using a timeout to ensure context updates or just hard reload logic?
+            // Next.js router.push is client side.
+            // Let's rely on simple logic: if email is admin@gmail.com -> /admin, else /
+
+            if (email.trim() === "admin@gmail.com" || email.trim() === "contato@ourografica.com.br") {
+                router.push("/admin");
+            } else {
+                router.push("/");
+            }
         }
     };
 

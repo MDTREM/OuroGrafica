@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { PRODUCTS } from "@/data/mockData";
 import { formatPrice } from "@/lib/utils";
@@ -15,6 +16,7 @@ export function TopBar() {
     const [isSearching, setIsSearching] = useState(false);
     const [showMobileSearch, setShowMobileSearch] = useState(false);
     const router = useRouter();
+    const { user, isLoading, signOut, isAdmin } = useAuth();
     const { items } = useCart();
 
     const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
@@ -105,15 +107,36 @@ export function TopBar() {
                 </div>
 
                 {/* Login/Register (Desktop) */}
+                {/* Login/Register or User Menu (Desktop) */}
                 <div className="hidden md:flex items-center gap-3 mr-4 lg:mr-8 border-r border-border pr-6">
                     <div className="w-10 h-10 rounded-full bg-surface-secondary flex items-center justify-center text-gray-500">
                         <User size={20} />
                     </div>
                     <div className="flex flex-col leading-tight">
                         <span className="text-[10px] text-gray-500 uppercase tracking-wide font-medium">Bem-vindo(a)</span>
-                        <Link href="/login" className="text-sm font-bold text-foreground hover:text-brand transition-colors">
-                            Entrar <span className="text-gray-400 font-normal">ou</span> Cadastrar
-                        </Link>
+                        {isLoading ? (
+                            <span className="text-sm font-bold text-gray-400">Carregando...</span>
+                        ) : user ? (
+                            <div className="flex flex-col text-sm">
+                                <span className="font-bold text-foreground truncate max-w-[120px]" title={user.email || ""}>
+                                    {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                                </span>
+                                <div className="flex gap-2 text-xs">
+                                    {isAdmin && (
+                                        <Link href="/admin" className="text-brand hover:underline font-medium">
+                                            Admin
+                                        </Link>
+                                    )}
+                                    <button onClick={() => signOut()} className="text-gray-500 hover:text-red-500 transition-colors">
+                                        Sair
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <Link href="/login" className="text-sm font-bold text-foreground hover:text-brand transition-colors">
+                                Entrar <span className="text-gray-400 font-normal">ou</span> Cadastrar
+                            </Link>
+                        )}
                     </div>
                 </div>
 
