@@ -3,45 +3,18 @@
 import Link from "next/link";
 import { ChevronDown, Menu } from "lucide-react";
 import { Container } from "@/components/ui/Container";
+import { useAdmin } from "@/contexts/AdminContext";
 
 export function DesktopNav() {
-    const categories = [
-        {
-            id: "cartoes",
-            name: "Cartões de Visita",
-            subcategories: ["Papel Couchê", "PVC Transparente", "Metalizado", "Papel Reciclado"]
-        },
-        {
-            id: "banners",
-            name: "Banners",
-            subcategories: ["Lona Brilho", "Lona Fosca", "Banner Roll-up", "X-Banner"]
-        },
-        {
-            id: "adesivos",
-            name: "Adesivos",
-            subcategories: ["Vinil Branco", "Vinil Transparente", "Papel", "Recorte Eletrônico"]
-        },
-        {
-            id: "flyers",
-            name: "Flyers e Panfletos",
-            subcategories: ["A4", "A5", "A6", "DL (Envelope)"]
-        },
-        {
-            id: "crachas",
-            name: "Crachás e Cordões",
-            subcategories: ["PVC", "Cordão Personalizado", "Porta Crachá", "Acessórios"]
-        },
-        {
-            id: "pastas",
-            name: "Pastas",
-            subcategories: ["Com Bolsa", "Sem Bolsa", "Orelha", "Corte Especial"]
-        },
-        {
-            id: "cardapios",
-            name: "Cardápios",
-            subcategories: ["Plastificado", "PVC Rígido", "Encadernado", "Americano"]
-        },
-    ];
+    const { categories } = useAdmin();
+    // Use categories from context, subcategories logic would need DB update to support
+    // For now we map DB categories to the structure expected or simplify
+    // Since types might differ, we adapt
+    const navCategories = categories.map(c => ({
+        id: c.id,
+        name: c.name,
+        subcategories: [] // No subcategories in DB yet
+    }));
 
     return (
         <div className="hidden md:block bg-surface border-b border-border shadow-sm relative z-30">
@@ -63,15 +36,13 @@ export function DesktopNav() {
                                     {cat.name}
                                     <span className="hidden group-hover/item:block text-brand">›</span>
 
-                                    {/* Subcategories Popover (Right Side - Positioned relative to main container) */}
+                                    {/* Subcategories Popover */}
                                     <div className="absolute top-0 right-0 w-2/3 h-full bg-white hidden group-hover/item:block p-6 border-l border-gray-100 z-50 overflow-y-auto">
                                         <h3 className="text-brand font-bold text-lg mb-4">{cat.name}</h3>
                                         <div className="grid grid-cols-2 gap-4">
-                                            {cat.subcategories.map((sub, idx) => (
-                                                <Link key={idx} href={`/categoria/${cat.id}/${sub.toLowerCase().replace(/ /g, "-")}`} className="text-sm text-gray-600 hover:text-brand hover:underline block">
-                                                    {sub}
-                                                </Link>
-                                            ))}
+                                            {/* Static Mock Subcategories for now since DB is flat */}
+                                            <p className="text-gray-400 text-sm col-span-2">Opções disponíveis no detalhe do produto.</p>
+
                                             <Link href={`/categoria/${cat.id}`} className="col-span-2 mt-2 text-xs font-bold text-brand uppercase tracking-wider hover:underline">
                                                 Ver tudo em {cat.name} →
                                             </Link>

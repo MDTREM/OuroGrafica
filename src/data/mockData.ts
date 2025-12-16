@@ -43,6 +43,7 @@ export interface Category {
     name: string;
     parentId?: string;
     image?: string;
+    icon?: string; // Lucide icon name
     showOnHome?: boolean;
     showOnMenu?: boolean;
 }

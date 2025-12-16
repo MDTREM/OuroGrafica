@@ -1,7 +1,5 @@
 'use server';
 
-'use server';
-
 import { supabase } from '@/lib/supabase';
 
 // Helper to remove special chars for filename
@@ -16,7 +14,7 @@ export interface Banner {
     mobileImageUrl?: string;
 }
 
-export type SectionType = 'banner-carousel' | 'info-banner' | 'categories' | 'product-row' | 'stacked-banners';
+export type SectionType = 'banner-carousel' | 'info-banner' | 'categories' | 'product-row' | 'stacked-banners' | 'maintenance-cta';
 
 export interface Section {
     id: string;
@@ -51,8 +49,15 @@ export async function getHomepageConfig(): Promise<HomepageConfig> {
             .single();
 
         if (error || !data) {
-            // Return default empty config if not found
-            return { sections: [] };
+            // Return default config if not found
+            return {
+                sections: [
+                    { id: 'def-1', type: 'banner-carousel', name: 'Carrossel Principal', enabled: true, banners: [] },
+                    { id: 'def-2', type: 'maintenance-cta', name: 'Card de Manutenção', enabled: true },
+                    { id: 'def-3', type: 'categories', name: 'Categorias', enabled: true, title: 'Departamentos' },
+                    { id: 'def-4', type: 'product-row', name: 'Destaques', enabled: true, title: 'Produtos em Destaque', settings: { filter: 'best-sellers' } }
+                ]
+            };
         }
 
         return data.value as HomepageConfig;

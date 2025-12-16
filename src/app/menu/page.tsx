@@ -3,16 +3,10 @@ import { Container } from "@/components/ui/Container";
 import Link from "next/link";
 import { ChevronRight, User, Package, Heart, Headphones, FileText, LogOut, Menu as MenuIcon, Printer, Wrench } from "lucide-react";
 
-export default function MenuPage() {
-    const categories = [
-        { name: "Cartões de Visita", slug: "cartoes" },
-        { name: "Banners", slug: "banners" },
-        { name: "Adesivos", slug: "adesivos" },
-        { name: "Flyers e Panfletos", slug: "flyers" },
-        { name: "Crachás e Cordões", slug: "crachas" },
-        { name: "Pastas", slug: "pastas" },
-        { name: "Cardápios", slug: "cardapios" },
-    ];
+import { supabase } from "@/lib/supabase";
+
+export default async function MenuPage() {
+    const { data: categories } = await supabase.from('categories').select('*');
 
     const accountItems = [
         { icon: Headphones, label: "Central de Atendimento", href: "/atendimento" },
@@ -69,10 +63,10 @@ export default function MenuPage() {
                 <div className="mb-6">
                     <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3 pl-2">Nossas Categorias</h2>
                     <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
-                        {categories.map((cat, idx) => (
+                        {categories?.map((cat, idx) => (
                             <Link
-                                key={cat.slug}
-                                href={`/categoria/${cat.slug}`}
+                                key={cat.id}
+                                href={`/categoria/${cat.id}`}
                                 className={`flex items-center justify-between p-4 hover:bg-gray-50 transition-colors ${idx !== categories.length - 1 ? 'border-b border-gray-50' : ''}`}
                             >
                                 <span className="text-gray-700 font-medium text-sm">{cat.name}</span>

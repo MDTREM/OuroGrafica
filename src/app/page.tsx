@@ -6,6 +6,7 @@ import { StackedBanners } from "@/components/shop/StackedBanners";
 import { ProductRow } from "@/components/shop/ProductRow";
 import { CATEGORIES } from "@/data/mockData";
 import { MaintenanceCTA } from "@/components/shop/MaintenanceCTA";
+import { LocationMap } from "@/components/shop/LocationMap";
 import { getHomepageConfig, Section } from "@/actions/homepage-actions";
 
 export default async function Home() {
@@ -39,6 +40,8 @@ export default async function Home() {
         );
       case 'stacked-banners':
         return <StackedBanners key={section.id} banners={section.banners || []} />;
+      case 'maintenance-cta':
+        return <MaintenanceCTA key={section.id} />;
       default:
         return null;
     }
@@ -52,11 +55,11 @@ export default async function Home() {
       {/* 1. Main Banner (if exists) */}
       {bannerSection && renderSection(bannerSection)}
 
-      {/* 2. Static Maintenance CTA */}
-      <MaintenanceCTA />
-
-      {/* 3. Other Dynamic Sections */}
+      {/* 2. Dynamic Sections (including Maintenance CTA) */}
       {otherSections.map(section => renderSection(section))}
+
+      {/* 4. Location Map */}
+      <LocationMap />
     </div>
   );
 }

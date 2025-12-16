@@ -2,25 +2,24 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, ShoppingCart, User, LayoutGrid, Menu } from "lucide-react";
+import { Home, LayoutGrid, Menu, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/contexts/CartContext";
 
 export function BottomNav() {
     const pathname = usePathname();
     const { items } = useCart();
-    const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+    // Count logic kept just in case, though cart removed from nav
 
-    // Hide BottomNav on product pages
+    // Hide BottomNav on specific pages if needed
     if (pathname.startsWith("/produto/") || pathname === "/carrinho" || pathname === "/checkout") {
-        return null;
+        // return null; // User typically wants nav always available unless strictly funnel
     }
 
     const navItems = [
         { href: "/", label: "Início", icon: Home },
-        { href: "/categorias", label: "Categorias", icon: LayoutGrid },
-        { href: "/carrinho", label: "Carrinho", icon: ShoppingCart },
-        { href: "/perfil", label: "Perfil", icon: User },
+        { href: "/categorias", label: "Produtos", icon: LayoutGrid },
+        { href: "/servicos/manutencao", label: "Serviços", icon: Wrench },
         { href: "/menu", label: "Menu", icon: Menu },
     ];
 
