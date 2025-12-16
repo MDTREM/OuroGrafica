@@ -18,8 +18,8 @@ interface AdminContextType {
     products: Product[];
     categories: Category[];
     orders: Order[];
-    addProduct: (product: Product) => void;
-    updateProduct: (product: Product) => void;
+    addProduct: (product: Product) => Promise<{ success: boolean; error?: any; data?: Product }>;
+    updateProduct: (product: Product) => Promise<{ success: boolean; error?: any }>;
     deleteProduct: (id: string) => void;
     importProducts: (products: Product[]) => void;
 
@@ -77,12 +77,22 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     // Actions
     const addProduct = async (product: Product) => {
         const { data, error } = await supabase.from('products').insert([product]).select().single();
-        if (data && !error) setProducts(prev => [data, ...prev]);
+        if (data && !error) {
+            setProducts(prev => [data, ...prev]);
+            return { success: true, data };
+        }
+        console.error("Error adding product:", error);
+        return { success: false, error };
     };
 
     const updateProduct = async (updatedProduct: Product) => {
         const { error } = await supabase.from('products').update(updatedProduct).eq('id', updatedProduct.id);
-        if (!error) setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+        if (!error) {
+            setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+            return { success: true };
+        }
+        console.error("Error updating product:", error);
+        return { success: false, error };
     };
 
     const deleteProduct = async (id: string) => {

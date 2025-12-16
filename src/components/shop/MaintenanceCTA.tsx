@@ -20,8 +20,7 @@ export function MaintenanceCTA() {
                                 Assistência Técnica Rápida
                             </h2>
                             <p className="text-gray-400 text-sm md:text-base leading-snug">
-                                Impressora parada é dinheiro perdido. <br />
-                                Resolvemos hoje.
+                                Impressora parada é dinheiro perdido. Resolvemos hoje.
                             </p>
 
                             {/* Brand Pills */}

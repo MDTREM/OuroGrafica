@@ -1,26 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ShoppingCart, Check, UploadCloud, Truck } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { useCart } from "@/contexts/CartContext";
+import { supabase } from "@/lib/supabase";
+import { Product } from "@/data/mockData";
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+    const resolvedParams = use(params);
     const router = useRouter();
     const { addToCart } = useCart();
+    const [product, setProduct] = useState<Product | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Mock data - in real app would fetch based on ID
-    const product = {
-        title: "Cartão de Visita Premium",
-        price: 49.90,
-        rating: 4.8,
-        reviews: 124,
-        description: "Impressione seus clientes com cartões de visita de alta qualidade. Papel couchê 300g garante durabilidade e toque profissional.",
-    };
+    // Fetch Product
+    useEffect(() => {
+        async function fetchProduct() {
+            try {
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .eq('id', resolvedParams.id)
+                    .single();
+
+                if (data) setProduct(data);
+                if (error) console.error("Error fetching product:", error);
+            } catch (err) {
+                console.error("Failed to fetch product", err);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchProduct();
+    }, [resolvedParams.id]);
 
     const [quantity, setQuantity] = useState(100);
     const [paper, setPaper] = useState("couche300");
@@ -29,30 +46,41 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     const [designOption, setDesignOption] = useState<"upload" | "hire">("upload");
     const [showFullDesc, setShowFullDesc] = useState(false);
 
-    // Mock calculations
-    const basePrice = 49.90;
+    if (isLoading) {
+        return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div></div>;
+    }
+
+    if (!product) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+                <p>Produto não encontrado.</p>
+                <Link href="/" className="text-brand hover:underline">Voltar para a loja</Link>
+            </div>
+        );
+    }
+
+    const price = product.price || 0;
     const designPrice = designOption === "hire" ? 35.00 : 0;
+
+    // Simple logic for quantity multiplier
     const quantityMultiplier = quantity / 100;
+    const calculatedBasePrice = price * (quantityMultiplier > 0 ? quantityMultiplier : 1);
 
-    // Quantity Table Data
-    const quantityOptions = [
-        { qty: 100, unit: 0.50, total: 50.00 },
-        { qty: 250, unit: 0.45, total: 112.50 },
-        { qty: 500, unit: 0.40, total: 200.00 },
-        { qty: 1000, unit: 0.35, total: 350.00 },
-    ];
+    const finalPrice = calculatedBasePrice + designPrice;
 
-    const currentQtyOption = quantityOptions.find(o => o.qty === quantity) || quantityOptions[0];
-    const finalPrice = currentQtyOption.total + designPrice;
+    // Resolve images
+    const productImages = product.images && product.images.length > 0
+        ? product.images
+        : (product.image ? [product.image] : []);
 
     const handleAddToCart = () => {
         addToCart({
-            productId: params.id,
+            productId: product.id,
             title: product.title,
-            subtitle: `${quantity} unid. / Papel Couchê 300g`, // Simplified dynamic subtitle
+            subtitle: `${quantity} unid.`,
             price: finalPrice,
             quantity: 1,
-            image: "https://i.imgur.com/8Qj9Y2s.png", // Fixed mock image
+            image: productImages[0] || "",
             details: {
                 quantity,
                 paper,
@@ -85,34 +113,39 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     <div>
                         <div className="aspect-square bg-gray-100 rounded-2xl relative flex items-center justify-center overflow-hidden mb-4 border border-border">
                             {/* Main Image Display */}
-                            <div className={`w-full h-full flex items-center justify-center transition-colors ${[
-                                "bg-red-100", "bg-blue-100", "bg-green-100", "bg-yellow-100", "bg-purple-100",
-                                "bg-pink-100", "bg-indigo-100", "bg-teal-100", "bg-orange-100", "bg-gray-200"
-                            ][activeImage]}`}>
-                                <span className="text-gray-400 font-bold text-2xl">Imagem {activeImage + 1}</span>
-                            </div>
+                            {productImages.length > 0 ? (
+                                <img
+                                    src={productImages[activeImage] || productImages[0]}
+                                    alt={product.title}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="flex flex-col items-center justify-center text-gray-400">
+                                    <span className="text-4xl mb-2">📷</span>
+                                    <span className="text-sm">Sem imagem</span>
+                                </div>
+                            )}
                         </div>
 
                         {/* Thumbnails */}
-                        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-                            {[...Array(10)].map((_, idx) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => setActiveImage(idx)}
-                                    className={cn(
-                                        "min-w-[70px] h-[70px] rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all",
-                                        activeImage === idx
-                                            ? "border-brand ring-1 ring-brand"
-                                            : "border-transparent bg-gray-100 hover:border-gray-300"
-                                    )}
-                                >
-                                    <div className={`w-full h-full rounded-md opacity-50 ${[
-                                        "bg-red-200", "bg-blue-200", "bg-green-200", "bg-yellow-200", "bg-purple-200",
-                                        "bg-pink-200", "bg-indigo-200", "bg-teal-200", "bg-orange-200", "bg-gray-300"
-                                    ][idx]}`}></div>
-                                </button>
-                            ))}
-                        </div>
+                        {productImages.length > 1 && (
+                            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+                                {productImages.map((img, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setActiveImage(idx)}
+                                        className={cn(
+                                            "min-w-[70px] h-[70px] rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all overflow-hidden",
+                                            activeImage === idx
+                                                ? "border-brand ring-1 ring-brand"
+                                                : "border-transparent bg-gray-100 hover:border-gray-300"
+                                        )}
+                                    >
+                                        <img src={img} alt="" className="w-full h-full object-cover" />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* RIGHT COLUMN: CONFIG */}
@@ -122,97 +155,86 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                         {/* 1. DESCRIPTION TOGGLE */}
                         <div className="mb-6">
                             <p className={`text-sm text-gray-600 leading-relaxed transition-all ${showFullDesc ? "" : "line-clamp-2"}`}>
-                                {product.description} Este material é ideal para profissionais liberais, empresas e eventos que buscam transmitir credibilidade e sofisticação. O acabamento fosco proporciona um toque aveludado e elegante, enquanto a impressão de alta definição garante cores vivas e textos nítidos.
+                                {product.description}
                             </p>
-                            <button
-                                onClick={() => setShowFullDesc(!showFullDesc)}
-                                className="text-brand font-bold text-xs mt-1 hover:underline"
-                            >
-                                {showFullDesc ? "Ler menos" : "Ler descrição completa"}
-                            </button>
+                            {product.description && product.description.length > 100 && (
+                                <button
+                                    onClick={() => setShowFullDesc(!showFullDesc)}
+                                    className="text-brand font-bold text-xs mt-1 hover:underline"
+                                >
+                                    {showFullDesc ? "Ler menos" : "Ler descrição completa"}
+                                </button>
+                            )}
                         </div>
 
                         {/* 2. QUANTITY TABLE SELECTOR */}
                         <div className="mb-8">
                             <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">Quantidade</h3>
                             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-                                <div className="grid grid-cols-3 bg-gray-50 p-2 text-xs font-bold text-gray-500 text-center border-b border-gray-200">
+                                <div className="grid grid-cols-2 bg-gray-50 p-2 text-xs font-bold text-gray-500 text-center border-b border-gray-200">
                                     <span>Qtd</span>
-                                    <span>Valor Un.</span>
                                     <span>Total</span>
                                 </div>
-                                {quantityOptions.map((opt) => (
-                                    <div
-                                        key={opt.qty}
-                                        onClick={() => setQuantity(opt.qty)}
-                                        className={`grid grid-cols-3 p-3 text-sm text-center cursor-pointer transition-colors border-b border-gray-100 last:border-0 ${quantity === opt.qty ? "bg-orange-50/50" : "hover:bg-gray-50"
-                                            }`}
-                                    >
-                                        <div className="font-bold text-gray-900 flex items-center justify-center gap-2">
-                                            <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${quantity === opt.qty ? "border-brand" : "border-gray-300"}`}>
-                                                {quantity === opt.qty && <div className="w-2 h-2 rounded-full bg-brand"></div>}
+                                {(product.quantities && product.quantities.length > 0 ? product.quantities : ["100 un.", "250 un.", "500 un.", "1000 un."]).map((qtyStr, idx) => {
+                                    // Extract number from string if possible, else use index logic
+                                    const qtyNum = parseInt(qtyStr.match(/\d+/)?.[0] || "100");
+                                    // Mock price calc
+                                    const optionPrice = price * (qtyNum / 100);
+
+                                    return (
+                                        <div
+                                            key={idx}
+                                            onClick={() => setQuantity(qtyNum)}
+                                            className={`grid grid-cols-2 p-3 text-sm text-center cursor-pointer transition-colors border-b border-gray-100 last:border-0 ${quantity === qtyNum ? "bg-orange-50/50" : "hover:bg-gray-50"
+                                                }`}
+                                        >
+                                            <div className="font-bold text-gray-900 flex items-center justify-center gap-2">
+                                                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${quantity === qtyNum ? "border-brand" : "border-gray-300"}`}>
+                                                    {quantity === qtyNum && <div className="w-2 h-2 rounded-full bg-brand"></div>}
+                                                </div>
+                                                {qtyStr}
                                             </div>
-                                            {opt.qty}
+                                            <div className={`font-bold ${quantity === qtyNum ? "text-brand" : "text-gray-900"}`}>
+                                                {formatPrice(optionPrice)}
+                                            </div>
                                         </div>
-                                        <div className="text-gray-600">
-                                            R$ {opt.unit.toFixed(2).replace('.', ',')}
-                                        </div>
-                                        <div className={`font-bold ${quantity === opt.qty ? "text-brand" : "text-gray-900"}`}>
-                                            R$ {opt.total.toFixed(2).replace('.', ',')}
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
 
                         {/* 3. FORMAT & FINISHING */}
-                        <div className="grid grid-cols-2 gap-4 mb-8">
-                            <div>
-                                <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Papel</h3>
-                                <div className="flex flex-col gap-2">
-                                    <button
-                                        onClick={() => setPaper("couche300")}
-                                        className={`px-4 py-3 rounded-lg text-sm font-medium border text-left transition-all ${paper === "couche300"
-                                            ? "border-brand bg-white text-brand shadow-sm ring-1 ring-brand/10"
-                                            : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
-                                            }`}
-                                    >
-                                        Couchê 300g
-                                    </button>
-                                    <button
-                                        onClick={() => setPaper("couche250")}
-                                        className={`px-4 py-3 rounded-lg text-sm font-medium border text-left transition-all ${paper === "couche250"
-                                            ? "border-brand bg-white text-brand shadow-sm ring-1 ring-brand/10"
-                                            : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
-                                            }`}
-                                    >
-                                        Couchê 250g
-                                    </button>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                            {product.formats && product.formats.length > 0 && (
+                                <div>
+                                    <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Formato</h3>
+                                    <div className="flex flex-col gap-2">
+                                        {product.formats.map((fmt, idx) => (
+                                            <button
+                                                key={idx}
+                                                className="px-4 py-3 rounded-lg text-sm font-medium border text-left border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
+                                            >
+                                                {fmt}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Acabamento</h3>
-                                <div className="flex flex-col gap-2">
-                                    <button
-                                        onClick={() => setFinish("fosca")}
-                                        className={`px-4 py-3 rounded-lg text-sm font-medium border text-left transition-all ${finish === "fosca"
-                                            ? "border-brand bg-white text-brand shadow-sm ring-1 ring-brand/10"
-                                            : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
-                                            }`}
-                                    >
-                                        Laminação Fosca
-                                    </button>
-                                    <button
-                                        onClick={() => setFinish("brilho")}
-                                        className={`px-4 py-3 rounded-lg text-sm font-medium border text-left transition-all ${finish === "brilho"
-                                            ? "border-brand bg-white text-brand shadow-sm ring-1 ring-brand/10"
-                                            : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
-                                            }`}
-                                    >
-                                        Verniz Total
-                                    </button>
+                            )}
+                            {product.finishes && product.finishes.length > 0 && (
+                                <div>
+                                    <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Acabamento</h3>
+                                    <div className="flex flex-col gap-2">
+                                        {product.finishes.map((fin, idx) => (
+                                            <div
+                                                key={idx}
+                                                className="px-4 py-3 rounded-lg text-sm font-medium border text-left border-gray-200 text-gray-600 bg-gray-50"
+                                            >
+                                                {fin}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
                         {/* 4. DESIGN OPTIONS */}
@@ -222,8 +244,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                                 {/* Option 1: Upload */}
                                 <div
                                     className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all ${designOption === "upload"
-                                        ? "border-brand bg-orange-50/10"
-                                        : "border-gray-200 hover:border-gray-300"
+                                            ? "border-brand bg-orange-50/10"
+                                            : "border-gray-200 hover:border-gray-300"
                                         }`}
                                     onClick={() => setDesignOption("upload")}
                                 >
@@ -260,8 +282,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                                 {/* Option 2: Hire Designer */}
                                 <div
                                     className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all ${designOption === "hire"
-                                        ? "border-brand bg-orange-50/10"
-                                        : "border-gray-200 hover:border-gray-300"
+                                            ? "border-brand bg-orange-50/10"
+                                            : "border-gray-200 hover:border-gray-300"
                                         }`}
                                     onClick={() => setDesignOption("hire")}
                                 >
@@ -304,17 +326,14 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 {/* INFO SECTIONS */}
                 <div className="mt-12 md:mt-16 grid grid-cols-1 gap-6 max-w-4xl mx-auto pb-8">
                     {/* Descrição Detalhada */}
-                    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8">
-                        <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">Descrição do Produto</h2>
-                        <div className="prose prose-sm max-w-none text-gray-600">
-                            <p className="mb-4">
-                                Os <strong>Cartões de Visita Premium</strong> da Ouro Gráfica são a escolha perfeita para quem não abre mão da excelência. Produzidos em papel Couchê 300g, oferecem uma espessura superior que transmite solidez e confiança.
-                            </p>
-                            <p>
-                                Disponível com diversas opções de acabamento, como a sofisticada <strong>Laminação Fosca</strong> (toque aveludado) ou o vibrante <strong>Verniz Total</strong> (brilho intenso). A impressão é realizada em máquinário offset de última geração, garantindo fidelidade de cores e nitidez impressionante.
-                            </p>
-                        </div>
-                    </section>
+                    {product.fullDescription && (
+                        <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8">
+                            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">Descrição do Produto</h2>
+                            <div className="prose prose-sm max-w-none text-gray-600 text-justify whitespace-pre-line">
+                                {product.fullDescription}
+                            </div>
+                        </section>
+                    )}
 
                     {/* Ficha Técnica */}
                     <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8">
@@ -323,26 +342,14 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                             Ficha Técnica
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 text-sm">
-                            <div className="flex justify-between border-b border-gray-100 py-3">
-                                <span className="text-gray-500 font-medium">Material</span>
-                                <span className="font-bold text-gray-900">Papel Couchê 300g</span>
-                            </div>
-                            <div className="flex justify-between border-b border-gray-100 py-3">
-                                <span className="text-gray-500 font-medium">Impressão</span>
-                                <span className="font-bold text-gray-900">Frente e Verso (4x4)</span>
-                            </div>
-                            <div className="flex justify-between border-b border-gray-100 py-3">
-                                <span className="text-gray-500 font-medium">Acabamento</span>
-                                <span className="font-bold text-gray-900">Laminação Fosca</span>
-                            </div>
-                            <div className="flex justify-between border-b border-gray-100 py-3">
-                                <span className="text-gray-500 font-medium">Tamanho</span>
-                                <span className="font-bold text-gray-900">9 x 5 cm</span>
-                            </div>
-                            <div className="flex justify-between border-b border-gray-100 py-3">
-                                <span className="text-gray-500 font-medium">Produção</span>
-                                <span className="font-bold text-gray-900">3 a 5 dias úteis</span>
-                            </div>
+                            {product.technicalSpecs ? Object.entries(product.technicalSpecs).map(([key, value]) => (
+                                <div key={key} className="flex justify-between border-b border-gray-100 py-3">
+                                    <span className="text-gray-500 font-medium capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                                    <span className="font-bold text-gray-900">{value}</span>
+                                </div>
+                            )) : (
+                                <p className="text-gray-400 italic">Nenhuma especificação técnica informada.</p>
+                            )}
                         </div>
                     </section>
 
@@ -375,7 +382,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     <div>
                         <span className="text-xs text-gray-500 block">Total do Pedido</span>
                         <div className="flex items-baseline gap-1">
-                            <span className="font-bold text-2xl text-brand">R$ {finalPrice.toFixed(2).replace('.', ',')}</span>
+                            <span className="font-bold text-2xl text-brand">{formatPrice(finalPrice)}</span>
                             {designOption === "hire" && <span className="text-[10px] text-gray-400 font-medium">(+ Designer)</span>}
                         </div>
                     </div>

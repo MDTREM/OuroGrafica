@@ -17,21 +17,31 @@ export function AppShell({ children }: AppShellProps) {
         pathname?.startsWith("/recuperar-senha") ||
         pathname?.startsWith("/admin");
 
+    // Hide nav elements on specific pages to reduce distraction
+    const isProductPage = pathname?.startsWith("/produto/");
+
     if (isAuthPage) {
         return <main className="flex-1">{children}</main>;
     }
 
     return (
         <>
-            <TopBar />
+            {/* TopBar: Hide on mobile for product pages (since they have custom nav), show on desktop */}
+            <div className={isProductPage ? "hidden md:block" : "block"}>
+                <TopBar />
+            </div>
+
             <DesktopNav />
+
             <main className="flex-1">
                 {children}
             </main>
             <div className="hidden md:block">
                 <Footer />
             </div>
-            <BottomNav />
+
+            {/* BottomNav: Hide completely on product pages */}
+            {!isProductPage && <BottomNav />}
         </>
     );
 }

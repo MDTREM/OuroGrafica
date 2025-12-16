@@ -36,11 +36,18 @@ export function ProductCard({ id, title, price, unit, description, image }: Prod
             </button>
 
             {/* Image Area */}
-            <div className="aspect-[4/3] bg-surface-secondary relative flex items-center justify-center p-4">
-                {/* Placeholder for Img */}
-                <div className="w-24 h-24 bg-white rounded-lg shadow-sm flex items-center justify-center text-xs text-gray-400">
-                    IMG
-                </div>
+            <div className="aspect-[4/3] bg-surface-secondary relative flex items-center justify-center p-4 overflow-hidden">
+                {image ? (
+                    <img
+                        src={image}
+                        alt={title}
+                        className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-500"
+                    />
+                ) : (
+                    <div className="w-24 h-24 bg-white rounded-lg shadow-sm flex items-center justify-center text-xs text-gray-400">
+                        IMG
+                    </div>
+                )}
             </div>
 
             {/* Content */}

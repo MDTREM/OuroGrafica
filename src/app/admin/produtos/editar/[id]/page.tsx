@@ -81,8 +81,14 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             image: formData.images?.[0] || "",
         } as Product;
 
-        updateProduct(updatedProduct);
-        router.push("/admin/produtos");
+        const result = await updateProduct(updatedProduct);
+
+        if (result.success) {
+            router.push("/admin/produtos");
+        } else {
+            alert("Erro ao atualizar produto: " + (result.error?.message || "Erro desconhecido"));
+            setIsLoading(false);
+        }
     };
 
     if (!productToEdit) {
@@ -127,20 +133,27 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                                 <label className="text-sm font-medium text-gray-700">Categoria</label>
                                 <select
                                     className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand text-sm"
-                                    value={formData.category || ""}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                                    value={formData.category || ""} // Stores ID
+                                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value, subcategory: "" }))}
                                 >
                                     <option value="">Selecione...</option>
-                                    {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                                    {categories.filter(c => !c.parentId).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                 </select>
                             </div>
                             <div className="space-y-1">
                                 <label className="text-sm font-medium text-gray-700">Subcategoria</label>
-                                <input
+                                <select
                                     className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand text-sm"
-                                    value={formData.subcategory || ""}
+                                    value={formData.subcategory || ""} // Stores ID
                                     onChange={(e) => setFormData(prev => ({ ...prev, subcategory: e.target.value }))}
-                                />
+                                    disabled={!formData.category}
+                                >
+                                    <option value="">Selecione...</option>
+                                    {categories
+                                        .filter(c => c.parentId === formData.category)
+                                        .map(c => <option key={c.id} value={c.id}>{c.name}</option>)
+                                    }
+                                </select>
                             </div>
                         </div>
 
@@ -152,12 +165,30 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                                 onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
                             />
                             <div className="space-y-1">
-                                <label className="text-sm font-medium text-gray-700">Unidade</label>
-                                <input
-                                    className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand text-sm"
-                                    value={formData.unit || ""}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, unit: e.target.value }))}
-                                />
+                                <label className="text-sm font-medium text-gray-700">Unidades (Opções)</label>
+                                <div className="flex gap-2 mb-2">
+                                    <input
+                                        className="flex-1 rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand"
+                                        placeholder="Ex: 100 un."
+                                        value={tempQuantity}
+                                        onChange={e => setTempQuantity(e.target.value)}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => addArrayItem("quantities", tempQuantity, setTempQuantity)}
+                                        className="bg-brand text-white p-2.5 rounded-xl hover:bg-brand-dark transition-colors shadow-md shadow-brand/10"
+                                    >
+                                        <Plus size={18} />
+                                    </button>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {formData.quantities?.map((item, idx) => (
+                                        <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-2 border border-gray-100 group">
+                                            {item}
+                                            <button type="button" onClick={() => removeArrayItem("quantities", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
@@ -268,23 +299,6 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                     {/* Variations */}
                     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
                         <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-4">Variações</h3>
-
-                        {/* Quantities */}
-                        <div>
-                            <label className="text-sm font-medium text-gray-700 block mb-2">Quantidades</label>
-                            <div className="flex gap-2 mb-3">
-                                <input className="flex-1 rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand" value={tempQuantity} onChange={e => setTempQuantity(e.target.value)} />
-                                <button type="button" onClick={() => addArrayItem("quantities", tempQuantity, setTempQuantity)} className="bg-brand text-white p-2.5 rounded-xl hover:bg-brand-dark"><Plus size={18} /></button>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                {formData.quantities?.map((item, idx) => (
-                                    <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-2 border border-gray-100 group">
-                                        {item}
-                                        <button type="button" onClick={() => removeArrayItem("quantities", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
 
                         {/* Formats */}
                         <div>
