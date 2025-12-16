@@ -28,8 +28,8 @@ export default function AdminDashboard() {
             color: "bg-orange-50 text-brand"
         },
         {
-            label: "Clientes (Simulado)",
-            value: "148", // Mock logic
+            label: "Clientes (Ativos)",
+            value: stats.totalCustomers,
             icon: Users,
             color: "bg-orange-50 text-brand"
         }

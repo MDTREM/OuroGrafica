@@ -33,6 +33,7 @@ interface AdminContextType {
         totalSales: number;
         pendingOrders: number;
         totalProducts: number;
+        totalCustomers: number;
     };
 
     // Coupons
@@ -135,7 +136,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     const stats = {
         totalSales: orders.reduce((acc, order) => acc + order.total, 0),
         pendingOrders: orders.filter(o => o.status === "Pendente").length,
-        totalProducts: products.length
+        totalProducts: products.length,
+        totalCustomers: new Set(orders.map(o => o.customerName)).size // Count unique customer names
     };
 
     return (
