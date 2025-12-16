@@ -30,7 +30,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         {
             id: "1",
             title: "Cartão de Visita Premium",
-            price: "R$ 49,90",
+            price: 49.90,
             unit: "100 unid.",
             image: "https://i.imgur.com/8Qj9Y2s.png",
             description: "Papel Couchê 300g, Verniz Localizado e Laminação Fosca. O cartão mais vendido.",
@@ -38,7 +38,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         {
             id: "2",
             title: "Flyer A5 Couchê 115g",
-            price: "R$ 89,00",
+            price: 89.00,
             unit: "500 unid.",
             image: "https://i.imgur.com/8Qj9Y2s.png",
             description: "Ideal para divulgação em massa. Cores vivas e impressão de alta qualidade.",
@@ -46,7 +46,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         {
             id: "3",
             title: "Adesivo Vinil Redondo 5x5",
-            price: "R$ 35,50",
+            price: 35.50,
             unit: "Cartela",
             image: "https://i.imgur.com/8Qj9Y2s.png",
             description: "Resistente à água e sol. Perfeito para embalagens e brindes.",
@@ -54,7 +54,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         {
             id: "4",
             title: "Banner Lona 80x120cm",
-            price: "R$ 60,00",
+            price: 60.00,
             unit: "unid.",
             image: "https://i.imgur.com/8Qj9Y2s.png",
             description: "Acabamento com bastão e cordinha. Pronto para pendurar.",
@@ -63,7 +63,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         {
             id: "5",
             title: "Cartão Fidelidade",
-            price: "R$ 45,00",
+            price: 45.00,
             unit: "100 unid.",
             image: "https://i.imgur.com/8Qj9Y2s.png",
             description: "Papel reciclado ou offset, ideal para carimbar ou escrever."
@@ -71,7 +71,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         {
             id: "6",
             title: "Tag para Roupas",
-            price: "R$ 55,00",
+            price: 55.00,
             unit: "100 unid.",
             image: "https://i.imgur.com/8Qj9Y2s.png",
             description: "Com furo de 3mm. Destaque sua marca com tags personalizadas."
