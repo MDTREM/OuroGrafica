@@ -31,16 +31,30 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${geistMono.variable} antialiased bg-background text-foreground flex flex-col min-h-screen pb-16 md:pb-0`}
       >
-        <CartProvider>
-          <FavoritesProvider>
-            <AdminProvider>
-              <AppShell>
-                {children}
-              </AppShell>
-            </AdminProvider>
-          </FavoritesProvider>
-        </CartProvider>
-      </body>
-    </html>
-  );
+        import {AuthProvider} from "@/contexts/AuthContext";
+
+        export default function RootLayout({
+          children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+        <html lang="pt-BR">
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            <CartProvider>
+              <FavoritesProvider>
+                <AuthProvider>
+                  <AdminProvider>
+                    <AppShell>
+                      {children}
+                    </AppShell>
+                  </AdminProvider>
+                </AuthProvider>
+              </FavoritesProvider>
+            </CartProvider>
+          </body>
+        </html>
+        );
 }

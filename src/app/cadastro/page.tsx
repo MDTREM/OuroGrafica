@@ -4,9 +4,37 @@ import { Input } from "@/components/ui/Input";
 import Link from "next/link";
 import { useState } from "react";
 import { Mail, Lock, User, Phone, Eye, EyeOff, CheckCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RegisterPage() {
     const [showPassword, setShowPassword] = useState(false);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    const { signUp } = useAuth();
+    const router = useRouter();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
+
+        const { error } = await signUp(email, password, name);
+
+        if (error) {
+            setError(error.message || "Erro ao criar conta.");
+            setLoading(false);
+        } else {
+            // Success
+            alert("Conta criada com sucesso!");
+            router.push("/admin");
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -31,12 +59,20 @@ export default function RegisterPage() {
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow-xl shadow-gray-100 sm:rounded-2xl sm:px-10 border border-gray-100">
-                    <form className="space-y-5">
+                    <form className="space-y-5" onSubmit={handleSubmit}>
+                        {error && (
+                            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg text-center">
+                                {error}
+                            </div>
+                        )}
                         <Input
                             label="Nome Completo"
                             type="text"
                             placeholder="Seu nome"
                             icon={<User size={18} />}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
                         />
 
                         <Input
@@ -44,6 +80,9 @@ export default function RegisterPage() {
                             type="email"
                             placeholder="seu@email.com"
                             icon={<Mail size={18} />}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
                         />
 
                         <Input
@@ -51,6 +90,8 @@ export default function RegisterPage() {
                             type="tel"
                             placeholder="(00) 00000-0000"
                             icon={<Phone size={18} />}
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                         />
 
                         <div className="space-y-2">
@@ -59,6 +100,9 @@ export default function RegisterPage() {
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Pelo menos 8 caracteres"
                                 icon={<Lock size={18} />}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
                             />
                             <button
                                 type="button"
@@ -72,9 +116,10 @@ export default function RegisterPage() {
 
                         <button
                             type="submit"
-                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-brand/20 text-sm font-bold text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-all"
+                            disabled={loading}
+                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-brand/20 text-sm font-bold text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            Criar Conta
+                            {loading ? "Criando Conta..." : "Criar Conta"}
                         </button>
                     </form>
 

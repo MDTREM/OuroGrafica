@@ -5,9 +5,32 @@ import { Input } from "@/components/ui/Input";
 import Link from "next/link";
 import { useState } from "react";
 import { ArrowRight, Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const { signIn } = useAuth();
+    const router = useRouter();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
+
+        const { error } = await signIn(email, password);
+
+        if (error) {
+            setError("E-mail ou senha incorretos.");
+            setLoading(false);
+        } else {
+            router.push("/admin"); // Redirect to admin dash
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
@@ -37,12 +60,20 @@ export default function LoginPage() {
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow-xl shadow-gray-100 sm:rounded-2xl sm:px-10 border border-gray-100">
-                    <form className="space-y-5">
+                    <form className="space-y-5" onSubmit={handleSubmit}>
+                        {error && (
+                            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg text-center">
+                                {error}
+                            </div>
+                        )}
                         <Input
                             label="E-mail"
                             type="email"
                             placeholder="seu@email.com"
                             icon={<Mail size={18} />}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
                         />
 
                         <div className="space-y-2">
@@ -51,6 +82,9 @@ export default function LoginPage() {
                                 type={showPassword ? "text" : "password"}
                                 placeholder="••••••••"
                                 icon={<Lock size={18} />}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
                             />
                             <div className="flex items-center justify-between">
                                 <button
@@ -72,9 +106,10 @@ export default function LoginPage() {
 
                         <button
                             type="submit"
-                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-brand/20 text-sm font-bold text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-all"
+                            disabled={loading}
+                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-brand/20 text-sm font-bold text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            Entrar na Conta
+                            {loading ? "Entrando..." : "Entrar na Conta"}
                         </button>
                     </form>
 
