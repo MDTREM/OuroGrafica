@@ -1,0 +1,59 @@
+{
+  "sections": [
+    {
+      "id": "banner-carousel",
+      "type": "banner-carousel",
+      "name": "Banners Principais",
+      "enabled": true,
+      "banners": []
+    },
+    {
+      "id": "info-banner",
+      "type": "info-banner",
+      "name": "Faixa Informativa",
+      "enabled": true
+    },
+    {
+      "id": "categories",
+      "type": "categories",
+      "name": "Navegação por Categorias",
+      "enabled": true
+    },
+    {
+      "id": "best-sellers",
+      "type": "product-row",
+      "name": "Mais Vendidos",
+      "enabled": true,
+      "title": "Mais Vendidos",
+      "settings": {
+        "filter": "best-sellers"
+      }
+    },
+    {
+      "id": "featured",
+      "type": "product-row",
+      "name": "Produtos em Destaque",
+      "enabled": true,
+      "title": "Produtos em Destaque",
+      "settings": {
+        "filter": "featured"
+      }
+    },
+    {
+      "id": "new-arrivals",
+      "type": "product-row",
+      "name": "Novidades",
+      "enabled": true,
+      "title": "Novidades",
+      "settings": {
+        "filter": "new"
+      }
+    },
+    {
+      "id": "stacked-banners-1765885393894",
+      "type": "stacked-banners",
+      "name": "Banners Promocionais",
+      "enabled": true
+    }
+  ]
+}
