@@ -19,6 +19,24 @@ export default function RegisterPage() {
     const { signUp, signInWithSocial } = useAuth();
     const router = useRouter();
 
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/\D/g, ""); // Remove invalid chars
+        if (value.length > 11) value = value.slice(0, 11);
+
+        // Mask (XX) XXXXX-XXXX
+        if (value.length > 10) {
+            value = value.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3");
+        } else if (value.length > 5) {
+            value = value.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+        } else if (value.length > 2) {
+            value = value.replace(/^(\d\d)(\d{0,5}).*/, "($1) $2");
+        } else {
+            value = value.replace(/^(\d*)/, "($1");
+        }
+
+        setPhone(value);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
@@ -95,7 +113,8 @@ export default function RegisterPage() {
                             placeholder="(00) 00000-0000"
                             icon={<Phone size={18} />}
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                            onChange={handlePhoneChange}
+                            maxLength={15} // (11) 99999-9999
                         />
 
                         <div className="space-y-2">
