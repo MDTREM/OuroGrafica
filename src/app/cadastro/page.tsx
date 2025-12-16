@@ -42,7 +42,7 @@ export default function RegisterPage() {
         setError("");
         setLoading(true);
 
-        const { error } = await signUp(email.trim(), password, name);
+        const { data, error } = await signUp(email.trim(), password, name);
 
         if (error) {
             setError(error.message || "Erro ao criar conta.");
@@ -50,7 +50,11 @@ export default function RegisterPage() {
         } else {
             // Success
             alert("Conta criada com sucesso!");
-            if (email.trim() === "admin@gmail.com") {
+
+            const userRole = data?.user?.user_metadata?.role;
+            const isTargetAdmin = userRole === 'admin' || email.trim() === "admin@gmail.com";
+
+            if (isTargetAdmin) {
                 router.push("/admin");
             } else {
                 router.push("/");

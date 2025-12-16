@@ -39,9 +39,9 @@ export default function AdminCategoriesPage() {
                             </div>
                         </div>
                         <div className="flex gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                            <button className="p-2 text-gray-400 hover:text-brand transition-colors">
+                            <Link href={`/admin/categorias/editar/${category.id}`} className="p-2 text-gray-400 hover:text-brand transition-colors">
                                 <Edit size={16} />
-                            </button>
+                            </Link>
                             <button
                                 onClick={() => {
                                     if (confirm("Deseja excluir esta categoria?")) {

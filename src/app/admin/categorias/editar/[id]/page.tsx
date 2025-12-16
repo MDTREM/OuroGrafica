@@ -3,18 +3,22 @@
 import { useAdmin } from "@/contexts/AdminContext";
 import { Input } from "@/components/ui/Input";
 import { Switch } from "@/components/ui/Switch";
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Upload, Trash2, Plus } from "lucide-react";
+import { ArrowLeft, Save, Upload } from "lucide-react";
 import Link from "next/link";
 import { Category } from "@/data/mockData";
 import { uploadImage } from "@/actions/homepage-actions";
 
-export default function NewCategoryPage() {
-    const { addCategory, categories } = useAdmin();
+export default function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
+    const resolvedParams = use(params);
+    const { updateCategory, categories } = useAdmin();
     const router = useRouter();
 
     const [isLoading, setIsLoading] = useState(false);
+
+    // Find category
+    const categoryToEdit = categories.find(c => c.id === resolvedParams.id);
 
     const [formData, setFormData] = useState<Partial<Category>>({
         id: "",
@@ -25,27 +29,40 @@ export default function NewCategoryPage() {
         showOnMenu: true
     });
 
-    const [tempImage, setTempImage] = useState("");
+    useEffect(() => {
+        if (categoryToEdit) {
+            setFormData({
+                ...categoryToEdit
+            });
+        }
+    }, [categoryToEdit]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!categoryToEdit) return;
+
         setIsLoading(true);
 
         // Simulate API
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // Auto-generate ID if empty or slugify name
-        const finalId = formData.id?.trim() || formData.name?.toLowerCase().replace(/\s+/g, '-') || "cat-" + Math.random().toString(36).substr(2, 5);
-
-        const newCategory: Category = {
+        const updatedCategory: Category = {
+            ...categoryToEdit,
             ...formData,
-            id: finalId,
-            name: formData.name || "Nova Categoria",
         } as Category;
 
-        addCategory(newCategory);
+        updateCategory(updatedCategory);
         router.push("/admin/categorias");
     };
+
+    if (!categoryToEdit) {
+        return (
+            <div className="p-8 text-center">
+                <p className="text-gray-500">Categoria não encontrada.</p>
+                <Link href="/admin/categorias" className="text-brand hover:underline mt-2 inline-block">Voltar</Link>
+            </div>
+        );
+    }
 
     return (
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-8 pb-24">
@@ -56,8 +73,8 @@ export default function NewCategoryPage() {
                         <ArrowLeft size={24} />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Nova Categoria</h1>
-                        <p className="text-gray-500">Adicione uma nova seção à loja.</p>
+                        <h1 className="text-2xl font-bold text-gray-900">Editar Categoria</h1>
+                        <p className="text-gray-500">Editando: {formData.name}</p>
                     </div>
                 </div>
             </div>
@@ -65,28 +82,26 @@ export default function NewCategoryPage() {
             <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
                 <Input
                     label="Nome da Categoria"
-                    placeholder="Ex: Cartões de Visita"
-                    value={formData.name}
+                    value={formData.name || ""}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                         label="ID da Categoria (Slug)"
-                        placeholder="Ex: cartoes-visita"
-                        value={formData.id}
-                        onChange={(e) => setFormData(prev => ({ ...prev, id: e.target.value }))}
-                        hint="Identificador único usado na URL."
+                        value={formData.id || ""}
+                        disabled // ID usually shouldn't change easily or needs care
+                        hint="O ID não pode ser alterado."
                     />
                     <div className="space-y-1">
                         <label className="text-sm font-medium text-gray-700">Subcategoria de (Opcional)</label>
                         <select
                             className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand text-sm"
-                            value={formData.parentId}
+                            value={formData.parentId || ""}
                             onChange={(e) => setFormData(prev => ({ ...prev, parentId: e.target.value }))}
                         >
                             <option value="">Nenhuma (Categoria Principal)</option>
-                            {categories.map(c => (
+                            {categories.filter(c => c.id !== categoryToEdit.id).map(c => (
                                 <option key={c.id} value={c.id}>{c.name}</option>
                             ))}
                         </select>
@@ -100,10 +115,10 @@ export default function NewCategoryPage() {
                         <div className="flex-1 space-y-2">
                             <Input
                                 placeholder="https://..."
-                                value={formData.image}
+                                value={formData.image || ""}
                                 onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
                             />
-                            <p className="text-xs text-gray-500">Cole o link da imagem ou use o botão de upload (simulado).</p>
+                            <p className="text-xs text-gray-500">Cole o link da imagem ou use o botão de upload.</p>
                         </div>
                         <label className="w-24 h-24 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:bg-gray-100 transition-colors relative">
                             <input
@@ -165,7 +180,7 @@ export default function NewCategoryPage() {
                     {isLoading ? "Salvando..." : (
                         <>
                             <Save size={18} />
-                            Salvar Categoria
+                            Salvar Alterações
                         </>
                     )}
                 </button>

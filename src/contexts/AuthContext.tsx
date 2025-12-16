@@ -9,9 +9,9 @@ interface AuthContextType {
     user: User | null;
     session: Session | null;
     isLoading: boolean;
-    signIn: (email: string, password: string) => Promise<{ error: any }>;
-    signUp: (email: string, password: string, name: string) => Promise<{ error: any }>;
-    signInWithSocial: (provider: Provider) => Promise<{ error: any }>;
+    signIn: (email: string, password: string) => Promise<{ data?: any; error: any }>;
+    signUp: (email: string, password: string, name: string) => Promise<{ data?: any; error: any }>;
+    signInWithSocial: (provider: Provider) => Promise<{ data?: any; error: any }>;
     signOut: () => Promise<void>;
     isAdmin: boolean;
 }
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             email,
             password
         });
-        return { error };
+        return { data, error };
     };
 
     const signUp = async (email: string, password: string, name: string) => {
@@ -57,10 +57,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             options: {
                 data: {
                     full_name: name,
+                    role: 'user', // Default role
                 }
             }
         });
-        return { error };
+        return { data, error };
     };
 
     const signInWithSocial = async (provider: Provider) => {
@@ -70,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 redirectTo: `${window.location.origin}/auth/callback`,
             },
         });
-        return { error };
+        return { data, error };
     };
 
     const signOut = async () => {
@@ -78,10 +79,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.push("/login"); // Redirect to login after logout
     };
 
-    // Simple Admin Check (Hardcoded for now as per user request to have specific admin)
-    // In production, use "profiles" table with "role" column.
-    // We treat 'admin@gmail.com' OR valid user in local dev as admin for simplicity.
-    const isAdmin = user?.email === 'admin@gmail.com';
+    // Admin Check: Metadata 'role' === 'admin' OR hardcoded email fallback
+    const isAdmin = user?.user_metadata?.role === 'admin' || user?.email === 'admin@gmail.com';
 
     return (
         <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signInWithSocial, signOut, isAdmin }}>

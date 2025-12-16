@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { getHomepageConfig, saveHomepageConfig, uploadBannerImage, HomepageConfig, Banner, Section, SectionType } from '@/actions/homepage-actions';
+import { getHomepageConfig, saveHomepageConfig, uploadImage, HomepageConfig, Banner, Section, SectionType } from '@/actions/homepage-actions';
 import { Trash2, Plus, ArrowUp, ArrowDown, Eye, EyeOff, Layout, Edit, X } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 
@@ -135,7 +135,7 @@ export default function AdminHomeConfigPage() {
         const formData = new FormData();
         formData.append('file', file);
 
-        const path = await uploadBannerImage(formData);
+        const path = await uploadImage(formData);
         setUploading(false);
 
         if (path) {

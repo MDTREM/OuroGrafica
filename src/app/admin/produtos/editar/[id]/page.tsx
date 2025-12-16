@@ -8,6 +8,7 @@ import { ArrowLeft, Save, Plus, X, Upload, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Product } from "@/data/mockData";
 import { Switch } from "@/components/ui/Switch";
+import { uploadImage } from "@/actions/homepage-actions";
 import { use } from "react";
 
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -218,11 +219,30 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                                 </div>
                             ))}
                             {(formData.images?.length || 0) < 10 && (
-                                <button type="button" className="border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:border-brand hover:text-brand hover:bg-brand/5 transition-all aspect-square">
+                                <label className="border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:border-brand hover:text-brand hover:bg-brand/5 transition-all aspect-square cursor-pointer relative">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={async (e) => {
+                                            const file = e.target.files?.[0];
+                                            if (!file) return;
+
+                                            const formData = new FormData();
+                                            formData.append('file', file);
+
+                                            const url = await uploadImage(formData);
+                                            if (url) {
+                                                addArrayItem("images", url, () => { });
+                                            } else {
+                                                alert("Erro ao enviar imagem.");
+                                            }
+                                        }}
+                                    />
                                     <Upload size={24} className="mb-2" />
                                     <span className="text-xs font-medium">Upload</span>
                                     <span className="text-[10px] opacity-70 mt-1">{formData.images?.length || 0}/10</span>
-                                </button>
+                                </label>
                             )}
                         </div>
                     </div>
