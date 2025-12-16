@@ -16,7 +16,7 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const { signUp } = useAuth();
+    const { signUp, signInWithSocial } = useAuth();
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -136,6 +136,7 @@ export default function RegisterPage() {
                         <div className="mt-6 grid grid-cols-2 gap-3">
                             <button
                                 type="button"
+                                onClick={() => signInWithSocial("google")}
                                 className="w-full inline-flex justify-center items-center py-2.5 px-4 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                             >
                                 <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
@@ -160,6 +161,7 @@ export default function RegisterPage() {
                             </button>
                             <button
                                 type="button"
+                                onClick={() => signInWithSocial("facebook")}
                                 className="w-full inline-flex justify-center items-center py-2.5 px-4 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                             >
                                 <svg className="h-5 w-5 mr-2 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">

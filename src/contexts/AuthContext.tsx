@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { User, Session } from "@supabase/supabase-js";
+import { User, Session, Provider } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 
 interface AuthContextType {
@@ -11,6 +11,7 @@ interface AuthContextType {
     isLoading: boolean;
     signIn: (email: string, password: string) => Promise<{ error: any }>;
     signUp: (email: string, password: string, name: string) => Promise<{ error: any }>;
+    signInWithSocial: (provider: Provider) => Promise<{ error: any }>;
     signOut: () => Promise<void>;
     isAdmin: boolean;
 }
@@ -62,6 +63,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error };
     };
 
+    const signInWithSocial = async (provider: Provider) => {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: provider,
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback`,
+            },
+        });
+        return { error };
+    };
+
     const signOut = async () => {
         await supabase.auth.signOut();
         router.push("/login"); // Redirect to login after logout
@@ -73,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const isAdmin = user?.email === 'admin@gmail.com';
 
     return (
-        <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signOut, isAdmin }}>
+        <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signInWithSocial, signOut, isAdmin }}>
             {children}
         </AuthContext.Provider>
     );
