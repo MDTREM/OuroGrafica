@@ -40,11 +40,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     }, [resolvedParams.id]);
 
     const [quantity, setQuantity] = useState(100);
-    const [paper, setPaper] = useState("couche300");
-    const [finish, setFinish] = useState("fosca");
+    const [selectedFormat, setSelectedFormat] = useState("");
+    const [selectedFinish, setSelectedFinish] = useState("");
     const [activeImage, setActiveImage] = useState(0);
     const [designOption, setDesignOption] = useState<"upload" | "hire">("upload");
     const [showFullDesc, setShowFullDesc] = useState(false);
+
+    // Initialize defaults when product loads
+    useEffect(() => {
+        if (product) {
+            if (product.formats && product.formats.length > 0) setSelectedFormat(product.formats[0]);
+            if (product.finishes && product.finishes.length > 0) setSelectedFinish(product.finishes[0]);
+        }
+    }, [product]);
 
     if (isLoading) {
         return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div></div>;
@@ -83,8 +91,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             image: productImages[0] || "",
             details: {
                 quantity,
-                paper,
-                finish,
+                paper: selectedFormat,
+                finish: selectedFinish,
                 designOption
             }
         });
@@ -212,7 +220,13 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                         {product.formats.map((fmt, idx) => (
                                             <button
                                                 key={idx}
-                                                className="px-4 py-3 rounded-lg text-sm font-medium border text-left border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
+                                                onClick={() => setSelectedFormat(fmt)}
+                                                className={cn(
+                                                    "px-4 py-3 rounded-lg text-sm font-medium border text-left transition-all",
+                                                    selectedFormat === fmt
+                                                        ? "border-brand bg-orange-50 text-brand font-bold ring-1 ring-brand"
+                                                        : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
+                                                )}
                                             >
                                                 {fmt}
                                             </button>
@@ -225,12 +239,18 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                     <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Acabamento</h3>
                                     <div className="flex flex-col gap-2">
                                         {product.finishes.map((fin, idx) => (
-                                            <div
+                                            <button
                                                 key={idx}
-                                                className="px-4 py-3 rounded-lg text-sm font-medium border text-left border-gray-200 text-gray-600 bg-gray-50"
+                                                onClick={() => setSelectedFinish(fin)}
+                                                className={cn(
+                                                    "px-4 py-3 rounded-lg text-sm font-medium border text-left transition-all",
+                                                    selectedFinish === fin
+                                                        ? "border-brand bg-orange-50 text-brand font-bold ring-1 ring-brand"
+                                                        : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
+                                                )}
                                             >
                                                 {fin}
-                                            </div>
+                                            </button>
                                         ))}
                                     </div>
                                 </div>
@@ -244,8 +264,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                 {/* Option 1: Upload */}
                                 <div
                                     className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all ${designOption === "upload"
-                                            ? "border-brand bg-orange-50/10"
-                                            : "border-gray-200 hover:border-gray-300"
+                                        ? "border-brand bg-orange-50/10"
+                                        : "border-gray-200 hover:border-gray-300"
                                         }`}
                                     onClick={() => setDesignOption("upload")}
                                 >
@@ -260,18 +280,39 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                             </div>
                                             <p className="text-xs text-gray-500 mb-3">Envie seu arquivo pronto para impressão (PDF, AI, CDR).</p>
 
-                                            {/* Link Input (Visible only when selected) */}
+                                            {/* File Upload Input */}
                                             {designOption === "upload" && (
                                                 <div className="mt-2 animate-in fade-in slide-in-from-top-1">
-                                                    <div className="flex gap-2">
-                                                        <div className="relative flex-1">
-                                                            <UploadCloud size={16} className="absolute left-3 top-3 text-gray-400" />
-                                                            <input
-                                                                type="text"
-                                                                placeholder="Cole o link do seu arquivo (Drive, WeTransfer...)"
-                                                                className="w-full text-sm border-2 border-dashed border-gray-300 rounded-lg h-10 pl-9 px-4 focus:outline-none focus:border-brand focus:bg-white bg-gray-50 transition-colors"
-                                                            />
-                                                        </div>
+                                                    <div className="flex gap-2 items-center">
+                                                        <input
+                                                            type="file"
+                                                            id="file-upload"
+                                                            className="hidden"
+                                                            onChange={async (e) => {
+                                                                const file = e.target.files?.[0];
+                                                                if (!file) return;
+
+                                                                // Mock upload logic or Supabase
+                                                                // For now we just pretend to upload to show feedback
+                                                                // In real app: await supabase.storage.from('uploads').upload(...)
+                                                                try {
+                                                                    // const { data, error } = await supabase.storage.from('uploads').upload(`public/${Date.now()}_${file.name}`, file)
+                                                                    // if(error) throw error;
+                                                                    // setUploadedFile(data.path);
+                                                                    alert("Arquivo selecionado: " + file.name);
+                                                                } catch (err) {
+                                                                    console.error(err);
+                                                                    alert("Erro ao enviar arquivo.");
+                                                                }
+                                                            }}
+                                                        />
+                                                        <label
+                                                            htmlFor="file-upload"
+                                                            className="flex-1 flex items-center justify-center gap-2 cursor-pointer bg-white border border-gray-300 border-dashed rounded-lg py-3 hover:bg-gray-50 transition-colors text-sm text-gray-600 font-medium"
+                                                        >
+                                                            <UploadCloud size={18} className="text-brand" />
+                                                            Escolher Arquivo (PDF, CDR, AI)
+                                                        </label>
                                                     </div>
                                                 </div>
                                             )}
@@ -304,20 +345,20 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                         </div>
 
                         {/* 5. FREIGHT CALCULATOR */}
-                        <div className="border border-gray-200 rounded-xl p-4 mb-8">
+                        <div className="border border-gray-200 rounded-xl p-4 mb-8 bg-gray-50">
                             <h3 className="text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
                                 <Truck size={16} className="text-brand" />
-                                Calcular Frete e Prazo
+                                Frete e Prazo
                             </h3>
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    placeholder="Digite seu CEP"
-                                    className="flex-1 h-10 px-4 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-brand"
-                                />
-                                <Button size="sm" className="bg-brand text-white font-bold h-10 px-4">
-                                    OK
-                                </Button>
+                            <div className="flex items-center gap-3 bg-white border border-green-200 p-3 rounded-lg">
+                                <div className="bg-green-100 p-2 rounded-full text-green-700">
+                                    <Check size={16} />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-bold text-gray-900">Retirada na Loja</p>
+                                    <p className="text-xs text-gray-500">Disponível em 2 dias úteis</p>
+                                </div>
+                                <span className="text-sm font-bold text-green-600">Grátis</span>
                             </div>
                         </div>
                     </div>

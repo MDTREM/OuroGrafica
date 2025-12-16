@@ -63,7 +63,7 @@ export const USER: User = {
 };
 
 export const CONSTANTS = {
-    SHIPPING: 15.00
+    SHIPPING: 0
 };
 
 export const CATEGORIES: Category[] = [

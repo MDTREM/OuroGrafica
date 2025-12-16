@@ -19,6 +19,9 @@ export function AppShell({ children }: AppShellProps) {
 
     // Hide nav elements on specific pages to reduce distraction
     const isProductPage = pathname?.startsWith("/produto/");
+    const isPrinterPage = pathname?.startsWith("/servicos/aluguel/") && pathname !== "/servicos/aluguel";
+
+    const isImmersivePage = isProductPage || isPrinterPage;
 
     if (isAuthPage) {
         return <main className="flex-1">{children}</main>;
@@ -26,8 +29,8 @@ export function AppShell({ children }: AppShellProps) {
 
     return (
         <>
-            {/* TopBar: Hide on mobile for product pages (since they have custom nav), show on desktop */}
-            <div className={isProductPage ? "hidden md:block" : "block"}>
+            {/* TopBar: Hide on mobile for immersive pages (since they have custom nav), show on desktop */}
+            <div className={isImmersivePage ? "hidden md:block" : "block"}>
                 <TopBar />
             </div>
 
@@ -40,8 +43,8 @@ export function AppShell({ children }: AppShellProps) {
                 <Footer />
             </div>
 
-            {/* BottomNav: Hide completely on product pages */}
-            {!isProductPage && <BottomNav />}
+            {/* BottomNav: Hide completely on immersive pages */}
+            {!isImmersivePage && <BottomNav />}
         </>
     );
 }
