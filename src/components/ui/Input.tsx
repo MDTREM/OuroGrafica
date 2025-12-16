@@ -6,11 +6,12 @@ import { cn } from "@/lib/utils";
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     error?: string;
+    hint?: string;
     icon?: React.ReactNode;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    ({ className, type, label, error, icon, ...props }, ref) => {
+    ({ className, type, label, error, hint, icon, ...props }, ref) => {
         return (
             <div className="w-full space-y-2">
                 {label && (
@@ -36,6 +37,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         </div>
                     )}
                 </div>
+                {hint && !error && (
+                    <p className="text-xs text-gray-500">{hint}</p>
+                )}
                 {error && (
                     <p className="text-sm text-red-500 animate-in slide-in-from-left-1">{error}</p>
                 )}
