@@ -5,6 +5,7 @@ import { InfoBanner } from "@/components/shop/InfoBanner";
 import { StackedBanners } from "@/components/shop/StackedBanners";
 import { ProductRow } from "@/components/shop/ProductRow";
 import { CATEGORIES } from "@/data/mockData";
+import { MaintenanceCTA } from "@/components/shop/MaintenanceCTA";
 import { getHomepageConfig, Section } from "@/actions/homepage-actions";
 
 export default async function Home() {
@@ -43,11 +44,19 @@ export default async function Home() {
     }
   };
 
+  const bannerSection = config.sections.find(s => s.type === 'banner-carousel' && s.enabled);
+  const otherSections = config.sections.filter(s => s.enabled && s.type !== 'banner-carousel');
+
   return (
     <div className="pb-8 space-y-8">
-      {config.sections
-        .filter(s => s.enabled)
-        .map(section => renderSection(section))}
+      {/* 1. Main Banner (if exists) */}
+      {bannerSection && renderSection(bannerSection)}
+
+      {/* 2. Static Maintenance CTA */}
+      <MaintenanceCTA />
+
+      {/* 3. Other Dynamic Sections */}
+      {otherSections.map(section => renderSection(section))}
     </div>
   );
 }

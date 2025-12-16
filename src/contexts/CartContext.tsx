@@ -46,7 +46,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [coupon, setCoupon] = useState<Coupon | null>(null);
-    const shipping = 25.00; // Fixed for now
+    const shipping = 0.00; // Free (Pickup in Store)
 
     // Load from local storage on mount
     useEffect(() => {

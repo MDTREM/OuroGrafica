@@ -359,20 +359,34 @@ export default function CheckoutPage() {
                                     </div>
                                 </div>
 
-                                <h3 className="font-bold text-gray-900 mb-3 text-sm">Opção de Frete</h3>
+                                <h3 className="font-bold text-gray-900 mb-3 text-sm">Opção de Entrega</h3>
                                 <div className="space-y-3 mb-6">
                                     <label className="flex items-center gap-4 bg-orange-50 p-4 rounded-xl border border-brand cursor-pointer relative">
                                         <div className="w-10 h-10 rounded-full bg-white text-brand flex items-center justify-center flex-shrink-0">
+                                            <MapPin size={20} />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex justify-between items-center mb-0.5">
+                                                <h3 className="font-bold text-gray-900 text-sm">Retirada na Loja (Ouro Preto)</h3>
+                                                <span className="font-bold text-brand">Grátis</span>
+                                            </div>
+                                            <p className="text-xs text-gray-500">Rua da Glória, 123 - Centro</p>
+                                        </div>
+                                        <input type="radio" name="shipping" className="accent-brand w-5 h-5 ml-2" defaultChecked />
+                                    </label>
+
+                                    <label className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200 cursor-pointer relative opacity-60">
+                                        <div className="w-10 h-10 rounded-full bg-white text-gray-500 flex items-center justify-center flex-shrink-0">
                                             <Truck size={20} />
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex justify-between items-center mb-0.5">
-                                                <h3 className="font-bold text-gray-900 text-sm">Sedex Express</h3>
-                                                <span className="font-bold text-brand">R$ 25,00</span>
+                                                <h3 className="font-bold text-gray-900 text-sm">Entrega Local (Motoboy)</h3>
+                                                <span className="font-bold text-gray-500">Em breve</span>
                                             </div>
-                                            <p className="text-xs text-gray-500">Chega até 22 de Outubro (2 dias úteis)</p>
+                                            <p className="text-xs text-gray-500">Disponível apenas para Ouro Preto</p>
                                         </div>
-                                        <input type="radio" name="shipping" className="accent-brand w-5 h-5 ml-2" defaultChecked />
+                                        <input type="radio" name="shipping" className="accent-brand w-5 h-5 ml-2" disabled />
                                     </label>
                                 </div>
 
