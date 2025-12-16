@@ -24,7 +24,7 @@ interface AdminContextType {
     importProducts: (products: Product[]) => void;
 
     // Categories
-    addCategory: (category: Category) => void;
+    addCategory: (category: Category) => Promise<{ success: boolean; error?: any; data?: Category }>;
     updateCategory: (category: Category) => void;
     deleteCategory: (id: string) => void;
 
@@ -98,7 +98,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
     const addCategory = async (category: Category) => {
         const { data, error } = await supabase.from('categories').insert([category]).select().single();
-        if (data && !error) setCategories(prev => [...prev, data]);
+        if (data && !error) {
+            setCategories(prev => [...prev, data]);
+            return { success: true, data };
+        }
+        console.error("Error adding category:", error);
+        return { success: false, error };
     };
 
     const updateCategory = async (updatedCategory: Category) => {

@@ -43,8 +43,14 @@ export default function NewCategoryPage() {
             name: formData.name || "Nova Categoria",
         } as Category;
 
-        addCategory(newCategory);
-        router.push("/admin/categorias");
+        const result = await addCategory(newCategory);
+
+        if (result.success) {
+            router.push("/admin/categorias");
+        } else {
+            alert("Erro ao salvar categoria: " + (result.error?.message || "Erro desconhecido"));
+            setIsLoading(false);
+        }
     };
 
     return (

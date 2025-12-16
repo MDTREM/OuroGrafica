@@ -4,11 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, LayoutGrid, Menu, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useCart } from "@/contexts/CartContext";
 
 export function BottomNav() {
     const pathname = usePathname();
-    const { items } = useCart();
     // Count logic kept just in case, though cart removed from nav
 
     // Hide BottomNav on specific pages if needed
@@ -19,7 +17,7 @@ export function BottomNav() {
     const navItems = [
         { href: "/", label: "Início", icon: Home },
         { href: "/categorias", label: "Produtos", icon: LayoutGrid },
-        { href: "/servicos/manutencao", label: "Serviços", icon: Wrench },
+        { href: "/servicos", label: "Serviços", icon: Wrench },
         { href: "/menu", label: "Menu", icon: Menu },
     ];
 
@@ -41,11 +39,6 @@ export function BottomNav() {
                         >
                             <div className="relative">
                                 <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                                {item.href === "/carrinho" && itemCount > 0 && (
-                                    <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-brand text-white text-[9px] font-bold flex items-center justify-center rounded-full border border-surface">
-                                        {itemCount}
-                                    </span>
-                                )}
                             </div>
                             <span className="text-[10px] font-medium">{item.label}</span>
                         </Link>
