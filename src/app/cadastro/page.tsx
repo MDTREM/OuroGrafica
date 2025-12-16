@@ -24,7 +24,7 @@ export default function RegisterPage() {
         setError("");
         setLoading(true);
 
-        const { error } = await signUp(email, password, name);
+        const { error } = await signUp(email.trim(), password, name);
 
         if (error) {
             setError(error.message || "Erro ao criar conta.");

@@ -22,7 +22,7 @@ export default function LoginPage() {
         setError("");
         setLoading(true);
 
-        const { error } = await signIn(email, password);
+        const { error } = await signIn(email.trim(), password);
 
         if (error) {
             setError("E-mail ou senha incorretos.");
