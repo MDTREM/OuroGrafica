@@ -2,17 +2,47 @@
 
 import { Container } from "@/components/ui/Container";
 import { Wrench, Printer, AlertTriangle, Send, MapPin, Wifi, CheckCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { HeroCarousel } from "@/components/ui/HeroCarousel";
 
 export default function ManutencaoPage() {
     const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
+    const [banners, setBanners] = useState(['https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop']);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    useEffect(() => {
+        // Dynamic import or fetch to avoid server/client issues if not carefully handled, 
+        // but since getPagesConfig calls supabase which is configured for both, it should be fine.
+        // Or simpler, just fetch it.
+        import('@/actions/homepage-actions').then(async ({ getPagesConfig }) => {
+            const config = await getPagesConfig();
+            if (config.maintenanceBanners && config.maintenanceBanners.length > 0) {
+                setBanners(config.maintenanceBanners);
+            }
+        });
+    }, []);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setFormStatus('sending');
-        // Simulator - In real life, send to API or direct to WhatsApp
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        setFormStatus('sent');
+
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            name: formData.get('name') as string,
+            whatsapp: formData.get('whatsapp') as string,
+            brand: formData.get('brand') as string,
+            model: formData.get('model') as string,
+            problem_description: formData.get('problem_description') as string,
+        };
+
+        const { submitMaintenanceRequest } = await import('@/actions/maintenance-actions');
+        const res = await submitMaintenanceRequest(data);
+
+        if (res.success) {
+            setFormStatus('sent');
+        } else {
+            setFormStatus('idle');
+            alert('Erro ao enviar. Tente novamente.');
+        }
     };
 
     return (
@@ -20,11 +50,8 @@ export default function ManutencaoPage() {
             {/* Banner Section - Admin Editable */}
             <Container>
                 <div className="relative h-[200px] md:h-[300px] bg-black overflow-hidden group shadow-lg rounded-lg">
-                    {/* Background Image */}
-                    <div
-                        className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-80 group-hover:scale-105 transition-transform duration-1000"
-                    />
-                    {/* Text removed as requested */}
+                    {/* Hero Carousel */}
+                    <HeroCarousel banners={banners} />
                 </div>
             </Container>
 
@@ -36,7 +63,7 @@ export default function ManutencaoPage() {
                         100% { transform: translateX(-50%); }
                     }
                     .animate-scroll {
-                        animation: scroll 15s linear infinite;
+                        animation: scroll 10s linear infinite;
                     }
                 `}</style>
                 <Container>
@@ -105,20 +132,26 @@ export default function ManutencaoPage() {
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <input
                                         required
+                                        name="name"
                                         type="text"
                                         className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#FF6B07] focus:ring-1 focus:ring-[#FF6B07] outline-none text-sm transition-all"
                                         placeholder="Seu Nome"
                                     />
                                     <input
                                         required
+                                        name="whatsapp"
                                         type="tel"
                                         className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#FF6B07] focus:ring-1 focus:ring-[#FF6B07] outline-none text-sm transition-all"
                                         placeholder="WhatsApp (com DDD)"
                                     />
 
                                     <div className="grid grid-cols-2 gap-4">
-                                        <select className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#FF6B07] focus:ring-1 focus:ring-[#FF6B07] outline-none text-sm transition-all appearance-none text-gray-600">
-                                            <option value="" disabled selected>Marca</option>
+                                        <select
+                                            name="brand"
+                                            defaultValue=""
+                                            className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#FF6B07] focus:ring-1 focus:ring-[#FF6B07] outline-none text-sm transition-all appearance-none text-gray-600"
+                                        >
+                                            <option value="" disabled>Marca</option>
                                             <option>Epson</option>
                                             <option>HP</option>
                                             <option>Canon</option>
@@ -126,6 +159,7 @@ export default function ManutencaoPage() {
                                             <option>Samsung</option>
                                         </select>
                                         <input
+                                            name="model"
                                             type="text"
                                             className="w-full h-12 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#FF6B07] focus:ring-1 focus:ring-[#FF6B07] outline-none text-sm transition-all"
                                             placeholder="Modelo (Opcional)"
@@ -134,6 +168,7 @@ export default function ManutencaoPage() {
 
                                     <textarea
                                         required
+                                        name="problem_description"
                                         rows={3}
                                         className="w-full p-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#FF6B07] focus:ring-1 focus:ring-[#FF6B07] outline-none resize-none text-sm transition-all"
                                         placeholder="Descreva brevemente o problema..."

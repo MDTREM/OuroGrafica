@@ -19,6 +19,14 @@ export function DesktopNav() {
     return (
         <div className="hidden md:block bg-surface border-b border-border shadow-sm relative z-30">
             <Container className="h-12 flex items-center gap-8">
+                {/* Services Button */}
+                <Link
+                    href="/servicos"
+                    className="flex items-center gap-2 text-sm font-bold text-brand hover:text-white hover:bg-brand transition-colors px-3 py-1.5 bg-orange-50 rounded-md"
+                >
+                    Serviços
+                </Link>
+
                 {/* All Products Dropdown Trigger */}
                 <div className="group relative h-full flex items-center cursor-pointer">
                     <div className="flex items-center gap-2 text-sm font-bold text-foreground hover:text-brand transition-colors px-3 py-1.5 bg-gray-100 rounded-md">
@@ -67,14 +75,13 @@ export function DesktopNav() {
 
                 {/* Main Links */}
                 <nav className="flex items-center gap-6 overflow-x-auto no-scrollbar">
+
                     {categories.slice(0, 6).map((cat) => (
                         <Link key={cat.id} href={`/categoria/${cat.id}`} className="text-sm font-medium text-gray-600 hover:text-brand transition-colors whitespace-nowrap">
                             {cat.name}
                         </Link>
                     ))}
-                    <Link href="/ofertas" className="text-sm font-bold text-brand hover:text-brand-dark transition-colors whitespace-nowrap">
-                        Ofertas do Dia
-                    </Link>
+
                 </nav>
             </Container>
         </div>

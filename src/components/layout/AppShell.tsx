@@ -19,9 +19,9 @@ export function AppShell({ children }: AppShellProps) {
 
     // Hide nav elements on specific pages to reduce distraction
     const isProductPage = pathname?.startsWith("/produto/");
-    const isPrinterPage = pathname?.startsWith("/servicos/aluguel/") && pathname !== "/servicos/aluguel";
+    const isOutsourcingPage = pathname?.startsWith("/servicos/outsourcing/") && pathname !== "/servicos/outsourcing";
 
-    const isImmersivePage = isProductPage || isPrinterPage;
+    const isImmersivePage = isProductPage || isOutsourcingPage;
 
     if (isAuthPage) {
         return <main className="flex-1">{children}</main>;

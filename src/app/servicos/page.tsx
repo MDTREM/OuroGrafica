@@ -14,11 +14,11 @@ export default function ServicesPage() {
             bg: 'bg-orange-50'
         },
         {
-            id: 'aluguel',
+            id: 'outsourcing',
             name: 'Aluguel de Impressoras',
-            description: 'Locação de equipamentos para sua empresa',
+            description: 'Reduza custos e gerencie suas impressões.',
             icon: Printer,
-            href: '/servicos/aluguel',
+            href: '/servicos/outsourcing',
             color: 'text-[#FF6B07]',
             bg: 'bg-orange-50'
         }

@@ -9,6 +9,7 @@ import { MaintenanceCTA } from "@/components/shop/MaintenanceCTA";
 import { LocationMap } from "@/components/shop/LocationMap";
 import { getHomepageConfig, Section } from "@/actions/homepage-actions";
 
+
 export default async function Home() {
   const config = await getHomepageConfig();
 
@@ -54,6 +55,8 @@ export default async function Home() {
     <div className="pb-8 space-y-8">
       {/* 1. Main Banner (if exists) */}
       {bannerSection && renderSection(bannerSection)}
+
+
 
       {/* 2. Dynamic Sections (including Maintenance CTA) */}
       {otherSections.map(section => renderSection(section))}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, ShoppingCart, User, MapPin } from "lucide-react";
+import { Search, ShoppingCart, User, MapPin, Heart } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -87,6 +87,8 @@ export function TopBar() {
                     <Link href={user ? "/perfil" : "/login"} className="md:hidden text-gray-600">
                         <User size={24} />
                     </Link>
+
+
 
                     {/* Divider */}
                     <div className="hidden md:block w-px h-10 bg-gray-200"></div>

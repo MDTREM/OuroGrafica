@@ -1,0 +1,1 @@
+ALTER TABLE rental_printers ADD COLUMN IF NOT EXISTS featured BOOLEAN DEFAULT false;

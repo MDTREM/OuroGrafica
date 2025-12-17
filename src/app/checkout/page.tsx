@@ -3,12 +3,13 @@
 import { Container } from "@/components/ui/Container";
 import { ArrowLeft, ArrowRight, CheckCircle, CreditCard, DollarSign, MapPin, Truck, Calendar, Lock, User, ChevronRight, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 import { useCart } from "@/contexts/CartContext";
 
 export default function CheckoutPage() {
-    const { total, shipping } = useCart();
+    const { total, shipping, items, clearCart } = useCart();
 
     const [step, setStep] = useState(1); // 1: Identification, 2: Delivery, 3: Payment
     const [personType, setPersonType] = useState<"pf" | "pj">("pf");
@@ -152,6 +153,50 @@ export default function CheckoutPage() {
     const nextStep = () => {
         if (step === 1 && isStep1Valid()) setStep(2);
         if (step === 2 && isStep2Valid()) setStep(3);
+    };
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter();
+
+    const handleFinishOrder = async () => {
+        setIsSubmitting(true);
+
+        const orderData = {
+            customer_info: {
+                ...formData,
+                type: personType
+            },
+            address_info: {
+                zip: formData.zip,
+                address: formData.address,
+                number: formData.number,
+                complement: formData.complement,
+                district: formData.district,
+                city: formData.city,
+                state: formData.state,
+                shipping_method: 'pickup' // Hardcoded for now as per UI
+            },
+            payment_method: paymentMethod,
+            total: total,
+            items: items
+        };
+
+        try {
+            const { createOrder } = await import('@/actions/checkout-actions');
+            const res = await createOrder(orderData);
+
+            if (res.success && res.orderId) {
+                clearCart();
+                router.push(`/checkout/sucesso/${res.orderId}`);
+            } else {
+                alert('Ocorreu um erro ao finalizar o pedido. Tente novamente.');
+                setIsSubmitting(false);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Erro inesperado. Tente novamente.');
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -509,9 +554,17 @@ export default function CheckoutPage() {
                                 </div>
 
                                 <button
-                                    className="w-full bg-brand text-white font-bold h-12 rounded-full hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center"
+                                    onClick={handleFinishOrder}
+                                    disabled={isSubmitting}
+                                    className="w-full bg-brand text-white font-bold h-12 rounded-full hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                                 >
-                                    Finalizar Pedido
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 size={20} className="animate-spin" /> Processando...
+                                        </>
+                                    ) : (
+                                        "Finalizar Pedido"
+                                    )}
                                 </button>
                             </div>
                         )}

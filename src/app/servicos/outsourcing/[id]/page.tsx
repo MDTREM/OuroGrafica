@@ -74,15 +74,7 @@ export default function PrinterDetailsPage({ params }: { params: Promise<{ id: s
                 </div>
             </div>
 
-            {/* Desktop Nav */}
-            <div className="hidden md:block bg-white border-b border-gray-200">
-                <Container className="h-16 flex items-center">
-                    <Link href="/servicos/aluguel" className="flex items-center gap-2 text-gray-500 hover:text-brand transition-colors">
-                        <ArrowLeft size={20} />
-                        <span className="font-medium text-sm">Voltar para Aluguel</span>
-                    </Link>
-                </Container>
-            </div>
+
 
             <Container className="pt-8 max-w-4xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

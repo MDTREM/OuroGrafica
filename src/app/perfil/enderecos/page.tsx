@@ -4,34 +4,44 @@ import { Container } from "@/components/ui/Container";
 import Link from "next/link";
 import { ArrowLeft, MapPin, Plus, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Star } from "lucide-react";
 
 export default function AddressesPage() {
-    // Initial Mock State
-    const [addresses, setAddresses] = useState([
-        {
-            id: 1,
-            title: "Minha Casa",
-            street: "Rua das Flores, 123",
-            complement: "Apto 101",
-            neighborhood: "Centro",
-            city: "Belo Horizonte",
-            state: "MG",
-            zip: "30.123-456",
-            isDefault: true
-        },
-        {
-            id: 2,
-            title: "Trabalho",
-            street: "Av. Afonso Pena, 4000",
-            complement: "Sala 805",
-            neighborhood: "Funcionários",
-            city: "Belo Horizonte",
-            state: "MG",
-            zip: "30.111-222",
-            isDefault: false
+    // Initial State - Load from localStorage if available, else use empty array (or initial mock if preferred for demo)
+    const [addresses, setAddresses] = useState<any[]>([]);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    // Load from localStorage on mount
+    useEffect(() => {
+        const saved = localStorage.getItem('ouro-grafica-addresses');
+        if (saved) {
+            setAddresses(JSON.parse(saved));
+        } else {
+            // Initial mock data if no storage found
+            setAddresses([
+                {
+                    id: 1,
+                    title: "Minha Casa",
+                    street: "Rua das Flores, 123",
+                    complement: "Apto 101",
+                    neighborhood: "Centro",
+                    city: "Belo Horizonte",
+                    state: "MG",
+                    zip: "30.123-456",
+                    isDefault: true
+                }
+            ]);
         }
-    ]);
+        setIsLoaded(true);
+    }, []);
+
+    // Save to localStorage whenever addresses change
+    useEffect(() => {
+        if (isLoaded) {
+            localStorage.setItem('ouro-grafica-addresses', JSON.stringify(addresses));
+        }
+    }, [addresses, isLoaded]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAddress, setEditingAddress] = useState<any>(null);
@@ -46,6 +56,7 @@ export default function AddressesPage() {
         state: "",
         zip: ""
     });
+    const [isLoadingCep, setIsLoadingCep] = useState(false);
 
     const handleDelete = (id: number) => {
         // Use window.confirm to ensure browser compatibility
@@ -93,6 +104,38 @@ export default function AddressesPage() {
         setIsModalOpen(false);
     };
 
+    const handleSetDefault = (id: number) => {
+        setAddresses(addresses.map(addr => ({
+            ...addr,
+            isDefault: addr.id === id
+        })));
+    };
+
+    const handleCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
+        const cep = e.target.value.replace(/\D/g, '');
+        if (cep.length === 8) {
+            setIsLoadingCep(true);
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const data = await response.json();
+                if (!data.erro) {
+                    setFormData(prev => ({
+                        ...prev,
+                        street: data.logradouro,
+                        neighborhood: data.bairro,
+                        city: data.localidade,
+                        state: data.uf,
+                        zip: cep.replace(/(\d{5})(\d{3})/, '$1-$2')
+                    }));
+                }
+            } catch (error) {
+                console.error("Erro ao buscar CEP:", error);
+            } finally {
+                setIsLoadingCep(false);
+            }
+        }
+    };
+
     return (
         <div className="bg-gray-50 min-h-screen pb-24 relative">
             {/* Header */}
@@ -136,13 +179,21 @@ export default function AddressesPage() {
                                     <Edit2 size={14} /> Editar
                                 </button>
                                 {!addr.isDefault && (
-                                    <button
-                                        type="button"
-                                        onClick={() => handleDelete(addr.id)}
-                                        className="flex items-center gap-1 text-xs font-bold text-red-500 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
-                                    >
-                                        <Trash2 size={14} /> Excluir
-                                    </button>
+                                    <>
+                                        <button
+                                            onClick={() => handleSetDefault(addr.id)}
+                                            className="flex items-center gap-1 text-xs font-bold text-brand hover:text-brand-dark px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors mr-auto"
+                                        >
+                                            <Star size={14} /> Tornar Padrão
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDelete(addr.id)}
+                                            className="flex items-center gap-1 text-xs font-bold text-red-500 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
+                                        >
+                                            <Trash2 size={14} /> Excluir
+                                        </button>
+                                    </>
                                 )}
                             </div>
                         </div>
@@ -192,7 +243,9 @@ export default function AddressesPage() {
                                         placeholder="00000-000"
                                         value={formData.zip}
                                         onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                                        className="w-full h-10 px-3 rounded-lg border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
+                                        onBlur={handleCepBlur}
+                                        maxLength={9}
+                                        className={`w-full h-10 px-3 rounded-lg border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm ${isLoadingCep ? 'bg-gray-50' : ''}`}
                                     />
                                 </div>
                                 <div>

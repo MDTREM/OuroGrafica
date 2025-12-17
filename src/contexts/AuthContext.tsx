@@ -75,8 +75,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const signOut = async () => {
-        await supabase.auth.signOut();
-        router.push("/login"); // Redirect to login after logout
+        try {
+            await supabase.auth.signOut();
+        } catch (error) {
+            console.error("Error signing out:", error);
+        } finally {
+            setUser(null);
+            setSession(null);
+            router.push("/login");
+            router.refresh();
+        }
     };
 
     // Admin Check: Metadata 'role' === 'admin' OR hardcoded email fallback
