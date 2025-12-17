@@ -25,13 +25,20 @@ export default function FavoritesPage() {
                 {favorites.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {favorites.map((product) => (
-                            <div key={product.id} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group">
-                                <div className="aspect-[4/3] bg-gray-100 relative">
-                                    <div className="w-full h-full bg-gray-200"> {/* Image placeholder */}
-                                        {/* <img src={product.image} className="w-full h-full object-cover" /> */}
-                                    </div>
+                            <Link href={`/produto/${product.id}`} key={product.id} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group hover:border-brand/50 transition-all block relative">
+                                <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden">
+                                    {product.image ? (
+                                        <img src={product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    ) : (
+                                        <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
+                                            <span className="text-xs">Sem foto</span>
+                                        </div>
+                                    )}
                                     <button
-                                        onClick={() => removeFromFavorites(product.id)}
+                                        onClick={(e) => {
+                                            e.preventDefault(); // Prevent navigation when removing
+                                            removeFromFavorites(product.id);
+                                        }}
                                         className="absolute top-2 right-2 z-10 p-2 bg-white rounded-full shadow-sm text-red-500 hover:bg-red-50 transition-colors"
                                     >
                                         <Trash2 size={16} />
@@ -49,13 +56,13 @@ export default function FavoritesPage() {
                                                 : product.price.startsWith('R$') ? product.price : `R$ ${product.price}`
                                             }
                                         </span>
-                                        <Button size="sm" className="h-9 px-3 bg-brand hover:bg-brand/90 text-white font-bold rounded-lg flex items-center gap-2">
+                                        <Button size="sm" className="h-9 px-3 bg-brand hover:bg-brand/90 text-white font-bold rounded-lg flex items-center gap-2 pointer-events-none">
                                             <ShoppingCart size={16} />
                                             Comprar
                                         </Button>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 ) : (

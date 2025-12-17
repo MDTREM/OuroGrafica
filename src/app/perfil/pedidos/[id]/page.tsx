@@ -2,57 +2,61 @@
 
 import { Container } from "@/components/ui/Container";
 import Link from "next/link";
-import { ArrowLeft, Package, MapPin, CreditCard, CheckCircle, Clock, Truck, AlertCircle, Copy, Printer } from "lucide-react";
+import { ArrowLeft, Package, MapPin, CreditCard, CheckCircle, Clock, Truck, AlertCircle, Copy, Printer, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useEffect, useState } from "react";
+import { getOrderById } from "@/actions/profile-actions";
+import { formatPrice } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function OrderDetailsPage({ params }: { params: { id: string } }) {
-    // Mock Order Data (In a real app, fetch based on params.id)
-    const order = {
-        id: params.id,
-        date: "14/12/2024",
-        status: "processing", // processing, delivered, canceled, shipped
-        paymentMethod: "Pix",
-        total: 144.90,
-        subtotal: 129.90,
-        shippingPrice: 15.00,
-        shippingMethod: "Sedex (3 dias úteis)",
-        address: {
-            street: "Rua das Flores, 123",
-            neighborhood: "Centro",
-            city: "Belo Horizonte",
-            state: "MG",
-            zip: "30.123-456"
-        },
-        items: [
-            {
-                id: "1",
-                title: "Cartão de Visita Premium",
-                subtitle: "1000 un. / Couchê 300g / Laminação Fosca",
-                price: 49.90,
-                quantity: 1,
-                image: "https://i.imgur.com/8Qj9Y2s.png"
-            },
-            {
-                id: "2",
-                title: "Adesivo Vinil Redondo",
-                subtitle: "500 un. / 5x5cm / Recorte Eletrônico",
-                price: 35.00,
-                quantity: 1,
-                image: "https://i.imgur.com/J8X5X1y.png" // Placeholder
+    const { user, isLoading: isAuthLoading } = useAuth();
+    const router = useRouter();
+    const [order, setOrder] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!isAuthLoading && !user) {
+            router.push('/login');
+            return;
+        }
+
+        if (user) {
+            loadOrder();
+        }
+    }, [user, isAuthLoading, params.id]);
+
+    const loadOrder = async () => {
+        setIsLoading(true);
+        try {
+            const data = await getOrderById(params.id);
+            if (data) {
+                // Determine timeline status based on order status (simplified logic)
+                const currentStatus = data.status;
+                const timeline = [
+                    { date: new Date(data.created_at).toLocaleString('pt-BR'), title: "Pedido Recebido", completed: true, current: false },
+                    { date: "--", title: "Pagamento Aprovado", completed: currentStatus !== 'pending_payment', current: false },
+                    { date: "--", title: "Em Produção", completed: ['processing', 'shipped', 'delivered'].includes(currentStatus), current: currentStatus === 'processing' },
+                    { date: "--", title: "Saiu para Entrega", completed: ['shipped', 'delivered'].includes(currentStatus), current: currentStatus === 'shipped' },
+                    { date: "--", title: "Entregue", completed: currentStatus === 'delivered', current: currentStatus === 'delivered' },
+                ];
+
+                setOrder({ ...data, timeline });
+            } else {
+                setOrder(null);
             }
-        ],
-        timeline: [
-            { date: "14/12 - 10:30", title: "Pedido Recebido", completed: true },
-            { date: "14/12 - 10:35", title: "Pagamento Aprovado", completed: true },
-            { date: "15/12 - 08:00", title: "Em Produção", completed: true, current: true },
-            { date: "--", title: "Saiu para Entrega", completed: false },
-            { date: "--", title: "Entregue", completed: false },
-        ]
+        } catch (error) {
+            console.error("Error loading order", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const getStatusConfig = (status: string) => {
         switch (status) {
             case "processing":
+            case "pending_payment":
                 return { label: "Em Produção", color: "text-blue-600 bg-blue-50 border-blue-100", icon: Clock };
             case "delivered":
                 return { label: "Entregue", color: "text-green-600 bg-green-50 border-green-100", icon: CheckCircle };
@@ -65,8 +69,32 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
         }
     };
 
-    const StatusIcon = getStatusConfig(order.status).icon;
-    const statusConfig = getStatusConfig(order.status);
+    if (isAuthLoading || isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <Loader2 size={32} className="animate-spin text-brand" />
+            </div>
+        );
+    }
+
+    if (!order) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+                <h2 className="text-xl font-bold text-gray-900 mb-2">Pedido não encontrado</h2>
+                <Link href="/perfil/pedidos" className="text-brand hover:underline">Voltar para meus pedidos</Link>
+            </div>
+        );
+    }
+
+    const { customer_info, address_info, order_items, total } = order;
+    const currentStatusConfig = getStatusConfig(order.status);
+    const StatusIcon = currentStatusConfig.icon;
+
+    // Derived values (safeguard against missing props)
+    const subtotal = total; // Simplified
+    const shippingPrice = 0; // Simplified
+    const shippingMethod = address_info?.shipping_method === 'pickup' ? 'Retirada na Loja' : 'Entrega';
+    const address = address_info || {};
 
     return (
         <div className="bg-gray-50 min-h-screen pb-24">
@@ -87,12 +115,12 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
                             <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                Pedido #{order.id}
-                                <span className={`text-xs px-2 py-0.5 rounded-full border ${statusConfig.color} flex items-center gap-1`}>
-                                    <StatusIcon size={12} /> {statusConfig.label}
+                                Pedido #{order.id.slice(0, 8).toUpperCase()}
+                                <span className={`text-xs px-2 py-0.5 rounded-full border ${currentStatusConfig.color} flex items-center gap-1`}>
+                                    <StatusIcon size={12} /> {currentStatusConfig.label}
                                 </span>
                             </h2>
-                            <p className="text-sm text-gray-500">Realizado em {order.date}</p>
+                            <p className="text-sm text-gray-500">Realizado em {new Date(order.created_at).toLocaleDateString('pt-BR')}</p>
                         </div>
                         <Button variant="outline" size="sm" className="hidden md:flex gap-2 text-gray-600 border-gray-200 hover:bg-gray-50">
                             <Printer size={16} /> Imprimir Recibo
@@ -101,7 +129,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
 
                     {/* Timeline */}
                     <div className="relative pl-4 border-l-2 border-gray-100 space-y-8 my-4 ml-2">
-                        {order.timeline.map((step, idx) => (
+                        {order.timeline.map((step: any, idx: number) => (
                             <div key={idx} className="relative">
                                 {/* Dot */}
                                 <div className={`absolute -left-[21px] top-1 w-3 h-3 rounded-full border-2 ${step.completed || step.current ? "bg-brand border-brand" : "bg-white border-gray-300"}`}></div>
@@ -124,17 +152,17 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
                         </h3>
                     </div>
                     <div>
-                        {order.items.map((item) => (
+                        {order_items && order_items.map((item: any) => (
                             <div key={item.id} className="p-4 flex gap-4 border-b border-gray-50 last:border-0">
-                                <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
-                                    <div className="w-full h-full bg-gray-200"></div> {/* Placeholder image if needed */}
+                                <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden bg-cover bg-center" style={{ backgroundImage: `url(${item.image || ''})` }}>
+                                    {!item.image && <div className="w-full h-full bg-gray-200 flex items-center justify-center text-xs text-gray-400">Sem foto</div>}
                                 </div>
                                 <div className="flex-1">
                                     <h4 className="text-sm font-bold text-gray-900 line-clamp-1">{item.title}</h4>
-                                    <p className="text-xs text-gray-500 mb-1">{item.subtitle}</p>
+                                    <p className="text-xs text-gray-500 mb-1">{item.selected_format} / {item.selected_paper}</p>
                                     <div className="flex justify-between items-center mt-2">
                                         <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{item.quantity}un.</span>
-                                        <span className="text-sm font-bold text-gray-900">R$ {item.price.toFixed(2).replace('.', ',')}</span>
+                                        <span className="text-sm font-bold text-gray-900">{formatPrice(item.price)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -151,8 +179,8 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
                                 Pagamento
                             </h3>
                             <p className="text-sm text-gray-600 flex items-center gap-2">
-                                <span className="font-medium text-gray-900">{order.paymentMethod}</span>
-                                <span className="text-green-600 text-xs bg-green-50 px-2 py-0.5 rounded-full border border-green-100">Pago</span>
+                                <span className="font-medium text-gray-900">{order.payment_method === 'credit' ? 'Cartão de Crédito' : order.payment_method}</span>
+                                <span className={`text-xs px-2 py-0.5 rounded-full border ${currentStatusConfig.color}`}>{currentStatusConfig.label}</span>
                             </p>
                         </div>
                         <div className="border-t border-gray-50 pt-4">
@@ -161,10 +189,10 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
                                 Endereço de Entrega
                             </h3>
                             <div className="text-sm text-gray-600 leading-relaxed">
-                                <p>{order.address.street}</p>
-                                <p>{order.address.neighborhood}</p>
-                                <p>{order.address.city} - {order.address.state}</p>
-                                <p>{order.address.zip}</p>
+                                <p>{address.street}, {address.number} {address.complement}</p>
+                                <p>{address.neighborhood}</p>
+                                <p>{address.city} - {address.state}</p>
+                                <p>{address.zip}</p>
                             </div>
                         </div>
                     </section>
@@ -175,15 +203,15 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
                         <div className="space-y-3 text-sm text-gray-600">
                             <div className="flex justify-between">
                                 <span>Subtotal</span>
-                                <span>R$ {order.subtotal.toFixed(2).replace('.', ',')}</span>
+                                <span>{formatPrice(subtotal)}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span>Frete ({order.shippingMethod})</span>
-                                <span>R$ {order.shippingPrice.toFixed(2).replace('.', ',')}</span>
+                                <span>Frete ({shippingMethod})</span>
+                                <span>{formatPrice(shippingPrice)}</span>
                             </div>
                             <div className="flex justify-between text-brand font-bold text-lg pt-4 border-t border-gray-100 mt-2">
                                 <span>Total</span>
-                                <span>R$ {order.total.toFixed(2).replace('.', ',')}</span>
+                                <span>{formatPrice(total)}</span>
                             </div>
                         </div>
                     </section>

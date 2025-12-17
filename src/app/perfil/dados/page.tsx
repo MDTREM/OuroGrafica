@@ -1,61 +1,142 @@
 "use client";
 
 import { Container } from "@/components/ui/Container";
-import { ChevronLeft, Save } from "lucide-react";
+import { ChevronLeft, Save, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { getProfile, updateProfile } from "@/actions/profile-actions";
+import { useRouter } from "next/navigation";
 
 export default function UserDataPage() {
+    const { user, isLoading: isAuthLoading } = useAuth();
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+
     const [personType, setPersonType] = useState<"pf" | "pj">("pf");
     const [formData, setFormData] = useState({
-        name: "Matheus Silva",
-        email: "matheus@exemplo.com",
-        phone: "(31) 98888-8888",
-        cpf: "123.456.789-00",
+        name: "",
+        email: "",
+        phone: "",
+        cpf: "",
         cnpj: "",
         companyName: "",
         ie: ""
     });
 
+    useEffect(() => {
+        if (!isAuthLoading && !user) {
+            router.push('/login');
+            return;
+        }
+
+        if (user) {
+            loadProfile();
+        }
+    }, [user, isAuthLoading]);
+
+    const loadProfile = async () => {
+        setIsLoading(true);
+        try {
+            const profile = await getProfile(user!.id);
+            if (profile) {
+                setPersonType(profile.person_type || "pf");
+                setFormData({
+                    name: profile.full_name || user!.user_metadata?.name || "",
+                    email: profile.email || user!.email || "",
+                    phone: profile.phone || "",
+                    cpf: profile.cpf || "",
+                    cnpj: profile.cnpj || "",
+                    companyName: profile.company_name || "",
+                    ie: profile.state_registration || ""
+                });
+            } else {
+                // Pre-fill from auth data
+                setFormData({
+                    name: user!.user_metadata?.name || "",
+                    email: user!.email || "",
+                    phone: "",
+                    cpf: "",
+                    cnpj: "",
+                    companyName: "",
+                    ie: ""
+                });
+            }
+        } catch (error) {
+            console.error("Error loading profile", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSave = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user) return;
+
+        setIsSaving(true);
+        try {
+            const result = await updateProfile(user.id, {
+                person_type: personType,
+                full_name: formData.name,
+                email: formData.email, // Read-only ideally, but saving for sync
+                phone: formData.phone,
+                cpf: formData.cpf,
+                cnpj: formData.cnpj,
+                company_name: formData.companyName,
+                state_registration: formData.ie
+            });
+
+            if (result.success) {
+                alert("Dados atualizados com sucesso!");
+            } else {
+                alert("Erro ao atualizar dados.");
+            }
+        } catch (error) {
+            alert("Erro inesperado.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value.replace(/\D/g, "");
         if (value.length > 11) value = value.slice(0, 11);
-
-        // Mask (99) 99999-9999
         if (value.length > 2) {
             value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
         }
         if (value.length > 9) {
             value = `${value.slice(0, 9)}-${value.slice(9)}`;
         }
-
         setFormData({ ...formData, phone: value });
     };
 
     const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value.replace(/\D/g, "");
         if (value.length > 11) value = value.slice(0, 11);
-
-        // Mask 999.999.999-99
         value = value.replace(/(\d{3})(\d)/, "$1.$2");
         value = value.replace(/(\d{3})(\d)/, "$1.$2");
         value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-
         setFormData({ ...formData, cpf: value });
     };
 
     const handleCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value.replace(/\D/g, "");
         if (value.length > 14) value = value.slice(0, 14);
-
-        // Mask 99.999.999/0001-99
         value = value.replace(/^(\d{2})(\d)/, "$1.$2");
         value = value.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
         value = value.replace(/\.(\d{3})(\d)/, ".$1/$2");
         value = value.replace(/(\d{4})(\d)/, "$1-$2");
-
         setFormData({ ...formData, cnpj: value });
     };
+
+    if (isAuthLoading || isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <Loader2 size={32} className="animate-spin text-brand" />
+            </div>
+        );
+    }
 
     return (
         <div className="bg-gray-50 min-h-screen pb-20">
@@ -69,7 +150,7 @@ export default function UserDataPage() {
 
             <Container className="pt-6">
                 <div className="max-w-xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <form className="space-y-6">
+                    <form onSubmit={handleSave} className="space-y-6">
                         {/* Person Type Toggle */}
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">Tipo de Pessoa</label>
@@ -78,8 +159,8 @@ export default function UserDataPage() {
                                     type="button"
                                     onClick={() => setPersonType("pf")}
                                     className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${personType === "pf"
-                                            ? "bg-white text-brand shadow-sm"
-                                            : "text-gray-500 hover:text-gray-700"
+                                        ? "bg-white text-brand shadow-sm"
+                                        : "text-gray-500 hover:text-gray-700"
                                         }`}
                                 >
                                     Pessoa Física
@@ -88,8 +169,8 @@ export default function UserDataPage() {
                                     type="button"
                                     onClick={() => setPersonType("pj")}
                                     className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${personType === "pj"
-                                            ? "bg-white text-brand shadow-sm"
-                                            : "text-gray-500 hover:text-gray-700"
+                                        ? "bg-white text-brand shadow-sm"
+                                        : "text-gray-500 hover:text-gray-700"
                                         }`}
                                 >
                                     Pessoa Jurídica
@@ -119,8 +200,8 @@ export default function UserDataPage() {
                                 <input
                                     type="email"
                                     value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full h-11 px-4 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                    disabled
+                                    className="w-full h-11 px-4 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed"
                                 />
                             </div>
 
@@ -178,8 +259,12 @@ export default function UserDataPage() {
                         )}
 
                         <div className="pt-4">
-                            <button type="submit" className="w-full bg-brand text-white font-bold py-3.5 rounded-xl hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2">
-                                <Save size={20} />
+                            <button
+                                type="submit"
+                                disabled={isSaving}
+                                className="w-full bg-brand text-white font-bold py-3.5 rounded-xl hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                                {isSaving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
                                 Salvar Alterações
                             </button>
                         </div>

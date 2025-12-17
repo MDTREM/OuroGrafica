@@ -2,46 +2,45 @@
 
 import { Container } from "@/components/ui/Container";
 import Link from "next/link";
-import { ArrowLeft, MapPin, Plus, Edit2, Trash2 } from "lucide-react";
+import { ArrowLeft, MapPin, Plus, Edit2, Trash2, Star, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useState, useEffect } from "react";
-import { Star } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { getAddresses, saveAddress, deleteAddress, setDefaultAddress } from "@/actions/profile-actions";
+import { useRouter } from "next/navigation";
 
 export default function AddressesPage() {
-    // Initial State - Load from localStorage if available, else use empty array (or initial mock if preferred for demo)
+    const { user, isLoading: isAuthLoading } = useAuth();
+    const router = useRouter();
+
+    // State
     const [addresses, setAddresses] = useState<any[]>([]);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
 
-    // Load from localStorage on mount
+    // Load Addresses
     useEffect(() => {
-        const saved = localStorage.getItem('ouro-grafica-addresses');
-        if (saved) {
-            setAddresses(JSON.parse(saved));
-        } else {
-            // Initial mock data if no storage found
-            setAddresses([
-                {
-                    id: 1,
-                    title: "Minha Casa",
-                    street: "Rua das Flores, 123",
-                    complement: "Apto 101",
-                    neighborhood: "Centro",
-                    city: "Belo Horizonte",
-                    state: "MG",
-                    zip: "30.123-456",
-                    isDefault: true
-                }
-            ]);
+        if (!isAuthLoading && !user) {
+            router.push('/login');
+            return;
         }
-        setIsLoaded(true);
-    }, []);
 
-    // Save to localStorage whenever addresses change
-    useEffect(() => {
-        if (isLoaded) {
-            localStorage.setItem('ouro-grafica-addresses', JSON.stringify(addresses));
+        if (user) {
+            loadAddresses();
         }
-    }, [addresses, isLoaded]);
+    }, [user, isAuthLoading]);
+
+    const loadAddresses = async () => {
+        setIsLoading(true);
+        try {
+            const data = await getAddresses(user!.id);
+            setAddresses(data);
+        } catch (error) {
+            console.error("Error loading addresses", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAddress, setEditingAddress] = useState<any>(null);
@@ -58,10 +57,12 @@ export default function AddressesPage() {
     });
     const [isLoadingCep, setIsLoadingCep] = useState(false);
 
-    const handleDelete = (id: number) => {
-        // Use window.confirm to ensure browser compatibility
+    const handleDelete = async (id: string) => {
         if (window.confirm("Tem certeza que deseja excluir este endereço?")) {
+            // Optimistic update
             setAddresses(addresses.filter(addr => addr.id !== id));
+            await deleteAddress(user!.id, id);
+            loadAddresses(); // Re-fetch to confirm sync
         }
     };
 
@@ -71,7 +72,7 @@ export default function AddressesPage() {
             setFormData({
                 title: address.title,
                 street: address.street,
-                complement: address.complement,
+                complement: address.complement || "",
                 neighborhood: address.neighborhood,
                 city: address.city,
                 state: address.state,
@@ -92,23 +93,40 @@ export default function AddressesPage() {
         setIsModalOpen(true);
     };
 
-    const handleSave = () => {
-        if (editingAddress) {
-            // Edit
-            setAddresses(addresses.map(addr => addr.id === editingAddress.id ? { ...addr, ...formData } : addr));
-        } else {
-            // Add
-            const newId = Math.max(...addresses.map(a => a.id), 0) + 1;
-            setAddresses([...addresses, { id: newId, ...formData, isDefault: addresses.length === 0 }]);
+    const handleSave = async () => {
+        if (!user) return;
+        setIsSaving(true);
+        try {
+            const addressData = {
+                id: editingAddress?.id,
+                ...formData,
+                is_default: addresses.length === 0 // If first address, make default
+            };
+
+            const result = await saveAddress(user.id, addressData);
+
+            if (result.success) {
+                await loadAddresses();
+                setIsModalOpen(false);
+            } else {
+                alert("Erro ao salvar endereço.");
+            }
+        } catch (error) {
+            alert("Erro inesperado.");
+        } finally {
+            setIsSaving(false);
         }
-        setIsModalOpen(false);
     };
 
-    const handleSetDefault = (id: number) => {
+    const handleSetDefault = async (id: string) => {
+        // Optimistic update
         setAddresses(addresses.map(addr => ({
             ...addr,
-            isDefault: addr.id === id
+            is_default: addr.id === id
         })));
+
+        await setDefaultAddress(user!.id, id);
+        loadAddresses();
     };
 
     const handleCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
@@ -136,6 +154,14 @@ export default function AddressesPage() {
         }
     };
 
+    if (isAuthLoading || isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <Loader2 size={32} className="animate-spin text-brand" />
+            </div>
+        );
+    }
+
     return (
         <div className="bg-gray-50 min-h-screen pb-24 relative">
             {/* Header */}
@@ -152,12 +178,12 @@ export default function AddressesPage() {
                 {/* List */}
                 <div className="space-y-4 mb-8">
                     {addresses.map((addr) => (
-                        <div key={addr.id} className={`bg-white rounded-xl border p-5 relative group ${addr.isDefault ? 'border-brand shadow-sm ring-1 ring-brand/10' : 'border-gray-200'}`}>
+                        <div key={addr.id} className={`bg-white rounded-xl border p-5 relative group ${addr.is_default ? 'border-brand shadow-sm ring-1 ring-brand/10' : 'border-gray-200'}`}>
                             <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center gap-2">
                                     <MapPin size={18} className="text-gray-400" />
                                     <h3 className="font-bold text-gray-900">{addr.title}</h3>
-                                    {addr.isDefault && (
+                                    {addr.is_default && (
                                         <span className="text-[10px] font-bold bg-brand/10 text-brand px-2 py-0.5 rounded-full uppercase tracking-wide">Padrão</span>
                                     )}
                                 </div>
@@ -178,7 +204,7 @@ export default function AddressesPage() {
                                 >
                                     <Edit2 size={14} /> Editar
                                 </button>
-                                {!addr.isDefault && (
+                                {!addr.is_default && (
                                     <>
                                         <button
                                             onClick={() => handleSetDefault(addr.id)}
@@ -307,7 +333,8 @@ export default function AddressesPage() {
                             <Button variant="outline" onClick={() => setIsModalOpen(false)} className="flex-1 border-gray-200 text-gray-700">
                                 Cancelar
                             </Button>
-                            <Button onClick={handleSave} className="flex-1 bg-brand text-white hover:bg-brand/90 font-bold">
+                            <Button onClick={handleSave} disabled={isSaving} className="flex-1 bg-brand text-white hover:bg-brand/90 font-bold flex items-center justify-center gap-2">
+                                {isSaving && <Loader2 size={16} className="animate-spin" />}
                                 Salvar
                             </Button>
                         </div>

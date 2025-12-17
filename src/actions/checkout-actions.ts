@@ -8,6 +8,7 @@ export interface OrderInput {
     payment_method: string;
     total: number;
     items: any[];
+    userId?: string;
 }
 
 export async function createOrder(data: OrderInput) {
@@ -20,7 +21,8 @@ export async function createOrder(data: OrderInput) {
                 address_info: data.address_info,
                 payment_method: data.payment_method,
                 total: data.total,
-                status: 'pending_payment'
+                status: 'pending_payment',
+                user_id: data.userId || null
             }])
             .select()
             .single();

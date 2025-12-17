@@ -1,12 +1,24 @@
 
+"use client";
+
 import { Container } from "@/components/ui/Container";
 import Link from "next/link";
 import { ChevronRight, User, Package, Heart, Headphones, FileText, LogOut, Menu as MenuIcon, Printer, Wrench } from "lucide-react";
-
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
-export default async function MenuPage() {
-    const { data: categories } = await supabase.from('categories').select('*');
+export default function MenuPage() {
+    const { user, signOut } = useAuth();
+    const [categories, setCategories] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const { data } = await supabase.from('categories').select('*');
+            if (data) setCategories(data);
+        };
+        fetchCategories();
+    }, []);
 
     const accountItems = [
         { icon: Headphones, label: "Central de Atendimento", href: "/atendimento" },
@@ -32,14 +44,27 @@ export default async function MenuPage() {
                 <div className="bg-white rounded-xl p-4 border border-gray-100 mb-6 flex items-center justify-between shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full bg-surface-secondary flex items-center justify-center text-gray-400">
-                            <User size={24} />
+                            {user?.user_metadata?.avatar_url ? (
+                                <img src={user.user_metadata.avatar_url} alt="Avatar" className="w-full h-full rounded-full object-cover" />
+                            ) : (
+                                <User size={24} />
+                            )}
                         </div>
                         <div>
-                            <p className="text-sm text-gray-500 font-medium">Olá, Visitante</p>
-                            <Link href="/login" className="text-brand font-bold text-sm hover:underline">Entrar / Cadastro</Link>
+                            {user ? (
+                                <>
+                                    <p className="text-sm text-gray-500 font-medium">Olá, {user.user_metadata?.name || user.email?.split('@')[0]}</p>
+                                    <Link href="/perfil" className="text-brand font-bold text-sm hover:underline">Minha Conta</Link>
+                                </>
+                            ) : (
+                                <>
+                                    <p className="text-sm text-gray-500 font-medium">Olá, Visitante</p>
+                                    <Link href="/login" className="text-brand font-bold text-sm hover:underline">Entrar / Cadastro</Link>
+                                </>
+                            )}
                         </div>
                     </div>
-                    <ChevronRight size={20} className="text-gray-300" />
+                    {user && <Link href="/perfil"><ChevronRight size={20} className="text-gray-300" /></Link>}
                 </div>
 
                 {/* 2. Account Links */}
@@ -63,7 +88,7 @@ export default async function MenuPage() {
                 <div className="mb-6">
                     <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3 pl-2">Nossas Categorias</h2>
                     <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
-                        {categories?.map((cat, idx) => (
+                        {categories.map((cat, idx) => (
                             <Link
                                 key={cat.id}
                                 href={`/categoria/${cat.id}`}
@@ -76,28 +101,24 @@ export default async function MenuPage() {
                     </div>
                 </div>
 
-                {/* 4. Services (WhatsApp) */}
+                {/* 4. Services (Internal Links) */}
                 <div className="mb-6">
                     <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3 pl-2">Serviços Técnicos</h2>
                     <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
-                        <a
-                            href={whatsappLink("Aluguel de impressoras")}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <Link
+                            href="/servicos/outsourcing"
                             className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors border-b border-gray-50"
                         >
                             <Printer size={18} className="text-brand" />
                             <span className="text-gray-700 font-medium text-sm">Aluguel de impressoras</span>
-                        </a>
-                        <a
-                            href={whatsappLink("Conserto de impressoras")}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        </Link>
+                        <Link
+                            href="/servicos/manutencao"
                             className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors"
                         >
                             <Wrench size={18} className="text-brand" />
                             <span className="text-gray-700 font-medium text-sm">Conserto de impressoras</span>
-                        </a>
+                        </Link>
                     </div>
                 </div>
 
@@ -107,10 +128,17 @@ export default async function MenuPage() {
                         <FileText size={18} className="text-gray-400" />
                         Políticas e Termos
                     </Link>
-                    <button className="w-full flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 hover:bg-red-50 hover:border-red-100 hover:text-red-600 transition-colors text-sm font-medium text-gray-600 text-left">
-                        <LogOut size={18} className="text-gray-400 group-hover:text-red-500" />
-                        Sair da conta
-                    </button>
+                    {user && (
+                        <button
+                            onClick={async () => {
+                                await signOut();
+                            }}
+                            className="w-full flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 hover:bg-red-50 hover:border-red-100 hover:text-red-600 transition-colors text-sm font-medium text-gray-600 text-left"
+                        >
+                            <LogOut size={18} className="text-gray-400 group-hover:text-red-500" />
+                            Sair da conta
+                        </button>
+                    )}
                 </div>
 
                 <div className="mt-8 text-center pb-8">

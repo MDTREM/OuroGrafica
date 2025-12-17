@@ -7,9 +7,11 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function CheckoutPage() {
     const { total, shipping, items, clearCart } = useCart();
+    const { user } = useAuth();
 
     const [step, setStep] = useState(1); // 1: Identification, 2: Delivery, 3: Payment
     const [personType, setPersonType] = useState<"pf" | "pj">("pf");
@@ -178,7 +180,8 @@ export default function CheckoutPage() {
             },
             payment_method: paymentMethod,
             total: total,
-            items: items
+            items: items,
+            userId: user?.id
         };
 
         try {

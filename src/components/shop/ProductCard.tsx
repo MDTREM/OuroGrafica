@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Heart } from "lucide-react";
+import { useState } from "react";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { formatPrice } from "@/lib/utils";
 
@@ -24,6 +25,8 @@ export function ProductCard({ id, title, price, unit, description, image }: Prod
         toggleFavorite({ id, title, price, unit, image });
     };
 
+    const [imgError, setImgError] = useState(false);
+
     return (
         <div className="group relative bg-surface rounded-2xl shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow">
             {/* Favorites Button */}
@@ -37,15 +40,20 @@ export function ProductCard({ id, title, price, unit, description, image }: Prod
 
             {/* Image Area */}
             <div className="aspect-[4/3] bg-surface-secondary relative flex items-center justify-center p-4 overflow-hidden">
-                {image ? (
+                {image && !imgError ? (
                     <img
                         src={image}
                         alt={title}
+                        onError={() => setImgError(true)}
                         className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-500"
                     />
                 ) : (
-                    <div className="w-24 h-24 bg-white rounded-lg shadow-sm flex items-center justify-center text-xs text-gray-400">
-                        IMG
+                    <div className="w-full h-full bg-gray-50 flex flex-col items-center justify-center text-gray-300">
+                        <div className="p-3 bg-white rounded-full mb-2">
+                            {/* Using a lucide icon as placeholder if imported, otherwise just text */}
+                            <span className="text-xl font-bold">IMG</span>
+                        </div>
+                        <span className="text-xs">Sem Imagem</span>
                     </div>
                 )}
             </div>

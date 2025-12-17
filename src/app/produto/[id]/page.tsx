@@ -126,6 +126,15 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                     src={productImages[activeImage] || productImages[0]}
                                     alt={product.title}
                                     className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.style.display = 'none';
+                                        target.parentElement?.classList.add('flex', 'items-center', 'justify-center');
+                                        const fallback = document.createElement('div');
+                                        fallback.className = 'text-center p-4 text-gray-400';
+                                        fallback.innerHTML = '<span class="text-4xl block mb-2">📷</span><span class="text-sm">Imagem não disponível</span>';
+                                        target.parentElement?.appendChild(fallback);
+                                    }}
                                 />
                             ) : (
                                 <div className="flex flex-col items-center justify-center text-gray-400">
@@ -137,19 +146,27 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
                         {/* Thumbnails */}
                         {productImages.length > 1 && (
-                            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+                            <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
                                 {productImages.map((img, idx) => (
                                     <button
                                         key={idx}
                                         onClick={() => setActiveImage(idx)}
                                         className={cn(
-                                            "min-w-[70px] h-[70px] rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all overflow-hidden",
+                                            "min-w-[70px] w-[70px] h-[70px] rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all overflow-hidden relative bg-gray-50",
                                             activeImage === idx
                                                 ? "border-brand ring-1 ring-brand"
-                                                : "border-transparent bg-gray-100 hover:border-gray-300"
+                                                : "border-transparent hover:border-gray-300"
                                         )}
                                     >
-                                        <img src={img} alt="" className="w-full h-full object-cover" />
+                                        <img
+                                            src={img}
+                                            alt=""
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-off"><line x1="2" x2="22" y1="2" y2="22"/><path d="M10.41 10.41a2 2 0 1 1-2.83-2.83"/><line x1="13.8" x2="3.95" y1="13.8" y2="23.65"/><path d="M21 9v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3.73"/><path d="M7.65 3.35A2 2 0 0 1 9 3h11a2 2 0 0 1 2 2v11a2 2 0 0 1-.65 1.35"/></svg>';
+                                                (e.target as HTMLImageElement).className = "w-6 h-6 text-gray-300 opacity-50";
+                                            }}
+                                        />
                                     </button>
                                 ))}
                             </div>
@@ -323,8 +340,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                 {/* Option 2: Hire Designer */}
                                 <div
                                     className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all ${designOption === "hire"
-                                            ? "border-brand bg-orange-50/10"
-                                            : "border-gray-200 hover:border-gray-300"
+                                        ? "border-brand bg-orange-50/10"
+                                        : "border-gray-200 hover:border-gray-300"
                                         }`}
                                     onClick={() => setDesignOption("hire")}
                                 >
