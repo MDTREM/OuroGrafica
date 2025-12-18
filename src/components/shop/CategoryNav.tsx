@@ -26,13 +26,7 @@ const ICON_MAP: Record<string, any> = {
     "Star": Star
 };
 
-interface Category {
-    id: string;
-    name: string;
-    image?: string;
-    icon?: string;
-    order_index?: number;
-}
+import { Category } from "@/data/mockData";
 
 interface CategoryNavProps {
     categories?: Category[];
