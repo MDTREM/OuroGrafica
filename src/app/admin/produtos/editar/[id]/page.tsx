@@ -334,7 +334,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input label="Papel / Material" value={formData.technicalSpecs?.paper || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, paper: e.target.value } }))} />
                         <Input label="Gramatura" value={formData.technicalSpecs?.weight || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, weight: e.target.value } }))} />
-                        <Input label="Peso (Kg/g)" value={formData.technicalSpecs?.physicalWeight || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, physicalWeight: e.target.value } }))} />
+                        <Input label="Peso" value={formData.technicalSpecs?.physicalWeight || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, physicalWeight: e.target.value } }))} />
                         <Input label="Enobrecimento" value={formData.technicalSpecs?.ennoblement || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, ennoblement: e.target.value } }))} />
                         <Input label="Cores" value={formData.technicalSpecs?.colors || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, colors: e.target.value } }))} />
                         <Input label="Tamanho Final" value={formData.technicalSpecs?.finalSize || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, finalSize: e.target.value } }))} />
