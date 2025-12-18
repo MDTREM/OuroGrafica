@@ -418,7 +418,7 @@ export default function CheckoutPage() {
                                                 <h3 className="font-bold text-gray-900 text-sm">Retirada na Loja (Ouro Preto)</h3>
                                                 <span className="font-bold text-brand">Grátis</span>
                                             </div>
-                                            <p className="text-xs text-gray-500">Rua da Glória, 123 - Centro</p>
+                                            <p className="text-xs text-gray-500">Rua José Moringa, 9 - Bauxita</p>
                                         </div>
                                         <input type="radio" name="shipping" className="accent-brand w-5 h-5 ml-2" defaultChecked />
                                     </label>
