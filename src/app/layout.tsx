@@ -20,6 +20,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Ouro Gráfica | Impressão de Alta Qualidade",
   description: "Destaque sua marca com cartões de visita, flyers e materiais gráficos premium.",
+  icons: {
+    icon: '/icon.png',
+  }
 };
 
 export default function RootLayout({
