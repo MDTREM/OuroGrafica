@@ -5,13 +5,47 @@ import { PRODUCTS, CATEGORIES, Product, Category, Coupon } from "@/data/mockData
 import { supabase } from "@/lib/supabase";
 
 // Define Types for Orders (extending the mock idea)
+export interface OrderItem {
+    id: string;
+    title: string;
+    quantity: number;
+    price: number;
+    details?: {
+        format?: string;
+        finish?: string;
+        paper?: string;
+        [key: string]: any;
+    };
+    designOption?: string; // 'upload', 'hire', 'none'
+    uploadedFile?: string; // path or url
+    image?: string;
+}
+
 export interface Order {
     id: string;
-    customerName: string;
-    date: string;
+    created_at: string;
     total: number;
     status: "Pendente" | "Produção" | "Enviado" | "Entregue";
-    items: number; // Count of items
+    payment_method: string;
+    customer_info: {
+        name: string;
+        email: string;
+        phone: string;
+        cpf?: string;
+    };
+    address_info: {
+        zip: string;
+        street: string;
+        number: string;
+        complement: string;
+        district: string;
+        city: string;
+        state: string;
+    };
+    items: OrderItem[]; // Now an array of items, not number
+    // Backwards compatibility for existing display
+    customerName?: string; // derived
+    date?: string; // derived
 }
 
 interface AdminContextType {
@@ -21,6 +55,7 @@ interface AdminContextType {
     addProduct: (product: Product) => Promise<{ success: boolean; error?: any; data?: Product }>;
     updateProduct: (product: Product) => Promise<{ success: boolean; error?: any }>;
     deleteProduct: (id: string) => void;
+    duplicateProduct: (product: Product) => Promise<void>;
     importProducts: (products: Product[]) => void;
 
     // Categories
@@ -64,8 +99,21 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         if (categoriesData) setCategories(categoriesData);
 
         // Orders
-        const { data: ordersData } = await supabase.from('orders').select('*');
-        if (ordersData) setOrders(ordersData);
+        // Orders with Items
+        const { data: ordersData } = await supabase
+            .from('orders')
+            .select('*, items:order_items(*)')
+            .order('created_at', { ascending: false });
+
+        if (ordersData) {
+            const mappedOrders: Order[] = ordersData.map((o: any) => ({
+                ...o,
+                items: o.items || [], // Ensure items array
+                customerName: o.customer_info?.name || "Cliente Desconhecido",
+                date: new Date(o.created_at).toLocaleDateString('pt-BR'),
+            }));
+            setOrders(mappedOrders);
+        }
 
         // Coupons
         const { data: couponsData } = await supabase.from('coupons').select('*');
@@ -98,6 +146,26 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     const deleteProduct = async (id: string) => {
         const { error } = await supabase.from('products').delete().eq('id', id);
         if (!error) setProducts(prev => prev.filter(p => p.id !== id));
+    };
+
+    const duplicateProduct = async (product: Product) => {
+        // Create a copy without ID
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id, ...rest } = product;
+
+        const newProduct = {
+            ...rest,
+            title: `${product.title} (Cópia)`,
+            // slug not in type, relying on auto-gen or omitted
+        };
+
+        const { data, error } = await supabase.from('products').insert([newProduct]).select().single();
+        if (data && !error) {
+            setProducts(prev => [data, ...prev]);
+        } else {
+            console.error("Error duplicating product:", error);
+            alert("Erro ao duplicar produto. Veja o console.");
+        }
     };
 
     const importProducts = async (newProducts: Product[]) => {
@@ -137,7 +205,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
     // remove useEffect for coupons load/save as it is handled by fetchData and addCoupon actions
 
-    const addCoupon = async (coupon: Coupon) => {
+    const addCoupon = async (coupon: Partial<Coupon>) => {
         const { data, error } = await supabase.from('coupons').insert([coupon]).select().single();
         if (data && !error) setCoupons(prev => [...prev, data]);
     };
@@ -163,6 +231,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             addProduct,
             updateProduct,
             deleteProduct,
+            duplicateProduct,
             importProducts,
             addCategory,
             updateCategory,

@@ -467,12 +467,21 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                             Ficha Técnica
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 text-sm">
-                            {product.technicalSpecs ? Object.entries(product.technicalSpecs).map(([key, value]) => (
-                                <div key={key} className="flex justify-between border-b border-gray-100 py-3">
-                                    <span className="text-gray-500 font-medium capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                                    <span className="font-bold text-gray-900">{value}</span>
-                                </div>
-                            )) : (
+                            {product.technicalSpecs ? Object.entries(product.technicalSpecs).map(([key, value]) => {
+                                const labels: Record<string, string> = {
+                                    paper: "Papel",
+                                    weight: "Gramatura",
+                                    colors: "Cores",
+                                    finalSize: "Tamanho Final",
+                                    productionTime: "Produção"
+                                };
+                                return (
+                                    <div key={key} className="flex justify-between border-b border-gray-100 py-3">
+                                        <span className="text-gray-500 font-medium capitalize">{labels[key] || key}</span>
+                                        <span className="font-bold text-gray-900">{value}</span>
+                                    </div>
+                                );
+                            }) : (
                                 <p className="text-gray-400 italic">Nenhuma especificação técnica informada.</p>
                             )}
                         </div>

@@ -2,13 +2,13 @@
 
 import { useAdmin } from "@/contexts/AdminContext";
 import { formatPrice } from "@/lib/utils";
-import { Plus, Search, Edit, Trash2, Upload } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Upload, Copy } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 
 export default function AdminProductsPage() {
-    const { products, deleteProduct, importProducts } = useAdmin();
+    const { products, deleteProduct, importProducts, duplicateProduct } = useAdmin();
     const [query, setQuery] = useState("");
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,8 +110,14 @@ export default function AdminProductsPage() {
                                 <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-10 h-10 rounded-lg ${product.color || "bg-gray-100"}`}></div>
-                                            <span className="font-medium text-gray-900">{product.title}</span>
+                                            <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex-shrink-0">
+                                                {product.image ? (
+                                                    <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className={`w-full h-full ${product.color || "bg-gray-100"}`} />
+                                                )}
+                                            </div>
+                                            <span className="font-medium text-gray-900 line-clamp-2 max-w-[200px]" title={product.title}>{product.title}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
@@ -132,7 +138,14 @@ export default function AdminProductsPage() {
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-2">
-                                            <Link href={`/admin/produtos/editar/${product.id}`} className="p-2 text-gray-400 hover:text-brand transition-colors">
+                                            <button
+                                                onClick={() => duplicateProduct(product)}
+                                                title="Duplicar"
+                                                className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                                            >
+                                                <Copy size={18} />
+                                            </button>
+                                            <Link href={`/admin/produtos/editar/${product.id}`} className="p-2 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors">
                                                 <Edit size={18} />
                                             </Link>
                                             <button
@@ -141,7 +154,7 @@ export default function AdminProductsPage() {
                                                         deleteProduct(product.id);
                                                     }
                                                 }}
-                                                className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                                                className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                                             >
                                                 <Trash2 size={18} />
                                             </button>

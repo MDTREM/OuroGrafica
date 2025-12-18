@@ -67,6 +67,10 @@ export async function getHomepageConfig(): Promise<HomepageConfig> {
     }
 }
 
+import { revalidatePath } from 'next/cache';
+
+// ... (existing imports)
+
 export async function saveHomepageConfig(config: HomepageConfig): Promise<boolean> {
     try {
         const { error } = await supabase
@@ -77,6 +81,8 @@ export async function saveHomepageConfig(config: HomepageConfig): Promise<boolea
             console.error('Supabase save error:', error);
             return false;
         }
+
+        revalidatePath('/', 'layout'); // Revalidate everything
         return true;
     } catch (error) {
         console.error('Error saving homepage config:', error);
