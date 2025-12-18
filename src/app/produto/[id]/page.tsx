@@ -402,8 +402,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                 <Button variant="outline" className="bg-white border-gray-300 text-gray-700 hover:border-brand hover:text-brand hover:bg-white shadow-sm font-bold">
                                     Baixar Gabarito
                                 </Button>
-                                <a href="/downloads/CANVA%20-%20Passo%20a%20Passo%20para%20gerar%20um%20PDF.pdf" download target="_blank" rel="noopener noreferrer">
-                                    <Button className="bg-brand hover:bg-brand/90 text-white shadow-md font-bold">
+                                <a href="/downloads/CANVA%20-%20Passo%20a%20Passo%20para%20gerar%20um%20PDF.pdf" download target="_blank" rel="noopener noreferrer" className="w-full">
+                                    <Button className="bg-brand hover:bg-brand/90 text-white shadow-md font-bold w-full">
                                         Ver Guia de Fechamento
                                     </Button>
                                 </a>
