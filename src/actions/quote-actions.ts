@@ -12,7 +12,7 @@ export interface QuoteRequest {
     company_name: string;
     cnpj: string;
     job_title?: string;
-    equipment_qty: number;
+    equipment_qty: string;
     print_volume: string;
     area_of_operation: string;
     message: string;
