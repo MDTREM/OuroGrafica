@@ -326,11 +326,11 @@ export default function NewProductPage() {
                         <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-4">Ficha Técnica (Opcional)</h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Input label="Papel / Material" value={formData.technicalSpecs?.paper} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, paper: e.target.value } }))} />
-                            <Input label="Gramatura" value={formData.technicalSpecs?.weight} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, weight: e.target.value } }))} />
-                            <Input label="Cores" value={formData.technicalSpecs?.colors} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, colors: e.target.value } }))} />
-                            <Input label="Tamanho Final" value={formData.technicalSpecs?.finalSize} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, finalSize: e.target.value } }))} />
-                            <Input label="Prazo de Produção" value={formData.technicalSpecs?.productionTime} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, productionTime: e.target.value } }))} />
+                            <Input label="Papel / Material" value={formData.technicalSpecs?.paper || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, paper: e.target.value } }))} />
+                            <Input label="Gramatura" value={formData.technicalSpecs?.weight || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, weight: e.target.value } }))} />
+                            <Input label="Cores" value={formData.technicalSpecs?.colors || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, colors: e.target.value } }))} />
+                            <Input label="Tamanho Final" value={formData.technicalSpecs?.finalSize || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, finalSize: e.target.value } }))} />
+                            <Input label="Prazo de Produção" value={formData.technicalSpecs?.productionTime || ""} onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, productionTime: e.target.value } }))} />
                         </div>
                     </div>
                 </div>
