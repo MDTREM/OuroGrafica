@@ -31,6 +31,7 @@ interface Category {
     name: string;
     image?: string;
     icon?: string;
+    order_index?: number;
 }
 
 interface CategoryNavProps {
