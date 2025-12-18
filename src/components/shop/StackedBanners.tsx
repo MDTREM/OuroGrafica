@@ -17,7 +17,7 @@ export function StackedBanners({ banners }: StackedBannersProps) {
                 {banners.map((banner) => (
                     <div
                         key={banner.id}
-                        className="h-40 rounded-2xl relative overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]"
+                        className="w-full aspect-[2.5/1] rounded-2xl relative overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]"
                     >
                         {banner.link ? (
                             <Link href={banner.link} className="block w-full h-full relative">

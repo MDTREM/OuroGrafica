@@ -57,13 +57,13 @@ export function CategoryNav({ categories: propCategories, activeCategory, onSele
                         className="flex flex-col items-center gap-2 min-w-[88px] group"
                     >
                         <Link href={`/categoria/${category.id}`} className={cn(
-                            "w-20 h-20 rounded-[2rem] flex items-center justify-center text-xs font-bold transition-all border-2",
+                            "w-20 h-20 rounded-full flex items-center justify-center text-xs font-bold transition-all border-2",
                             activeCategory === category.id
                                 ? "bg-brand/10 border-brand text-brand shadow-md"
                                 : "bg-surface-secondary border-transparent text-gray-400 group-hover:bg-gray-100 group-hover:text-brand"
                         )}>
                             {category.image ? (
-                                <img src={category.image} alt={category.name} className="w-full h-full object-cover rounded-[1.8rem]" />
+                                <img src={category.image} alt={category.name} className="w-full h-full object-cover rounded-full" />
                             ) : (
                                 <IconComponent size={32} strokeWidth={1.5} />
                             )}
