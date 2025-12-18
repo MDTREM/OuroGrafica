@@ -10,7 +10,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function CheckoutPage() {
-    const { total, shipping, items, clearCart } = useCart();
+    const { total, shipping, items, clearCart, discount } = useCart();
     const { user } = useAuth();
 
     const [step, setStep] = useState(1); // 1: Identification, 2: Delivery, 3: Payment
@@ -549,11 +549,27 @@ export default function CheckoutPage() {
 
                                 {/* Summary inside content */}
                                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className="text-sm text-gray-600">Total a pagar</span>
-                                        <span className="text-xl font-bold text-gray-900">R$ {total.toFixed(2).replace('.', ',')}</span>
+                                    <div className="space-y-2 mb-4 border-b border-gray-100 pb-4">
+                                        <div className="flex justify-between items-center text-sm">
+                                            <span className="text-gray-500">Subtotal</span>
+                                            <span className="text-gray-700">R$ {(total - shipping + discount).toFixed(2).replace('.', ',')}</span>
+                                        </div>
+                                        {discount > 0 && (
+                                            <div className="flex justify-between items-center text-sm">
+                                                <span className="text-green-600 font-medium">Desconto</span>
+                                                <span className="text-green-600 font-bold">- R$ {discount.toFixed(2).replace('.', ',')}</span>
+                                            </div>
+                                        )}
+                                        <div className="flex justify-between items-center text-sm">
+                                            <span className="text-gray-500">Frete</span>
+                                            <span className="text-gray-700">{shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2)}`}</span>
+                                        </div>
                                     </div>
-                                    <p className="text-xs text-gray-400">Ao finalizar, você concorda com os termos de compra.</p>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm font-bold text-gray-900">Total a pagar</span>
+                                        <span className="text-xl font-bold text-brand">R$ {total.toFixed(2).replace('.', ',')}</span>
+                                    </div>
+                                    <p className="text-xs text-center text-gray-400 mt-2">Ao finalizar, você concorda com os termos.</p>
                                 </div>
 
                                 <button

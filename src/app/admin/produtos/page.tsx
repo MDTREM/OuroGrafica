@@ -8,8 +8,10 @@ import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 
 export default function AdminProductsPage() {
-    const { products, deleteProduct, importProducts, duplicateProduct } = useAdmin();
+    const { products, deleteProduct, importProducts, duplicateProduct, categories } = useAdmin();
     const [query, setQuery] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("all");
+    const [sortOrder, setSortOrder] = useState("newest");
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -52,10 +54,23 @@ export default function AdminProductsPage() {
         reader.readAsText(file);
     };
 
-    const filteredProducts = products.filter(p =>
-        p.title.toLowerCase().includes(query.toLowerCase()) ||
-        p.category.toLowerCase().includes(query.toLowerCase())
-    );
+    const filteredAndSortedProducts = products
+        .filter(p => {
+            const matchesQuery = p.title.toLowerCase().includes(query.toLowerCase()) ||
+                p.category.toLowerCase().includes(query.toLowerCase());
+            const matchesCategory = selectedCategory === "all" || p.category === selectedCategory;
+            return matchesQuery && matchesCategory;
+        })
+        .sort((a, b) => {
+            if (sortOrder === "price_asc") return a.price - b.price;
+            if (sortOrder === "price_desc") return b.price - a.price;
+            if (sortOrder === "name_asc") return a.title.localeCompare(b.title);
+            if (sortOrder === "name_desc") return b.title.localeCompare(a.title);
+            return 0; // "newest" or default - assuming creation order or existing order
+        });
+    // If "newest" is meant to be by creation date, we would need created_at. Assuming default array order is somewhat chronological or acceptable for now.
+
+    const filteredProducts = filteredAndSortedProducts; // Alias to match return
 
     return (
         <div className="space-y-6">
@@ -83,13 +98,36 @@ export default function AdminProductsPage() {
             </div>
 
             {/* Filters */}
-            <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                <Input
-                    placeholder="Buscar produtos..."
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    icon={<Search size={18} />}
-                />
+            <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4">
+                <div className="flex-1">
+                    <Input
+                        placeholder="Buscar produtos..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        icon={<Search size={18} />}
+                    />
+                </div>
+                <select
+                    className="h-11 px-4 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                    <option value="all">Todas as Categorias</option>
+                    {categories.map(cat => (
+                        <option key={cat.id} value={cat.slug}>{cat.name}</option>
+                    ))}
+                </select>
+                <select
+                    className="h-11 px-4 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                >
+                    <option value="newest">Mais Recentes</option>
+                    <option value="price_asc">Menor Preço</option>
+                    <option value="price_desc">Maior Preço</option>
+                    <option value="name_asc">A - Z</option>
+                    <option value="name_desc">Z - A</option>
+                </select>
             </div>
 
             {/* Table */}

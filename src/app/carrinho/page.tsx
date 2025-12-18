@@ -9,11 +9,10 @@ import { CONSTANTS, Coupon } from "@/data/mockData";
 import { useState } from "react";
 
 export default function CartPage() {
-    const { items, removeFromCart, updateQuantity, subtotal, total } = useCart();
+    const { items, removeFromCart, updateQuantity, subtotal, total, coupon, applyCoupon, removeCoupon } = useCart();
     const { coupons } = useAdmin();
 
     const [couponCode, setCouponCode] = useState("");
-    const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
     const [couponError, setCouponError] = useState("");
 
     const shipping = CONSTANTS.SHIPPING;
@@ -30,15 +29,14 @@ export default function CartPage() {
     // Subtotal purely for products (removing the fees embedded in the price)
     const productSubtotal = subtotal - totalDesignerFees;
 
-    // Calculate Discount
+    // Calculate Discount for Display
     let discountAmount = 0;
-    if (appliedCoupon) {
-        if (appliedCoupon.type === 'percentage') {
-            discountAmount = (productSubtotal * appliedCoupon.value) / 100;
+    if (coupon) {
+        if (coupon.type === 'percentage') {
+            discountAmount = (productSubtotal * coupon.value) / 100;
         } else {
-            discountAmount = appliedCoupon.value;
+            discountAmount = coupon.value;
         }
-        // Cap discount at subtotal to avoid negative
         if (discountAmount > productSubtotal) discountAmount = productSubtotal;
     }
 
@@ -48,20 +46,20 @@ export default function CartPage() {
         setCouponError("");
         if (!couponCode) return;
 
-        const coupon = coupons.find(c => c.code === couponCode.toUpperCase() && c.active);
+        const found = coupons.find(c => c.code === couponCode.toUpperCase() && c.active);
 
-        if (!coupon) {
+        if (!found) {
             setCouponError("Cupom inválido ou expirado.");
-            setAppliedCoupon(null);
+            applyCoupon(null as any); // Reset if invalid? Or just show error. Better just show error.
             return;
         }
 
-        setAppliedCoupon(coupon);
+        applyCoupon(found);
         setCouponCode(""); // Clear input on success
     }
 
-    function removeCoupon() {
-        setAppliedCoupon(null);
+    function handleRemoveCoupon() {
+        removeCoupon();
         setCouponCode("");
     }
 
@@ -165,7 +163,7 @@ export default function CartPage() {
                     {/* Summary Column */}
                     <div className="lg:w-80 w-full space-y-4">
                         {/* Coupon Code */}
-                        {!appliedCoupon ? (
+                        {!coupon ? (
                             <div className="space-y-2">
                                 <div className="bg-white rounded-xl border border-gray-100 p-2 pl-4 flex items-center gap-2 shadow-sm">
                                     <Tag size={18} className="text-gray-400 rotate-90" />
@@ -190,9 +188,9 @@ export default function CartPage() {
                             <div className="bg-green-50 border border-green-200 rounded-xl p-3 flex justify-between items-center text-sm">
                                 <div className="flex items-center gap-2 text-green-700 font-medium">
                                     <Check size={16} />
-                                    <span>Cupom <span className="font-bold">{appliedCoupon.code}</span> aplicado</span>
+                                    <span>Cupom <span className="font-bold">{coupon.code}</span> aplicado</span>
                                 </div>
-                                <button onClick={removeCoupon} className="text-gray-400 hover:text-red-500">
+                                <button onClick={handleRemoveCoupon} className="text-gray-400 hover:text-red-500">
                                     <X size={16} />
                                 </button>
                             </div>
