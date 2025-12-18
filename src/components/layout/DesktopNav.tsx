@@ -39,25 +39,36 @@ export function DesktopNav() {
                     <div className="absolute top-full left-0 w-[600px] bg-white shadow-2xl border border-gray-100 rounded-b-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 flex overflow-hidden">
                         {/* Sidebar Categories */}
                         <div className="w-1/3 bg-gray-50 py-2 border-r border-gray-100">
-                            {categories.map((cat) => (
-                                <div key={cat.id} className="group/item px-4 py-2 hover:bg-white hover:text-brand cursor-pointer flex items-center justify-between text-sm font-medium text-gray-700">
-                                    {cat.name}
-                                    <span className="hidden group-hover/item:block text-brand">›</span>
+                            {categories
+                                .filter(cat => !cat.parentId && cat.showOnMenu !== false) // Filter Top Level
+                                .sort((a, b) => (a.order_index || 0) - (b.order_index || 0))
+                                .map((cat) => (
+                                    <div key={cat.id} className="group/item px-4 py-2 hover:bg-white hover:text-brand cursor-pointer flex items-center justify-between text-sm font-medium text-gray-700">
+                                        {cat.name}
+                                        <span className="hidden group-hover/item:block text-brand">›</span>
 
-                                    {/* Subcategories Popover */}
-                                    <div className="absolute top-0 right-0 w-2/3 h-full bg-white hidden group-hover/item:block p-6 border-l border-gray-100 z-50 overflow-y-auto">
-                                        <h3 className="text-brand font-bold text-lg mb-4">{cat.name}</h3>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            {/* Static Mock Subcategories for now since DB is flat */}
-                                            <p className="text-gray-400 text-sm col-span-2">Opções disponíveis no detalhe do produto.</p>
+                                        {/* Subcategories Popover */}
+                                        <div className="absolute top-0 right-0 w-2/3 h-full bg-white hidden group-hover/item:block p-6 border-l border-gray-100 z-50 overflow-y-auto">
+                                            <h3 className="text-brand font-bold text-lg mb-4">{cat.name}</h3>
+                                            <div className="grid grid-cols-1 gap-2">
+                                                {/* Dynamic Subcategories */}
+                                                {categories.filter(sub => sub.parentId === cat.id).map(sub => (
+                                                    <Link key={sub.id} href={`/categoria/${sub.id}`} className="text-sm text-gray-600 hover:text-brand hover:underline block py-1">
+                                                        {sub.name}
+                                                    </Link>
+                                                ))}
 
-                                            <Link href={`/categoria/${cat.id}`} className="col-span-2 mt-2 text-xs font-bold text-brand uppercase tracking-wider hover:underline">
-                                                Ver tudo em {cat.name} →
-                                            </Link>
+                                                {categories.filter(sub => sub.parentId === cat.id).length === 0 && (
+                                                    <p className="text-gray-400 text-sm col-span-2">Opções disponíveis no detalhe do produto.</p>
+                                                )}
+
+                                                <Link href={`/categoria/${cat.id}`} className="col-span-2 mt-4 text-xs font-bold text-brand uppercase tracking-wider hover:underline block">
+                                                    Ver tudo em {cat.name} →
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
                             <Link href="/categorias" className="block px-4 py-3 text-sm font-bold text-brand hover:bg-white border-t border-gray-100 mt-2">
                                 Ver todos os departamentos
                             </Link>
@@ -76,11 +87,15 @@ export function DesktopNav() {
                 {/* Main Links */}
                 <nav className="flex items-center gap-6 overflow-x-auto no-scrollbar">
 
-                    {categories.slice(0, 6).map((cat) => (
-                        <Link key={cat.id} href={`/categoria/${cat.id}`} className="text-sm font-medium text-gray-600 hover:text-brand transition-colors whitespace-nowrap">
-                            {cat.name}
-                        </Link>
-                    ))}
+                    {categories
+                        .filter(cat => !cat.parentId && cat.showOnMenu !== false) // Filter Top Level
+                        .sort((a, b) => (a.order_index || 0) - (b.order_index || 0))
+                        .slice(0, 6)
+                        .map((cat) => (
+                            <Link key={cat.id} href={`/categoria/${cat.id}`} className="text-sm font-medium text-gray-600 hover:text-brand transition-colors whitespace-nowrap">
+                                {cat.name}
+                            </Link>
+                        ))}
 
                 </nav>
             </Container>

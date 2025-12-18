@@ -43,7 +43,11 @@ interface CategoryNavProps {
 export function CategoryNav({ categories: propCategories, activeCategory, onSelect }: CategoryNavProps) {
     const { categories: contextCategories } = useAdmin();
     const categoriesRaw = contextCategories.length > 0 ? contextCategories : (propCategories || []);
-    const categories = [...categoriesRaw].sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
+
+    // Filter: Top-level only (!parentId) AND showOnHome !== false
+    const categories = [...categoriesRaw]
+        .filter(c => !c.parentId && c.showOnHome !== false)
+        .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
 
     return (
         <div className="flex gap-4 overflow-x-auto pb-4 pt-2 px-4 no-scrollbar -mx-4 md:mx-0 md:px-0 scroll-smooth">
