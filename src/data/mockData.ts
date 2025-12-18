@@ -30,6 +30,11 @@ export interface Product {
     quantities?: string[]; // ["100 un.", "500 un."]
     formats?: string[]; // ["9x5cm", "Quadrado"]
     finishes?: string[]; // ["Verniz Local", "Laminação Fosca"]
+
+    // Custom Quantity Logic
+    customQuantity?: boolean;
+    minQuantity?: number;
+    maxQuantity?: number;
 }
 
 export interface User {

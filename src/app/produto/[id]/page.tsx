@@ -42,6 +42,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const [designOption, setDesignOption] = useState<"upload" | "hire">("upload");
     const [showFullDesc, setShowFullDesc] = useState(false);
 
+    // Initial Quantity State Management
+    useEffect(() => {
+        if (product) {
+            if (product.customQuantity && product.minQuantity) {
+                setQuantity(product.minQuantity);
+            } else if (!product.customQuantity && product.quantities && product.quantities.length > 0) {
+                // Parse first quantity string to number
+                const firstQty = parseInt(product.quantities[0].match(/\d+/)?.[0] || "100");
+                setQuantity(firstQty);
+            }
+        }
+    }, [product]);
+
     // Initialize defaults when product loads
     useEffect(() => {
         if (product) {
@@ -170,40 +183,92 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                             )}
                         </div>
 
-                        {/* 2. QUANTITY TABLE SELECTOR */}
+                        {/* 2. QUANTITY SELECTOR (Custom vs List) */}
                         <div className="mb-8">
                             <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">Quantidade</h3>
-                            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-                                <div className="grid grid-cols-2 bg-gray-50 p-2 text-xs font-bold text-gray-500 text-center border-b border-gray-200">
-                                    <span>Qtd</span>
-                                    <span>Total</span>
-                                </div>
-                                {(product.quantities && product.quantities.length > 0 ? product.quantities : ["100 un.", "250 un.", "500 un.", "1000 un."]).map((qtyStr, idx) => {
-                                    // Extract number from string if possible, else use index logic
-                                    const qtyNum = parseInt(qtyStr.match(/\d+/)?.[0] || "100");
-                                    // Mock price calc
-                                    const optionPrice = price * (qtyNum / 100);
 
-                                    return (
-                                        <div
-                                            key={idx}
-                                            onClick={() => setQuantity(qtyNum)}
-                                            className={`grid grid-cols-2 p-3 text-sm text-center cursor-pointer transition-colors border-b border-gray-100 last:border-0 ${quantity === qtyNum ? "bg-orange-50/50" : "hover:bg-gray-50"
-                                                }`}
-                                        >
-                                            <div className="font-bold text-gray-900 flex items-center justify-center gap-2">
-                                                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${quantity === qtyNum ? "border-brand" : "border-gray-300"}`}>
-                                                    {quantity === qtyNum && <div className="w-2 h-2 rounded-full bg-brand"></div>}
-                                                </div>
-                                                {qtyStr}
+                            {product.customQuantity ? (
+                                <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex-1">
+                                            <label className="text-xs font-bold text-gray-500 mb-1 block">Escolha a quantidade</label>
+                                            <div className="flex items-center gap-3">
+                                                <button
+                                                    onClick={() => setQuantity(Math.max((product.minQuantity || 1), quantity - 1))}
+                                                    className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center font-bold text-xl"
+                                                >
+                                                    -
+                                                </button>
+                                                <input
+                                                    type="number"
+                                                    value={quantity}
+                                                    onChange={(e) => {
+                                                        const val = parseInt(e.target.value);
+                                                        if (!isNaN(val)) setQuantity(val);
+                                                    }}
+                                                    onBlur={() => {
+                                                        // Enforce min/max on blur
+                                                        let val = quantity;
+                                                        if (product.minQuantity && val < product.minQuantity) val = product.minQuantity;
+                                                        if (product.maxQuantity && val > product.maxQuantity) val = product.maxQuantity;
+                                                        setQuantity(val);
+                                                    }}
+                                                    className="w-24 h-10 text-center font-bold text-lg border border-gray-200 rounded-lg focus:border-brand focus:ring-1 focus:ring-brand outline-none"
+                                                />
+                                                <button
+                                                    onClick={() => setQuantity(Math.min((product.maxQuantity || 10000), quantity + 1))}
+                                                    className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center font-bold text-xl"
+                                                >
+                                                    +
+                                                </button>
                                             </div>
-                                            <div className={`font-bold ${quantity === qtyNum ? "text-brand" : "text-gray-900"}`}>
-                                                {formatPrice(optionPrice)}
-                                            </div>
+                                            <p className="text-xs text-gray-400 mt-2">
+                                                Mínimo: {product.minQuantity || 1} | Máximo: {product.maxQuantity || 1000}
+                                            </p>
                                         </div>
-                                    );
-                                })}
-                            </div>
+                                        <div className="text-right">
+                                            <span className="text-xs text-gray-500 block">Valor Unitário Aproximado</span>
+                                            <span className="text-lg font-bold text-gray-900">{formatPrice(price / 100)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center bg-gray-50 -mx-4 -mb-4 p-4 rounded-b-xl">
+                                        <span className="font-bold text-gray-700">Subtotal</span>
+                                        <span className="font-bold text-xl text-brand">{formatPrice(calculatedBasePrice)}</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                                    <div className="grid grid-cols-2 bg-gray-50 p-2 text-xs font-bold text-gray-500 text-center border-b border-gray-200">
+                                        <span>Qtd</span>
+                                        <span>Total</span>
+                                    </div>
+                                    {(product.quantities && product.quantities.length > 0 ? product.quantities : ["100 un.", "250 un.", "500 un.", "1000 un."]).map((qtyStr, idx) => {
+                                        // Extract number from string if possible, else use index logic
+                                        const qtyNum = parseInt(qtyStr.match(/\d+/)?.[0] || "100");
+                                        // Mock price calc
+                                        const optionPrice = price * (qtyNum / 100);
+
+                                        return (
+                                            <div
+                                                key={idx}
+                                                onClick={() => setQuantity(qtyNum)}
+                                                className={`grid grid-cols-2 p-3 text-sm text-center cursor-pointer transition-colors border-b border-gray-100 last:border-0 ${quantity === qtyNum ? "bg-orange-50/50" : "hover:bg-gray-50"
+                                                    }`}
+                                            >
+                                                <div className="font-bold text-gray-900 flex items-center justify-center gap-2">
+                                                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${quantity === qtyNum ? "border-brand" : "border-gray-300"}`}>
+                                                        {quantity === qtyNum && <div className="w-2 h-2 rounded-full bg-brand"></div>}
+                                                    </div>
+                                                    {qtyStr}
+                                                </div>
+                                                <div className={`font-bold ${quantity === qtyNum ? "text-brand" : "text-gray-900"}`}>
+                                                    {formatPrice(optionPrice)}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
 
                         {/* 3. FORMAT & FINISHING */}
