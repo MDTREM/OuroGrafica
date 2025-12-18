@@ -114,7 +114,7 @@ export default function AdminProductsPage() {
                 >
                     <option value="all">Todas as Categorias</option>
                     {categories.map(cat => (
-                        <option key={cat.id} value={cat.slug}>{cat.name}</option>
+                        <option key={cat.id} value={cat.name}>{cat.name}</option>
                     ))}
                 </select>
                 <select
