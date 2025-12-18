@@ -243,7 +243,7 @@ export default function NewProductPage() {
                     <div className="space-y-1">
                         <label className="text-sm font-medium text-gray-700">Descrição Completa (Opcional)</label>
                         <textarea
-                            className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand text-sm h-32"
+                            className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand text-sm h-64"
                             placeholder="Detalhes completos do produto..."
                             value={formData.fullDescription}
                             onChange={(e) => setFormData(prev => ({ ...prev, fullDescription: e.target.value }))}
