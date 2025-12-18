@@ -18,7 +18,7 @@ export default async function CategoriesPage() {
 
             <Container className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {categories?.map((cat) => {
+                    {categories?.filter(c => !c.parentId).map((cat) => {
 
                         return (
                             <Link

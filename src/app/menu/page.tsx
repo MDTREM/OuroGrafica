@@ -91,7 +91,7 @@ export default function MenuPage() {
                         {categories.map((cat, idx) => (
                             <Link
                                 key={cat.id}
-                                href={`/categoria/${cat.id}`}
+                                href={cat.parentId ? `/categoria/${cat.parentId}/${cat.id}` : `/categoria/${cat.id}`}
                                 className={`flex items-center justify-between p-4 hover:bg-gray-50 transition-colors ${idx !== categories.length - 1 ? 'border-b border-gray-50' : ''}`}
                             >
                                 <span className="text-gray-700 font-medium text-sm">{cat.name}</span>

@@ -53,7 +53,7 @@ export function DesktopNav() {
                                             <div className="grid grid-cols-1 gap-2">
                                                 {/* Dynamic Subcategories */}
                                                 {categories.filter(sub => sub.parentId === cat.id).map(sub => (
-                                                    <Link key={sub.id} href={`/categoria/${sub.id}`} className="text-sm text-gray-600 hover:text-brand hover:underline block py-1">
+                                                    <Link key={sub.id} href={`/categoria/${cat.id}/${sub.id}`} className="text-sm text-gray-600 hover:text-brand hover:underline block py-1">
                                                         {sub.name}
                                                     </Link>
                                                 ))}
