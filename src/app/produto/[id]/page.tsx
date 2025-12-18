@@ -453,7 +453,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     {/* Descrição Detalhada */}
                     {product.fullDescription && (
                         <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8">
-                            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">Descrição do Produto</h2>
+                            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100 flex items-center gap-2">
+                                <div className="w-1 h-6 bg-brand rounded-full"></div>
+                                Descrição do Produto
+                            </h2>
                             <div className="prose prose-sm max-w-none text-gray-600 text-justify whitespace-pre-line">
                                 {product.fullDescription}
                             </div>
