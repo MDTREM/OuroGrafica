@@ -35,7 +35,8 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     const products = await getProductsByCategory(categoryId, {
         minPrice,
         maxPrice,
-        deadline: deadlineParam
+        deadline: deadlineParam,
+        subcategorySlug: subcategoryId
     });
 
     return (

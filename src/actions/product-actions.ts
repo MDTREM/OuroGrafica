@@ -26,13 +26,17 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 
 export async function getProductsByCategory(
     categorySlug: string,
-    options?: { minPrice?: number; maxPrice?: number; shipping?: string; deadline?: string }
+    options?: { minPrice?: number; maxPrice?: number; shipping?: string; deadline?: string; subcategorySlug?: string }
 ): Promise<Product[]> {
     try {
         let query = supabase
             .from('products')
             .select('*')
             .eq('category', categorySlug);
+
+        if (options?.subcategorySlug) {
+            query = query.eq('subcategory', options.subcategorySlug);
+        }
 
         if (options?.minPrice !== undefined) {
             query = query.gte('price', options.minPrice);
@@ -44,7 +48,7 @@ export async function getProductsByCategory(
 
         // Note: Assuming 'shipping_info' or similar column exists, or we filter locally. 
         // For now, if there are specific "shipping" columns, we use them. 
-        // If not, we might need to skip strict DB filtering for shipping if column unknown.
+        // If not, we might need to skip strict DB filtering for shipping if unknown.
         // Given 'mockData' had simple fields, I'll stick to price for DB for now.
 
         const { data, error } = await query;
