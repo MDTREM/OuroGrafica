@@ -430,8 +430,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                         rel="noopener noreferrer"
                         className="flex-1 max-w-xs shadow-lg shadow-brand/20 text-base font-bold bg-brand text-white hover:bg-brand/90 py-4 rounded-full flex items-center justify-center gap-2 transition-colors"
                     >
-                        <MessageCircle size={20} />
-                        Orçamento Rápido
+                        Comprar Agora
                     </a>
                 </Container>
             </div>
