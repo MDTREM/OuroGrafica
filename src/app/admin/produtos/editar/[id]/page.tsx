@@ -39,6 +39,9 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     const [tempFinish, setTempFinish] = useState("");
     const [tempImage, setTempImage] = useState("");
 
+    // UI Control for Optional Variations
+    const [hasVariations, setHasVariations] = useState(false);
+
     // Load data when product is found
     useEffect(() => {
         if (productToEdit) {
@@ -53,6 +56,11 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 minQuantity: productToEdit.minQuantity || 1,
                 maxQuantity: productToEdit.maxQuantity || 1000
             });
+
+            // Init hasVariations based on data
+            const hasFormats = productToEdit.formats && productToEdit.formats.length > 0;
+            const hasFinishes = productToEdit.finishes && productToEdit.finishes.length > 0;
+            setHasVariations(!!hasFormats || !!hasFinishes);
         }
     }, [productToEdit]);
 
@@ -339,41 +347,60 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
                 {/* Variations */}
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
-                    <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-4">Variações</h3>
-
-                    {/* Formats */}
-                    <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-2">Formatos</label>
-                        <div className="flex gap-2 mb-3">
-                            <input className="flex-1 rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand" value={tempFormat} onChange={e => setTempFormat(e.target.value)} />
-                            <button type="button" onClick={() => addArrayItem("formats", tempFormat, setTempFormat)} className="bg-brand text-white p-2.5 rounded-xl hover:bg-brand-dark"><Plus size={18} /></button>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {formData.formats?.map((item, idx) => (
-                                <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-2 border border-gray-100 group">
-                                    {item}
-                                    <button type="button" onClick={() => removeArrayItem("formats", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
-                                </span>
-                            ))}
+                    <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                        <h3 className="text-lg font-bold text-gray-900">Variações do Produto</h3>
+                        <div className="flex items-center gap-3">
+                            <span className="text-sm font-medium text-gray-600">Adicionar Variações?</span>
+                            <Switch
+                                checked={hasVariations}
+                                onCheckedChange={(checked) => {
+                                    setHasVariations(checked);
+                                    if (!checked) {
+                                        // Clear variations if disabled
+                                        setFormData(prev => ({ ...prev, formats: [], finishes: [] }));
+                                    }
+                                }}
+                            />
                         </div>
                     </div>
 
-                    {/* Finishes */}
-                    <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-2">Acabamentos</label>
-                        <div className="flex gap-2 mb-3">
-                            <input className="flex-1 rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand" value={tempFinish} onChange={e => setTempFinish(e.target.value)} />
-                            <button type="button" onClick={() => addArrayItem("finishes", tempFinish, setTempFinish)} className="bg-brand text-white p-2.5 rounded-xl hover:bg-brand-dark"><Plus size={18} /></button>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {formData.finishes?.map((item, idx) => (
-                                <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-2 border border-gray-100 group">
-                                    {item}
-                                    <button type="button" onClick={() => removeArrayItem("finishes", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
-                                </span>
-                            ))}
-                        </div>
-                    </div>
+                    {hasVariations && (
+                        <>
+                            {/* Formats */}
+                            <div>
+                                <label className="text-sm font-medium text-gray-700 block mb-2">Formatos</label>
+                                <div className="flex gap-2 mb-3">
+                                    <input className="flex-1 rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand" value={tempFormat} onChange={e => setTempFormat(e.target.value)} />
+                                    <button type="button" onClick={() => addArrayItem("formats", tempFormat, setTempFormat)} className="bg-brand text-white p-2.5 rounded-xl hover:bg-brand-dark"><Plus size={18} /></button>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {formData.formats?.map((item, idx) => (
+                                        <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-2 border border-gray-100 group">
+                                            {item}
+                                            <button type="button" onClick={() => removeArrayItem("formats", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Finishes */}
+                            <div>
+                                <label className="text-sm font-medium text-gray-700 block mb-2">Acabamentos</label>
+                                <div className="flex gap-2 mb-3">
+                                    <input className="flex-1 rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand" value={tempFinish} onChange={e => setTempFinish(e.target.value)} />
+                                    <button type="button" onClick={() => addArrayItem("finishes", tempFinish, setTempFinish)} className="bg-brand text-white p-2.5 rounded-xl hover:bg-brand-dark"><Plus size={18} /></button>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {formData.finishes?.map((item, idx) => (
+                                        <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-2 border border-gray-100 group">
+                                            {item}
+                                            <button type="button" onClick={() => removeArrayItem("finishes", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
 

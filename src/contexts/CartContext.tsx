@@ -15,6 +15,7 @@ export interface CartItem {
     details?: {
         paper: string;
         finish: string;
+        format?: string;
         designOption: string;
         quantity?: number;
     };

@@ -8,10 +8,49 @@ import { CATEGORIES } from "@/data/mockData";
 import { MaintenanceCTA } from "@/components/shop/MaintenanceCTA";
 import { LocationMap } from "@/components/shop/LocationMap";
 import { getHomepageConfig, Section } from "@/actions/homepage-actions";
+import { supabase } from "@/lib/supabase"; // Import supabase
+import { Product } from "@/data/mockData";
 
+
+// Helper to fetch products for a section
+async function getProductsForSection(section: Section): Promise<Product[]> {
+  const { data: allProducts } = await supabase.from('products').select('*');
+  if (!allProducts) return [];
+
+  let filtered = allProducts as Product[];
+
+  if (section.settings?.productIds && section.settings.productIds.length > 0) {
+    // Manual selection
+    filtered = filtered.filter(p => section.settings?.productIds?.includes(p.id));
+  } else {
+    // Filter logic matches ProductRow client-side logic
+    switch (section.settings?.filter) {
+      case 'best-sellers':
+        filtered = filtered.filter(p => p.isBestSeller);
+        break;
+      case 'featured':
+        filtered = filtered.filter(p => p.isFeatured);
+        break;
+      case 'new':
+        filtered = filtered.filter(p => p.isNew);
+        break;
+    }
+    // Limit
+    filtered = filtered.slice(0, 4);
+  }
+  return filtered;
+}
 
 export default async function Home() {
   const config = await getHomepageConfig();
+
+  // Pre-fetch products for all product-row sections
+  const productSectionsToCheck = config.sections.filter(s => s.type === 'product-row' && s.enabled);
+  const productsMap: Record<string, Product[]> = {};
+
+  for (const section of productSectionsToCheck) {
+    productsMap[section.id] = await getProductsForSection(section);
+  }
 
   const renderSection = (section: Section) => {
     switch (section.type) {
@@ -31,12 +70,14 @@ export default async function Home() {
           </Container>
         );
       case 'product-row':
+        // Use pre-fetched products
         return (
           <ProductRow
             key={section.id}
             title={section.title || section.name}
             filter={section.settings?.filter || 'best-sellers'}
             productIds={section.settings?.productIds}
+            preloadedProducts={productsMap[section.id] || []}
           />
         );
       case 'stacked-banners':
@@ -56,9 +97,7 @@ export default async function Home() {
       {/* 1. Main Banner (if exists) */}
       {bannerSection && renderSection(bannerSection)}
 
-
-
-      {/* 2. Dynamic Sections (including Maintenance CTA) */}
+      {/* 2. Dynamic Sections */}
       {otherSections.map(section => renderSection(section))}
 
       {/* 4. Location Map */}

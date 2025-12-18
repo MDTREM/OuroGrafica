@@ -2,15 +2,19 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, ShoppingCart, Check, UploadCloud, Truck, MessageCircle } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { cn, formatPrice } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { Product } from "@/data/mockData";
+import { useCart } from "@/contexts/CartContext";
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = use(params);
+    const router = useRouter();
+    const { addToCart } = useCart();
     const [product, setProduct] = useState<Product | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -85,10 +89,30 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
     const finalPrice = calculatedBasePrice + designPrice;
 
-    // Resolve images
     const productImages = product.images && product.images.length > 0
         ? product.images
         : (product.image ? [product.image] : []);
+
+    const handleBuyNow = () => {
+        if (!product) return;
+
+        addToCart({
+            productId: product.id,
+            title: product.title,
+            price: finalPrice,
+            quantity: quantity,
+            image: productImages[0] || "",
+            details: {
+                paper: product.technicalSpecs?.paper || "", // Mock or empty if not selected
+                finish: selectedFinish,
+                format: selectedFormat,
+                designOption: designOption,
+                quantity: quantity
+            }
+        });
+
+        router.push("/carrinho");
+    };
 
     return (
         <div className="bg-background min-h-screen pb-32 relative">
@@ -489,14 +513,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                             {designOption === "hire" && <span className="text-[10px] text-gray-400 font-medium">(+ Designer)</span>}
                         </div>
                     </div>
-                    <a
-                        href={`https://wa.me/5531982190935?text=${encodeURIComponent(`Olá, gostaria de um orçamento para: ${product.title}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    <button
+                        onClick={handleBuyNow}
                         className="flex-1 max-w-xs shadow-lg shadow-brand/20 text-base font-bold bg-brand text-white hover:bg-brand/90 py-4 rounded-full flex items-center justify-center gap-2 transition-colors"
                     >
                         Comprar Agora
-                    </a>
+                    </button>
                 </Container>
             </div>
         </div>

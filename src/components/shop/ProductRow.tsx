@@ -5,24 +5,28 @@ import { ProductCard } from "@/components/shop/ProductCard";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useAdmin } from "@/contexts/AdminContext";
+import { Product } from "@/data/mockData";
 
 interface ProductRowProps {
     title: string;
     filter: 'best-sellers' | 'featured' | 'new' | 'custom';
     productIds?: string[];
     link?: string;
+    preloadedProducts?: Product[];
 }
 
-export function ProductRow({ title, filter, link, productIds }: ProductRowProps) {
+export function ProductRow({ title, filter, link, productIds, preloadedProducts }: ProductRowProps) {
     const { products } = useAdmin();
 
-    let displayProducts = [];
+    let displayProducts: Product[] = [];
 
-    if (productIds && productIds.length > 0) {
-        // Manual selection
+    if (preloadedProducts && preloadedProducts.length > 0) {
+        displayProducts = preloadedProducts;
+    } else if (productIds && productIds.length > 0) {
+        // Manual selection (Client-side fallback)
         displayProducts = products.filter(p => productIds.includes(p.id));
     } else {
-        // Fallback to filters
+        // Fallback to filters (Client-side fallback)
         switch (filter) {
             case 'best-sellers':
                 displayProducts = products.filter(p => p.isBestSeller);
