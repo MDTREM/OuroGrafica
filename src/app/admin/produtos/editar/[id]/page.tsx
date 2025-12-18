@@ -4,7 +4,7 @@ import { useAdmin } from "@/contexts/AdminContext";
 import { Input } from "@/components/ui/Input";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Plus, X, Upload, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, Plus, X, Upload, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Product } from "@/data/mockData";
 import { Switch } from "@/components/ui/Switch";
@@ -78,6 +78,18 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             ...prev,
             [field]: (prev[field] || []).filter((_, i) => i !== index)
         }));
+    };
+
+    const moveArrayItem = (field: "quantities" | "formats" | "finishes" | "images", index: number, direction: "left" | "right") => {
+        setFormData(prev => {
+            const list = [...(prev[field] || [])];
+            if (direction === "left" && index > 0) {
+                [list[index - 1], list[index]] = [list[index], list[index - 1]];
+            } else if (direction === "right" && index < list.length - 1) {
+                [list[index + 1], list[index]] = [list[index], list[index + 1]];
+            }
+            return { ...prev, [field]: list };
+        });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -284,13 +296,29 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                         {formData.images?.map((img, idx) => (
                             <div key={idx} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-100 bg-gray-50 shadow-sm hover:shadow-md transition-shadow">
                                 <img src={img} alt="" className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => moveArrayItem("images", idx, "left")}
+                                        disabled={idx === 0}
+                                        className="bg-white/90 text-gray-700 p-1.5 rounded-full hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <ChevronLeft size={16} />
+                                    </button>
                                     <button
                                         type="button"
                                         onClick={() => removeArrayItem("images", idx)}
                                         className="bg-white text-red-500 p-2 rounded-full hover:bg-red-50 transition-colors"
                                     >
                                         <Trash2 size={16} />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => moveArrayItem("images", idx, "right")}
+                                        disabled={idx === (formData.images?.length || 0) - 1}
+                                        className="bg-white/90 text-gray-700 p-1.5 rounded-full hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <ChevronRight size={16} />
                                     </button>
                                 </div>
                                 <span className="absolute bottom-1 right-1 bg-black/50 text-white text-[10px] px-1.5 rounded-md backdrop-blur-sm">
