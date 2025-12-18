@@ -376,26 +376,25 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                     </div>
                 </div>
             </div>
-        </div>
 
-        {/* Action Buttons (Bottom) */ }
-    <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
-        <Link href="/admin/produtos" className="px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors">
-            Cancelar
-        </Link>
-        <button
-            type="submit"
-            disabled={isLoading}
-            className="flex items-center gap-2 bg-brand text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-brand/20 hover:bg-brand-dark transition-colors disabled:opacity-50"
-        >
-            {isLoading ? "Salvando..." : (
-                <>
-                    <Save size={18} />
-                    Salvar Alterações
-                </>
-            )}
-        </button>
-    </div>
-    </form >
+            {/* Action Buttons (Bottom) */}
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
+                <Link href="/admin/produtos" className="px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors">
+                    Cancelar
+                </Link>
+                <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="flex items-center gap-2 bg-brand text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-brand/20 hover:bg-brand-dark transition-colors disabled:opacity-50"
+                >
+                    {isLoading ? "Salvando..." : (
+                        <>
+                            <Save size={18} />
+                            Salvar Alterações
+                        </>
+                    )}
+                </button>
+            </div>
+        </form >
     );
 }
