@@ -7,11 +7,12 @@ export interface QuoteRequest {
     created_at: string;
     first_name: string;
     last_name: string;
+    email: string;
+    phone: string;
     company_name: string;
     cnpj: string;
-    phone: string;
-    email: string;
-    equipment_qty: string;
+    job_title?: string;
+    equipment_qty: number;
     print_volume: string;
     area_of_operation: string;
     message: string;

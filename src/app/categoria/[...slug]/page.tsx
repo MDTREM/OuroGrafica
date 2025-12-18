@@ -32,7 +32,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     else if (priceParam === 'high') { minPrice = 100; }
 
     // 3. Fetch Products
-    const products = await getProductsByCategory(categoryName, {
+    const products = await getProductsByCategory(categoryId, {
         minPrice,
         maxPrice,
         deadline: deadlineParam

@@ -87,11 +87,20 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                        <Input
+                            label="ID da Categoria (Slug)"
+                            value={formData.id || ""}
+                            disabled
+                            hint="O ID não pode ser alterado."
+                        />
+                    </div>
                     <Input
-                        label="ID da Categoria (Slug)"
-                        value={formData.id || ""}
-                        disabled // ID usually shouldn't change easily or needs care
-                        hint="O ID não pode ser alterado."
+                        label="Ordem de Exibição"
+                        type="number"
+                        value={formData.order_index ?? 0}
+                        onChange={(e) => setFormData(prev => ({ ...prev, order_index: parseInt(e.target.value) || 0 }))}
+                        hint="Menor número aparece primeiro."
                     />
                     <div className="space-y-1">
                         <label className="text-sm font-medium text-gray-700">Subcategoria de (Opcional)</label>

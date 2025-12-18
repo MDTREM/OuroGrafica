@@ -77,12 +77,22 @@ export default function NewCategoryPage() {
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                        <Input
+                            label="ID da Categoria (Slug)"
+                            placeholder="Ex: cartoes-visita"
+                            value={formData.id}
+                            onChange={(e) => setFormData(prev => ({ ...prev, id: e.target.value }))}
+                            hint="Identificador único usado na URL."
+                        />
+                    </div>
                     <Input
-                        label="ID da Categoria (Slug)"
-                        placeholder="Ex: cartoes-visita"
-                        value={formData.id}
-                        onChange={(e) => setFormData(prev => ({ ...prev, id: e.target.value }))}
-                        hint="Identificador único usado na URL."
+                        label="Ordem de Exibição"
+                        type="number"
+                        placeholder="0"
+                        value={formData.order_index ?? 0}
+                        onChange={(e) => setFormData(prev => ({ ...prev, order_index: parseInt(e.target.value) || 0 }))}
+                        hint="Menor número aparece primeiro."
                     />
                     <div className="space-y-1">
                         <label className="text-sm font-medium text-gray-700">Subcategoria de (Opcional)</label>

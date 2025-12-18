@@ -22,7 +22,7 @@ export default function AdminCategoriesPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {categories.filter(c => c.id !== "todos").map((category) => (
+                {categories.filter(c => c.id !== "todos").sort((a, b) => (a.order_index || 0) - (b.order_index || 0)).map((category) => (
                     <div key={category.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between group">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 overflow-hidden">

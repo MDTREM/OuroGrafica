@@ -25,14 +25,14 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 }
 
 export async function getProductsByCategory(
-    categoryName: string,
+    categorySlug: string,
     options?: { minPrice?: number; maxPrice?: number; shipping?: string; deadline?: string }
 ): Promise<Product[]> {
     try {
         let query = supabase
             .from('products')
             .select('*')
-            .eq('category', categoryName);
+            .eq('category', categorySlug);
 
         if (options?.minPrice !== undefined) {
             query = query.gte('price', options.minPrice);

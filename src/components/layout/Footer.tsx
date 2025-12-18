@@ -36,9 +36,6 @@ export function Footer() {
                         <h3 className="font-bold text-foreground mb-4">Segurança</h3>
                         <div className="flex items-center gap-2">
                             <img src="https://i.imgur.com/eP7c5HZ.png" alt="Site Blindado" className="h-10 w-auto object-contain" />
-                            <div className="bg-surface-secondary px-2 py-1 rounded text-xs text-gray-400 border border-border">
-                                SSL Check
-                            </div>
                         </div>
                     </div>
 

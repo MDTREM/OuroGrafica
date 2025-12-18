@@ -32,16 +32,16 @@ export function BannerCarousel({ banners }: BannerCarouselProps) {
     }, []);
 
     return (
-        <div ref={scrollRef} className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory flex rounded-2xl overflow-hidden shadow-sm">
+        <div ref={scrollRef} className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory flex rounded-2xl overflow-hidden shadow-sm bg-gray-50">
             {banners.map((banner) => (
-                <div key={banner.id} className="min-w-full snap-center relative aspect-[21/9] md:aspect-[3/1] bg-gray-100">
+                <div key={banner.id} className="min-w-full snap-center relative aspect-[21/9] md:aspect-[3/1] flex items-center justify-center">
                     {banner.link ? (
                         <Link href={banner.link} className="block w-full h-full relative">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={banner.imageUrl}
                                 alt="Banner"
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-contain"
                             />
                         </Link>
                     ) : (
@@ -49,7 +49,7 @@ export function BannerCarousel({ banners }: BannerCarouselProps) {
                         <img
                             src={banner.imageUrl}
                             alt="Banner"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                         />
                     )}
                 </div>

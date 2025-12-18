@@ -46,6 +46,7 @@ export interface Category {
     icon?: string; // Lucide icon name
     showOnHome?: boolean;
     showOnMenu?: boolean;
+    order_index?: number;
 }
 
 export interface Coupon {

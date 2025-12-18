@@ -2,19 +2,15 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, ShoppingCart, Check, UploadCloud, Truck } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Check, UploadCloud, Truck, MessageCircle } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { cn, formatPrice } from "@/lib/utils";
-import { useCart } from "@/contexts/CartContext";
 import { supabase } from "@/lib/supabase";
 import { Product } from "@/data/mockData";
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = use(params);
-    const router = useRouter();
-    const { addToCart } = useCart();
     const [product, setProduct] = useState<Product | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -80,24 +76,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const productImages = product.images && product.images.length > 0
         ? product.images
         : (product.image ? [product.image] : []);
-
-    const handleAddToCart = () => {
-        addToCart({
-            productId: product.id,
-            title: product.title,
-            subtitle: `${quantity} unid.`,
-            price: finalPrice,
-            quantity: 1,
-            image: productImages[0] || "",
-            details: {
-                quantity,
-                paper: selectedFormat,
-                finish: selectedFinish,
-                designOption
-            }
-        });
-        router.push("/carrinho");
-    };
 
     return (
         <div className="bg-background min-h-screen pb-32 relative">
@@ -444,12 +422,15 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                             {designOption === "hire" && <span className="text-[10px] text-gray-400 font-medium">(+ Designer)</span>}
                         </div>
                     </div>
-                    <Button
-                        onClick={handleAddToCart}
-                        className="flex-1 max-w-xs shadow-lg shadow-brand/20 text-base font-bold bg-brand text-white hover:bg-brand/90 py-6 rounded-full"
+                    <a
+                        href={`https://wa.me/5531982190935?text=${encodeURIComponent(`Olá, gostaria de um orçamento para: ${product.title}`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 max-w-xs shadow-lg shadow-brand/20 text-base font-bold bg-brand text-white hover:bg-brand/90 py-4 rounded-full flex items-center justify-center gap-2 transition-colors"
                     >
-                        Comprar Agora
-                    </Button>
+                        <MessageCircle size={20} />
+                        Orçamento Rápido
+                    </a>
                 </Container>
             </div>
         </div>
