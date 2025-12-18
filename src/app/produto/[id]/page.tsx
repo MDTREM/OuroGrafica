@@ -474,8 +474,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                 const labels: Record<string, string> = {
                                     paper: "Papel",
                                     weight: "Gramatura",
+                                    physicalWeight: "Peso",
+                                    ennoblement: "Enobrecimento",
                                     colors: "Cores",
                                     finalSize: "Tamanho Final",
+                                    bleedSize: "Tamanho com Sangria",
                                     productionTime: "Produção"
                                 };
                                 return (
