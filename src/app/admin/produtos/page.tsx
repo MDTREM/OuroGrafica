@@ -3,15 +3,38 @@
 import { useAdmin } from "@/contexts/AdminContext";
 import { formatPrice } from "@/lib/utils";
 import { Plus, Search, Edit, Trash2, Upload, Copy } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 export default function AdminProductsPage() {
     const { products, deleteProduct, importProducts, duplicateProduct, categories } = useAdmin();
-    const [query, setQuery] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("all");
-    const [sortOrder, setSortOrder] = useState("newest");
+
+    // URL State Management
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const [query, setQuery] = useState(searchParams.get("q") || "");
+    const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "all");
+    const [sortOrder, setSortOrder] = useState(searchParams.get("sort") || "newest");
+
+    // Sync URL when state changes
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (query) params.set("q", query);
+        else params.delete("q");
+
+        if (selectedCategory && selectedCategory !== "all") params.set("category", selectedCategory);
+        else params.delete("category");
+
+        if (sortOrder && sortOrder !== "newest") params.set("sort", sortOrder);
+        else params.delete("sort");
+
+        router.replace(`${pathname}?${params.toString()}`);
+    }, [query, selectedCategory, sortOrder, pathname, router, searchParams]);
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];

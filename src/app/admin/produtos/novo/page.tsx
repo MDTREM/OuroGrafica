@@ -145,7 +145,7 @@ export default function NewProductPage() {
                                 <label className="text-sm font-medium text-gray-700">Subcategoria</label>
                                 <select
                                     className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand text-sm"
-                                    value={formData.subcategory} // Stores ID
+                                    value={formData.subcategory || ""} // Stores ID
                                     onChange={(e) => setFormData(prev => ({ ...prev, subcategory: e.target.value }))}
                                     disabled={!formData.category}
                                 >

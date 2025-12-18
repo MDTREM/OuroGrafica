@@ -68,24 +68,24 @@ export default function OutsourcingPage() {
 
     const equipments = [
         {
-            title: "Impressora Colorida",
-            text: "Com qualidade profissional, a impressora colorida a laser da HP fornecer documentos impressos com alta definição e reprodução de cores.",
-            image: "https://img.kalunga.com.br/fotosdeprodutos/220292z_2.jpg"
+            title: "Ricoh 430F (P&B)",
+            text: "Multifuncional monocromática robusta e compacta, ideal para alto volume, com digitalização rápida e baixíssimo custo por página.",
+            image: "https://assets.rbl.ms/31808381/origin.png"
         },
         {
-            title: "Impressora Monocromática",
-            text: "Disponibilizamos equipamentos robustos para imprimir de forma econômica e totalmente segura sem perder a qualidade.",
-            image: "https://m.media-amazon.com/images/I/51IuheOpb-L.jpg"
+            title: "Epson 5890 (Colorida)",
+            text: "Impressora colorida de alto desempenho com tecnologia PrecisionCore, oferecendo qualidade laser com maior economia de tinta e energia.",
+            image: "https://mediaserver.goepson.com/ImConvServlet/imconv/661d5462c4ab1581341d2d4a22014a60f6009a0a/515Wx515H?use=productpictures&hybrisId=B2C&assetDescr=WF-C5890_SPT_C11CK23201_384x286"
         },
         {
-            title: "Multifuncionais e scanners",
-            text: "Aumente a produtividade com uma solução completa que, além da função imprimir, também permite escanear e tirar xerox dos documentos.",
-            image: "https://images.wondershare.com/pdfelement/pdf-knowledge/printer/samsung-multifunction-printer-proxpress-c3060fw.jpg"
+            title: "Epson WF-7840 (A3 Color)",
+            text: "Multifuncional A3 colorida versátil, perfeita para impressões de grande formato, plantas e gráficos vibrantes com alta precisão.",
+            image: "https://m.media-amazon.com/images/I/61-jQGhEY6L._AC_SX466_.jpg"
         },
         {
-            title: "Impressora Largo formato (plotter)",
-            text: "Linha completa de impressoras e multifuncionais plotter HP para realizar impressões em papel A0, A1 e A2 no formato de bobina ou folha solta A4 até A0.",
-            image: "https://m.media-amazon.com/images/I/71YJAbNgmtL.jpg"
+            title: "Xerox Versalink C500",
+            text: "Impressora colorida confiável e segura, com interface intuitiva estilo tablet e conectividade móvel avançada para escritórios modernos.",
+            image: "https://www.xerox.com/assets/images/brand_engine/products/hardware/VLC505/VLC505_demo_600x400.jpg"
         }
     ];
 
@@ -354,5 +354,7 @@ const BRANDS = [
     { name: 'Canon', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Canon_logo.svg/2560px-Canon_logo.svg.png' },
     { name: 'HP', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/HP_logo_2012.svg/2048px-HP_logo_2012.svg.png' },
     { name: 'Brother', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Brother_logo.svg/2560px-Brother_logo.svg.png' },
-    { name: 'Samsung', logo: 'https://upload.wikimedia.org/wikipedia/commons/6/61/Samsung_old_logo_before_year_2015.svg' }
+    { name: 'Samsung', logo: 'https://upload.wikimedia.org/wikipedia/commons/6/61/Samsung_old_logo_before_year_2015.svg' },
+    { name: 'Ricoh', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Ricoh_logo_2005.svg/1280px-Ricoh_logo_2005.svg.png' },
+    { name: 'Xerox', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Xerox_logo.svg/1280px-Xerox_logo.svg.png' }
 ];
