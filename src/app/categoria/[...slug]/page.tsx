@@ -11,16 +11,17 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     const categoryId = slug[0];
     const subcategoryId = slug[1];
 
-    // 1. Fetch Category Info
+    // 1. Buscar Informações da Categoria
     const category = await getCategoryBySlug(categoryId);
 
-    // Fallback names if category not found in DB (or strictly rely on DB response)
+    // Nomes alternativos se a categoria não for encontrada no BD (ou confiar estritamente na resposta do BD)
     const categoryName = category?.name || categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
 
+    // Eu nem sei mais o que isso faz. Se quebrar, finja que nunca existiu.
     const subcategoryName = subcategoryId ? subcategoryId.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase()) : "";
     const title = subcategoryId ? `${categoryName} - ${subcategoryName}` : categoryName;
 
-    // 2. Parse Filters
+    // 2. Analisar Filtros
     const priceParam = resolvedSearchParams.price as string | undefined;
     const deadlineParam = resolvedSearchParams.deadline as string | undefined;
 
@@ -31,7 +32,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
     else if (priceParam === 'mid') { minPrice = 50; maxPrice = 100; }
     else if (priceParam === 'high') { minPrice = 100; }
 
-    // 3. Fetch Products
+    // 3. Buscar Produtos
     const products = await getProductsByCategory(categoryId, {
         minPrice,
         maxPrice,
@@ -41,7 +42,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
 
     return (
         <div className="bg-gray-50 min-h-screen pb-16">
-            {/* Header / Breadcrumb */}
+            {/* Cabeçalho / Breadcrumb */}
             <div className="bg-white border-b border-gray-100">
                 <Container className="py-8">
                     <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
@@ -59,13 +60,13 @@ export default async function CategoryPage({ params, searchParams }: { params: P
                 </Container>
             </div>
 
-            {/* Content */}
+            {/* Conteúdo */}
             <Container className="py-8">
                 <div className="flex flex-col md:flex-row gap-8">
-                    {/* Filters Sidebar */}
+                    {/* Barra Lateral de Filtros */}
                     <FilterSidebar />
 
-                    {/* Product Grid */}
+                    {/* Grade de Produtos */}
                     <div className="flex-1">
                         {products.length === 0 ? (
                             <div className="bg-white p-12 rounded-2xl text-center border border-gray-100">
