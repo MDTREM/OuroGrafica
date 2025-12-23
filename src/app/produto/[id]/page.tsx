@@ -258,7 +258,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                 {(dimensions.width > 0 && dimensions.height > 0) && (
                                     <div className="mt-3 text-center">
                                         <p className="text-xs text-gray-500">
-                                            Área total: <span className="font-bold text-gray-900">{((dimensions.width * dimensions.height) / 10000).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m²</span>
+                                            Área total: <span className="font-bold text-gray-900">{((dimensions.width * dimensions.height) / 10000).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 4 })} m²</span>
                                         </p>
                                     </div>
                                 )}

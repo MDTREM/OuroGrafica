@@ -118,6 +118,13 @@ export default function CartPage() {
                                                     Criação de Arte Inclusa (+R$ 35,00 un.)
                                                 </div>
                                             )}
+                                            {item.details?.dimensions && (
+                                                <div className="mt-1">
+                                                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded border border-gray-200">
+                                                        Dimensões: <b>{item.details.dimensions.width}x{item.details.dimensions.height} cm</b>
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="flex items-center justify-between mt-2">
                                             <div className="flex flex-col">

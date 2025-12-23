@@ -178,6 +178,11 @@ export default function AdminOrdersPage() {
                                                 {/* Variations */}
                                                 {item.details && (
                                                     <div className="mt-2 flex flex-wrap gap-2">
+                                                        {item.details.dimensions && (
+                                                            <span className="text-xs font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded-md border border-blue-100">
+                                                                Dimensões: {item.details.dimensions.width}x{item.details.dimensions.height} cm
+                                                            </span>
+                                                        )}
                                                         {item.details.format && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Formato: {item.details.format}</span>}
                                                         {item.details.paper && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Papel: {item.details.paper}</span>}
                                                         {item.details.finish && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Acab: {item.details.finish}</span>}

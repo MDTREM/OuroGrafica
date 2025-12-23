@@ -559,6 +559,30 @@ export default function CheckoutPage() {
 
                                 {/* Summary inside content */}
                                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
+                                    <div className="space-y-4 mb-4 border-b border-gray-100 pb-4">
+                                        <h4 className="font-bold text-gray-900 text-sm">Itens</h4>
+                                        <div className="space-y-3">
+                                            {items.map((item) => (
+                                                <div key={item.id} className="flex gap-3">
+                                                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
+                                                        {item.image && <img src={item.image} className="w-full h-full object-cover" />}
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <p className="text-xs font-bold text-gray-900 line-clamp-2">{item.title}</p>
+                                                        <p className="text-[10px] text-gray-500">{item.quantity}x R$ {item.price.toFixed(2)}</p>
+                                                        {item.details?.dimensions && (
+                                                            <p className="text-[10px] text-gray-600 bg-gray-100 px-1 py-0.5 rounded w-fit mt-0.5 border border-gray-200">
+                                                                {item.details.dimensions.width}x{item.details.dimensions.height} cm
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                    <div className="text-xs font-bold text-gray-900">
+                                                        R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
                                     <div className="space-y-2 mb-4 border-b border-gray-100 pb-4">
                                         <div className="flex justify-between items-center text-sm">
                                             <span className="text-gray-500">Subtotal</span>
