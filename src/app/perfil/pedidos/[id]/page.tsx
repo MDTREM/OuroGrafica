@@ -5,10 +5,10 @@ import Link from "next/link";
 import { ArrowLeft, Package, MapPin, CreditCard, CheckCircle, Clock, Truck, AlertCircle, Copy, Printer, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useEffect, useState } from "react";
-import { getOrderById } from "@/actions/profile-actions";
-import { formatPrice } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import { formatPrice } from "@/lib/utils";
 
 export default function OrderDetailsPage({ params }: { params: { id: string } }) {
     const { user, isLoading: isAuthLoading } = useAuth();
@@ -30,8 +30,14 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
     const loadOrder = async () => {
         setIsLoading(true);
         try {
-            const data = await getOrderById(params.id);
-            if (data) {
+            // Client-side fetch to use active session
+            const { data, error } = await supabase
+                .from('orders')
+                .select('*, order_items(*)')
+                .eq('id', params.id)
+                .single();
+
+            if (data && !error) {
                 // Determine timeline status based on order status (simplified logic)
                 const currentStatus = data.status;
                 const timeline = [
@@ -44,6 +50,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
 
                 setOrder({ ...data, timeline });
             } else {
+                console.error("Order not found or error:", error);
                 setOrder(null);
             }
         } catch (error) {

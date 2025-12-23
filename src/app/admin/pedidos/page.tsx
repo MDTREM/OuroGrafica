@@ -77,12 +77,24 @@ export default function AdminOrdersPage() {
                                             ))}
                                         </select>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-6 py-4 text-right flex justify-end gap-2">
                                         <button
                                             onClick={() => setSelectedOrder(order)}
                                             className="text-gray-400 hover:text-brand transition-colors"
+                                            title="Ver Detalhes"
                                         >
                                             <Eye size={18} />
+                                        </button>
+                                        <button
+                                            onClick={async () => {
+                                                if (confirm("Tem certeza que deseja excluir este pedido? Esta ação não pode ser desfeita.")) {
+                                                    await deleteOrder(order.id);
+                                                }
+                                            }}
+                                            className="text-gray-400 hover:text-red-600 transition-colors"
+                                            title="Excluir Pedido"
+                                        >
+                                            <Trash2 size={18} />
                                         </button>
                                     </td>
                                 </tr>

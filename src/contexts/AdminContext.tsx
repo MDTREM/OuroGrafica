@@ -64,6 +64,7 @@ interface AdminContextType {
     deleteCategory: (id: string) => void;
 
     updateOrderStatus: (id: string, status: Order["status"]) => void;
+    deleteOrder: (id: string) => Promise<{ success: boolean; error?: any }>;
     stats: {
         totalSales: number;
         pendingOrders: number;
@@ -200,6 +201,22 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         if (!error) setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
     };
 
+    const deleteOrder = async (id: string) => {
+        // 1. Delete items first (manual cascade)
+        await supabase.from('order_items').delete().eq('order_id', id);
+
+        // 2. Delete order
+        const { error } = await supabase.from('orders').delete().eq('id', id);
+
+        if (!error) {
+            setOrders(prev => prev.filter(o => o.id !== id));
+            return { success: true };
+        } else {
+            console.error("Error deleting order:", error);
+            return { success: false, error };
+        }
+    };
+
     // Coupons
     const [coupons, setCoupons] = useState<Coupon[]>([]);
 
@@ -237,6 +254,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             updateCategory,
             deleteCategory,
             updateOrderStatus,
+            deleteOrder,
             stats,
             // Coupons
             coupons,
