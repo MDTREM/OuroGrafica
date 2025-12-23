@@ -83,9 +83,12 @@ export default function OrderSuccessPage({ params }: { params: Promise<{ id: str
                             {order.payment_method === 'pix' ? (
                                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 text-center space-y-4">
                                     <p className="text-sm text-gray-600">Escaneie o QR Code ou copie a chave Pix abaixo:</p>
-                                    <div className="w-48 h-48 bg-white border border-gray-200 mx-auto flex items-center justify-center">
-                                        <span className="text-xs text-gray-400">QR Code Pix</span>
-                                        {/* Placeholder for QR Code */}
+                                    <div className="w-48 h-48 bg-white border border-gray-200 mx-auto flex items-center justify-center p-2">
+                                        <img
+                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266141740005204000053039865802BR5913Ouro Grafica6008BRASILIA62070503***6304E2CA`}
+                                            alt="QR Code Pix"
+                                            className="w-full h-full object-contain"
+                                        />
                                     </div>
                                     <div className="flex gap-2">
                                         <input
@@ -116,8 +119,12 @@ export default function OrderSuccessPage({ params }: { params: Promise<{ id: str
                             <div className="space-y-4">
                                 {order.order_items.map((item: any) => (
                                     <div key={item.id} className="flex gap-4 items-start">
-                                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <Printer size={24} className="text-gray-400" />
+                                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                            {item.image ? (
+                                                <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <Printer size={24} className="text-gray-400" />
+                                            )}
                                         </div>
                                         <div className="flex-1">
                                             <h3 className="font-medium text-gray-900">{item.title}</h3>

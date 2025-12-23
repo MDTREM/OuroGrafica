@@ -16,7 +16,7 @@ export default function CheckoutPage() {
     const [step, setStep] = useState(1); // 1: Identification, 2: Delivery, 3: Payment
     const [personType, setPersonType] = useState<"pf" | "pj">("pf");
     const [loadingCep, setLoadingCep] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState<"credit" | "pix" | "boleto">("credit");
+    const [paymentMethod, setPaymentMethod] = useState<"credit" | "pix">("credit");
 
     const [formData, setFormData] = useState({
         name: "",
@@ -486,7 +486,6 @@ export default function CheckoutPage() {
                                     <div className="flex border-b border-gray-200 bg-white">
                                         <button onClick={() => setPaymentMethod("credit")} className={`flex-1 py-3 text-sm font-bold transition-colors ${paymentMethod === "credit" ? "text-gray-900 bg-gray-50 box-shadow-inner border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Cartão</button>
                                         <button onClick={() => setPaymentMethod("pix")} className={`flex-1 py-3 text-sm font-bold transition-colors ${paymentMethod === "pix" ? "text-gray-900 bg-gray-50 border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Pix</button>
-                                        <button onClick={() => setPaymentMethod("boleto")} className={`flex-1 py-3 text-sm font-bold transition-colors ${paymentMethod === "boleto" ? "text-gray-900 bg-gray-50 border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Boleto</button>
                                     </div>
 
                                     <div className="p-6">
@@ -537,7 +536,6 @@ export default function CheckoutPage() {
                                             </div>
                                         )}
                                         {paymentMethod === "pix" && <div className="text-center text-sm text-gray-500">QR Code será gerado ao finalizar.</div>}
-                                        {paymentMethod === "boleto" && <div className="text-center text-sm text-gray-500">Boleto será gerado ao finalizar.</div>}
                                     </div>
                                 </div>
 
