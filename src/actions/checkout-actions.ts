@@ -40,6 +40,7 @@ export async function createOrder(data: OrderInput) {
             title: item.title,
             quantity: item.quantity,
             price: item.price,
+            image: item.image, // Save product image
             details: item.details || {}
         }));
 
