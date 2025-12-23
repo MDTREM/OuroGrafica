@@ -18,6 +18,10 @@ export interface CartItem {
         format?: string;
         designOption: string;
         quantity?: number;
+        dimensions?: {
+            width: number;
+            height: number;
+        };
     };
 }
 

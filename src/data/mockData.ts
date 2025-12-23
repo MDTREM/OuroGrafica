@@ -35,6 +35,10 @@ export interface Product {
     customQuantity?: boolean;
     minQuantity?: number;
     maxQuantity?: number;
+
+    // Custom Dimensions (m2)
+    allowCustomDimensions?: boolean; // If true, show width/height inputs
+    pricePerM2?: number; // Optional override if price logic differs from base price
 }
 
 export interface User {

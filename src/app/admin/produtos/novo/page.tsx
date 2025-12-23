@@ -43,6 +43,7 @@ export default function NewProductPage() {
         customQuantity: false,
         minQuantity: 1,
         maxQuantity: 1000,
+        allowCustomDimensions: false,
     });
 
     // Helper for array inputs
@@ -172,12 +173,26 @@ export default function NewProductPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Input
-                                label="Preço Base (R$)"
+                                label={formData.allowCustomDimensions ? "Preço por m² (R$)" : "Preço Base (R$)"}
                                 type="number"
                                 placeholder="0.00"
                                 value={formData.price}
                                 onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
                             />
+                        </div>
+
+                        {/* Custom Dimensions Toggle (m²) */}
+                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <label className="text-sm font-bold text-gray-900">Venda por Metro Quadrado (m²)</label>
+                                    <p className="text-xs text-gray-500">Permite que o cliente digite largura e altura. O preço cadastrado acima será cobrado por m².</p>
+                                </div>
+                                <Switch
+                                    checked={formData.allowCustomDimensions || false}
+                                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, allowCustomDimensions: checked }))}
+                                />
+                            </div>
                         </div>
 
 

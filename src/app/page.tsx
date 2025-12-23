@@ -21,7 +21,10 @@ async function getProductsForSection(section: Section): Promise<Product[]> {
 
   if (section.settings?.productIds && section.settings.productIds.length > 0) {
     // Manual selection
-    filtered = filtered.filter(p => section.settings?.productIds?.includes(p.id));
+    // Manual selection ensuring order
+    const ids = section.settings.productIds;
+    filtered = filtered.filter(p => ids.includes(p.id));
+    filtered.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
   } else {
     // Filter logic matches ProductRow client-side logic
     switch (section.settings?.filter) {

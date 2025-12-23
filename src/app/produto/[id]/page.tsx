@@ -46,6 +46,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const [designOption, setDesignOption] = useState<"upload" | "hire">("upload");
     const [showFullDesc, setShowFullDesc] = useState(false);
 
+    // Custom Dimensions State
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 }); // in cm
+
     // Initial Quantity State Management
     useEffect(() => {
         if (product) {
@@ -83,9 +86,24 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const price = product.price || 0;
     const designPrice = designOption === "hire" ? 35.00 : 0;
 
-    // Simple logic for quantity multiplier
-    const quantityMultiplier = quantity / 100;
-    const calculatedBasePrice = price * (quantityMultiplier > 0 ? quantityMultiplier : 1);
+    // Price Calculation Logic
+    let calculatedBasePrice = 0;
+
+    if (product?.allowCustomDimensions) {
+        // Price per m² logic
+        // Area in m² = (width_cm * height_cm) / 10000
+        const area = (dimensions.width * dimensions.height) / 10000;
+        // If price is per m², then UnitPrice = Area * Price
+        // If dimensions are missing, price is 0 (or base price?)
+        calculatedBasePrice = (area > 0 ? area : 0) * price * quantity;
+    } else {
+        // Standard Logic (Pack based or Unit based)
+        // Check if unit implies "1 un" or "100 un"
+        // Existing logic assumes price is for a batch of 100 if unit is not specified, 
+        // but let's stick to the previous working logic for non-custom items to avoid breaking changes.
+        const quantityMultiplier = quantity / 100;
+        calculatedBasePrice = price * (quantityMultiplier > 0 ? quantityMultiplier : 1);
+    }
 
     const finalPrice = calculatedBasePrice + designPrice;
 
@@ -100,14 +118,15 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             productId: product.id,
             title: product.title,
             price: finalPrice,
-            quantity: quantity,
+            quantity: 1, // Add as 1 item of the configured batch/product
             image: productImages[0] || "",
             details: {
-                paper: product.technicalSpecs?.paper || "", // Mock or empty if not selected
+                paper: product.technicalSpecs?.paper || "",
                 finish: selectedFinish,
                 format: selectedFormat,
                 designOption: designOption,
-                quantity: quantity
+                quantity: quantity, // Real quantity configured
+                dimensions: product.allowCustomDimensions ? dimensions : undefined
             }
         });
 
@@ -207,7 +226,46 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                             )}
                         </div>
 
-                        {/* 2. QUANTITY SELECTOR (Custom vs List) */}
+                        {/* 2. CUSTOM DIMENSIONS (If enabled) */}
+                        {product.allowCustomDimensions && (
+                            <div className="mb-8 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide flex items-center gap-2">
+                                    Dimensões
+                                    <span className="text-[10px] bg-brand/10 text-brand px-2 py-0.5 rounded-full normal-case">Medidas em cm</span>
+                                </h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500">Largura (cm)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand font-bold text-lg h-12 text-center"
+                                            placeholder="0"
+                                            value={dimensions.width || ""}
+                                            onChange={(e) => setDimensions(prev => ({ ...prev, width: parseFloat(e.target.value) }))}
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-bold text-gray-500">Altura (cm)</label>
+                                        <input
+                                            type="number"
+                                            className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand font-bold text-lg h-12 text-center"
+                                            placeholder="0"
+                                            value={dimensions.height || ""}
+                                            onChange={(e) => setDimensions(prev => ({ ...prev, height: parseFloat(e.target.value) }))}
+                                        />
+                                    </div>
+                                </div>
+                                {(dimensions.width > 0 && dimensions.height > 0) && (
+                                    <div className="mt-3 text-center">
+                                        <p className="text-xs text-gray-500">
+                                            Área total: <span className="font-bold text-gray-900">{((dimensions.width * dimensions.height) / 10000).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m²</span>
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* 3. QUANTITY SELECTOR */}
                         <div className="mb-8">
                             <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">Quantidade</h3>
 

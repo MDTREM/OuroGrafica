@@ -384,6 +384,63 @@ export default function AdminHomeConfigPage() {
                                         {editingSection.settings?.productIds?.length || 0} selecionados
                                     </p>
                                 </div>
+
+                                {/* Reordering Selected Products */}
+                                {editingSection.settings?.productIds && editingSection.settings.productIds.length > 0 && (
+                                    <div>
+                                        <label className="text-sm font-medium mb-2 block">Ordenação dos Produtos</label>
+                                        <p className="text-xs text-gray-500 mb-2">Use as setas para alterar a ordem de exibição na home.</p>
+                                        <div className="space-y-1">
+                                            {editingSection.settings.productIds.map((id, index) => {
+                                                const product = products.find(p => p.id === id);
+                                                if (!product) return null;
+                                                return (
+                                                    <div key={id} className="flex items-center justify-between p-2 bg-white border border-gray-200 rounded-lg">
+                                                        <div className="flex items-center gap-3">
+                                                            <span className="text-xs font-bold text-gray-400 w-4">{index + 1}</span>
+                                                            {product.image && <img src={product.image} className="w-8 h-8 rounded object-cover border border-gray-100" />}
+                                                            <span className="text-sm font-medium text-gray-700">{product.title}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1">
+                                                            <button
+                                                                onClick={() => {
+                                                                    const ids = [...(editingSection.settings?.productIds || [])];
+                                                                    if (index > 0) {
+                                                                        [ids[index], ids[index - 1]] = [ids[index - 1], ids[index]];
+                                                                        setEditingSection({
+                                                                            ...editingSection,
+                                                                            settings: { ...editingSection.settings, productIds: ids }
+                                                                        });
+                                                                    }
+                                                                }}
+                                                                disabled={index === 0}
+                                                                className="p-1 text-gray-400 hover:text-brand disabled:opacity-30"
+                                                            >
+                                                                <ArrowUp size={16} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    const ids = [...(editingSection.settings?.productIds || [])];
+                                                                    if (index < ids.length - 1) {
+                                                                        [ids[index], ids[index + 1]] = [ids[index + 1], ids[index]];
+                                                                        setEditingSection({
+                                                                            ...editingSection,
+                                                                            settings: { ...editingSection.settings, productIds: ids }
+                                                                        });
+                                                                    }
+                                                                }}
+                                                                disabled={index === (editingSection.settings?.productIds?.length || 0) - 1}
+                                                                className="p-1 text-gray-400 hover:text-brand disabled:opacity-30"
+                                                            >
+                                                                <ArrowDown size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
