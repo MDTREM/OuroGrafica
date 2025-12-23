@@ -160,7 +160,19 @@ export default function CheckoutPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
 
+    const isStep3Valid = () => {
+        if (paymentMethod === "credit") {
+            return formData.cardNumber.length >= 13 && formData.cardName && formData.cardExpiry.length === 5 && formData.cardCvv.length >= 3;
+        }
+        return true; // Pix e Boleto não precisam de validação extra por enquanto
+    };
+
     const handleFinishOrder = async () => {
+        if (!isStep3Valid()) {
+            alert("Por favor, preencha os dados do cartão corretamente.");
+            return;
+        }
+
         setIsSubmitting(true);
 
         const orderData = {
