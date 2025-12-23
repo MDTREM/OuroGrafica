@@ -18,6 +18,7 @@ export async function createOrder(data: OrderInput) {
             .from('orders')
             .insert([{
                 customer_info: data.customer_info,
+                customer_name: data.customer_info.name, // Required by DB constraint
                 address_info: data.address_info,
                 payment_method: data.payment_method,
                 total: data.total,
