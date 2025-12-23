@@ -192,7 +192,7 @@ export default function CheckoutPage() {
                 clearCart();
                 router.push(`/checkout/sucesso/${res.orderId}`);
             } else {
-                alert('Ocorreu um erro ao finalizar o pedido. Tente novamente.');
+                alert(res.error || 'Ocorreu um erro ao finalizar o pedido. Tente novamente.');
                 setIsSubmitting(false);
             }
         } catch (error) {

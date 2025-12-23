@@ -29,7 +29,7 @@ export async function createOrder(data: OrderInput) {
 
         if (orderError) {
             console.error('Error creating order:', orderError);
-            return { success: false, error: 'Erro ao criar pedido.' };
+            return { success: false, error: orderError.message || 'Erro ao criar pedido.' };
         }
 
         // 2. Create Items
