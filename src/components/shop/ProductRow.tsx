@@ -56,9 +56,11 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
                     </Link>
                 )}
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 -mx-4 px-4 scrollbar-hide">
                 {displayProducts.map((product) => (
-                    <ProductCard key={product.id} {...product} />
+                    <div key={product.id} className="min-w-[160px] md:min-w-[220px] snap-start">
+                        <ProductCard {...product} />
+                    </div>
                 ))}
             </div>
         </Container>

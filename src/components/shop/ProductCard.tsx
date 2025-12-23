@@ -28,7 +28,7 @@ export function ProductCard({ id, title, price, unit, description, image }: Prod
     const [imgError, setImgError] = useState(false);
 
     return (
-        <div className="group relative bg-surface rounded-2xl shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow">
+        <div className="group relative bg-surface rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
             {/* Favorites Button */}
             <button
                 onClick={handleToggleFavorite}
@@ -39,13 +39,13 @@ export function ProductCard({ id, title, price, unit, description, image }: Prod
             </button>
 
             {/* Image Area */}
-            <div className="aspect-[4/3] bg-surface-secondary relative flex items-center justify-center p-4 overflow-hidden">
+            <div className="aspect-[4/3] relative flex items-center justify-center overflow-hidden">
                 {image && !imgError ? (
                     <img
                         src={image}
                         alt={title}
                         onError={() => setImgError(true)}
-                        className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                 ) : (
                     <div className="w-full h-full bg-gray-50 flex flex-col items-center justify-center text-gray-300">
