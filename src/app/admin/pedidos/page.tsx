@@ -2,12 +2,12 @@
 
 import { useAdmin, Order } from "@/contexts/AdminContext";
 import { formatPrice } from "@/lib/utils";
-import { Search, Eye } from "lucide-react";
+import { Search, Eye, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/Input";
 
 export default function AdminOrdersPage() {
-    const { orders, updateOrderStatus } = useAdmin();
+    const { orders, updateOrderStatus, deleteOrder } = useAdmin();
     const [query, setQuery] = useState("");
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
