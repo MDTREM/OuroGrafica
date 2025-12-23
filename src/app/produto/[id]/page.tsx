@@ -42,6 +42,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const [quantity, setQuantity] = useState(100);
     const [selectedFormat, setSelectedFormat] = useState("");
     const [selectedFinish, setSelectedFinish] = useState("");
+    const [selectedVariations, setSelectedVariations] = useState<{ [key: string]: string }>({}); // New state for dynamic variations
     const [activeImage, setActiveImage] = useState(0);
     const [designOption, setDesignOption] = useState<"upload" | "hire">("upload");
     const [showFullDesc, setShowFullDesc] = useState(false);
@@ -67,6 +68,17 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         if (product) {
             if (product.formats && product.formats.length > 0) setSelectedFormat(product.formats[0]);
             if (product.finishes && product.finishes.length > 0) setSelectedFinish(product.finishes[0]);
+
+            // Initialize dynamic variations
+            if (product.variations) {
+                const initialVariations: { [key: string]: string } = {};
+                product.variations.forEach(v => {
+                    if (v.options.length > 0) {
+                        initialVariations[v.name] = v.options[0];
+                    }
+                });
+                setSelectedVariations(initialVariations);
+            }
         }
     }, [product]);
 
@@ -105,7 +117,31 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         calculatedBasePrice = price * (quantityMultiplier > 0 ? quantityMultiplier : 1);
     }
 
-    const finalPrice = calculatedBasePrice + designPrice;
+    // Add Variation Prices
+    let variationsAddon = 0;
+    if (product.variations) {
+        product.variations.forEach(v => {
+            const selectedOption = selectedVariations[v.name];
+            if (selectedOption && v.prices && v.prices[selectedOption]) {
+                variationsAddon += v.prices[selectedOption];
+            }
+        });
+    }
+
+    // Multiply addon by quantity (assuming addon is "per unit in the pack" or "flat per pack"?)
+    // Decision: Usually variations like "Lamination" are per unit. 
+    // If the base price is for 100 units, the addon should likely be for the whole pack OR per unit?
+    // Given the simple data model "R$ 5.00", let's assume it's a FLAT ADDON to the final calculated price for now, 
+    // OR it follows the same multiplier logic. 
+    // Let's assume the user enters the price ADDITION TO THE BASE PRICE (Batch Price).
+    // So if 100 cards cost 50, and Lamination costs +10, total is 60.
+    // If quantity scales to 200, the base scales, does the addon scale?
+    // For simplicity V1: Addon is FLAT per batch unit logic (so it scales with quantity multiplier).
+
+    const quantityMultiplierForAddon = (quantity / 100) > 0 ? (quantity / 100) : 1;
+    const finalVariationsPrice = variationsAddon * quantityMultiplierForAddon;
+
+    const finalPrice = calculatedBasePrice + finalVariationsPrice + designPrice;
 
     const productImages = product.images && product.images.length > 0
         ? product.images
@@ -126,7 +162,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 format: selectedFormat,
                 designOption: designOption,
                 quantity: quantity, // Real quantity configured
-                dimensions: product.allowCustomDimensions ? dimensions : undefined
+                dimensions: product.allowCustomDimensions ? dimensions : undefined,
+                selectedVariations: selectedVariations // Add selected variations to cart
             }
         });
 
@@ -398,6 +435,37 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                 </div>
                             )}
                         </div>
+
+                        {/* 4. DYNAMIC VARIATIONS */}
+                        {product.variations && product.variations.length > 0 && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                                {product.variations.map((variation, vIdx) => (
+                                    <div key={vIdx}>
+                                        <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">{variation.name}</h3>
+                                        <div className="flex flex-col gap-2">
+                                            {variation.options.map((option, oIdx) => {
+                                                const priceAddon = variation.prices?.[option] || 0;
+                                                return (
+                                                    <button
+                                                        key={oIdx}
+                                                        onClick={() => setSelectedVariations(prev => ({ ...prev, [variation.name]: option }))}
+                                                        className={cn(
+                                                            "px-4 py-3 rounded-lg text-sm font-medium border text-left transition-all flex justify-between",
+                                                            selectedVariations[variation.name] === option
+                                                                ? "border-brand bg-orange-50 text-brand font-bold ring-1 ring-brand"
+                                                                : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
+                                                        )}
+                                                    >
+                                                        <span>{option}</span>
+                                                        {priceAddon > 0 && <span className="text-xs font-bold text-green-600">+{formatPrice(priceAddon)}</span>}
+                                                    </button>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         {/* 4. DESIGN OPTIONS */}
                         <div className="mb-8">

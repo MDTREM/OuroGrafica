@@ -22,6 +22,7 @@ export interface CartItem {
             width: number;
             height: number;
         };
+        selectedVariations?: { [key: string]: string };
     };
 }
 

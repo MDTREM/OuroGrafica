@@ -575,6 +575,11 @@ export default function CheckoutPage() {
                                                                 {item.details.dimensions.width}x{item.details.dimensions.height} cm
                                                             </p>
                                                         )}
+                                                        {item.details?.selectedVariations && Object.entries(item.details.selectedVariations).map(([key, value]) => (
+                                                            <p key={key} className="text-[10px] text-gray-500 mt-0.5">
+                                                                {key}: <span className="font-medium text-gray-700">{value}</span>
+                                                            </p>
+                                                        ))}
                                                     </div>
                                                     <div className="text-xs font-bold text-gray-900">
                                                         R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}

@@ -124,7 +124,15 @@ export default function CartPage() {
                                                         Dimensões: <b>{item.details.dimensions.width}x{item.details.dimensions.height} cm</b>
                                                     </span>
                                                 </div>
+
                                             )}
+                                            {item.details?.selectedVariations && Object.entries(item.details.selectedVariations).map(([key, value]) => (
+                                                <div key={key} className="mt-1">
+                                                    <span className="text-xs bg-gray-50 text-gray-500 px-2 py-0.5 rounded border border-gray-100">
+                                                        {key}: <b>{value}</b>
+                                                    </span>
+                                                </div>
+                                            ))}
                                         </div>
                                         <div className="flex items-center justify-between mt-2">
                                             <div className="flex flex-col">

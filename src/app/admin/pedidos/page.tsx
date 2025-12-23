@@ -186,6 +186,9 @@ export default function AdminOrdersPage() {
                                                         {item.details.format && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Formato: {item.details.format}</span>}
                                                         {item.details.paper && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Papel: {item.details.paper}</span>}
                                                         {item.details.finish && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Acab: {item.details.finish}</span>}
+                                                        {item.details.selectedVariations && Object.entries(item.details.selectedVariations).map(([key, value]) => (
+                                                            <span key={key} className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">{key}: {String(value)}</span>
+                                                        ))}
                                                     </div>
                                                 )}
 

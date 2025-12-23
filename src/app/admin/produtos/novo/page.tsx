@@ -44,6 +44,7 @@ export default function NewProductPage() {
         minQuantity: 1,
         maxQuantity: 1000,
         allowCustomDimensions: false,
+        variations: [],
     });
 
     // Helper for array inputs
@@ -54,6 +55,61 @@ export default function NewProductPage() {
 
     // UI Control for Optional Variations
     const [hasVariations, setHasVariations] = useState(true);
+    const [newVariationName, setNewVariationName] = useState("");
+    const [tempOptions, setTempOptions] = useState<{ [key: number]: string }>({});
+    const [tempOptionPrices, setTempOptionPrices] = useState<{ [key: number]: string }>({}); // Store temp price as string for input
+
+    const addVariation = () => {
+        if (!newVariationName.trim()) return;
+        setFormData(prev => ({
+            ...prev,
+            variations: [...(prev.variations || []), { name: newVariationName, options: [] }]
+        }));
+        setNewVariationName("");
+    };
+
+    const removeVariation = (index: number) => {
+        setFormData(prev => ({
+            ...prev,
+            variations: (prev.variations || []).filter((_, i) => i !== index)
+        }));
+    };
+
+    const addOptionToVariation = (variationIndex: number) => {
+        const option = tempOptions[variationIndex];
+        const priceStr = tempOptionPrices[variationIndex];
+        if (!option?.trim()) return;
+
+        const price = parseFloat(priceStr?.replace(',', '.') || "0");
+
+        setFormData(prev => {
+            const newVars = [...(prev.variations || [])];
+            const currentVar = newVars[variationIndex];
+
+            // Initialize prices map if not exists
+            const currentPrices = currentVar.prices || {};
+
+            newVars[variationIndex] = {
+                ...currentVar,
+                options: [...currentVar.options, option],
+                prices: price > 0 ? { ...currentPrices, [option]: price } : currentPrices
+            };
+            return { ...prev, variations: newVars };
+        });
+        setTempOptions(prev => ({ ...prev, [variationIndex]: "" }));
+        setTempOptionPrices(prev => ({ ...prev, [variationIndex]: "" }));
+    };
+
+    const removeOptionFromVariation = (variationIndex: number, optionIndex: number) => {
+        setFormData(prev => {
+            const newVars = [...(prev.variations || [])];
+            newVars[variationIndex] = {
+                ...newVars[variationIndex],
+                options: newVars[variationIndex].options.filter((_, i) => i !== optionIndex)
+            };
+            return { ...prev, variations: newVars };
+        });
+    };
 
 
 
@@ -440,6 +496,82 @@ export default function NewProductPage() {
                                     </div>
                                 </div>
                             </>
+                        )}
+
+                        {hasVariations && (
+                            <div className="pt-4 border-t border-gray-100">
+                                <label className="text-sm font-bold text-gray-900 block mb-3">Outras Variações</label>
+
+                                <div className="space-y-4">
+                                    {formData.variations?.map((variation, vIdx) => (
+                                        <div key={vIdx} className="bg-gray-50 p-3 rounded-xl border border-gray-200">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="font-bold text-sm text-gray-800">{variation.name}</span>
+                                                <button type="button" onClick={() => removeVariation(vIdx)} className="text-red-500 hover:text-red-700 p-1">
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+
+                                            {/* Options List */}
+                                            <div className="flex flex-wrap gap-2 mb-2">
+                                                {variation.options.map((opt, oIdx) => {
+                                                    const priceAddon = variation.prices?.[opt] || 0;
+                                                    return (
+                                                        <span key={oIdx} className="bg-white text-xs px-2 py-1 rounded border border-gray-200 flex items-center gap-1">
+                                                            {opt}
+                                                            {priceAddon > 0 && <span className="text-green-600 font-bold ml-1">+{formatPrice(priceAddon)}</span>}
+                                                            <button type="button" onClick={() => removeOptionFromVariation(vIdx, oIdx)} className="text-gray-400 hover:text-red-500"><X size={10} /></button>
+                                                        </span>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            {/* Add Option Input */}
+                                            <div className="flex gap-2">
+                                                <input
+                                                    className="flex-1 rounded-lg border-gray-200 text-xs h-8"
+                                                    placeholder="Nova opção (ex: GG)"
+                                                    value={tempOptions[vIdx] || ""}
+                                                    onChange={(e) => setTempOptions(prev => ({ ...prev, [vIdx]: e.target.value }))}
+                                                />
+                                                <input
+                                                    className="w-24 rounded-lg border-gray-200 text-xs h-8"
+                                                    placeholder="+ R$ 0,00"
+                                                    type="number"
+                                                    value={tempOptionPrices[vIdx] || ""}
+                                                    onChange={(e) => setTempOptionPrices(prev => ({ ...prev, [vIdx]: e.target.value }))}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            addOptionToVariation(vIdx);
+                                                        }
+                                                    }}
+                                                />
+                                                <button type="button" onClick={() => addOptionToVariation(vIdx)} className="bg-gray-200 text-gray-600 px-2 rounded-lg hover:bg-gray-300 h-8">
+                                                    <Plus size={14} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                    {/* Add New Variation Group */}
+                                    <div className="flex gap-2 mt-4">
+                                        <input
+                                            className="flex-1 rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand"
+                                            placeholder="Nome da Variação (ex: Cor)"
+                                            value={newVariationName}
+                                            onChange={(e) => setNewVariationName(e.target.value)}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={addVariation}
+                                            className="bg-gray-900 text-white px-3 py-2 rounded-xl text-xs font-bold hover:bg-black transition-colors"
+                                        >
+                                            Adicionar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>

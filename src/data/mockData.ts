@@ -31,6 +31,13 @@ export interface Product {
     formats?: string[]; // ["9x5cm", "Quadrado"]
     finishes?: string[]; // ["Verniz Local", "Laminação Fosca"]
 
+    // Dynamic Variations (New)
+    variations?: {
+        name: string;
+        options: string[];
+        prices?: { [key: string]: number }; // Optional price override per option
+    }[];
+
     // Custom Quantity Logic
     customQuantity?: boolean;
     minQuantity?: number;

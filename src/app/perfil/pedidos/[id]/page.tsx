@@ -166,7 +166,16 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
                                 </div>
                                 <div className="flex-1">
                                     <h4 className="text-sm font-bold text-gray-900 line-clamp-1">{item.title}</h4>
-                                    <p className="text-xs text-gray-500 mb-1">{item.selected_format} / {item.selected_paper}</p>
+                                    <p className="text-xs text-gray-500 mb-1">{item.details?.format || item.selected_format} / {item.details?.paper || item.selected_paper}</p>
+                                    {item.details?.selectedVariations && (
+                                        <div className="flex flex-wrap gap-1 mt-1">
+                                            {Object.entries(item.details.selectedVariations).map(([key, value]) => (
+                                                <span key={key} className="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-600 border border-gray-200">
+                                                    {key}: {String(value)}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
                                     <div className="flex justify-between items-center mt-2">
                                         <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{item.quantity}un.</span>
                                         <span className="text-sm font-bold text-gray-900">{formatPrice(item.price)}</span>
