@@ -37,20 +37,26 @@ export function BannerCarousel({ banners }: BannerCarouselProps) {
                 <div key={banner.id} className="min-w-full snap-center relative aspect-[21/9] md:aspect-[3/1] flex items-center justify-center">
                     {banner.link ? (
                         <Link href={banner.link} className="block w-full h-full relative">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src={banner.imageUrl}
-                                alt="Banner"
-                                className="w-full h-full object-contain"
-                            />
+                            <picture className="w-full h-full">
+                                {banner.mobileImageUrl && <source media="(max-width: 768px)" srcSet={banner.mobileImageUrl} />}
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={banner.imageUrl}
+                                    alt="Banner"
+                                    className="w-full h-full object-cover"
+                                />
+                            </picture>
                         </Link>
                     ) : (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <img
-                            src={banner.imageUrl}
-                            alt="Banner"
-                            className="w-full h-full object-contain"
-                        />
+                        <picture className="w-full h-full">
+                            {banner.mobileImageUrl && <source media="(max-width: 768px)" srcSet={banner.mobileImageUrl} />}
+                            <img
+                                src={banner.imageUrl}
+                                alt="Banner"
+                                className="w-full h-full object-cover"
+                            />
+                        </picture>
                     )}
                 </div>
             ))}

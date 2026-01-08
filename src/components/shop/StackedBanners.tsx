@@ -21,18 +21,24 @@ export function StackedBanners({ banners }: StackedBannersProps) {
                     >
                         {banner.link ? (
                             <Link href={banner.link} className="block w-full h-full relative">
+                                <picture className="w-full h-full">
+                                    {banner.mobileImageUrl && <source media="(max-width: 768px)" srcSet={banner.mobileImageUrl} />}
+                                    <img
+                                        src={banner.imageUrl}
+                                        alt="Banner"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </picture>
+                            </Link>
+                        ) : (
+                            <picture className="w-full h-full">
+                                {banner.mobileImageUrl && <source media="(max-width: 768px)" srcSet={banner.mobileImageUrl} />}
                                 <img
                                     src={banner.imageUrl}
                                     alt="Banner"
                                     className="w-full h-full object-cover"
                                 />
-                            </Link>
-                        ) : (
-                            <img
-                                src={banner.imageUrl}
-                                alt="Banner"
-                                className="w-full h-full object-cover"
-                            />
+                            </picture>
                         )}
                     </div>
                 ))}
