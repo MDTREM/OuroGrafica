@@ -87,7 +87,7 @@ export default async function OutsourcingPage() {
         <div className="bg-slate-50 min-h-screen pb-20 pt-6">
             {/* Banner Section */}
             <Container>
-                <div className="relative h-[200px] md:h-[300px] bg-black overflow-hidden group shadow-lg rounded-lg">
+                <div className="relative w-full aspect-[108/46] md:aspect-auto md:h-[300px] bg-black overflow-hidden group shadow-lg rounded-lg">
                     <HeroCarousel banners={banners} />
                 </div>
             </Container>
@@ -101,7 +101,7 @@ export default async function OutsourcingPage() {
                         100% { transform: translateX(-50%); }
                     }
                     .animate-scroll {
-                        animation: scroll 10s linear infinite;
+                        animation: scroll 5s linear infinite;
                     }
                 `}} />
                 <Container>
@@ -110,9 +110,10 @@ export default async function OutsourcingPage() {
                     </div>
 
                     <div className="relative w-full overflow-hidden mask-linear-fade">
-                        <div className="flex animate-scroll whitespace-nowrap gap-16 items-center">
+                        <div className="flex animate-scroll whitespace-nowrap items-center">
+                            {/* Quadruple the list for seamless loop on large screens */}
                             {[...BRANDS, ...BRANDS, ...BRANDS, ...BRANDS].map((brand, idx) => (
-                                <div key={idx} className="flex-shrink-0 w-32 h-16 flex items-center justify-center grayscale opacity-100 transition-all duration-300">
+                                <div key={idx} className="flex-shrink-0 w-32 h-16 flex items-center justify-center grayscale opacity-100 transition-all duration-300 mr-16">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={brand.logo} alt={brand.name} className="max-w-full max-h-full object-contain" />
                                 </div>
