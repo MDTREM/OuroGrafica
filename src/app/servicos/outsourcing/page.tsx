@@ -5,9 +5,11 @@ import { CheckCircle, MapPin, Send, Printer } from "lucide-react";
 import { useState, useEffect } from "react";
 import { HeroCarousel } from "@/components/ui/HeroCarousel";
 
+import { Banner } from "@/actions/homepage-actions";
+
 export default function OutsourcingPage() {
     const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
-    const [banners, setBanners] = useState(['https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop']);
+    const [banners, setBanners] = useState<Banner[]>([{ id: '1', imageUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop' }]);
 
     useEffect(() => {
         import('@/actions/homepage-actions').then(async ({ getPagesConfig }) => {

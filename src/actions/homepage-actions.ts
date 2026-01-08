@@ -93,8 +93,8 @@ export async function saveHomepageConfig(config: HomepageConfig): Promise<boolea
 // --- Pages Config (Manutenção, Outsourcing, etc) ---
 
 export interface PagesConfig {
-    maintenanceBanners?: string[];
-    outsourcingBanners?: string[];
+    maintenanceBanners?: Banner[];
+    outsourcingBanners?: Banner[];
 }
 
 export async function getPagesConfig(): Promise<PagesConfig> {
@@ -107,24 +107,41 @@ export async function getPagesConfig(): Promise<PagesConfig> {
 
         if (error || !data) {
             return {
-                maintenanceBanners: ['https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop'],
-                outsourcingBanners: ['https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop']
+                maintenanceBanners: [{ id: '1', imageUrl: 'https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop' }],
+                outsourcingBanners: [{ id: '1', imageUrl: 'https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop' }]
             };
         }
 
-        // Backward compatibility: if data has old fields (maintenanceBanner string), convert to array
         const value = data.value as any;
+
+        // Helper to convert string[] or string to Banner[]
+        const convertToBanners = (input: any): Banner[] => {
+            if (Array.isArray(input)) {
+                // If array of strings (old format)
+                if (typeof input[0] === 'string') {
+                    return input.map((url, idx) => ({ id: idx.toString(), imageUrl: url }));
+                }
+                // Already Banner[]
+                return input;
+            }
+            // Single string (very old format)
+            if (typeof input === 'string') {
+                return [{ id: '1', imageUrl: input }];
+            }
+            return [];
+        };
+
         const config: PagesConfig = {
-            maintenanceBanners: value.maintenanceBanners || (value.maintenanceBanner ? [value.maintenanceBanner] : []),
-            outsourcingBanners: value.outsourcingBanners || (value.outsourcingBanner ? [value.outsourcingBanner] : [])
+            maintenanceBanners: convertToBanners(value.maintenanceBanners || value.maintenanceBanner),
+            outsourcingBanners: convertToBanners(value.outsourcingBanners || value.outsourcingBanner)
         };
 
         // Ensure defaults if empty
         if (!config.maintenanceBanners || config.maintenanceBanners.length === 0) {
-            config.maintenanceBanners = ['https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop'];
+            config.maintenanceBanners = [{ id: '1', imageUrl: 'https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop' }];
         }
         if (!config.outsourcingBanners || config.outsourcingBanners.length === 0) {
-            config.outsourcingBanners = ['https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop'];
+            config.outsourcingBanners = [{ id: '1', imageUrl: 'https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop' }];
         }
 
         return config;

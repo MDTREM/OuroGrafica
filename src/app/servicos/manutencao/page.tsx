@@ -5,9 +5,11 @@ import { Wrench, Printer, AlertTriangle, Send, MapPin, Wifi, CheckCircle } from 
 import { useState, useEffect } from "react";
 import { HeroCarousel } from "@/components/ui/HeroCarousel";
 
+import { Banner } from "@/actions/homepage-actions";
+
 export default function ManutencaoPage() {
     const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
-    const [banners, setBanners] = useState(['https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop']);
+    const [banners, setBanners] = useState<Banner[]>([{ id: '1', imageUrl: 'https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop' }]);
 
     useEffect(() => {
         // Dynamic import or fetch to avoid server/client issues if not carefully handled, 
