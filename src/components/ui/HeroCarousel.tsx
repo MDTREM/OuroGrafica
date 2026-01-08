@@ -7,9 +7,10 @@ import { Banner } from '@/actions/homepage-actions';
 interface HeroCarouselProps {
     banners: (Banner | string)[]; // Support both for backward compatibility temporarily, though ideally just Banner[]
     interval?: number;
+    altText?: string;
 }
 
-export function HeroCarousel({ banners, interval = 5000 }: HeroCarouselProps) {
+export function HeroCarousel({ banners, interval = 5000, altText = "Banner Promocional Ouro Gráfica" }: HeroCarouselProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     // Normalize input to Banner[]
@@ -41,7 +42,7 @@ export function HeroCarousel({ banners, interval = 5000 }: HeroCarouselProps) {
                         {banner.mobileImageUrl && <source media="(max-width: 768px)" srcSet={banner.mobileImageUrl} />}
                         <img
                             src={banner.imageUrl}
-                            alt="Banner"
+                            alt={altText}
                             className="w-full h-full object-cover"
                         />
                     </picture>

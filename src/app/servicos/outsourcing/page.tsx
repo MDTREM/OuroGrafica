@@ -5,6 +5,13 @@ import { OutsourcingForm } from "@/components/services/OutsourcingForm";
 import { OutsourcingMap } from "@/components/services/OutsourcingMap";
 import { getPagesConfig } from "@/actions/homepage-actions";
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Aluguel de Impressoras (Outsourcing) | Ouro Gráfica",
+    description: "Reduza custos com aluguel de impressoras para empresas em Ouro Preto e região. Manutenção e suprimentos inclusos. Peça sua cotação!",
+};
+
 const BRANDS = [
     { name: 'Epson', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Epson_logo.svg/2560px-Epson_logo.svg.png' },
     { name: 'Canon', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Canon_logo.svg/2560px-Canon_logo.svg.png' },
@@ -88,7 +95,8 @@ export default async function OutsourcingPage() {
             {/* Banner Section */}
             <Container>
                 <div className="relative w-full aspect-[108/46] md:aspect-auto md:h-[300px] bg-black overflow-hidden group shadow-lg rounded-lg">
-                    <HeroCarousel banners={banners} />
+                    {/* Hero Carousel */}
+                    <HeroCarousel banners={banners} altText="Aluguel de Impressoras em Ouro Preto" />
                 </div>
             </Container>
 

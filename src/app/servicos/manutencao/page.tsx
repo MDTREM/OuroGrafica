@@ -4,6 +4,13 @@ import { HeroCarousel } from "@/components/ui/HeroCarousel";
 import { MaintenanceForm } from "@/components/services/MaintenanceForm";
 import { getPagesConfig } from "@/actions/homepage-actions";
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Manutenção de Impressoras em Ouro Preto | Ouro Gráfica",
+    description: "Conserto e manutenção de impressoras Epson, Canon, HP e Brother. Troca de almofadas, limpeza de cabeçote e peças. Orçamento grátis no WhatsApp!",
+};
+
 const BRANDS = [
     { name: 'Epson', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Epson_logo.svg/2560px-Epson_logo.svg.png' },
     { name: 'Canon', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Canon_logo.svg/2560px-Canon_logo.svg.png' },
@@ -57,7 +64,7 @@ export default async function ManutencaoPage() {
             <Container>
                 <div className="relative w-full aspect-[108/46] md:aspect-auto md:h-[300px] bg-black overflow-hidden group shadow-lg rounded-lg">
                     {/* Hero Carousel */}
-                    <HeroCarousel banners={banners} />
+                    <HeroCarousel banners={banners} altText="Manutenção de Impressoras Ouro Gráfica" />
                 </div>
             </Container>
 
