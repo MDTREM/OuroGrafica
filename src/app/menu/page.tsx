@@ -124,7 +124,7 @@ export default function MenuPage() {
 
                 {/* 5. Policies & Logout */}
                 <div className="space-y-3">
-                    <Link href="/politicas" className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 hover:bg-gray-50 text-sm font-medium text-gray-600">
+                    <Link href="/termos-de-uso" className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 hover:bg-gray-50 text-sm font-medium text-gray-600">
                         <FileText size={18} className="text-gray-400" />
                         Políticas e Termos
                     </Link>

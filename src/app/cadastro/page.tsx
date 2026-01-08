@@ -191,7 +191,7 @@ export default function RegisterPage() {
 
                     <div className="mt-6">
                         <p className="text-center text-xs text-gray-400">
-                            Ao se cadastrar, você concorda com nossos <Link href="/termos" className="underline hover:text-gray-600">Termos de Uso</Link> e <Link href="/privacidade" className="underline hover:text-gray-600">Política de Privacidade</Link>.
+                            Ao se cadastrar, você concorda com nossos <Link href="/termos-de-uso" className="underline hover:text-gray-600">Termos de Uso</Link> e <Link href="/politica-de-privacidade" className="underline hover:text-gray-600">Política de Privacidade</Link>.
                         </p>
                     </div>
                 </div>

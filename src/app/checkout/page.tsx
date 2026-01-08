@@ -608,7 +608,7 @@ export default function CheckoutPage() {
                                         <span className="text-sm font-bold text-gray-900">Total a pagar</span>
                                         <span className="text-xl font-bold text-brand">R$ {total.toFixed(2).replace('.', ',')}</span>
                                     </div>
-                                    <p className="text-xs text-center text-gray-400 mt-2">Ao finalizar, você concorda com os termos.</p>
+                                    <p className="text-xs text-center text-gray-400 mt-2">Ao finalizar, você concorda com os <Link href="/termos-de-uso" target="_blank" className="underline hover:text-gray-600">termos</Link>.</p>
                                 </div>
 
                                 <button
