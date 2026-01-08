@@ -106,7 +106,7 @@ export default async function OutsourcingPage() {
                 `}} />
                 <Container>
                     <div className="flex items-center gap-4 mb-6 justify-between">
-                        <h3 className="text-2xl font-bold text-gray-900">Trabalhamos com as Melhores Marcas</h3>
+                        <h3 className="text-lg md:text-2xl font-bold text-gray-900">Trabalhamos com as Melhores Marcas</h3>
                     </div>
 
                     <div className="relative w-full overflow-hidden mask-linear-fade">
@@ -152,7 +152,7 @@ export default async function OutsourcingPage() {
                 {/* Equipamentos */}
                 <div className="space-y-12">
                     <div className="text-left">
-                        <h2 className="text-2xl font-bold text-gray-900">Conheça nossos Equipamentos</h2>
+                        <h2 className="text-lg md:text-2xl font-bold text-gray-900">Conheça nossos Equipamentos</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {equipments.map((eq, idx) => (

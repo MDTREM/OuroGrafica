@@ -75,7 +75,7 @@ export default async function ManutencaoPage() {
                 `}} />
                 <Container>
                     <div className="flex items-center gap-4 mb-6 justify-between">
-                        <h3 className="text-2xl font-bold text-gray-900">Marcas Parceiras</h3>
+                        <h3 className="text-lg md:text-2xl font-bold text-gray-900">Marcas Parceiras</h3>
                     </div>
 
                     <div className="relative w-full overflow-hidden mask-linear-fade">
@@ -95,7 +95,7 @@ export default async function ManutencaoPage() {
             {/* Common Problems (Grid 2x2) */}
             <div className="py-8">
                 <Container>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-8">Problemas Comuns</h2>
+                    <h2 className="text-lg md:text-2xl font-bold text-gray-900 mb-8">Problemas Comuns</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                         {problems.map((item, idx) => (
