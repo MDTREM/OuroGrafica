@@ -12,6 +12,7 @@ import { supabase } from "@/lib/supabase"; // Import supabase
 import { Product } from "@/data/mockData";
 
 
+
 // Helper to fetch products for a section
 async function getProductsForSection(section: Section): Promise<Product[]> {
   const { data: allProducts } = await supabase.from('products').select('*');
@@ -43,6 +44,46 @@ async function getProductsForSection(section: Section): Promise<Product[]> {
   }
   return filtered;
 }
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Ouro Gráfica",
+  "image": "https://ourografica.site/icon.png",
+  "@id": "https://ourografica.site",
+  "url": "https://ourografica.site",
+  "telephone": "+5531982190935",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Rua José Moringa, 9",
+    "addressLocality": "Ouro Preto",
+    "addressRegion": "MG",
+    "postalCode": "35400-000",
+    "addressCountry": "BR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -20.3920977,
+    "longitude": -43.5188806
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "opens": "08:00",
+    "closes": "18:00"
+  },
+  "sameAs": [
+    "https://www.instagram.com/graficaouro/",
+    "https://www.facebook.com/people/Ouro-Gr%C3%A1fica/61583717952045/"
+  ]
+};
+
 
 export default async function Home() {
   const config = await getHomepageConfig();
@@ -97,6 +138,10 @@ export default async function Home() {
 
   return (
     <div className="pb-8 space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* 1. Main Banner (if exists) */}
       {bannerSection && renderSection(bannerSection)}
 
