@@ -161,6 +161,11 @@ export async function savePagesConfig(config: PagesConfig): Promise<boolean> {
             console.error('Supabase save error:', error);
             return false;
         }
+
+        revalidatePath('/servicos/manutencao');
+        revalidatePath('/servicos/outsourcing');
+        revalidatePath('/', 'layout'); // Just to be safe for any other shared components
+
         return true;
     } catch (error) {
         console.error('Error saving pages config:', error);
