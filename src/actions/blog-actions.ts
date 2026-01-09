@@ -60,7 +60,7 @@ export async function getPosts(limit?: number) {
     }
 }
 
-}
+
 
 export async function getAllPostsAdmin() {
     try {
