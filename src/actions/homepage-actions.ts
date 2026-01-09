@@ -14,7 +14,7 @@ export interface Banner {
     mobileImageUrl?: string;
 }
 
-export type SectionType = 'banner-carousel' | 'info-banner' | 'categories' | 'product-row' | 'stacked-banners' | 'maintenance-cta';
+export type SectionType = 'banner-carousel' | 'info-banner' | 'categories' | 'product-row' | 'stacked-banners' | 'maintenance-cta' | 'blog-preview';
 
 export interface Section {
     id: string;

@@ -18,6 +18,7 @@ export function AdminSidebar() {
 
         { label: "Config. Home", href: "/admin/configuracao/home", icon: Image },
         { label: "Config. Paginas", href: "/admin/configuracao/paginas", icon: Image },
+        { label: "Blog", href: "/admin/blog", icon: FileText },
         { label: "Solicitações", href: "/admin/solicitacoes", icon: FileText },
     ];
 

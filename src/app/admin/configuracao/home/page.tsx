@@ -267,6 +267,7 @@ export default function AdminHomeConfigPage() {
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('info-banner', 'Faixa Informativa')}>+ Faixa Informativa</button>
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('categories', 'Categorias')}>+ Categorias</button>
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('maintenance-cta', 'Card de Manutenção')}>+ Card de Manutenção</button>
+                                <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('blog-preview', 'Preview do Blog', 'Dicas & Novidades')}>+ Preview do Blog</button>
                             </div>
                         )}
                     </div>

@@ -7,6 +7,7 @@ import { ProductRow } from "@/components/shop/ProductRow";
 import { CATEGORIES } from "@/data/mockData";
 import { MaintenanceCTA } from "@/components/shop/MaintenanceCTA";
 import { LocationMap } from "@/components/shop/LocationMap";
+import { BlogPreviewSection } from "@/components/shop/BlogPreviewSection";
 import { getHomepageConfig, Section } from "@/actions/homepage-actions";
 import { supabase } from "@/lib/supabase"; // Import supabase
 import { Product } from "@/data/mockData";
@@ -128,6 +129,8 @@ export default async function Home() {
         return <StackedBanners key={section.id} banners={section.banners || []} />;
       case 'maintenance-cta':
         return <MaintenanceCTA key={section.id} />;
+      case 'blog-preview':
+        return <BlogPreviewSection key={section.id} title={section.title} />;
       default:
         return null;
     }
