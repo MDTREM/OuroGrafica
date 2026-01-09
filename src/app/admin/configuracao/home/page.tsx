@@ -5,7 +5,8 @@ import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { getHomepageConfig, saveHomepageConfig, uploadImage, HomepageConfig, Banner, Section, SectionType } from '@/actions/homepage-actions';
-import { Trash2, Plus, ArrowUp, ArrowDown, Eye, EyeOff, Layout, Edit, X } from 'lucide-react';
+import { getAllPostsAdmin, BlogPost } from '@/actions/blog-actions';
+import { Trash2, Plus, ArrowUp, ArrowDown, Eye, EyeOff, Layout, Edit, X, Calendar } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
 
 export default function AdminHomeConfigPage() {
@@ -23,6 +24,9 @@ export default function AdminHomeConfigPage() {
     const [editingBanner, setEditingBanner] = useState<Partial<Banner> | null>(null);
     const [editingBenefit, setEditingBenefit] = useState<any | null>(null);
 
+    // Blog Selection State
+    const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+
     // Section Adding State
     const [isAddingSection, setIsAddingSection] = useState(false);
 
@@ -32,8 +36,12 @@ export default function AdminHomeConfigPage() {
 
     async function loadConfig() {
         setLoading(true);
-        const data = await getHomepageConfig();
-        setConfig(data);
+        const [configData, postsData] = await Promise.all([
+            getHomepageConfig(),
+            getAllPostsAdmin()
+        ]);
+        setConfig(configData);
+        setBlogPosts(postsData);
         setLoading(false);
     }
 
@@ -535,6 +543,70 @@ export default function AdminHomeConfigPage() {
                                             Nenhum item adicionado.
                                         </div>
                                     )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Blog Selection UI */}
+                        {editingSection.type === 'blog-preview' && (
+                            <div className="space-y-4 pt-2 border-t border-gray-100">
+                                <div>
+                                    <label className="text-sm font-medium mb-2 block">Selecionar Artigos</label>
+                                    <p className="text-xs text-gray-500 mb-2">Marque os artigos que deseja exibir na home (máximo 3 recomendados).</p>
+
+                                    <div className="border border-border rounded-md max-h-60 overflow-y-auto bg-gray-50 p-2 space-y-1">
+                                        {blogPosts.length === 0 ? (
+                                            <p className="text-xs text-gray-400 text-center py-2">Carregando artigos...</p>
+                                        ) : (
+                                            blogPosts.map(post => {
+                                                const isSelected = editingSection.settings?.postIds?.includes(post.id);
+                                                return (
+                                                    <div
+                                                        key={post.id}
+                                                        onClick={() => {
+                                                            const currentIds = editingSection.settings?.postIds || [];
+                                                            const newIds = isSelected
+                                                                ? currentIds.filter(id => id !== post.id)
+                                                                : [...currentIds, post.id];
+
+                                                            setEditingSection({
+                                                                ...editingSection,
+                                                                settings: {
+                                                                    ...editingSection.settings,
+                                                                    postIds: newIds
+                                                                }
+                                                            });
+                                                        }}
+                                                        className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all border ${isSelected ? 'bg-brand/5 border-brand' : 'hover:bg-gray-50 border-transparent'}`}
+                                                    >
+                                                        <div className={`w-5 h-5 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${isSelected ? 'bg-brand border-brand' : 'border-gray-300 bg-white'}`}>
+                                                            {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-[1px]" />}
+                                                        </div>
+
+                                                        <div className="relative w-10 h-10 rounded overflow-hidden flex-shrink-0 border border-gray-100 bg-gray-200">
+                                                            {post.cover_image ? (
+                                                                <img src={post.cover_image} className="w-full h-full object-cover" alt={post.title} />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center"><Layout size={12} className="text-gray-400" /></div>
+                                                            )}
+                                                        </div>
+
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className={`text-sm font-medium truncate ${isSelected ? 'text-brand-dark' : 'text-gray-900'}`}>{post.title}</p>
+                                                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                                                                <span className={post.published ? 'text-green-600' : 'text-yellow-600'}>{post.published ? 'Publicado' : 'Rascunho'}</span>
+                                                                <span>•</span>
+                                                                <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })
+                                        )}
+                                    </div>
+                                    <p className="text-xs text-right text-gray-500 mt-1">
+                                        {editingSection.settings?.postIds?.length || 0} selecionados
+                                    </p>
                                 </div>
                             </div>
                         )}

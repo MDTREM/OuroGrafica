@@ -27,6 +27,7 @@ export interface Section {
         filter?: 'best-sellers' | 'featured' | 'new' | 'custom';
         count?: number;
         productIds?: string[];
+        postIds?: string[];
     };
     benefits?: {
         id: string;

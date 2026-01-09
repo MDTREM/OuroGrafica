@@ -130,7 +130,7 @@ export default async function Home() {
       case 'maintenance-cta':
         return <MaintenanceCTA key={section.id} />;
       case 'blog-preview':
-        return <BlogPreviewSection key={section.id} title={section.title} />;
+        return <BlogPreviewSection key={section.id} title={section.title} postIds={section.settings?.postIds} />;
       default:
         return null;
     }

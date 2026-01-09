@@ -1,10 +1,15 @@
-import { getPosts } from "@/actions/blog-actions";
+import { getPosts, getSpecificPosts } from "@/actions/blog-actions";
 import { Container } from "@/components/ui/Container";
 import Link from "next/link";
 import { ArrowRight, Calendar } from "lucide-react";
 
-export async function BlogPreviewSection({ title }: { title?: string }) {
-    const posts = await getPosts(3); // Fetch only 3 latest posts
+export async function BlogPreviewSection({ title, postIds }: { title?: string, postIds?: string[] }) {
+    let posts;
+    if (postIds && postIds.length > 0) {
+        posts = await getSpecificPosts(postIds);
+    } else {
+        posts = await getPosts(3); // Fetch only 3 latest posts
+    }
 
     if (!posts || posts.length === 0) return null;
 
@@ -23,7 +28,7 @@ export async function BlogPreviewSection({ title }: { title?: string }) {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {posts.map(post => (
+                    {posts.map((post: any) => (
                         <Link key={post.id} href={`/blog/${post.slug}`} className="group">
                             <article className="border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col bg-white">
                                 <div className="aspect-[16/10] overflow-hidden relative">

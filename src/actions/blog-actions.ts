@@ -60,6 +60,8 @@ export async function getPosts(limit?: number) {
     }
 }
 
+}
+
 export async function getAllPostsAdmin() {
     try {
         const { data, error } = await staticSupabase
@@ -71,6 +73,25 @@ export async function getAllPostsAdmin() {
         return data as BlogPost[];
     } catch (error) {
         console.error('Error fetching admin posts:', error);
+        return [];
+    }
+}
+
+export async function getSpecificPosts(ids: string[]) {
+    try {
+        const { data, error } = await staticSupabase
+            .from('posts')
+            .select('*')
+            .in('id', ids)
+            .eq('published', true);
+
+        if (error) throw error;
+
+        // Sort by input array order
+        const posts = data as BlogPost[];
+        return posts.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+    } catch (error) {
+        console.error('Error fetching specific posts:', error);
         return [];
     }
 }
