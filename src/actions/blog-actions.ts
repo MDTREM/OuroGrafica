@@ -1,8 +1,7 @@
 'use server';
 
 import { supabase as staticSupabase } from '@/lib/supabase';
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createClient } from '@supabase/supabase-js';
 import { revalidatePath } from 'next/cache';
 
 export interface BlogPost {
@@ -24,32 +23,19 @@ export interface BlogPost {
     is_featured?: boolean;
 }
 
-// Helper to create authenticated client
-async function createAuthClient() {
-    const cookieStore = await cookies();
-
-    return createServerClient(
+// Helper to create authenticated client from token
+function createAuthClient(token: string) {
+    return createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
-            cookies: {
-                getAll() {
-                    return cookieStore.getAll()
-                },
-                setAll(cookiesToSet) {
-                    try {
-                        cookiesToSet.forEach(({ name, value, options }) =>
-                            cookieStore.set(name, value, options)
-                        )
-                    } catch {
-                        // The `setAll` method was called from a Server Component.
-                        // This can be ignored if you have middleware refreshing
-                        // user sessions.
-                    }
+            global: {
+                headers: {
+                    Authorization: `Bearer ${token}`,
                 },
             },
         }
-    )
+    );
 }
 
 export async function getPosts(limit?: number) {
@@ -76,8 +62,7 @@ export async function getPosts(limit?: number) {
 
 export async function getAllPostsAdmin() {
     try {
-        const supabase = await createAuthClient();
-        const { data, error } = await supabase
+        const { data, error } = await staticSupabase
             .from('posts')
             .select('*')
             .order('created_at', { ascending: false });
@@ -106,14 +91,18 @@ export async function getPostBySlug(slug: string) {
     }
 }
 
-export async function savePost(post: Partial<BlogPost>) {
+export async function savePost(post: Partial<BlogPost>, token?: string) {
     try {
-        const supabase = await createAuthClient();
+        if (!token) {
+            return { success: false, error: 'Usuário não autenticado. Token não fornecido.' };
+        }
 
-        // Check if user is authenticated
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            return { success: false, error: 'Usuário não autenticado. Faça login novamente.' };
+        const supabase = createAuthClient(token);
+
+        // Use getUser to verify the token is valid on the server
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (!user || authError) {
+            return { success: false, error: 'Sessão inválida ou expirada.' };
         }
 
         const payload = {
@@ -141,15 +130,13 @@ export async function savePost(post: Partial<BlogPost>) {
     }
 }
 
-export async function deletePost(id: string) {
+export async function deletePost(id: string, token?: string) {
     try {
-        const supabase = await createAuthClient();
+        if (!token) return false;
 
-        // Check if user is authenticated
+        const supabase = createAuthClient(token);
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            return false;
-        }
+        if (!user) return false;
 
         const { error } = await supabase
             .from('posts')

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Plus, Edit, Trash2, FileText, Globe } from 'lucide-react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 export default function AdminBlogPage() {
     const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -25,7 +26,10 @@ export default function AdminBlogPage() {
     async function handleDelete(id: string) {
         if (!confirm('Tem certeza que deseja excluir este post?')) return;
 
-        const success = await deletePost(id);
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+
+        const success = await deletePost(id, token);
         if (success) {
             loadPosts();
         } else {
