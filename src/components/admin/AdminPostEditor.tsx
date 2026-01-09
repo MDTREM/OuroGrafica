@@ -183,7 +183,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
         const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token;
 
-        const result = await savePost(formData, token);
+        const result = await savePost(formData, token || undefined);
         if (result.success) {
             alert('Post salvo com sucesso!');
             router.push('/admin/blog');
