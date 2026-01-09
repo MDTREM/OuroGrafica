@@ -6,6 +6,8 @@ import { CartProvider } from "@/contexts/CartContext";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import { AdminProvider } from "@/contexts/AdminContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { GoogleAnalytics } from '@next/third-parties/google';
+import { CookieBanner } from "@/components/ui/CookieBanner";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -38,11 +40,13 @@ export default function RootLayout({
               <AdminProvider>
                 <AppShell>
                   {children}
+                  <CookieBanner />
                 </AppShell>
               </AdminProvider>
             </AuthProvider>
           </FavoritesProvider>
         </CartProvider>
+        <GoogleAnalytics gaId="G-1SYW5MM5VB" />
       </body>
     </html>
   );
