@@ -96,9 +96,9 @@ export async function savePost(post: Partial<BlogPost>) {
         revalidatePath('/admin/blog');
 
         return { success: true, data };
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error saving post:', error);
-        return { success: false, error };
+        return { success: false, error: error.message || 'Erro desconhecido ao salvar post' };
     }
 }
 

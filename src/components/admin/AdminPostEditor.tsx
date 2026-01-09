@@ -183,7 +183,8 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
             alert('Post salvo com sucesso!');
             router.push('/admin/blog');
         } else {
-            alert('Erro ao salvar post. Verifique o console.');
+            console.error(result.error);
+            alert(`Erro ao salvar post: ${result.error}`);
         }
         setSaving(false);
     };
