@@ -8,6 +8,7 @@ import { ArrowLeft, Save, Image as ImageIcon, Loader2, Bold, List, Heading2, Hea
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { uploadImage } from '@/actions/homepage-actions';
+import { supabase } from '@/lib/supabase';
 
 interface EditorProps {
     initialData?: Partial<BlogPost>;
@@ -178,7 +179,11 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
-        const result = await savePost(formData);
+
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+
+        const result = await savePost(formData, token);
         if (result.success) {
             alert('Post salvo com sucesso!');
             router.push('/admin/blog');
