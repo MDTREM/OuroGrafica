@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { BlogPost, savePost } from '@/actions/blog-actions';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
-import { ArrowLeft, Save, Image as ImageIcon, Loader2, Bold, List, Heading2, Heading3, Quote, AlignLeft, Search, Phone, Printer, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Save, Image as ImageIcon, Loader2, Bold, List, Heading2, Heading3, Quote, AlignLeft, Search, Phone, Printer, HelpCircle, FileText, Link as LinkIcon, Copy } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { uploadImage } from '@/actions/homepage-actions';
@@ -22,6 +22,48 @@ const CATEGORIES = [
     "Papelaria",
     "Institucional"
 ];
+
+const INTERNAL_LINKS = [
+    { label: 'Serviço: Manutenção', url: '/servicos/manutencao' },
+    { label: 'Serviço: Outsourcing', url: '/servicos/outsourcing' },
+    { label: 'Página: Contato', url: 'https://wa.me/5531982190935' },
+    { label: 'Blog Home', url: '/blog' },
+];
+
+const PROBLEM_SOLUTION_TEMPLATE = `
+<p>Se você está enfrentando problemas com [PROBLEMA], você não está sozinho. Esse é um dos desafios mais comuns para quem trabalha com impressão.</p>
+<p>Neste artigo, vamos explicar as principais causas e como resolver isso de forma prática.</p>
+
+<h2>Por que isso acontece?</h2>
+<p>Geralmente, esse problema é causado por alguns fatores principais:</p>
+<ul>
+  <li>Causa 1: ...</li>
+  <li>Causa 2: ...</li>
+  <li>Causa 3: ...</li>
+</ul>
+
+<div class="my-8 p-6 bg-blue-50 rounded-xl border border-blue-200 text-center">
+    <h3 class="text-xl font-bold text-blue-900 mb-2">Precisa de ajuda profissional?</h3>
+    <p class="text-blue-700 mb-4">Nossa equipe técnica resolve isso rápido para você.</p>
+    <a href="https://wa.me/5531982190935" class="inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">Falar com Técnico</a>
+</div>
+
+<h2>Como resolver (Passo a Passo)</h2>
+<p>Antes de chamar a assistência, você pode tentar:</p>
+<ul>
+  <li>Passo 1: ...</li>
+  <li>Passo 2: ...</li>
+</ul>
+
+<h2>Quando chamar a manutenção?</h2>
+<p>Se as dicas acima não funcionaram, pode ser um desgaste de peça interna. Continuar forçando pode piorar a situação.</p>
+
+<div class="my-8 p-6 bg-[#FF6B07] rounded-xl text-center text-white">
+   <h3 class="text-xl font-bold mb-2">Evite parar sua produção!</h3>
+   <p class="mb-4">Temos planos de manutenção e aluguel ideais para sua empresa.</p>
+   <a href="/servicos/manutencao" class="inline-block bg-white text-[#FF6B07] font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition-colors">Ver Planos</a>
+</div>
+`;
 
 export function AdminPostEditor({ initialData, isNew }: EditorProps) {
     const router = useRouter();
@@ -86,7 +128,6 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
 
         setFormData({ ...formData, content: newText });
 
-        // Restore focus/cursor (requires timeout for state update)
         setTimeout(() => {
             textarea.focus();
             textarea.setSelectionRange(start + tagStart.length, end + tagStart.length);
@@ -118,6 +159,20 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
 </div>\n`;
         }
         insertTag(html);
+    };
+
+    const loadTemplate = () => {
+        if (formData.content && !confirm('Isso vai substituir o conteúdo atual. Deseja continuar?')) return;
+        setFormData({ ...formData, content: PROBLEM_SOLUTION_TEMPLATE });
+    };
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        alert('Link copiado!');
+    };
+
+    const insertLink = (url: string, label: string) => {
+        insertTag(`<a href="${url}" title="${label}">`, `</a>`);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -222,7 +277,12 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
 
                             {/* Content Editor with Toolbar */}
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Conteúdo do Artigo</label>
+                                <div className="flex justify-between items-center mb-2">
+                                    <label className="block text-sm font-bold text-gray-700">Conteúdo do Artigo</label>
+                                    <Button size="sm" variant="outline" onClick={loadTemplate} className="text-xs h-8">
+                                        <FileText size={14} className="mr-1" /> Carregar Modelo: Problema & Solução
+                                    </Button>
+                                </div>
 
                                 {/* Toolbar */}
                                 <div className="flex flex-wrap items-center gap-1 p-2 bg-gray-50 border border-gray-300 border-b-0 rounded-t-lg">
@@ -233,7 +293,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                     <button onClick={() => insertTag('<ul>\n  <li>', '</li>\n</ul>')} className="p-2 hover:bg-gray-200 rounded text-gray-600" title="Lista"><List size={18} /></button>
                                     <button onClick={() => insertTag('<blockquote>', '</blockquote>')} className="p-2 hover:bg-gray-200 rounded text-gray-600" title="Citação"><Quote size={18} /></button>
                                     <div className="w-px h-6 bg-gray-300 mx-1" />
-                                    <span className="text-xs font-semibold text-gray-400 px-2">Inserir CTA:</span>
+                                    <span className="text-xs font-semibold text-gray-400 px-2">CTA:</span>
                                     <button onClick={() => insertCTA('whatsapp')} className="p-2 hover:bg-green-100 text-green-600 rounded flex items-center gap-1 text-xs font-bold ring-1 ring-green-200 bg-white" title="Botão WhatsApp">
                                         <Phone size={14} /> Zap
                                     </button>
@@ -253,7 +313,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                     value={formData.content || ''}
                                     onChange={handleChange}
                                     className="w-full px-4 py-3 rounded-b-lg border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] focus:border-transparent outline-none font-mono text-sm leading-relaxed"
-                                    placeholder="Comece a escrever aqui..."
+                                    placeholder="Comece a escrever aqui ou use um modelo..."
                                 />
                                 <div className="mt-2 text-xs text-gray-400 flex justify-between">
                                     <span>Use a barra acima para formatar. HTML aceito.</span>
@@ -374,6 +434,41 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                         <div className="mt-4 pt-4 border-t border-gray-100 text-xs text-gray-500">
                             Última atualização: <br />
                             {formData.created_at ? new Date(formData.created_at).toLocaleString('pt-BR') : 'Nunca'}
+                        </div>
+                    </div>
+
+                    {/* Internal Links Helper */}
+                    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <LinkIcon size={16} className="text-[#FF6B07]" />
+                            Links Internos
+                        </h3>
+                        <p className="text-xs text-gray-500 mb-3">Links úteis para citar no seu texto:</p>
+                        <div className="space-y-2">
+                            {INTERNAL_LINKS.map((link, idx) => (
+                                <div key={idx} className="flex items-center justify-between p-2 bg-gray-50 rounded border border-gray-100 hover:border-[#FF6B07] group transition-colors">
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs font-bold text-gray-700 truncate">{link.label}</p>
+                                        <p className="text-[10px] text-gray-400 truncate">{link.url}</p>
+                                    </div>
+                                    <div className="flex gap-1">
+                                        <button
+                                            onClick={() => insertLink(link.url, link.label)}
+                                            className="p-1.5 hover:bg-white rounded text-gray-500 hover:text-[#FF6B07]"
+                                            title="Inserir Link no Texto"
+                                        >
+                                            <LinkIcon size={12} />
+                                        </button>
+                                        <button
+                                            onClick={() => copyToClipboard(link.url)}
+                                            className="p-1.5 hover:bg-white rounded text-gray-500 hover:text-blue-500"
+                                            title="Copiar URL"
+                                        >
+                                            <Copy size={12} />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
