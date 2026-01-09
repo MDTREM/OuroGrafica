@@ -11,6 +11,7 @@ import { BlogPreviewSection } from "@/components/shop/BlogPreviewSection";
 import { getHomepageConfig, Section } from "@/actions/homepage-actions";
 import { supabase } from "@/lib/supabase"; // Import supabase
 import { Product } from "@/data/mockData";
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 
 
 
@@ -153,6 +154,7 @@ export default async function Home() {
 
       {/* 4. Location Map */}
       <LocationMap />
+      <WhatsAppButton />
     </div>
   );
 }

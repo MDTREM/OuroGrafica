@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { CookieBanner } from "@/components/ui/CookieBanner";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { MicrosoftClarity } from "@/components/analytics/MicrosoftClarity";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -49,6 +50,7 @@ export default function RootLayout({
         </CartProvider>
         <GoogleAnalytics gaId="G-1SYW5MM5VB" />
         <SpeedInsights />
+        <MicrosoftClarity />
       </body>
     </html>
   );
