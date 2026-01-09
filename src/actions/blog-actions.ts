@@ -1,6 +1,8 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
+import { supabase as staticSupabase } from '@/lib/supabase';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 
 export interface BlogPost {
@@ -22,9 +24,37 @@ export interface BlogPost {
     is_featured?: boolean;
 }
 
+// Helper to create authenticated client
+async function createAuthClient() {
+    const cookieStore = await cookies();
+
+    return createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                getAll() {
+                    return cookieStore.getAll()
+                },
+                setAll(cookiesToSet) {
+                    try {
+                        cookiesToSet.forEach(({ name, value, options }) =>
+                            cookieStore.set(name, value, options)
+                        )
+                    } catch {
+                        // The `setAll` method was called from a Server Component.
+                        // This can be ignored if you have middleware refreshing
+                        // user sessions.
+                    }
+                },
+            },
+        }
+    )
+}
+
 export async function getPosts(limit?: number) {
     try {
-        let query = supabase
+        let query = staticSupabase
             .from('posts')
             .select('*')
             .eq('published', true)
@@ -46,6 +76,7 @@ export async function getPosts(limit?: number) {
 
 export async function getAllPostsAdmin() {
     try {
+        const supabase = await createAuthClient();
         const { data, error } = await supabase
             .from('posts')
             .select('*')
@@ -61,10 +92,10 @@ export async function getAllPostsAdmin() {
 
 export async function getPostBySlug(slug: string) {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await staticSupabase
             .from('posts')
             .select('*')
-            .eq('slug', slug) // Remove .eq('published', true) to allow preview if needed, or handle in page
+            .eq('slug', slug)
             .single();
 
         if (error) return null;
@@ -77,6 +108,14 @@ export async function getPostBySlug(slug: string) {
 
 export async function savePost(post: Partial<BlogPost>) {
     try {
+        const supabase = await createAuthClient();
+
+        // Check if user is authenticated
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            return { success: false, error: 'Usuário não autenticado. Faça login novamente.' };
+        }
+
         const payload = {
             ...post,
             slug: post.slug || post.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || '',
@@ -104,6 +143,14 @@ export async function savePost(post: Partial<BlogPost>) {
 
 export async function deletePost(id: string) {
     try {
+        const supabase = await createAuthClient();
+
+        // Check if user is authenticated
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            return false;
+        }
+
         const { error } = await supabase
             .from('posts')
             .delete()
