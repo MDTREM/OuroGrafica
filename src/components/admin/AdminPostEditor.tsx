@@ -179,19 +179,24 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const token = session?.access_token;
 
-        const { data: { session } } = await supabase.auth.getSession();
-        const token = session?.access_token;
-
-        const result = await savePost(formData, token || undefined);
-        if (result.success) {
-            alert('Post salvo com sucesso!');
-            router.push('/admin/blog');
-        } else {
-            console.error(result.error);
-            alert(`Erro ao salvar post: ${result.error}`);
+            const result = await savePost(formData, token || undefined);
+            if (result.success) {
+                alert('Post salvo com sucesso!');
+                router.push('/admin/blog');
+            } else {
+                console.error(result.error);
+                alert(`Erro ao salvar post: ${result.error}`);
+            }
+        } catch (error: any) {
+            console.error('Submission error:', error);
+            alert(`Erro inesperado: ${error.message || 'Verifique o console'}`);
+        } finally {
+            setSaving(false);
         }
-        setSaving(false);
     };
 
     return (
