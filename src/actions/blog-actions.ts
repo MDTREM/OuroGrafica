@@ -12,6 +12,14 @@ export interface BlogPost {
     cover_image: string;
     published: boolean;
     created_at: string;
+    // SEO & CMS Fields
+    meta_title?: string;
+    meta_description?: string;
+    focus_keyword?: string;
+    alt_text?: string;
+    category?: string;
+    tags?: string[]; // Array of strings for tags
+    is_featured?: boolean;
 }
 
 export async function getPosts(limit?: number) {

@@ -40,14 +40,13 @@ export default async function BlogPage() {
                                         />
                                     </div>
                                     <div className="p-6 flex-1 flex flex-col">
-                                        <div className="flex items-center gap-4 text-xs text-gray-400 mb-3">
-                                            <span className="flex items-center gap-1">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <span className="px-2 py-0.5 bg-orange-50 text-[#FF6B07] text-[10px] font-bold uppercase tracking-wider rounded">
+                                                {post.category || 'Dicas'}
+                                            </span>
+                                            <span className="flex items-center gap-1 text-xs text-gray-400">
                                                 <Calendar size={14} />
                                                 {new Date(post.created_at).toLocaleDateString('pt-BR')}
-                                            </span>
-                                            <span className="flex items-center gap-1">
-                                                <User size={14} />
-                                                Ouro Gráfica
                                             </span>
                                         </div>
                                         <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-[#FF6B07] transition-colors">
