@@ -8,6 +8,7 @@ import { AdminProvider } from "@/contexts/AdminContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { CookieBanner } from "@/components/ui/CookieBanner";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -47,6 +48,7 @@ export default function RootLayout({
           </FavoritesProvider>
         </CartProvider>
         <GoogleAnalytics gaId="G-1SYW5MM5VB" />
+        <SpeedInsights />
       </body>
     </html>
   );
