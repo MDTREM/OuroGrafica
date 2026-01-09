@@ -3,11 +3,12 @@ import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 
 // Server Component for fetching data
-export default async function EditPostPage({ params }: { params: { id: string } }) {
+export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
     const { data: post } = await supabase
         .from('posts')
         .select('*')
-        .eq('id', params.id)
+        .eq('id', id)
         .single();
 
     if (!post) {

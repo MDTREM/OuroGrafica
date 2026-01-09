@@ -5,14 +5,15 @@ import { notFound } from 'next/navigation';
 import { Calendar, Share2, Facebook, Linkedin, Twitter, Clock, Tag } from 'lucide-react';
 
 interface Props {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }
 
 // Fixed base URL
 const BASE_URL = 'https://ourografica.site';
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const post = await getPostBySlug(params.slug);
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
 
     if (!post) {
         return { title: 'Post não encontrado | Ouro Gráfica' };
@@ -49,7 +50,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogPostPage({ params }: Props) {
-    const post = await getPostBySlug(params.slug);
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
 
     if (!post) {
         notFound();
