@@ -22,8 +22,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://ourografica.site'),
   title: "Ouro Gráfica | Impressão Digital e Manutenção de Impressoras",
   description: "Destaque sua marca com cartões de visita, flyers e materiais gráficos premium.",
+  openGraph: {
+    title: "Ouro Gráfica | Impressão Digital de Alta Qualidade",
+    description: "Cartões de visita, flyers, banners e manutenção de impressoras em Ouro Preto.",
+    url: 'https://ourografica.site',
+    siteName: 'Ouro Gráfica',
+    locale: 'pt_BR',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({
