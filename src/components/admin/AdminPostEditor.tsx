@@ -138,7 +138,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
     const insertCTA = (type: 'whatsapp' | 'rent' | 'maintenance') => {
         let html = '';
         if (type === 'whatsapp') {
-            html = `\n<div class="my-8 p-6 bg-green-50 rounded-xl border border-green-200 text-center">
+            html = `\n<div class="not-prose my-8 p-6 bg-green-50 rounded-xl border border-green-200 text-center">
     <h3 class="text-xl font-bold text-green-800 mb-2">Precisa de ajuda agora?</h3>
     <p class="text-green-700 mb-4">Fale diretamente com nossa equipe técnica pelo WhatsApp.</p>
     <a href="https://wa.me/5531982190935" target="_blank" class="inline-flex items-center gap-2 bg-green-600 text-white font-bold py-3 px-6 rounded-full hover:bg-green-700 transition-colors">
@@ -147,13 +147,13 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
     </a>
 </div>\n`;
         } else if (type === 'rent') {
-            html = `\n<div class="my-8 p-6 bg-blue-50 rounded-xl border border-blue-200 text-center">
+            html = `\n<div class="not-prose my-8 p-6 bg-blue-50 rounded-xl border border-blue-200 text-center">
     <h3 class="text-xl font-bold text-blue-900 mb-2">Reduza custos com Outsourcing</h3>
     <p class="text-blue-700 mb-4">Alugue impressoras profissionais e economize até 40%.</p>
     <a href="/servicos/outsourcing" class="inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">Ver Planos de Aluguel</a>
 </div>\n`;
         } else if (type === 'maintenance') {
-            html = `\n<div class="my-8 p-6 bg-orange-50 rounded-xl border border-orange-200 text-center">
+            html = `\n<div class="not-prose my-8 p-6 bg-orange-50 rounded-xl border border-orange-200 text-center">
    <h3 class="text-xl font-bold text-orange-900 mb-2">Impressora parada?</h3>
    <p class="text-orange-700 mb-4">Temos técnicos especializados prontos para resolver.</p>
    <a href="/servicos/manutencao" class="inline-block bg-[#FF6B07] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#e65a00] transition-colors">Agendar Manutenção</a>
