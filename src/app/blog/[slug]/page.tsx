@@ -102,10 +102,10 @@ export default async function BlogPostPage({ params }: Props) {
                     className="w-full h-full object-cover absolute inset-0 text-transparent"
                 />
 
-                <div className="absolute inset-0 z-20 flex items-end pb-12 md:pb-20">
+                <div className="absolute inset-0 z-20 flex items-center">
                     <Container>
-                        <div className="max-w-4xl mx-auto text-center">
-                            <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="flex flex-wrap gap-2 mb-4">
                                 <span className="inline-block px-3 py-1 bg-[#FF6B07] text-white text-xs font-bold uppercase tracking-wider rounded">
                                     {post.category || 'Dica Ouro Gráfica'}
                                 </span>
@@ -119,7 +119,7 @@ export default async function BlogPostPage({ params }: Props) {
                             <h1 className="text-3xl md:text-5xl md:leading-tight font-bold text-white mb-6 drop-shadow-lg">
                                 {post.title}
                             </h1>
-                            <div className="flex flex-wrap items-center gap-6 text-gray-300 text-sm justify-center">
+                            <div className="flex flex-wrap items-center gap-6 text-gray-300 text-sm">
                                 <span className="flex items-center gap-2">
                                     <Calendar size={16} />
                                     {new Date(post.created_at).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}
