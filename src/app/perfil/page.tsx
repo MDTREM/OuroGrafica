@@ -1,3 +1,5 @@
+"use client";
+
 import { Container } from "@/components/ui/Container";
 import Link from "next/link";
 import { LogOut, ChevronRight } from "lucide-react";
