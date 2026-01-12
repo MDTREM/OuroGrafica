@@ -16,10 +16,10 @@ export async function BlogPreviewSection({ title, postIds }: { title?: string, p
     return (
         <section className="py-12 bg-white">
             <Container>
-                <div className="flex justify-between items-end mb-8">
+                <div className="flex justify-between items-end mb-4">
                     <div>
-                        <span className="text-[#FF6B07] font-bold text-sm uppercase tracking-wider mb-2 block">Nosso Blog</span>
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{title || "Dicas & Novidades"}</h2>
+                        <span className="text-[#FF6B07] font-bold text-sm uppercase tracking-wider mb-1 block">Nosso Blog</span>
+                        <h2 className="text-xl font-bold text-foreground">{title || "Dicas & Novidades"}</h2>
                     </div>
                     <Link href="/blog" className="hidden md:flex items-center gap-2 text-[#FF6B07] font-medium hover:gap-3 transition-all">
                         Ver todos os artigos
