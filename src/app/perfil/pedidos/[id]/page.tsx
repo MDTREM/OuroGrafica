@@ -30,14 +30,11 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
     const loadOrder = async () => {
         setIsLoading(true);
         try {
-            // Client-side fetch to use active session
-            const { data, error } = await supabase
-                .from('orders')
-                .select('*')
-                .eq('id', params.id)
-                .single();
+            // Use server action to fetch order
+            const { getOrderById } = await import("@/actions/profile-actions");
+            const data = await getOrderById(params.id);
 
-            if (data && !error) {
+            if (data) {
                 // Determine timeline status based on order status (simplified logic)
                 const currentStatus = data.status;
                 const timeline = [
@@ -50,7 +47,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
 
                 setOrder({ ...data, timeline });
             } else {
-                console.error("Order not found or error:", error);
+                console.error("Order not found or error");
                 setOrder(null);
             }
         } catch (error) {

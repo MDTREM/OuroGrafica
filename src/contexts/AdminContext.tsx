@@ -103,7 +103,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         // Orders with Items
         const { data: ordersData } = await supabase
             .from('orders')
-            .select('*, items:order_items(*)')
+            .select('*')
             .order('created_at', { ascending: false });
 
         if (ordersData) {

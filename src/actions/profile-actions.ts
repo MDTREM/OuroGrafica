@@ -132,10 +132,10 @@ export async function setDefaultAddress(userId: string, addressId: string) {
 
 export async function getUserOrders(userId: string) {
     try {
-        // Fetch orders and their items
+        // Fetch orders - items are in the 'items' column (JSONB)
         const { data, error } = await supabase
             .from('orders')
-            .select('*, order_items(*)')
+            .select('*')
             .eq('user_id', userId)
             .order('created_at', { ascending: false });
 
@@ -144,8 +144,7 @@ export async function getUserOrders(userId: string) {
             return [];
         }
 
-        // Map to simpler format if needed, or return as is
-        // Returning as is usually fine: id, created_at, status, total, order_items
+        // Return as is
         return data || [];
     } catch (error) {
         console.error('Unexpected error fetching orders:', error);
@@ -157,7 +156,7 @@ export async function getOrderById(orderId: string) {
     try {
         const { data, error } = await supabase
             .from('orders')
-            .select('*, order_items(*)')
+            .select('*')
             .eq('id', orderId)
             .single();
 
