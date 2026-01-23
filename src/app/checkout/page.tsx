@@ -37,57 +37,57 @@ export default function CheckoutPage() {
         cardNumber: "",
         cardName: "",
         cardExpiry: "",
-        cardCvv: ""
-    });
+        const [errorMessage, setErrorMessage] = useState<string | null>(null);
+        const [connectionStatus, setConnectionStatus] = useState<string>('Aguardando...');
 
-    // --- Script Injection for Efí Card ---
-    const loadEfiScript = () => {
-        setScriptLoaded(false);
-        const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
+        // --- Script Injection for Efí Card ---
+        const loadEfiScript = () => {
+            setScriptLoaded(false);
+            const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
 
-        // If ID matches placeholder or is missing, log but Unblock UI
-        if (!accountId || accountId.includes("INSERIR")) {
-            console.error("Efí Account ID missing or invalid:", accountId);
-            setScriptLoaded(true);
-            return;
-        }
+            // If ID matches placeholder or is missing, log but Unblock UI
+            if (!accountId || accountId.includes("INSERIR")) {
+                console.error("Efí Account ID missing or invalid:", accountId);
+                setScriptLoaded(true);
+                return;
+            }
 
-        const scriptId = 'efi-payment-token-script';
+            const scriptId = 'efi-payment-token-script';
 
-        // Remove existing if any to force reload
-        const existing = document.getElementById(scriptId);
-        if (existing) existing.remove();
+            // Remove existing if any to force reload
+            const existing = document.getElementById(scriptId);
+            if (existing) existing.remove();
 
-        // Initialize $gn stub if not exists
-        // @ts-ignore
-        if (typeof window.$gn === 'undefined') {
+            // Initialize $gn stub if not exists
             // @ts-ignore
-            window.$gn = { validForm: true, processed: false, done: {}, ready: function (fn) { window.$gn.done = fn; } };
-        }
+            if (typeof window.$gn === 'undefined') {
+                // @ts-ignore
+                window.$gn = { validForm: true, processed: false, done: {}, ready: function (fn) { window.$gn.done = fn; } };
+            }
 
-        const script = document.createElement('script');
-        script.id = scriptId;
-        script.type = 'text/javascript';
-        script.async = true;
+            const script = document.createElement('script');
+            script.id = scriptId;
+            script.type = 'text/javascript';
+            script.async = true;
 
-        // Random version buster as per Efí docs
-        const v = parseInt(String(Math.random() * 1000000));
-        script.src = `https://api.efi.com.br/v1/ancillary/payment-token/${accountId}/protect?v=${v}`;
+            // Random version buster as per Efí docs
+            const v = parseInt(String(Math.random() * 1000000));
+            script.src = `https://api.efi.com.br/v1/ancillary/payment-token/${accountId}/protect?v=${v}`;
 
-        script.onload = () => {
-            console.log("Efí Script Loaded");
-            setScriptLoaded(true);
+            script.onload = () => {
+                console.log("Efí Script Loaded");
+                setScriptLoaded(true);
+            };
+
+            script.onerror = () => {
+                console.error("Error loading Efí Script");
+                setScriptLoaded(true);
+            };
+
+            document.head.appendChild(script);
         };
 
-        script.onerror = () => {
-            console.error("Error loading Efí Script");
-            setScriptLoaded(true);
-        };
-
-        document.head.appendChild(script);
-    };
-
-    useEffect(() => {
+        useEffect(() => {
         loadEfiScript();
     }, []);
 
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
                     // @ts-ignore
                     if (typeof window.$gn === 'undefined' || typeof window.$gn.creditCard !== 'function') {
                         loadEfiScript(); // Try to reload if missing
-                        throw new Error("O sistema de pagamento da Efí ainda está inicializando. Aguarde 5 segundos e tente novamente.");
+                        throw new Error("Erro na conexão com Efí. Verifique se o domínio 'ourografica.site' está liberado no painel da Efí (API > Configurações).");
                     }
 
                     // Card Data for Tokenization
