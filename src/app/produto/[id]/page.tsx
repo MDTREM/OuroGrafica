@@ -497,7 +497,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                                 <span className={`font-bold ${designOption === "upload" ? "text-gray-900" : "text-gray-600"}`}>Já tenho minha arte</span>
                                                 <span className="text-xs font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Grátis</span>
                                             </div>
-                                            <p className="text-xs text-gray-500 mb-3">Envie seu arquivo pronto para impressão (PDF, AI, CDR).</p>
+                                            <p className="text-xs text-gray-500 mb-3">Envie seu arquivo pronto (PDF, Imagem, CorelDraw).</p>
 
                                             {/* File Upload Logic */}
                                             {designOption === "upload" && (
@@ -553,7 +553,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                                                 ) : (
                                                                     <>
                                                                         <UploadCloud size={18} className="text-brand" />
-                                                                        Escolher Arquivo (PDF, CDR, AI)
+                                                                        Escolher Arquivo (PDF, Imagem, Corel)
                                                                     </>
                                                                 )}
                                                             </label>
