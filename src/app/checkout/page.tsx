@@ -279,8 +279,9 @@ export default function CheckoutPage() {
                     }
 
                     // @ts-ignore
-                    if (typeof window.$gn === 'undefined') {
-                        throw new Error("O sistema de segurança da Efí não carregou. Desative bloqueadores de anúncio e recarregue a página.");
+                    if (typeof window.$gn === 'undefined' || typeof window.$gn.creditCard !== 'function') {
+                        loadEfiScript(); // Try to reload if missing
+                        throw new Error("O sistema de pagamento da Efí ainda está inicializando. Aguarde 5 segundos e tente novamente.");
                     }
 
                     // Card Data for Tokenization
