@@ -278,14 +278,110 @@ export default function CheckoutPage() {
                                                     <p className="text-sm text-gray-700">{user.user_metadata?.full_name || user.email}</p>
                                                 </div>
                                             </div>
-                                            <button onClick={() => setStep(2)} className="text-sm font-bold text-brand hover:underline">
-                                                Continuar
+                                            <button onClick={() => signOut()} className="text-xs text-red-500 hover:underline">
+                                                Sair
                                             </button>
                                         </div>
-                                        <div className="flex justify-end">
+
+                                        {/* Missing Data Form */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                            <div>
+                                                <label className="block text-sm font-bold text-gray-700 mb-1">Telefone / WhatsApp</label>
+                                                <input
+                                                    type="text"
+                                                    value={formData.phone}
+                                                    onChange={handlePhoneChange}
+                                                    placeholder="(00) 00000-0000"
+                                                    className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                />
+                                            </div>
+
+                                            <div className="md:col-span-2">
+                                                <div className="flex gap-4 mb-2">
+                                                    <label className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="personType"
+                                                            checked={personType === "pf"}
+                                                            onChange={() => setPersonType("pf")}
+                                                            className="accent-brand"
+                                                        />
+                                                        <span className="text-sm font-medium">Pessoa Física</span>
+                                                    </label>
+                                                    <label className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="personType"
+                                                            checked={personType === "pj"}
+                                                            onChange={() => setPersonType("pj")}
+                                                            className="accent-brand"
+                                                        />
+                                                        <span className="text-sm font-medium">Pessoa Jurídica</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            {personType === "pf" ? (
+                                                <>
+                                                    <div className="md:col-span-2">
+                                                        <label className="block text-sm font-bold text-gray-700 mb-1">Nome Completo</label>
+                                                        <input
+                                                            type="text"
+                                                            value={formData.name}
+                                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                        />
+                                                    </div>
+                                                    <div className="md:col-span-1">
+                                                        <label className="block text-sm font-bold text-gray-700 mb-1">CPF</label>
+                                                        <input
+                                                            type="text"
+                                                            value={formData.cpf}
+                                                            onChange={handleCpfChange}
+                                                            placeholder="000.000.000-00"
+                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                        />
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div className="md:col-span-2">
+                                                        <label className="block text-sm font-bold text-gray-700 mb-1">Razão Social</label>
+                                                        <input
+                                                            type="text"
+                                                            value={formData.companyName}
+                                                            onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                        />
+                                                    </div>
+                                                    <div className="md:col-span-1">
+                                                        <label className="block text-sm font-bold text-gray-700 mb-1">CNPJ</label>
+                                                        <input
+                                                            type="text"
+                                                            value={formData.cnpj}
+                                                            onChange={handleCnpjChange}
+                                                            placeholder="00.000.000/0000-00"
+                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                        />
+                                                    </div>
+                                                    <div className="md:col-span-1">
+                                                        <label className="block text-sm font-bold text-gray-700 mb-1">Inscrição Estadual (Opcional)</label>
+                                                        <input
+                                                            type="text"
+                                                            value={formData.ie}
+                                                            onChange={(e) => setFormData({ ...formData, ie: e.target.value })}
+                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+
+                                        <div className="flex justify-end pt-4">
                                             <button
                                                 onClick={() => setStep(2)}
-                                                className="bg-brand text-white font-bold py-3 px-6 rounded-lg hover:bg-brand/90 transition-all flex items-center gap-2"
+                                                disabled={!isStep1Valid()}
+                                                className="bg-brand text-white font-bold py-3 px-6 rounded-lg hover:bg-brand/90 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 Ir para Entrega
                                                 <ArrowRight size={18} />
