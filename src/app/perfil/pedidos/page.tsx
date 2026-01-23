@@ -80,7 +80,7 @@ export default function OrdersPage() {
                         const statusConfig = getStatusConfig(order.status);
                         const StatusIcon = statusConfig.icon;
                         const date = new Date(order.created_at).toLocaleDateString('pt-BR');
-                        const orderIdShort = order.id.slice(0, 8).toUpperCase();
+                        const orderIdShort = order.display_id || order.id.slice(0, 8).toUpperCase();
 
                         return (
                             <Link href={`/perfil/pedidos/${order.id}`} key={order.id} className="block bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:border-gray-300 transition-all cursor-pointer group">

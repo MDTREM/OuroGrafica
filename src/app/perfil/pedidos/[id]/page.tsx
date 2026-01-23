@@ -126,7 +126,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div>
                             <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                Pedido #{order.id.slice(0, 8).toUpperCase()}
+                                Pedido #{order.display_id || order.id.slice(0, 8).toUpperCase()}
                                 <span className={`text-xs px-2 py-0.5 rounded-full border ${currentStatusConfig.color} flex items-center gap-1`}>
                                     <StatusIcon size={12} /> {currentStatusConfig.label}
                                 </span>

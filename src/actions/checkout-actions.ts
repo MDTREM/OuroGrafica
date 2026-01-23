@@ -73,6 +73,9 @@ export async function createPixOrder(data: CheckoutData) {
                 txid: charge.txid,
                 qr_code: qrCodeData.qrcode, // Copia e Cola
                 qr_code_image: qrCodeData.imagemQrcode, // Base64 Img
+
+                // Generated Short ID (8 chars)
+                display_id: Math.random().toString(36).substring(2, 10).toUpperCase(),
             })
             .select()
             .single();

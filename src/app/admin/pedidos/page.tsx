@@ -53,7 +53,7 @@ export default function AdminOrdersPage() {
                         <tbody className="divide-y divide-gray-100">
                             {filteredOrders.map((order) => (
                                 <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 font-medium text-gray-900">{order.id}</td>
+                                    <td className="px-6 py-4 font-medium text-gray-900">{order.display_id || order.id.slice(0, 8).toUpperCase()}</td>
                                     <td className="px-6 py-4">{order.customerName}</td>
                                     <td className="px-6 py-4">{order.date}</td>
                                     {/* Handle items as array or number for compatibility */}
@@ -110,7 +110,7 @@ export default function AdminOrdersPage() {
                     <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in-95">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
                             <div>
-                                <h2 className="text-xl font-bold text-gray-900">Pedido #{selectedOrder.id}</h2>
+                                <h2 className="text-xl font-bold text-gray-900">Pedido #{selectedOrder.display_id || selectedOrder.id.slice(0, 8).toUpperCase()}</h2>
                                 <p className="text-sm text-gray-500">Realizado em {selectedOrder.date}</p>
                             </div>
                             <button
