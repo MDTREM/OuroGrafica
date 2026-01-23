@@ -71,8 +71,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // even if Supabase/Provider strips query params.
         if (queryParams?.next) {
             redirectTo.searchParams.set('next', queryParams.next);
-            // Fallback/robustness: Set a cookie
-            document.cookie = `auth-redirect=${queryParams.next}; path=/; max-age=600; Secure; SameSite=Lax`;
+            // Fallback: Simple cookie
+            document.cookie = `auth-redirect=${queryParams.next}; path=/; max-age=600`;
         }
 
         const { data, error } = await supabase.auth.signInWithOAuth({

@@ -79,17 +79,25 @@ export class EfiService {
     /**
      * 2. Criar Cobrança Imediata
      */
-    async createPixCharge(cpf: string, nome: string, total: string) {
+    async createPixCharge(document: string, nome: string, total: string) {
         const token = await this.authenticate();
+
+        const cleanDoc = document.replace(/\D/g, "");
+        const devedor: any = {
+            nome: nome,
+        };
+
+        if (cleanDoc.length === 14) {
+            devedor.cnpj = cleanDoc;
+        } else {
+            devedor.cpf = cleanDoc;
+        }
 
         const data = {
             calendario: {
                 expiracao: 3600, // 1 hora para pagar
             },
-            devedor: {
-                cpf: cpf.replace(/\D/g, ""), // Remove pontuação
-                nome: nome,
-            },
+            devedor: devedor,
             valor: {
                 original: total, // Ex: "10.50"
             },
