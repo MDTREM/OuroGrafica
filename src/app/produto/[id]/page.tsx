@@ -47,6 +47,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const [designOption, setDesignOption] = useState<"upload" | "hire">("upload");
     const [showFullDesc, setShowFullDesc] = useState(false);
 
+    // Upload State
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadedFile, setUploadedFile] = useState<{ name: string; url: string } | null>(null);
+
     // Custom Dimensions State
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 }); // in cm
 
@@ -166,7 +170,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 designOption: designOption,
                 quantity: quantity, // Real quantity configured
                 dimensions: product.allowCustomDimensions ? dimensions : undefined,
-                selectedVariations: selectedVariations // Add selected variations to cart
+                selectedVariations: selectedVariations, // Add selected variations to cart
+                fileUrl: uploadedFile?.url,
+                fileName: uploadedFile?.name
             }
         });
 
@@ -493,40 +499,84 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                             </div>
                                             <p className="text-xs text-gray-500 mb-3">Envie seu arquivo pronto para impressão (PDF, AI, CDR).</p>
 
-                                            {/* File Upload Input */}
+                                            {/* File Upload Logic */}
                                             {designOption === "upload" && (
-                                                <div className="mt-2 animate-in fade-in slide-in-from-top-1">
-                                                    <div className="flex gap-2 items-center">
-                                                        <input
-                                                            type="file"
-                                                            id="file-upload"
-                                                            className="hidden"
-                                                            onChange={async (e) => {
-                                                                const file = e.target.files?.[0];
-                                                                if (!file) return;
+                                                <div className="mt-3 animate-in fade-in slide-in-from-top-1">
+                                                    {!uploadedFile ? (
+                                                        <div className="flex gap-2 items-center">
+                                                            <input
+                                                                type="file"
+                                                                id="file-upload"
+                                                                className="hidden"
+                                                                accept=".pdf,.cdr,.ai,.psd,.jpg,.png,.jpeg"
+                                                                onChange={async (e) => {
+                                                                    const file = e.target.files?.[0];
+                                                                    if (!file) return;
 
-                                                                // Mock upload logic or Supabase
-                                                                // For now we just pretend to upload to show feedback
-                                                                // In real app: await supabase.storage.from('uploads').upload(...)
-                                                                try {
-                                                                    // const { data, error } = await supabase.storage.from('uploads').upload(`public/${Date.now()}_${file.name}`, file)
-                                                                    // if(error) throw error;
-                                                                    // setUploadedFile(data.path);
-                                                                    alert("Arquivo selecionado: " + file.name);
-                                                                } catch (err) {
-                                                                    console.error(err);
-                                                                    alert("Erro ao enviar arquivo.");
-                                                                }
-                                                            }}
-                                                        />
-                                                        <label
-                                                            htmlFor="file-upload"
-                                                            className="flex-1 flex items-center justify-center gap-2 cursor-pointer bg-white border border-gray-300 border-dashed rounded-lg py-3 hover:bg-gray-50 transition-colors text-sm text-gray-600 font-medium"
-                                                        >
-                                                            <UploadCloud size={18} className="text-brand" />
-                                                            Escolher Arquivo (PDF, CDR, AI)
-                                                        </label>
-                                                    </div>
+                                                                    setIsUploading(true);
+                                                                    try {
+                                                                        const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                                                                        const { data, error } = await supabase.storage
+                                                                            .from('client-uploads')
+                                                                            .upload(fileName, file);
+
+                                                                        if (error) throw error;
+
+                                                                        // Get Public URL
+                                                                        const { data: publicUrlData } = supabase.storage
+                                                                            .from('client-uploads')
+                                                                            .getPublicUrl(fileName);
+
+                                                                        setUploadedFile({
+                                                                            name: file.name,
+                                                                            url: publicUrlData.publicUrl
+                                                                        });
+
+                                                                        // Optional: Show a nice toast or just inline state (implemented below)
+                                                                    } catch (err) {
+                                                                        console.error(err);
+                                                                        alert("Erro ao enviar arquivo. Tente novamente."); // Fallback
+                                                                    } finally {
+                                                                        setIsUploading(false);
+                                                                    }
+                                                                }}
+                                                            />
+                                                            <label
+                                                                htmlFor="file-upload"
+                                                                className={`flex-1 flex items-center justify-center gap-2 cursor-pointer bg-white border border-dashed rounded-lg py-3 transition-colors text-sm font-medium ${isUploading ? 'border-brand/50 bg-brand/5 text-brand cursor-wait' : 'border-gray-300 hover:bg-gray-50 text-gray-600'}`}
+                                                            >
+                                                                {isUploading ? (
+                                                                    <>
+                                                                        <div className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
+                                                                        Enviando...
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <UploadCloud size={18} className="text-brand" />
+                                                                        Escolher Arquivo (PDF, CDR, AI)
+                                                                    </>
+                                                                )}
+                                                            </label>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
+                                                            <div className="flex items-center gap-2 overflow-hidden">
+                                                                <div className="bg-green-100 p-1.5 rounded-full text-green-600 flex-shrink-0">
+                                                                    <Check size={14} />
+                                                                </div>
+                                                                <span className="text-sm text-green-800 font-medium truncate max-w-[180px]">{uploadedFile.name}</span>
+                                                            </div>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setUploadedFile(null);
+                                                                }}
+                                                                className="text-xs text-red-500 hover:text-red-700 font-bold px-2 py-1"
+                                                            >
+                                                                Remover
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
@@ -569,7 +619,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-sm font-bold text-gray-900">Retirada na Loja</p>
-                                    <p className="text-xs text-gray-500">Disponível em 2 dias úteis</p>
+                                    <p className="text-xs text-gray-500">Disponível em até 5 dias úteis</p>
                                 </div>
                                 <span className="text-sm font-bold text-green-600">Grátis</span>
                             </div>

@@ -23,6 +23,8 @@ export interface CartItem {
             height: number;
         };
         selectedVariations?: { [key: string]: string };
+        fileUrl?: string;
+        fileName?: string;
     };
 }
 
