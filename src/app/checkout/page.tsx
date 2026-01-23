@@ -37,57 +37,64 @@ export default function CheckoutPage() {
         cardNumber: "",
         cardName: "",
         cardExpiry: "",
-        const [errorMessage, setErrorMessage] = useState<string | null>(null);
-        const [connectionStatus, setConnectionStatus] = useState<string>('Aguardando...');
+        cardCvv: ""
+    });
 
-        // --- Script Injection for Efí Card ---
-        const loadEfiScript = () => {
-            setScriptLoaded(false);
-            const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [connectionStatus, setConnectionStatus] = useState<string>('Aguardando...');
 
-            // If ID matches placeholder or is missing, log but Unblock UI
-            if (!accountId || accountId.includes("INSERIR")) {
-                console.error("Efí Account ID missing or invalid:", accountId);
-                setScriptLoaded(true);
-                return;
-            }
+    // --- Script Injection for Efí Card ---
+    const loadEfiScript = () => {
+        setScriptLoaded(false);
+        setConnectionStatus('Carregando script...');
+        const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
 
-            const scriptId = 'efi-payment-token-script';
+        // If ID matches placeholder or is missing, log but Unblock UI
+        if (!accountId || accountId.includes("INSERIR")) {
+            console.error("Efí Account ID missing or invalid:", accountId);
+            setConnectionStatus('ID Inválido');
+            setScriptLoaded(true);
+            return;
+        }
 
-            // Remove existing if any to force reload
-            const existing = document.getElementById(scriptId);
-            if (existing) existing.remove();
+        const scriptId = 'efi-payment-token-script';
 
-            // Initialize $gn stub if not exists
+        // Remove existing if any to force reload
+        const existing = document.getElementById(scriptId);
+        if (existing) existing.remove();
+
+        // Initialize $gn stub if not exists
+        // @ts-ignore
+        if (typeof window.$gn === 'undefined') {
             // @ts-ignore
-            if (typeof window.$gn === 'undefined') {
-                // @ts-ignore
-                window.$gn = { validForm: true, processed: false, done: {}, ready: function (fn) { window.$gn.done = fn; } };
-            }
+            window.$gn = { validForm: true, processed: false, done: {}, ready: function (fn) { window.$gn.done = fn; } };
+        }
 
-            const script = document.createElement('script');
-            script.id = scriptId;
-            script.type = 'text/javascript';
-            script.async = true;
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.type = 'text/javascript';
+        script.async = true;
 
-            // Random version buster as per Efí docs
-            const v = parseInt(String(Math.random() * 1000000));
-            script.src = `https://api.efi.com.br/v1/ancillary/payment-token/${accountId}/protect?v=${v}`;
+        // Random version buster as per Efí docs
+        const v = parseInt(String(Math.random() * 1000000));
+        script.src = `https://api.efi.com.br/v1/ancillary/payment-token/${accountId}/protect?v=${v}`;
 
-            script.onload = () => {
-                console.log("Efí Script Loaded");
-                setScriptLoaded(true);
-            };
-
-            script.onerror = () => {
-                console.error("Error loading Efí Script");
-                setScriptLoaded(true);
-            };
-
-            document.head.appendChild(script);
+        script.onload = () => {
+            console.log("Efí Script Loaded");
+            setConnectionStatus('Sucesso');
+            setScriptLoaded(true);
         };
 
-        useEffect(() => {
+        script.onerror = () => {
+            console.error("Error loading Efí Script");
+            setConnectionStatus('Erro ao baixar');
+            setScriptLoaded(true);
+        };
+
+        document.head.appendChild(script);
+    };
+
+    useEffect(() => {
         loadEfiScript();
     }, []);
 
@@ -840,6 +847,9 @@ export default function CheckoutPage() {
                                 <div className="mt-6 text-center">
                                     <p className="text-[10px] text-gray-400">
                                         ID Efí: {process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID ? `...${process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID.slice(-4)}` : 'Não identificado'}
+                                    </p>
+                                    <p className={`text-[10px] font-bold ${connectionStatus === 'Sucesso' ? 'text-green-500' : 'text-orange-500'}`}>
+                                        Status Conexão: {connectionStatus}
                                     </p>
                                 </div>
                             </div>
