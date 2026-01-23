@@ -167,9 +167,12 @@ export default function CheckoutPage() {
         return true; // Pix e Boleto não precisam de validação extra por enquanto
     };
 
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
     const handleFinishOrder = async () => {
+        setErrorMessage(null);
         if (paymentMethod === "credit" && !isStep3Valid()) {
-            alert("Por favor, preencha os dados do cartão corretamente.");
+            setErrorMessage("Por favor, preencha os dados do cartão corretamente.");
             return;
         }
 
@@ -189,27 +192,25 @@ export default function CheckoutPage() {
 
         try {
             if (paymentMethod === 'pix') {
-                // Import server action dynamically or at top (Next.js server actions can be imported normaly)
-                // But since we are inside a client component ensuring we call it correctly
                 const { createPixOrder } = await import('@/actions/checkout-actions');
 
                 const res = await createPixOrder(checkoutPayload);
 
                 if (res.success && res.order && res.order.id) {
                     clearCart();
-                    router.push(`/checkout/sucesso/${res.order.id}`); // Redirect to success/payment page
+                    router.push(`/checkout/sucesso/${res.order.id}`);
                 } else {
-                    alert(res.error || "Erro ao gerar PIX. Verifique os dados e tente novamente.");
+                    console.error("Checkout Error:", res);
+                    setErrorMessage(res.error || "Erro ao gerar PIX. Verifique se o CPF/CNPJ é válido e tente novamente.");
                     setIsSubmitting(false);
                 }
             } else {
-                // Future Credit Card Logic
-                alert("Pagamento por Cartão será implementado em breve. Por favor, escolha PIX.");
+                setErrorMessage("Pagamento por Cartão será implementado em breve. Por favor, escolha PIX.");
                 setIsSubmitting(false);
             }
         } catch (error) {
             console.error(error);
-            alert('Erro inesperado. Tente novamente.');
+            setErrorMessage('Erro inesperado de conexão. Tente novamente.');
             setIsSubmitting(false);
         }
     };
@@ -337,7 +338,7 @@ export default function CheckoutPage() {
                     </div>
 
                     {/* 2. Delivery Address */}
-                    <div className={`bg-white p-6 rounded-xl border transition-all ${step === 2 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm opacity-60"}`}>
+                    <div className={`bg-white p-6 rounded-xl border transition-all ${step === 2 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                                 <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 2 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>2</div>
@@ -471,7 +472,7 @@ export default function CheckoutPage() {
                     </div>
 
                     {/* 3. Payment */}
-                    <div className={`bg-white p-6 rounded-xl border transition-all ${step === 3 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm opacity-60"}`}>
+                    <div className={`bg-white p-6 rounded-xl border transition-all ${step === 3 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                                 <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 3 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>3</div>
@@ -624,6 +625,11 @@ export default function CheckoutPage() {
                                         "Finalizar Pedido"
                                     )}
                                 </button>
+                                {errorMessage && (
+                                    <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center font-medium animate-in fade-in slide-in-from-top-1">
+                                        {errorMessage}
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
