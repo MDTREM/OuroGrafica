@@ -281,14 +281,14 @@ export default function CheckoutPage() {
 
                 // 1. Get Payment Token from Efí Script
                 try {
-                    // @ts-ignore
-                    if (typeof window.$gn === 'undefined') {
-                        throw new Error("Script de pagamento não carregado. Recarregue a página.");
+                    const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
+                    if (!accountId || accountId.includes("INSERIR")) {
+                        throw new Error("Configuração (Account ID) ausente. Se estiver na Vercel, adicione a variável de ambiente.");
                     }
 
-                    const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
-                    if (!accountId || accountId.includes("INSERIR_ID")) {
-                        throw new Error("Configuração de pagamento incompleta. (Account ID ausente). Contate o suporte.");
+                    // @ts-ignore
+                    if (typeof window.$gn === 'undefined') {
+                        throw new Error("O sistema de segurança da Efí não carregou. Desative bloqueadores de anúncio e recarregue a página.");
                     }
 
                     // Card Data for Tokenization
