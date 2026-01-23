@@ -39,14 +39,25 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
                 .single();
 
             if (data && !error) {
-                // Determine timeline status based on order status (simplified logic)
-                const currentStatus = data.status;
+                // Determine timeline status based on order status
+                // Status mapping: pending -> 'pending'
+                // Paid -> 'paid' OR 'Produção'
+                // Produced -> 'Enviado' ?
+
+                const s = data.status;
+
+                // Helper to check if step is completed
+                const isPaid = s === 'paid' || s === 'Produção' || s === 'Enviado' || s === 'Entregue';
+                const isProduction = s === 'Produção' || s === 'Enviado' || s === 'Entregue';
+                const isShipped = s === 'Enviado' || s === 'Entregue';
+                const isDelivered = s === 'Entregue';
+
                 const timeline = [
                     { date: new Date(data.created_at).toLocaleString('pt-BR'), title: "Pedido Recebido", completed: true, current: false },
-                    { date: "--", title: "Pagamento Aprovado", completed: currentStatus !== 'pending_payment', current: false },
-                    { date: "--", title: "Em Produção", completed: ['processing', 'shipped', 'delivered'].includes(currentStatus), current: currentStatus === 'processing' },
-                    { date: "--", title: "Saiu para Entrega", completed: ['shipped', 'delivered'].includes(currentStatus), current: currentStatus === 'shipped' },
-                    { date: "--", title: "Entregue", completed: currentStatus === 'delivered', current: currentStatus === 'delivered' },
+                    { date: isPaid ? "Confirmado" : "--", title: "Pagamento Aprovado", completed: isPaid, current: s === 'paid' },
+                    { date: isProduction ? "Em andamento" : "--", title: "Em Produção", completed: isProduction, current: s === 'Produção' },
+                    { date: isShipped ? "Enviado" : "--", title: "Saiu para Entrega", completed: isShipped, current: s === 'Enviado' },
+                    { date: isDelivered ? "Entregue" : "--", title: "Entregue", completed: isDelivered, current: s === 'Entregue' },
                 ];
 
                 setOrder({ ...data, timeline });
@@ -63,17 +74,19 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
 
     const getStatusConfig = (status: string) => {
         switch (status) {
-            case "processing":
-            case "pending_payment":
+            case "Produção":
+            case "paid":
                 return { label: "Em Produção", color: "text-blue-600 bg-blue-50 border-blue-100", icon: Clock };
-            case "delivered":
+            case "Entregue":
                 return { label: "Entregue", color: "text-green-600 bg-green-50 border-green-100", icon: CheckCircle };
             case "canceled":
+            case "cancelled":
                 return { label: "Cancelado", color: "text-red-600 bg-red-50 border-red-100", icon: AlertCircle };
+            case "Enviado":
             case "shipped":
                 return { label: "Enviado", color: "text-orange-600 bg-orange-50 border-orange-100", icon: Truck };
             default:
-                return { label: status, color: "text-gray-600 bg-gray-50 border-gray-100", icon: Package };
+                return { label: "Aguardando Pagamento", color: "text-yellow-600 bg-yellow-50 border-yellow-100", icon: Clock };
         }
     };
 
@@ -94,7 +107,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
         );
     }
 
-    const { customer_info, address_info, items: order_items_json, total } = order;
+    const { address_info, items: order_items_json, total } = order;
     // Prefer items JSONB, fallback to order_items if it existed
     const items = order_items_json || order.order_items || [];
 
@@ -106,6 +119,11 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
     const shippingPrice = 0; // Simplified
     const shippingMethod = address_info?.shipping_method === 'pickup' ? 'Retirada na Loja' : 'Entrega';
     const address = address_info || {};
+
+    // Determine Payment Label
+    let paymentLabel = "Aguardando";
+    if (order.payment_method === 'pix' || order.txid) paymentLabel = "Pix";
+    else if (order.payment_method === 'credit') paymentLabel = "Cartão de Crédito";
 
     return (
         <div className="bg-gray-50 min-h-screen pb-24">
@@ -199,7 +217,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
                                 Pagamento
                             </h3>
                             <p className="text-sm text-gray-600 flex items-center gap-2">
-                                <span className="font-medium text-gray-900">{order.payment_method === 'credit' ? 'Cartão de Crédito' : order.payment_method}</span>
+                                <span className="font-medium text-gray-900">{paymentLabel}</span>
                                 <span className={`text-xs px-2 py-0.5 rounded-full border ${currentStatusConfig.color}`}>{currentStatusConfig.label}</span>
                             </p>
                         </div>
@@ -235,15 +253,6 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
                             </div>
                         </div>
                     </section>
-                </div>
-
-                <div className="pt-4 flex flex-col gap-3">
-                    <Button className="w-full bg-brand hover:bg-brand/90 text-white font-bold h-12 shadow-md">
-                        Repetir Pedido
-                    </Button>
-                    <Button variant="outline" className="w-full border-gray-200 text-gray-700 hover:bg-gray-50 font-medium h-12">
-                        Preciso de Ajuda
-                    </Button>
                 </div>
 
             </Container>

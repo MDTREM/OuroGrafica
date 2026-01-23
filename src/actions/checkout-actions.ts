@@ -62,6 +62,7 @@ export async function createPixOrder(data: CheckoutData) {
                 items: data.items,
                 total: data.total,
                 status: "pending",
+                payment_method: "pix",
 
                 customer_name: data.customer.name,
                 customer_document: data.customer.cpf,
