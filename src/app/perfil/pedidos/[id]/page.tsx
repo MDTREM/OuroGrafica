@@ -33,7 +33,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
             // Client-side fetch to use active session
             const { data, error } = await supabase
                 .from('orders')
-                .select('*, order_items(*)')
+                .select('*')
                 .eq('id', params.id)
                 .single();
 
@@ -93,7 +93,10 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
         );
     }
 
-    const { customer_info, address_info, order_items, total } = order;
+    const { customer_info, address_info, items: order_items_json, total } = order;
+    // Prefer items JSONB, fallback to order_items if it existed
+    const items = order_items_json || order.order_items || [];
+
     const currentStatusConfig = getStatusConfig(order.status);
     const StatusIcon = currentStatusConfig.icon;
 
@@ -159,7 +162,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
                         </h3>
                     </div>
                     <div>
-                        {order_items && order_items.map((item: any) => (
+                        {items.map((item: any, idx: number) => (
                             <div key={item.id} className="p-4 flex gap-4 border-b border-gray-50 last:border-0">
                                 <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden bg-cover bg-center" style={{ backgroundImage: `url(${item.image || ''})` }}>
                                     {!item.image && <div className="w-full h-full bg-gray-200 flex items-center justify-center text-xs text-gray-400">Sem foto</div>}

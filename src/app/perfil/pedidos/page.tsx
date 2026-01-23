@@ -104,13 +104,13 @@ export default function OrdersPage() {
                                 {/* Body: Items & Total */}
                                 <div className="p-4">
                                     <div className="space-y-2 mb-4">
-                                        {order.order_items && order.order_items.map((item: any, idx: number) => (
+                                        {(order.items || order.order_items || []).map((item: any, idx: number) => (
                                             <div key={idx} className="text-sm text-gray-600 flex justify-between">
                                                 <span>{item.quantity}x {item.title}</span>
                                             </div>
                                         ))}
-                                        {/* Fallback if order_items is missing or check length */}
-                                        {(!order.order_items || order.order_items.length === 0) && (
+                                        {/* Fallback if ALL items arrays are empty */}
+                                        {(!order.items?.length && !order.order_items?.length) && (
                                             <div className="text-sm text-gray-400 italic">Itens não detalhados</div>
                                         )}
                                     </div>

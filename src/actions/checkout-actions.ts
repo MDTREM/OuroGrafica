@@ -15,6 +15,7 @@ interface CheckoutData {
         name: string;
         cpf: string;
         email: string;
+        phone: string;
     };
     address: {
         zip: string;
@@ -65,6 +66,7 @@ export async function createPixOrder(data: CheckoutData) {
                 customer_name: data.customer.name,
                 customer_document: data.customer.cpf,
                 customer_email: data.customer.email,
+                customer_phone: data.customer.phone,
 
                 address_info: data.address, // Saving full address object
 

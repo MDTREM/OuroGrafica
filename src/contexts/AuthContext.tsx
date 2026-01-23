@@ -10,7 +10,7 @@ interface AuthContextType {
     session: Session | null;
     isLoading: boolean;
     signIn: (email: string, password: string) => Promise<{ data?: any; error: any }>;
-    signUp: (email: string, password: string, name: string) => Promise<{ data?: any; error: any }>;
+    signUp: (email: string, password: string, name: string, phone?: string, cpf?: string) => Promise<{ data?: any; error: any }>;
     signInWithSocial: (provider: Provider, queryParams?: { next?: string }) => Promise<{ data?: any; error: any }>;
     signOut: () => Promise<void>;
     isAdmin: boolean;
@@ -50,13 +50,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { data, error };
     };
 
-    const signUp = async (email: string, password: string, name: string) => {
+    const signUp = async (email: string, password: string, name: string, phone?: string, cpf?: string) => {
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: {
                 data: {
                     full_name: name,
+                    phone: phone,
+                    cpf: cpf,
                     role: 'user', // Default role
                 }
             }

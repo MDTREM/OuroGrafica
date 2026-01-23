@@ -183,11 +183,11 @@ export default function CheckoutPage() {
             userId: user?.id,
             items: items,
             total: total,
-            customer: {
-                name: personType === 'pf' ? formData.name : formData.companyName,
-                cpf: personType === 'pf' ? formData.cpf : formData.cnpj, // Server will handle stripping chars
-                email: formData.email,
-            },
+            name: personType === 'pf' ? formData.name : formData.companyName,
+            cpf: personType === 'pf' ? formData.cpf : formData.cnpj, // Server will handle stripping chars
+            email: formData.email,
+            phone: formData.phone,
+        },
             address: {
                 zip: formData.zip,
                 street: formData.address,
@@ -198,512 +198,514 @@ export default function CheckoutPage() {
                 state: formData.state,
                 shippingMethod: 'pickup' // For now default or check radio button logic if expanded
             }
-        };
-
-        try {
-            if (paymentMethod === 'pix') {
-                const { createPixOrder } = await import('@/actions/checkout-actions');
-
-                const res = await createPixOrder(checkoutPayload);
-
-                if (res.success && res.order && res.order.id) {
-                    clearCart();
-                    router.push(`/checkout/sucesso/${res.order.id}`);
-                } else {
-                    console.error("Checkout Error:", res);
-                    setErrorMessage(res.error || "Erro ao gerar PIX. Verifique se o CPF/CNPJ é válido e tente novamente.");
-                    setIsSubmitting(false);
-                }
-            } else {
-                setErrorMessage("Pagamento por Cartão será implementado em breve. Por favor, escolha PIX.");
-                setIsSubmitting(false);
-            }
-        } catch (error) {
-            console.error(error);
-            setErrorMessage('Erro inesperado de conexão. Tente novamente.');
-            setIsSubmitting(false);
-        }
     };
 
-    // Pre-fill data if user is logged in
-    useEffect(() => {
-        if (user) {
-            setFormData(prev => ({
-                ...prev,
-                name: user.user_metadata?.full_name || prev.name,
-                email: user.email || prev.email,
-                // Attempt to load profile data if needed, but for now name/email is good start
-            }));
-            // If already on Step 1, auto-advance if we want, but better to let them review
-            // Actually, if they just logged in via our new form, we call setStep(2) manually.
-            // But if they came already logged in, they see the "Welcome" screen.
+    try {
+        if (paymentMethod === 'pix') {
+            const { createPixOrder } = await import('@/actions/checkout-actions');
+
+            const res = await createPixOrder(checkoutPayload);
+
+            if (res.success && res.order && res.order.id) {
+                clearCart();
+                router.push(`/checkout/sucesso/${res.order.id}`);
+            } else {
+                console.error("Checkout Error:", res);
+                setErrorMessage(res.error || "Erro ao gerar PIX. Verifique se o CPF/CNPJ é válido e tente novamente.");
+                setIsSubmitting(false);
+            }
+        } else {
+            setErrorMessage("Pagamento por Cartão será implementado em breve. Por favor, escolha PIX.");
+            setIsSubmitting(false);
         }
-    }, [user]);
+    } catch (error) {
+        console.error(error);
+        setErrorMessage('Erro inesperado de conexão. Tente novamente.');
+        setIsSubmitting(false);
+    }
+};
 
-    return (
-        <div className="bg-gray-50 min-h-screen pb-32 md:pb-24">
-            {/* Header */}
-            <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30">
-                <Container className="flex items-center gap-4">
-                    <Link href="/carrinho" className="text-gray-500 hover:text-brand transition-colors p-1">
-                        <ArrowLeft size={24} />
-                    </Link>
-                    <h1 className="text-xl font-bold text-gray-900 flex-1 text-center pr-8">Checkout</h1>
-                </Container>
-            </div>
+// Pre-fill data if user is logged in
+useEffect(() => {
+    if (user) {
+        setFormData(prev => ({
+            ...prev,
+            name: user.user_metadata?.full_name || prev.name,
+            email: user.email || prev.email,
+            phone: user.user_metadata?.phone || prev.phone,
+            cpf: user.user_metadata?.cpf || prev.cpf,
+            // Attempt to load profile data if needed, but for now name/email is good start
+        }));
+        // If already on Step 1, auto-advance if we want, but better to let them review
+        // Actually, if they just logged in via our new form, we call setStep(2) manually.
+        // But if they came already logged in, they see the "Welcome" screen.
+    }
+}, [user]);
 
-            <Container className="pt-6 max-w-2xl mx-auto">
-                <div className="space-y-6">
-                    {/* 1. Identification */}
-                    <div className={`bg-white p-6 rounded-xl border transition-all ${step === 1 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 1 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>1</div>
-                                Identificação
-                            </h2>
-                            {step > 1 && <button onClick={() => setStep(1)} className="text-xs font-bold text-brand hover:underline">Alterar</button>}
-                        </div>
-
-                        {step === 1 ? (
-                            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                {user ? (
-                                    <div className="space-y-4">
-                                        <div className="bg-green-50 border border-green-200 p-4 rounded-xl flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center">
-                                                    <User size={20} />
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm text-green-800 font-bold">Conectado como</p>
-                                                    <p className="text-sm text-gray-700">{user.user_metadata?.full_name || user.email}</p>
-                                                </div>
-                                            </div>
-                                            <button onClick={() => signOut()} className="text-xs text-red-500 hover:underline">
-                                                Sair
-                                            </button>
-                                        </div>
-
-                                        {/* Missing Data Form */}
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                                            <div>
-                                                <label className="block text-sm font-bold text-gray-700 mb-1">Telefone / WhatsApp</label>
-                                                <input
-                                                    type="text"
-                                                    value={formData.phone}
-                                                    onChange={handlePhoneChange}
-                                                    placeholder="(00) 00000-0000"
-                                                    className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
-                                                />
-                                            </div>
-
-                                            <div className="md:col-span-2">
-                                                <div className="flex gap-4 mb-2">
-                                                    <label className="flex items-center gap-2 cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="personType"
-                                                            checked={personType === "pf"}
-                                                            onChange={() => setPersonType("pf")}
-                                                            className="accent-brand"
-                                                        />
-                                                        <span className="text-sm font-medium">Pessoa Física</span>
-                                                    </label>
-                                                    <label className="flex items-center gap-2 cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="personType"
-                                                            checked={personType === "pj"}
-                                                            onChange={() => setPersonType("pj")}
-                                                            className="accent-brand"
-                                                        />
-                                                        <span className="text-sm font-medium">Pessoa Jurídica</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-
-                                            {personType === "pf" ? (
-                                                <>
-                                                    <div className="md:col-span-2">
-                                                        <label className="block text-sm font-bold text-gray-700 mb-1">Nome Completo</label>
-                                                        <input
-                                                            type="text"
-                                                            value={formData.name}
-                                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
-                                                        />
-                                                    </div>
-                                                    <div className="md:col-span-1">
-                                                        <label className="block text-sm font-bold text-gray-700 mb-1">CPF</label>
-                                                        <input
-                                                            type="text"
-                                                            value={formData.cpf}
-                                                            onChange={handleCpfChange}
-                                                            placeholder="000.000.000-00"
-                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
-                                                        />
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <div className="md:col-span-2">
-                                                        <label className="block text-sm font-bold text-gray-700 mb-1">Razão Social</label>
-                                                        <input
-                                                            type="text"
-                                                            value={formData.companyName}
-                                                            onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
-                                                        />
-                                                    </div>
-                                                    <div className="md:col-span-1">
-                                                        <label className="block text-sm font-bold text-gray-700 mb-1">CNPJ</label>
-                                                        <input
-                                                            type="text"
-                                                            value={formData.cnpj}
-                                                            onChange={handleCnpjChange}
-                                                            placeholder="00.000.000/0000-00"
-                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
-                                                        />
-                                                    </div>
-                                                    <div className="md:col-span-1">
-                                                        <label className="block text-sm font-bold text-gray-700 mb-1">Inscrição Estadual (Opcional)</label>
-                                                        <input
-                                                            type="text"
-                                                            value={formData.ie}
-                                                            onChange={(e) => setFormData({ ...formData, ie: e.target.value })}
-                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
-                                                        />
-                                                    </div>
-                                                </>
-                                            )}
-                                        </div>
-
-                                        <div className="flex justify-end pt-4">
-                                            <button
-                                                onClick={() => setStep(2)}
-                                                disabled={!isStep1Valid()}
-                                                className="bg-brand text-white font-bold py-3 px-6 rounded-lg hover:bg-brand/90 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            >
-                                                Ir para Entrega
-                                                <ArrowRight size={18} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <AuthForm onSuccess={() => setStep(2)} />
-                                )}
-                            </div>
-                        ) : (
-                            // Summary of Step 1
-                            <div className="text-sm text-gray-600 pl-8 flex items-center justify-between">
-                                <div>
-                                    <p className="font-medium">{user?.user_metadata?.full_name || personType === "pf" ? formData.name : formData.companyName}</p>
-                                    <p>{user?.email || formData.email} • {formData.phone}</p>
-                                </div>
-                                <CheckCircle size={18} className="text-green-500" />
-                            </div>
-                        )}
-                    </div>
-
-                    {/* 2. Delivery Address */}
-                    <div className={`bg-white p-6 rounded-xl border transition-all ${step === 2 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 2 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>2</div>
-                                Entrega
-                            </h2>
-                            {step > 2 && <button onClick={() => setStep(2)} className="text-xs font-bold text-brand hover:underline">Alterar</button>}
-                        </div>
-
-                        {step === 2 && (
-                            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                    <div className="md:col-span-2">
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">CEP</label>
-                                        <div className="relative">
-                                            <input
-                                                type="text"
-                                                value={formData.zip}
-                                                onChange={handleCepChange}
-                                                maxLength={9}
-                                                placeholder="00000-000"
-                                                className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                            />
-                                            {loadingCep && <Loader2 size={16} className="absolute right-3 top-3 animate-spin text-brand" />}
-                                        </div>
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Endereço</label>
-                                        <input
-                                            type="text"
-                                            value={formData.address}
-                                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Número</label>
-                                        <input
-                                            id="number"
-                                            type="text"
-                                            value={formData.number}
-                                            onChange={(e) => setFormData({ ...formData, number: e.target.value })}
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Complemento</label>
-                                        <input
-                                            type="text"
-                                            value={formData.complement}
-                                            onChange={(e) => setFormData({ ...formData, complement: e.target.value })}
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Bairro</label>
-                                        <input
-                                            type="text"
-                                            value={formData.district}
-                                            onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Cidade - UF</label>
-                                        <div className="flex gap-2">
-                                            <input
-                                                type="text"
-                                                value={formData.city}
-                                                readOnly
-                                                className="flex-1 h-10 px-3 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed"
-                                            />
-                                            <input
-                                                type="text"
-                                                value={formData.state}
-                                                readOnly
-                                                className="w-16 h-10 px-3 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed text-center"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h3 className="font-bold text-gray-900 mb-3 text-sm">Opção de Entrega</h3>
-                                <div className="space-y-3 mb-6">
-                                    <label className="flex items-center gap-4 bg-orange-50 p-4 rounded-xl border border-brand cursor-pointer relative">
-                                        <div className="w-10 h-10 rounded-full bg-white text-brand flex items-center justify-center flex-shrink-0">
-                                            <MapPin size={20} />
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-center mb-0.5">
-                                                <h3 className="font-bold text-gray-900 text-sm">Retirada na Loja (Ouro Preto)</h3>
-                                                <span className="font-bold text-brand">Grátis</span>
-                                            </div>
-                                            <p className="text-xs text-gray-500">Rua José Moringa, 9 - Bauxita</p>
-                                        </div>
-                                        <input type="radio" name="shipping" className="accent-brand w-5 h-5 ml-2" defaultChecked />
-                                    </label>
-
-                                    <label className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200 cursor-pointer relative opacity-60">
-                                        <div className="w-10 h-10 rounded-full bg-white text-gray-500 flex items-center justify-center flex-shrink-0">
-                                            <Truck size={20} />
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-center mb-0.5">
-                                                <h3 className="font-bold text-gray-900 text-sm">Entrega Local (Motoboy)</h3>
-                                                <span className="font-bold text-gray-500">Em breve</span>
-                                            </div>
-                                            <p className="text-xs text-gray-500">Disponível apenas para Ouro Preto</p>
-                                        </div>
-                                        <input type="radio" name="shipping" className="accent-brand w-5 h-5 ml-2" disabled />
-                                    </label>
-                                </div>
-
-                                <div className="flex justify-end">
-                                    <button
-                                        onClick={nextStep}
-                                        disabled={!isStep2Valid()}
-                                        className="bg-brand text-white font-bold py-3 px-6 rounded-lg hover:bg-brand/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                                    >
-                                        Ir para Pagamento
-                                        <ArrowRight size={18} />
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                        {step > 2 && (
-                            <div className="text-sm text-gray-600 pl-8">
-                                <p className="font-medium">{formData.address}, {formData.number} {formData.complement && `- ${formData.complement}`}</p>
-                                <p>{formData.district}, {formData.city} - {formData.state}</p>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* 3. Payment */}
-                    <div className={`bg-white p-6 rounded-xl border transition-all ${step === 3 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 3 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>3</div>
-                                Pagamento
-                            </h2>
-                        </div>
-
-                        {step === 3 && (
-                            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                <div className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden mb-6">
-                                    {/* Tabs */}
-                                    <div className="flex border-b border-gray-200 bg-white">
-                                        <button onClick={() => setPaymentMethod("credit")} className={`flex-1 py-3 text-sm font-bold transition-colors ${paymentMethod === "credit" ? "text-gray-900 bg-gray-50 box-shadow-inner border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Cartão</button>
-                                        <button onClick={() => setPaymentMethod("pix")} className={`flex-1 py-3 text-sm font-bold transition-colors ${paymentMethod === "pix" ? "text-gray-900 bg-gray-50 border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Pix</button>
-                                    </div>
-
-                                    <div className="p-6">
-                                        {paymentMethod === "credit" && (
-                                            <div className="space-y-4">
-                                                <div className="relative">
-                                                    <CreditCard className="absolute left-3 top-3 text-gray-400" size={20} />
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Número do Cartão"
-                                                        value={formData.cardNumber}
-                                                        onChange={handleCardNumberChange}
-                                                        className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
-                                                    />
-                                                </div>
-                                                <div className="relative">
-                                                    <User className="absolute left-3 top-3 text-gray-400" size={20} />
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Nome Impresso no Cartão"
-                                                        value={formData.cardName}
-                                                        onChange={(e) => setFormData({ ...formData, cardName: e.target.value })}
-                                                        className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
-                                                    />
-                                                </div>
-                                                <div className="flex gap-4">
-                                                    <div className="relative flex-1">
-                                                        <Calendar className="absolute left-3 top-3 text-gray-400" size={20} />
-                                                        <input
-                                                            type="text"
-                                                            placeholder="MM/AA"
-                                                            value={formData.cardExpiry}
-                                                            onChange={handleCardExpiryChange}
-                                                            className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
-                                                        />
-                                                    </div>
-                                                    <div className="relative flex-1">
-                                                        <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
-                                                        <input
-                                                            type="text"
-                                                            placeholder="CVV"
-                                                            value={formData.cardCvv}
-                                                            onChange={handleCardCvvChange}
-                                                            className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {paymentMethod === "pix" && <div className="text-center text-sm text-gray-500">QR Code será gerado ao finalizar.</div>}
-                                    </div>
-                                </div>
-
-                                {/* Security Badges */}
-                                <div className="grid grid-cols-2 gap-3 mb-6">
-                                    <div className="flex items-center gap-2 bg-green-50 p-3 rounded-lg border border-green-100">
-                                        <Lock size={16} className="text-green-600 flex-shrink-0" />
-                                        <div>
-                                            <p className="text-xs font-bold text-green-700">Ambiente Seguro</p>
-                                            <p className="text-[10px] text-green-600">Seus dados estão protegidos</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2 bg-orange-50 p-3 rounded-lg border border-orange-100">
-                                        <CheckCircle size={16} className="text-orange-600 flex-shrink-0" />
-                                        <div>
-                                            <p className="text-xs font-bold text-orange-700">Pagamento Certificado</p>
-                                            <p className="text-[10px] text-orange-600">Processado por Efí Bank</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Summary inside content */}
-                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
-                                    <div className="space-y-4 mb-4 border-b border-gray-100 pb-4">
-                                        <h4 className="font-bold text-gray-900 text-sm">Itens</h4>
-                                        <div className="space-y-3">
-                                            {items.map((item) => (
-                                                <div key={item.id} className="flex gap-3">
-                                                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
-                                                        {item.image && <img src={item.image} className="w-full h-full object-cover" />}
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <p className="text-xs font-bold text-gray-900 line-clamp-2">{item.title}</p>
-                                                        <p className="text-[10px] text-gray-500">{item.quantity}x R$ {item.price.toFixed(2)}</p>
-                                                        {item.details?.dimensions && (
-                                                            <p className="text-[10px] text-gray-600 bg-gray-100 px-1 py-0.5 rounded w-fit mt-0.5 border border-gray-200">
-                                                                {item.details.dimensions.width}x{item.details.dimensions.height} cm
-                                                            </p>
-                                                        )}
-                                                        {item.details?.selectedVariations && Object.entries(item.details.selectedVariations).map(([key, value]) => (
-                                                            <p key={key} className="text-[10px] text-gray-500 mt-0.5">
-                                                                {key}: <span className="font-medium text-gray-700">{value}</span>
-                                                            </p>
-                                                        ))}
-                                                    </div>
-                                                    <div className="text-xs font-bold text-gray-900">
-                                                        R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2 mb-4 border-b border-gray-100 pb-4">
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-gray-500">Subtotal</span>
-                                            <span className="text-gray-700">R$ {(total - shipping + discount).toFixed(2).replace('.', ',')}</span>
-                                        </div>
-                                        {discount > 0 && (
-                                            <div className="flex justify-between items-center text-sm">
-                                                <span className="text-green-600 font-medium">Desconto</span>
-                                                <span className="text-green-600 font-bold">- R$ {discount.toFixed(2).replace('.', ',')}</span>
-                                            </div>
-                                        )}
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-gray-500">Frete</span>
-                                            <span className="text-gray-700">{shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2)}`}</span>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm font-bold text-gray-900">Total a pagar</span>
-                                        <span className="text-xl font-bold text-brand">R$ {total.toFixed(2).replace('.', ',')}</span>
-                                    </div>
-                                    <p className="text-xs text-center text-gray-400 mt-2">Ao finalizar, você concorda com os <Link href="/termos-de-uso" target="_blank" className="underline hover:text-gray-600">termos</Link>.</p>
-                                </div>
-
-                                <button
-                                    onClick={handleFinishOrder}
-                                    disabled={isSubmitting}
-                                    className="w-full bg-brand text-white font-bold h-12 rounded-full hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <Loader2 size={20} className="animate-spin" /> Processando...
-                                        </>
-                                    ) : (
-                                        "Finalizar Pedido"
-                                    )}
-                                </button>
-                                {errorMessage && (
-                                    <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center font-medium animate-in fade-in slide-in-from-top-1">
-                                        {errorMessage}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                </div>
+return (
+    <div className="bg-gray-50 min-h-screen pb-32 md:pb-24">
+        {/* Header */}
+        <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30">
+            <Container className="flex items-center gap-4">
+                <Link href="/carrinho" className="text-gray-500 hover:text-brand transition-colors p-1">
+                    <ArrowLeft size={24} />
+                </Link>
+                <h1 className="text-xl font-bold text-gray-900 flex-1 text-center pr-8">Checkout</h1>
             </Container>
         </div>
-    );
+
+        <Container className="pt-6 max-w-2xl mx-auto">
+            <div className="space-y-6">
+                {/* 1. Identification */}
+                <div className={`bg-white p-6 rounded-xl border transition-all ${step === 1 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 1 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>1</div>
+                            Identificação
+                        </h2>
+                        {step > 1 && <button onClick={() => setStep(1)} className="text-xs font-bold text-brand hover:underline">Alterar</button>}
+                    </div>
+
+                    {step === 1 ? (
+                        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                            {user ? (
+                                <div className="space-y-4">
+                                    <div className="bg-green-50 border border-green-200 p-4 rounded-xl flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center">
+                                                <User size={20} />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-green-800 font-bold">Conectado como</p>
+                                                <p className="text-sm text-gray-700">{user.user_metadata?.full_name || user.email}</p>
+                                            </div>
+                                        </div>
+                                        <button onClick={() => signOut()} className="text-xs text-red-500 hover:underline">
+                                            Sair
+                                        </button>
+                                    </div>
+
+                                    {/* Missing Data Form */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                        <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-1">Telefone / WhatsApp</label>
+                                            <input
+                                                type="text"
+                                                value={formData.phone}
+                                                onChange={handlePhoneChange}
+                                                placeholder="(00) 00000-0000"
+                                                className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                            />
+                                        </div>
+
+                                        <div className="md:col-span-2">
+                                            <div className="flex gap-4 mb-2">
+                                                <label className="flex items-center gap-2 cursor-pointer">
+                                                    <input
+                                                        type="radio"
+                                                        name="personType"
+                                                        checked={personType === "pf"}
+                                                        onChange={() => setPersonType("pf")}
+                                                        className="accent-brand"
+                                                    />
+                                                    <span className="text-sm font-medium">Pessoa Física</span>
+                                                </label>
+                                                <label className="flex items-center gap-2 cursor-pointer">
+                                                    <input
+                                                        type="radio"
+                                                        name="personType"
+                                                        checked={personType === "pj"}
+                                                        onChange={() => setPersonType("pj")}
+                                                        className="accent-brand"
+                                                    />
+                                                    <span className="text-sm font-medium">Pessoa Jurídica</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        {personType === "pf" ? (
+                                            <>
+                                                <div className="md:col-span-2">
+                                                    <label className="block text-sm font-bold text-gray-700 mb-1">Nome Completo</label>
+                                                    <input
+                                                        type="text"
+                                                        value={formData.name}
+                                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                        className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                    />
+                                                </div>
+                                                <div className="md:col-span-1">
+                                                    <label className="block text-sm font-bold text-gray-700 mb-1">CPF</label>
+                                                    <input
+                                                        type="text"
+                                                        value={formData.cpf}
+                                                        onChange={handleCpfChange}
+                                                        placeholder="000.000.000-00"
+                                                        className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                    />
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="md:col-span-2">
+                                                    <label className="block text-sm font-bold text-gray-700 mb-1">Razão Social</label>
+                                                    <input
+                                                        type="text"
+                                                        value={formData.companyName}
+                                                        onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                                                        className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                    />
+                                                </div>
+                                                <div className="md:col-span-1">
+                                                    <label className="block text-sm font-bold text-gray-700 mb-1">CNPJ</label>
+                                                    <input
+                                                        type="text"
+                                                        value={formData.cnpj}
+                                                        onChange={handleCnpjChange}
+                                                        placeholder="00.000.000/0000-00"
+                                                        className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                    />
+                                                </div>
+                                                <div className="md:col-span-1">
+                                                    <label className="block text-sm font-bold text-gray-700 mb-1">Inscrição Estadual (Opcional)</label>
+                                                    <input
+                                                        type="text"
+                                                        value={formData.ie}
+                                                        onChange={(e) => setFormData({ ...formData, ie: e.target.value })}
+                                                        className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+
+                                    <div className="flex justify-end pt-4">
+                                        <button
+                                            onClick={() => setStep(2)}
+                                            disabled={!isStep1Valid()}
+                                            className="bg-brand text-white font-bold py-3 px-6 rounded-lg hover:bg-brand/90 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            Ir para Entrega
+                                            <ArrowRight size={18} />
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <AuthForm onSuccess={() => setStep(2)} />
+                            )}
+                        </div>
+                    ) : (
+                        // Summary of Step 1
+                        <div className="text-sm text-gray-600 pl-8 flex items-center justify-between">
+                            <div>
+                                <p className="font-medium">{user?.user_metadata?.full_name || personType === "pf" ? formData.name : formData.companyName}</p>
+                                <p>{user?.email || formData.email} • {formData.phone}</p>
+                            </div>
+                            <CheckCircle size={18} className="text-green-500" />
+                        </div>
+                    )}
+                </div>
+
+                {/* 2. Delivery Address */}
+                <div className={`bg-white p-6 rounded-xl border transition-all ${step === 2 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 2 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>2</div>
+                            Entrega
+                        </h2>
+                        {step > 2 && <button onClick={() => setStep(2)} className="text-xs font-bold text-brand hover:underline">Alterar</button>}
+                    </div>
+
+                    {step === 2 && (
+                        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">CEP</label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            value={formData.zip}
+                                            onChange={handleCepChange}
+                                            maxLength={9}
+                                            placeholder="00000-000"
+                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                        />
+                                        {loadingCep && <Loader2 size={16} className="absolute right-3 top-3 animate-spin text-brand" />}
+                                    </div>
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Endereço</label>
+                                    <input
+                                        type="text"
+                                        value={formData.address}
+                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                        className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Número</label>
+                                    <input
+                                        id="number"
+                                        type="text"
+                                        value={formData.number}
+                                        onChange={(e) => setFormData({ ...formData, number: e.target.value })}
+                                        className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Complemento</label>
+                                    <input
+                                        type="text"
+                                        value={formData.complement}
+                                        onChange={(e) => setFormData({ ...formData, complement: e.target.value })}
+                                        className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Bairro</label>
+                                    <input
+                                        type="text"
+                                        value={formData.district}
+                                        onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                                        className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Cidade - UF</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={formData.city}
+                                            readOnly
+                                            className="flex-1 h-10 px-3 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={formData.state}
+                                            readOnly
+                                            className="w-16 h-10 px-3 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed text-center"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h3 className="font-bold text-gray-900 mb-3 text-sm">Opção de Entrega</h3>
+                            <div className="space-y-3 mb-6">
+                                <label className="flex items-center gap-4 bg-orange-50 p-4 rounded-xl border border-brand cursor-pointer relative">
+                                    <div className="w-10 h-10 rounded-full bg-white text-brand flex items-center justify-center flex-shrink-0">
+                                        <MapPin size={20} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-center mb-0.5">
+                                            <h3 className="font-bold text-gray-900 text-sm">Retirada na Loja (Ouro Preto)</h3>
+                                            <span className="font-bold text-brand">Grátis</span>
+                                        </div>
+                                        <p className="text-xs text-gray-500">Rua José Moringa, 9 - Bauxita</p>
+                                    </div>
+                                    <input type="radio" name="shipping" className="accent-brand w-5 h-5 ml-2" defaultChecked />
+                                </label>
+
+                                <label className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200 cursor-pointer relative opacity-60">
+                                    <div className="w-10 h-10 rounded-full bg-white text-gray-500 flex items-center justify-center flex-shrink-0">
+                                        <Truck size={20} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-center mb-0.5">
+                                            <h3 className="font-bold text-gray-900 text-sm">Entrega Local (Motoboy)</h3>
+                                            <span className="font-bold text-gray-500">Em breve</span>
+                                        </div>
+                                        <p className="text-xs text-gray-500">Disponível apenas para Ouro Preto</p>
+                                    </div>
+                                    <input type="radio" name="shipping" className="accent-brand w-5 h-5 ml-2" disabled />
+                                </label>
+                            </div>
+
+                            <div className="flex justify-end">
+                                <button
+                                    onClick={nextStep}
+                                    disabled={!isStep2Valid()}
+                                    className="bg-brand text-white font-bold py-3 px-6 rounded-lg hover:bg-brand/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                >
+                                    Ir para Pagamento
+                                    <ArrowRight size={18} />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    {step > 2 && (
+                        <div className="text-sm text-gray-600 pl-8">
+                            <p className="font-medium">{formData.address}, {formData.number} {formData.complement && `- ${formData.complement}`}</p>
+                            <p>{formData.district}, {formData.city} - {formData.state}</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* 3. Payment */}
+                <div className={`bg-white p-6 rounded-xl border transition-all ${step === 3 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 3 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>3</div>
+                            Pagamento
+                        </h2>
+                    </div>
+
+                    {step === 3 && (
+                        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden mb-6">
+                                {/* Tabs */}
+                                <div className="flex border-b border-gray-200 bg-white">
+                                    <button onClick={() => setPaymentMethod("credit")} className={`flex-1 py-3 text-sm font-bold transition-colors ${paymentMethod === "credit" ? "text-gray-900 bg-gray-50 box-shadow-inner border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Cartão</button>
+                                    <button onClick={() => setPaymentMethod("pix")} className={`flex-1 py-3 text-sm font-bold transition-colors ${paymentMethod === "pix" ? "text-gray-900 bg-gray-50 border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Pix</button>
+                                </div>
+
+                                <div className="p-6">
+                                    {paymentMethod === "credit" && (
+                                        <div className="space-y-4">
+                                            <div className="relative">
+                                                <CreditCard className="absolute left-3 top-3 text-gray-400" size={20} />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Número do Cartão"
+                                                    value={formData.cardNumber}
+                                                    onChange={handleCardNumberChange}
+                                                    className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
+                                                />
+                                            </div>
+                                            <div className="relative">
+                                                <User className="absolute left-3 top-3 text-gray-400" size={20} />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Nome Impresso no Cartão"
+                                                    value={formData.cardName}
+                                                    onChange={(e) => setFormData({ ...formData, cardName: e.target.value })}
+                                                    className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
+                                                />
+                                            </div>
+                                            <div className="flex gap-4">
+                                                <div className="relative flex-1">
+                                                    <Calendar className="absolute left-3 top-3 text-gray-400" size={20} />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="MM/AA"
+                                                        value={formData.cardExpiry}
+                                                        onChange={handleCardExpiryChange}
+                                                        className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
+                                                    />
+                                                </div>
+                                                <div className="relative flex-1">
+                                                    <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="CVV"
+                                                        value={formData.cardCvv}
+                                                        onChange={handleCardCvvChange}
+                                                        className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {paymentMethod === "pix" && <div className="text-center text-sm text-gray-500">QR Code será gerado ao finalizar.</div>}
+                                </div>
+                            </div>
+
+                            {/* Security Badges */}
+                            <div className="grid grid-cols-2 gap-3 mb-6">
+                                <div className="flex items-center gap-2 bg-green-50 p-3 rounded-lg border border-green-100">
+                                    <Lock size={16} className="text-green-600 flex-shrink-0" />
+                                    <div>
+                                        <p className="text-xs font-bold text-green-700">Ambiente Seguro</p>
+                                        <p className="text-[10px] text-green-600">Seus dados estão protegidos</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2 bg-orange-50 p-3 rounded-lg border border-orange-100">
+                                    <CheckCircle size={16} className="text-orange-600 flex-shrink-0" />
+                                    <div>
+                                        <p className="text-xs font-bold text-orange-700">Pagamento Certificado</p>
+                                        <p className="text-[10px] text-orange-600">Processado por Efí Bank</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Summary inside content */}
+                            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
+                                <div className="space-y-4 mb-4 border-b border-gray-100 pb-4">
+                                    <h4 className="font-bold text-gray-900 text-sm">Itens</h4>
+                                    <div className="space-y-3">
+                                        {items.map((item) => (
+                                            <div key={item.id} className="flex gap-3">
+                                                <div className="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
+                                                    {item.image && <img src={item.image} className="w-full h-full object-cover" />}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-xs font-bold text-gray-900 line-clamp-2">{item.title}</p>
+                                                    <p className="text-[10px] text-gray-500">{item.quantity}x R$ {item.price.toFixed(2)}</p>
+                                                    {item.details?.dimensions && (
+                                                        <p className="text-[10px] text-gray-600 bg-gray-100 px-1 py-0.5 rounded w-fit mt-0.5 border border-gray-200">
+                                                            {item.details.dimensions.width}x{item.details.dimensions.height} cm
+                                                        </p>
+                                                    )}
+                                                    {item.details?.selectedVariations && Object.entries(item.details.selectedVariations).map(([key, value]) => (
+                                                        <p key={key} className="text-[10px] text-gray-500 mt-0.5">
+                                                            {key}: <span className="font-medium text-gray-700">{value}</span>
+                                                        </p>
+                                                    ))}
+                                                </div>
+                                                <div className="text-xs font-bold text-gray-900">
+                                                    R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="space-y-2 mb-4 border-b border-gray-100 pb-4">
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-500">Subtotal</span>
+                                        <span className="text-gray-700">R$ {(total - shipping + discount).toFixed(2).replace('.', ',')}</span>
+                                    </div>
+                                    {discount > 0 && (
+                                        <div className="flex justify-between items-center text-sm">
+                                            <span className="text-green-600 font-medium">Desconto</span>
+                                            <span className="text-green-600 font-bold">- R$ {discount.toFixed(2).replace('.', ',')}</span>
+                                        </div>
+                                    )}
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-500">Frete</span>
+                                        <span className="text-gray-700">{shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2)}`}</span>
+                                    </div>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm font-bold text-gray-900">Total a pagar</span>
+                                    <span className="text-xl font-bold text-brand">R$ {total.toFixed(2).replace('.', ',')}</span>
+                                </div>
+                                <p className="text-xs text-center text-gray-400 mt-2">Ao finalizar, você concorda com os <Link href="/termos-de-uso" target="_blank" className="underline hover:text-gray-600">termos</Link>.</p>
+                            </div>
+
+                            <button
+                                onClick={handleFinishOrder}
+                                disabled={isSubmitting}
+                                className="w-full bg-brand text-white font-bold h-12 rounded-full hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 size={20} className="animate-spin" /> Processando...
+                                    </>
+                                ) : (
+                                    "Finalizar Pedido"
+                                )}
+                            </button>
+                            {errorMessage && (
+                                <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center font-medium animate-in fade-in slide-in-from-top-1">
+                                    {errorMessage}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </Container>
+    </div>
+);
 }
 
 function AuthForm({ onSuccess }: { onSuccess: () => void }) {
@@ -716,6 +718,23 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [phone, setPhone] = useState("");
+    const [cpf, setCpf] = useState("");
+
+    const formatPhone = (val: string) => {
+        return val.replace(/\D/g, "")
+            .replace(/^(\d{2})(\d)/g, "($1) $2")
+            .replace(/(\d)(\d{4})$/, "$1-$2")
+            .slice(0, 15);
+    };
+
+    const formatCpf = (val: string) => {
+        return val.replace(/\D/g, "")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d{1,2})/, "$1-$2")
+            .replace(/(-\d{2})\d+?$/, "$1");
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -727,7 +746,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
                 const { error } = await signIn(email, password);
                 if (error) throw error;
             } else {
-                const { error } = await signUp(email, password, name);
+                const { error } = await signUp(email, password, name, phone, cpf);
                 if (error) throw error;
             }
             onSuccess();
@@ -814,16 +833,42 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {mode === 'register' && (
-                    <div className="animate-in fade-in slide-in-from-top-1">
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Nome Completo</label>
-                        <input
-                            type="text"
-                            required
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:brand-ring"
-                            placeholder="Seu nome"
-                        />
+                    <div className="animate-in fade-in slide-in-from-top-1 space-y-4">
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Nome Completo</label>
+                            <input
+                                type="text"
+                                required
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="w-full h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:brand-ring"
+                                placeholder="Seu nome"
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">WhatsApp</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={phone}
+                                    onChange={(e) => setPhone(formatPhone(e.target.value))}
+                                    className="w-full h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:brand-ring"
+                                    placeholder="(00) 00000-0000"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">CPF</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={cpf}
+                                    onChange={(e) => setCpf(formatCpf(e.target.value))}
+                                    className="w-full h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:brand-ring"
+                                    placeholder="000.000.000-00"
+                                />
+                            </div>
+                        </div>
                     </div>
                 )}
 
