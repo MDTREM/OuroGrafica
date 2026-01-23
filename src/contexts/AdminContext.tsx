@@ -23,6 +23,7 @@ export interface OrderItem {
 
 export interface Order {
     id: string;
+    display_id?: string;
     created_at: string;
     total: number;
     status: "Pendente" | "Produção" | "Enviado" | "Entregue";
