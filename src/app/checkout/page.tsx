@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function CheckoutPage() {
     const { total, shipping, items, clearCart, discount } = useCart();
-    const { user } = useAuth();
+    const { user, signOut } = useAuth();
 
     const [step, setStep] = useState(1); // 1: Identification, 2: Delivery, 3: Payment
     const [personType, setPersonType] = useState<"pf" | "pj">("pf");
