@@ -571,7 +571,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                                                     e.stopPropagation();
                                                                     setUploadedFile(null);
                                                                 }}
-                                                                className="text-xs text-red-500 hover:text-red-700 font-bold px-2 py-1"
+                                                                className="text-xs text-brand hover:text-orange-700 font-bold px-2 py-1"
                                                             >
                                                                 Remover
                                                             </button>

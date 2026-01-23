@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (queryParams?.next) {
             redirectTo.searchParams.set('next', queryParams.next);
             // Fallback/robustness: Set a cookie
-            document.cookie = `auth-redirect=${queryParams.next}; path=/; max-age=600; SameSite=Lax`;
+            document.cookie = `auth-redirect=${queryParams.next}; path=/; max-age=600; Secure; SameSite=Lax`;
         }
 
         const { data, error } = await supabase.auth.signInWithOAuth({
