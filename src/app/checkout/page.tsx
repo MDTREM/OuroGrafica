@@ -17,6 +17,7 @@ export default function CheckoutPage() {
     const [personType, setPersonType] = useState<"pf" | "pj">("pf");
     const [loadingCep, setLoadingCep] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<"credit" | "pix">("credit");
+    const [scriptLoaded, setScriptLoaded] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -655,6 +656,13 @@ export default function CheckoutPage() {
                                     <div className="p-6">
                                         {paymentMethod === "credit" && (
                                             <div className="space-y-4">
+                                                {!scriptLoaded && (
+                                                    <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200 flex items-center gap-2 mb-4">
+                                                        <Loader2 className="animate-spin text-yellow-600" size={16} />
+                                                        <span className="text-xs text-yellow-700 font-medium">Carregando segurança do pagamento...</span>
+                                                    </div>
+                                                )}
+
                                                 <div className="relative">
                                                     <CreditCard className="absolute left-3 top-3 text-gray-400" size={20} />
                                                     <input
