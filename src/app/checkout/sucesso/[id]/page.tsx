@@ -5,7 +5,7 @@ import { CheckCircle, Copy, Home, Loader2, Package, ShoppingBag, Truck, Calendar
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"; // Correct import for client components
+import { supabase } from "@/lib/supabase";
 
 interface OrderDetails {
     id: string;
@@ -23,7 +23,6 @@ export default function SuccessPage() {
     const id = params.id as string;
     const [order, setOrder] = useState<OrderDetails | null>(null);
     const [loading, setLoading] = useState(true);
-    const supabase = createClientComponentClient();
 
     useEffect(() => {
         const fetchOrder = async () => {
