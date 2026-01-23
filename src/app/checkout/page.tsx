@@ -653,7 +653,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
     const handleGoogleLogin = async () => {
         setLoading(true);
         try {
-            const { error } = await signInWithSocial('google');
+            const { error } = await signInWithSocial('google', { next: '/checkout' });
             if (error) throw error;
             // Redirect happens automatically
         } catch (err) {

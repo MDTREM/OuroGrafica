@@ -11,7 +11,7 @@ interface AuthContextType {
     isLoading: boolean;
     signIn: (email: string, password: string) => Promise<{ data?: any; error: any }>;
     signUp: (email: string, password: string, name: string) => Promise<{ data?: any; error: any }>;
-    signInWithSocial: (provider: Provider) => Promise<{ data?: any; error: any }>;
+    signInWithSocial: (provider: Provider, queryParams?: { next?: string }) => Promise<{ data?: any; error: any }>;
     signOut: () => Promise<void>;
     isAdmin: boolean;
 }
@@ -64,11 +64,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { data, error };
     };
 
-    const signInWithSocial = async (provider: Provider) => {
+    const signInWithSocial = async (provider: Provider, queryParams?: { next?: string }) => {
+        const redirectTo = new URL(`${window.location.origin}/auth/callback`);
+        if (queryParams?.next) {
+            redirectTo.searchParams.set('next', queryParams.next);
+        }
+
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: provider,
             options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
+                redirectTo: redirectTo.toString(),
             },
         });
         return { data, error };
