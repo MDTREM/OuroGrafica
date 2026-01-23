@@ -834,8 +834,21 @@ export default function CheckoutPage() {
                                 {errorMessage && (
                                     <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center font-medium animate-in fade-in slide-in-from-top-1">
                                         {errorMessage}
+                                        <button
+                                            onClick={(e) => { e.preventDefault(); loadEfiScript(); setErrorMessage(null); }}
+                                            className="block w-full mt-2 text-xs font-bold underline hover:text-red-800"
+                                        >
+                                            Tentar Conectar Novamente
+                                        </button>
                                     </div>
                                 )}
+
+                                {/* Debug Info */}
+                                <div className="mt-6 text-center">
+                                    <p className="text-[10px] text-gray-400">
+                                        ID Efí: {process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID ? `...${process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID.slice(-4)}` : 'Não identificado'}
+                                    </p>
+                                </div>
                             </div>
                         )}
                     </div>
