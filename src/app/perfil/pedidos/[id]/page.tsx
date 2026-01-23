@@ -4,13 +4,14 @@ import { Container } from "@/components/ui/Container";
 import Link from "next/link";
 import { ArrowLeft, Package, MapPin, CreditCard, CheckCircle, Clock, Truck, AlertCircle, Copy, Printer, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { formatPrice } from "@/lib/utils";
 
-export default function OrderDetailsPage({ params }: { params: { id: string } }) {
+export default function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const { user, isLoading: isAuthLoading } = useAuth();
     const router = useRouter();
     const [order, setOrder] = useState<any>(null);
@@ -25,7 +26,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
         if (user) {
             loadOrder();
         }
-    }, [user, isAuthLoading, params.id]);
+    }, [user, isAuthLoading, id]);
 
     const loadOrder = async () => {
         setIsLoading(true);
@@ -34,7 +35,7 @@ export default function OrderDetailsPage({ params }: { params: { id: string } })
             const { data, error } = await supabase
                 .from('orders')
                 .select('*')
-                .eq('id', params.id)
+                .eq('id', id)
                 .single();
 
             if (data && !error) {
