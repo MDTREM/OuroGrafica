@@ -194,17 +194,17 @@ export default function AdminOrdersPage() {
 
                                                 {/* Artwork Status */}
                                                 <div className="mt-3 pt-3 border-t border-gray-50 flex items-center gap-2">
-                                                    {item.designOption === 'upload' ? (
+                                                    {(item.details?.designOption === 'upload' || item.designOption === 'upload') ? (
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">Arte Enviada</span>
-                                                            {item.uploadedFile && (
-                                                                <a href={item.uploadedFile} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
+                                                            {(item.details?.fileUrl || item.details?.uploadedFile || item.uploadedFile) && (
+                                                                <a href={item.details?.fileUrl || item.details?.uploadedFile || item.uploadedFile} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
                                                                     Baixar Arquivo
                                                                 </a>
                                                             )}
                                                         </div>
 
-                                                    ) : item.designOption === 'hire' ? (
+                                                    ) : (item.details?.designOption === 'hire' || item.designOption === 'hire') ? (
                                                         <span className="text-xs font-bold text-orange-700 bg-orange-100 px-2 py-1 rounded-full">Solicitou Criação (+ Designer)</span>
                                                     ) : (
                                                         <span className="text-xs text-gray-400">Sem opção de arte selecionada</span>
