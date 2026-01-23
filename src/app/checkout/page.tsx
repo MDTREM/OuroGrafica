@@ -43,10 +43,35 @@ export default function CheckoutPage() {
     // --- Script Injection for Efí Card ---
     useEffect(() => {
         const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
-        if (!accountId || accountId.includes("INSERIR")) return;
+
+        // If ID matches placeholder or is missing, log but Unblock UI
+        if (!accountId || accountId.includes("INSERIR")) {
+            console.error("Efí Account ID missing or invalid:", accountId);
+            setScriptLoaded(true);
+            return;
+        }
 
         const scriptId = 'efi-payment-token-script';
-        if (document.getElementById(scriptId)) return;
+
+        // Check if already exists
+        const existingScript = document.getElementById(scriptId);
+        if (existingScript) {
+            // Check availability with a small retry
+            const checkInterval = setInterval(() => {
+                // @ts-ignore
+                if (typeof window.$gn !== 'undefined') {
+                    setScriptLoaded(true);
+                    clearInterval(checkInterval);
+                }
+            }, 500);
+
+            // Force unblock after 3s anyway
+            setTimeout(() => {
+                setScriptLoaded(true);
+                clearInterval(checkInterval);
+            }, 3000);
+            return;
+        }
 
         const script = document.createElement('script');
         script.id = scriptId;
@@ -57,10 +82,20 @@ export default function CheckoutPage() {
         const v = parseInt(String(Math.random() * 1000000));
         script.src = `https://api.efi.com.br/v1/ancillary/payment-token/${accountId}/protect?v=${v}`;
 
+        script.onload = () => {
+            console.log("Efí Script Loaded");
+            setScriptLoaded(true);
+        };
+
+        script.onerror = () => {
+            console.error("Error loading Efí Script");
+            setScriptLoaded(true); // Unblock UI anyway
+        };
+
         document.head.appendChild(script);
 
         return () => {
-            // Optional cleaning if needed, but usually we keep it
+            // Optional cleaning
         };
     }, []);
 
