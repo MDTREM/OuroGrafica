@@ -41,7 +41,8 @@ export default function CheckoutPage() {
     });
 
     // --- Script Injection for Efí Card ---
-    useEffect(() => {
+    const loadEfiScript = () => {
+        setScriptLoaded(false);
         const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
 
         // If ID matches placeholder or is missing, log but Unblock UI
@@ -53,25 +54,9 @@ export default function CheckoutPage() {
 
         const scriptId = 'efi-payment-token-script';
 
-        // Check if already exists
-        const existingScript = document.getElementById(scriptId);
-        if (existingScript) {
-            // Check availability with a small retry
-            const checkInterval = setInterval(() => {
-                // @ts-ignore
-                if (typeof window.$gn !== 'undefined') {
-                    setScriptLoaded(true);
-                    clearInterval(checkInterval);
-                }
-            }, 500);
-
-            // Force unblock after 3s anyway
-            setTimeout(() => {
-                setScriptLoaded(true);
-                clearInterval(checkInterval);
-            }, 3000);
-            return;
-        }
+        // Remove existing if any to force reload
+        const existing = document.getElementById(scriptId);
+        if (existing) existing.remove();
 
         const script = document.createElement('script');
         script.id = scriptId;
@@ -89,14 +74,14 @@ export default function CheckoutPage() {
 
         script.onerror = () => {
             console.error("Error loading Efí Script");
-            setScriptLoaded(true); // Unblock UI anyway
+            setScriptLoaded(true);
         };
 
         document.head.appendChild(script);
+    };
 
-        return () => {
-            // Optional cleaning
-        };
+    useEffect(() => {
+        loadEfiScript();
     }, []);
 
     // --- Masks & Handlers ---
