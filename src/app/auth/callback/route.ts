@@ -5,12 +5,21 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url)
     const code = searchParams.get('code')
-    // if "next" is in param, use it as the redirect URL
-    const next = searchParams.get('next') ?? '/'
+
+    const cookieStore = await cookies()
+    // Check URL param first, then cookie
+    const nextParam = searchParams.get('next')
+    const nextCookie = cookieStore.get('auth-redirect')?.value
+    const next = nextParam || nextCookie || '/'
 
     if (code) {
-        const cookieStore = await cookies()
+        // Create response with redirect early to attach cookies
         const response = NextResponse.redirect(`${origin}${next}`)
+
+        // Clean up the redirect cookie if it existed
+        if (nextCookie) {
+            response.cookies.delete('auth-redirect')
+        }
 
         const supabase = createServerClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,

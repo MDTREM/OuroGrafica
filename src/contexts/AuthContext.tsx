@@ -66,8 +66,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const signInWithSocial = async (provider: Provider, queryParams?: { next?: string }) => {
         const redirectTo = new URL(`${window.location.origin}/auth/callback`);
+
+        // Strategy: Persist 'next' in a cookie to allow it to survive the OAuth roundtrip
+        // even if Supabase/Provider strips query params.
         if (queryParams?.next) {
             redirectTo.searchParams.set('next', queryParams.next);
+            // Fallback/robustness: Set a cookie
+            document.cookie = `auth-redirect=${queryParams.next}; path=/; max-age=600; SameSite=Lax`;
         }
 
         const { data, error } = await supabase.auth.signInWithOAuth({

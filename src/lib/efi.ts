@@ -72,7 +72,7 @@ export class EfiService {
             return response.data.access_token;
         } catch (error: any) {
             console.error("❌ Efí Auth Error:", error.response?.data || error.message);
-            throw new Error("Falha na autenticação da Efí");
+            throw new Error(`Falha na autenticação da Efí: ${JSON.stringify(error.response?.data || error.message)}`);
         }
     }
 
@@ -111,7 +111,7 @@ export class EfiService {
             return response.data; // Retorna { txid, loc: { id, ... } }
         } catch (error: any) {
             console.error("❌ Efí Create Charge Error:", error.response?.data || error.message);
-            throw new Error("Erro ao criar cobrança PIX");
+            throw new Error(`Erro ao criar cobrança PIX: ${JSON.stringify(error.response?.data || error.message)}`);
         }
     }
 
