@@ -226,7 +226,7 @@ export default function CheckoutPage() {
         return true; // Pix e Boleto não precisam de validação extra por enquanto
     };
 
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
 
     const handleFinishOrder = async () => {
         setErrorMessage(null);
