@@ -187,6 +187,16 @@ export default function CheckoutPage() {
                 name: personType === 'pf' ? formData.name : formData.companyName,
                 cpf: personType === 'pf' ? formData.cpf : formData.cnpj, // Server will handle stripping chars
                 email: formData.email,
+            },
+            address: {
+                zip: formData.zip,
+                street: formData.address,
+                number: formData.number,
+                complement: formData.complement,
+                district: formData.district,
+                city: formData.city,
+                state: formData.state,
+                shippingMethod: 'pickup' // For now default or check radio button logic if expanded
             }
         };
 

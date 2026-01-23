@@ -16,6 +16,16 @@ interface CheckoutData {
         cpf: string;
         email: string;
     };
+    address: {
+        zip: string;
+        street: string;
+        number: string;
+        complement: string;
+        district: string;
+        city: string;
+        state: string;
+        shippingMethod?: string; // 'pickup' or 'delivery'
+    };
 }
 
 export async function createPixOrder(data: CheckoutData) {
@@ -47,7 +57,7 @@ export async function createPixOrder(data: CheckoutData) {
         const { data: order, error } = await supabase
             .from("orders")
             .insert({
-                user_id: data.userId || null, // Pode ser null se for convidado (futuro)
+                user_id: data.userId || null,
                 items: data.items,
                 total: data.total,
                 status: "pending",
@@ -55,6 +65,8 @@ export async function createPixOrder(data: CheckoutData) {
                 customer_name: data.customer.name,
                 customer_document: data.customer.cpf,
                 customer_email: data.customer.email,
+
+                address_info: data.address, // Saving full address object
 
                 txid: charge.txid,
                 qr_code: qrCodeData.qrcode, // Copia e Cola
