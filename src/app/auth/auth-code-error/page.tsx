@@ -3,11 +3,10 @@ import { AlertCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default function AuthCodeError({
-    searchParams,
-}: {
-    searchParams: { error?: string };
+export default async function AuthCodeError(props: {
+    searchParams: Promise<{ error?: string }>;
 }) {
+    const searchParams = await props.searchParams;
     const errorMessage = searchParams?.error;
 
     return (
