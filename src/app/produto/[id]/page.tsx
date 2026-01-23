@@ -157,6 +157,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const handleBuyNow = () => {
         if (!product) return;
 
+        // Validation: Require file if "upload" option selected
+        if (designOption === "upload" && !uploadedFile) {
+            alert("Por favor, envie o arquivo da sua arte antes de continuar.\nOu selecione 'Contratar Criação' se não tiver o arquivo.");
+            return;
+        }
+
         addToCart({
             productId: product.id,
             title: product.title,
