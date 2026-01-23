@@ -43,6 +43,9 @@ export async function GET(request: Request) {
         if (!error) {
             return response
         }
+
+        // Return user to error page with error details
+        return NextResponse.redirect(`${origin}/auth/auth-code-error?error=${encodeURIComponent(error.message)}`)
     }
 
     // return the user to an error page with instructions
