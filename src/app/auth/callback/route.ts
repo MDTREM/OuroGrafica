@@ -12,6 +12,14 @@ export async function GET(request: Request) {
     const nextCookie = cookieStore.get('auth-redirect')?.value
     const next = nextParam || nextCookie || '/'
 
+    // Check if the provider returned an error directly (e.g. user cancelled)
+    const errorDescription = searchParams.get('error_description')
+    const errorParam = searchParams.get('error')
+
+    if (errorDescription || errorParam) {
+        return NextResponse.redirect(`${origin}/auth/auth-code-error?error=${encodeURIComponent(errorDescription || errorParam || 'Unknown Provider Error')}`)
+    }
+
     if (code) {
         const response = NextResponse.redirect(`${origin}${next}`)
 
@@ -49,5 +57,5 @@ export async function GET(request: Request) {
     }
 
     // return the user to an error page with instructions
-    return NextResponse.redirect(`${origin}/auth/auth-code-error`)
+    return NextResponse.redirect(`${origin}/auth/auth-code-error?error=No+Authorization+Code+Received`)
 }
