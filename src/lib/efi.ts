@@ -171,6 +171,91 @@ export class EfiService {
             throw new Error("Erro ao consultar status do PIX");
         }
     }
+
+    /**
+     * 5. Criar Cobrança Cartão de Crédito (One Step)
+     * Requer `payment_token` gerado no front-end.
+     */
+    async createCreditCardCharge(
+        data: {
+            items: { name: string; value: number; amount: number }[];
+            customer: { name: string; cpf: string; email: string; phone: string; birth?: string };
+            billingAddress: { street: string; number: string; neighborhood: string; zip: string; city: string; state: string; complement?: string };
+            paymentToken: string;
+            installments: number; // Parcelas: 1 a 12
+            total: number; // Used only for validation/logging
+        }
+    ) {
+        const token = await this.authenticate();
+
+        console.log(`🔍 Criando Pagamento Cartão. Cliente: ${data.customer.name}, Valor: ${data.total}`);
+
+        const payload = {
+            items: data.items,
+            customer: {
+                name: data.customer.name,
+                cpf: data.customer.cpf.replace(/\D/g, ""),
+                email: data.customer.email,
+                phone_number: data.customer.phone.replace(/\D/g, ""),
+                birth: data.customer.birth || "1990-01-01", // Efí sometimes requires birth date
+            },
+            payment: {
+                credit_card: {
+                    customer: {
+                        name: data.customer.name, // Usually same as payer
+                        cpf: data.customer.cpf.replace(/\D/g, ""),
+                        email: data.customer.email,
+                        phone_number: data.customer.phone.replace(/\D/g, ""),
+                        birth: data.customer.birth || "1990-01-01",
+                        billing_address: {
+                            street: data.billingAddress.street,
+                            number: data.billingAddress.number,
+                            neighborhood: data.billingAddress.neighborhood,
+                            zipcode: data.billingAddress.zip.replace(/\D/g, ""),
+                            city: data.billingAddress.city,
+                            state: data.billingAddress.state,
+                            complement: data.billingAddress.complement
+                        }
+                    },
+                    installments: data.installments,
+                    payment_token: data.paymentToken,
+                    billing_address: {
+                        street: data.billingAddress.street,
+                        number: data.billingAddress.number,
+                        neighborhood: data.billingAddress.neighborhood,
+                        zipcode: data.billingAddress.zip.replace(/\D/g, ""),
+                        city: data.billingAddress.city,
+                        state: data.billingAddress.state,
+                        complement: data.billingAddress.complement
+                    }
+                }
+            }
+        };
+
+        try {
+            const response = await axios({
+                method: "POST",
+                url: `${EFI_URL}/v1/charge/one-step`, // Note: One Step uses /v1
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                httpsAgent: this.agent,
+                data: payload,
+            });
+
+            // response.data usually contains { code: 200, data: { status: 'approved' | 'waiting' | 'unpaid', charge_id, total, ... } }
+            return {
+                success: true,
+                data: response.data.data,
+                charge_id: response.data.data.charge_id,
+                status: response.data.data.status // 'approved', 'waiting', 'unpaid', 'paid'
+            };
+        } catch (error: any) {
+            console.error("❌ Efí Create Card Charge Error:", JSON.stringify(error.response?.data || error.message, null, 2));
+            throw new Error(`Erro no pagamento com cartão: ${error.response?.data?.error_description || error.message}`);
+        }
+    }
 }
 
 export const efiService = new EfiService();

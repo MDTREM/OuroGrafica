@@ -132,3 +132,82 @@ export async function checkPaymentStatus(orderId: string) {
         return { success: false };
     }
 }
+
+export async function createCreditCardOrder(data: CheckoutData & { paymentToken: string, installments: number, billingAddress: any, cardHolder: any }) {
+    try {
+        console.log("🚀 Iniciando criação de pedido CARTÃO...", data.customer.name);
+
+        if (data.total <= 0) throw new Error("Valor total inválido");
+        if (!data.paymentToken) throw new Error("Token de pagamento não fornecido");
+
+        // 1. Processar Pagamento na Efí
+        // Convert to integer logic if needed, but SDK handles float usually? No, Efí expects string/number usually?
+        // Our service method expects number for total? No, looking at efi.ts, we used `total: number` in type but logged it.
+        // Wait, `createCreditCardCharge` payload structure in `efi.ts` uses `items` with amount/value.
+
+        // Map items for Efí
+        // Efí expects: items: [{ name, value (int cents), amount (int) }]
+        const efiItems = data.items.map(item => ({
+            name: item.title,
+            value: Math.round(item.price * 100), // in cents
+            amount: item.quantity
+        }));
+
+        // Calculate total in cents for validation ?? Action uses total passed.
+
+        const chargeResult = await efiService.createCreditCardCharge({
+            items: efiItems,
+            customer: {
+                name: data.customer.name,
+                cpf: data.customer.cpf,
+                email: data.customer.email,
+                phone: data.customer.phone,
+                birth: "2000-01-01" // TODO: Add birth date to form if strictly required
+            },
+            billingAddress: data.billingAddress,
+            paymentToken: data.paymentToken,
+            installments: data.installments,
+            total: data.total
+        });
+
+        if (!chargeResult.success || chargeResult.status !== 'approved' && chargeResult.status !== 'waiting' && chargeResult.status !== 'paid') {
+            throw new Error("Pagamento não aprovado. Verifique os dados do cartão.");
+        }
+
+        // 2. Salvar Pedido
+        const { data: order, error } = await supabase
+            .from("orders")
+            .insert({
+                user_id: data.userId || null,
+                items: data.items,
+                total: data.total,
+                status: chargeResult.status === 'approved' || chargeResult.status === 'paid' ? 'paid' : 'pending_payment',
+                payment_method: 'credit',
+
+                customer_name: data.customer.name,
+                customer_document: data.customer.cpf,
+                customer_email: data.customer.email,
+                customer_phone: data.customer.phone,
+
+                address_info: data.address,
+
+                txid: String(chargeResult.charge_id),
+                // display_id created by db default? No, we generated it in code for Pix loop. Doing same here.
+                display_id: Math.random().toString(36).substring(2, 10).toUpperCase(),
+            })
+            .select()
+            .single();
+
+        if (error) {
+            console.error("❌ Erro ao salvar pedido (Cartão) no banco:", error);
+            // Charge was made but DB failed. Major issue. Log critical.
+            throw new Error("Erro ao registrar pedido, mas o pagamento pode ter sido processado. Entre em contato.");
+        }
+
+        return { success: true, order };
+
+    } catch (error: any) {
+        console.error("❌ Erro no Checkout Cartão:", error.message);
+        return { success: false, error: error.message };
+    }
+}

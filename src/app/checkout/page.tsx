@@ -39,6 +39,30 @@ export default function CheckoutPage() {
         cardCvv: ""
     });
 
+    // --- Script Injection for Efí Card ---
+    useEffect(() => {
+        const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
+        if (!accountId || accountId.includes("INSERIR")) return;
+
+        const scriptId = 'efi-payment-token-script';
+        if (document.getElementById(scriptId)) return;
+
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.type = 'text/javascript';
+        script.async = true;
+
+        // Random version buster as per Efí docs
+        const v = parseInt(String(Math.random() * 1000000));
+        script.src = `https://api.efi.com.br/v1/ancillary/payment-token/${accountId}/protect?v=${v}`;
+
+        document.head.appendChild(script);
+
+        return () => {
+            // Optional cleaning if needed, but usually we keep it
+        };
+    }, []);
+
     // --- Masks & Handlers ---
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -216,8 +240,77 @@ export default function CheckoutPage() {
                     setIsSubmitting(false);
                 }
             } else {
-                setErrorMessage("Pagamento por Cartão será implementado em breve. Por favor, escolha PIX.");
-                setIsSubmitting(false);
+                // Credit Card Flow
+                const { createCreditCardOrder } = await import('@/actions/checkout-actions');
+
+                // 1. Get Payment Token from Efí Script
+                try {
+                    // @ts-ignore
+                    if (typeof window.$gn === 'undefined') {
+                        throw new Error("Script de pagamento não carregado. Recarregue a página.");
+                    }
+
+                    const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
+                    if (!accountId || accountId.includes("INSERIR_ID")) {
+                        throw new Error("Configuração de pagamento incompleta. (Account ID ausente). Contate o suporte.");
+                    }
+
+                    // Card Data for Tokenization
+                    const cardData = {
+                        brand: "visa", // Script auto-detects, but basic structure needed? Efí uses specific function.
+                        number: formData.cardNumber.replace(/\s/g, ""),
+                        cvv: formData.cardCvv,
+                        expiration_month: formData.cardExpiry.split('/')[0],
+                        expiration_year: "20" + formData.cardExpiry.split('/')[1],
+                        reuse: false
+                    };
+
+                    const paymentToken = await new Promise<string>((resolve, reject) => {
+                        // @ts-ignore
+                        window.$gn.creditCard(cardData, (error, response) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(response.data.payment_token);
+                            }
+                        });
+                    });
+
+                    // 2. Call Server Action
+                    const res = await createCreditCardOrder({
+                        ...checkoutPayload,
+                        paymentToken: paymentToken,
+                        installments: 1, // Default 1 for now, add selector later
+                        billingAddress: {
+                            street: formData.address,
+                            number: formData.number,
+                            neighborhood: formData.district,
+                            zip: formData.zip,
+                            city: formData.city,
+                            state: formData.state,
+                            complement: formData.complement
+                        },
+                        cardHolder: {
+                            name: formData.cardName,
+                            cpf: personType === 'pf' ? formData.cpf : formData.cnpj, // Holder usually same as customer
+                            email: formData.email,
+                            phone: formData.phone,
+                            birth: "1990-01-01"
+                        }
+                    });
+
+                    if (res.success && res.order && res.order.id) {
+                        clearCart();
+                        router.push(`/checkout/sucesso/${res.order.id}`);
+                    } else {
+                        throw new Error(res.error || "Erro ao processar cartão.");
+                    }
+
+                } catch (err: any) {
+                    console.error("Card Token Error:", err);
+                    setErrorMessage(err.message || "Erro ao processar pagamento com cartão.");
+                    setIsSubmitting(false);
+                }
             }
         } catch (error) {
             console.error(error);
