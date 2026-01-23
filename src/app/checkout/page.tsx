@@ -225,6 +225,21 @@ export default function CheckoutPage() {
         }
     };
 
+    // Pre-fill data if user is logged in
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                name: user.user_metadata?.full_name || prev.name,
+                email: user.email || prev.email,
+                // Attempt to load profile data if needed, but for now name/email is good start
+            }));
+            // If already on Step 1, auto-advance if we want, but better to let them review
+            // Actually, if they just logged in via our new form, we call setStep(2) manually.
+            // But if they came already logged in, they see the "Welcome" screen.
+        }
+    }, [user]);
+
     return (
         <div className="bg-gray-50 min-h-screen pb-32 md:pb-24">
             {/* Header */}
@@ -251,98 +266,44 @@ export default function CheckoutPage() {
 
                         {step === 1 ? (
                             <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                {/* PF / PJ Toggle */}
-                                <div className="mb-4">
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">Tipo de Pessoa</label>
-                                    <div className="flex bg-gray-50 p-1 rounded-lg border border-gray-200 max-w-xs">
-                                        <button type="button" onClick={() => setPersonType("pf")} className={`flex-1 py-1.5 text-sm font-bold rounded-md transition-all ${personType === "pf" ? "bg-white text-brand shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>Pessoa Física</button>
-                                        <button type="button" onClick={() => setPersonType("pj")} className={`flex-1 py-1.5 text-sm font-bold rounded-md transition-all ${personType === "pj" ? "bg-white text-brand shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>Pessoa Jurídica</button>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="md:col-span-2">
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">{personType === "pf" ? "Nome Completo" : "Razão Social"}</label>
-                                        <input
-                                            type="text"
-                                            value={personType === "pf" ? formData.name : formData.companyName}
-                                            onChange={(e) => personType === "pf" ? setFormData({ ...formData, name: e.target.value }) : setFormData({ ...formData, companyName: e.target.value })}
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                            placeholder={personType === "pf" ? "Seu nome" : "Nome da empresa"}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">E-mail</label>
-                                        <input
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Celular</label>
-                                        <input
-                                            type="text"
-                                            value={formData.phone}
-                                            onChange={handlePhoneChange}
-                                            placeholder="(00) 00000-0000"
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                        />
-                                    </div>
-
-                                    {personType === "pf" ? (
-                                        <div>
-                                            <label className="block text-sm font-bold text-gray-700 mb-1">CPF</label>
-                                            <input
-                                                type="text"
-                                                value={formData.cpf}
-                                                onChange={handleCpfChange}
-                                                placeholder="000.000.000-00"
-                                                className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                            />
+                                {user ? (
+                                    <div className="space-y-4">
+                                        <div className="bg-green-50 border border-green-200 p-4 rounded-xl flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center">
+                                                    <User size={20} />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm text-green-800 font-bold">Conectado como</p>
+                                                    <p className="text-sm text-gray-700">{user.user_metadata?.full_name || user.email}</p>
+                                                </div>
+                                            </div>
+                                            <button onClick={() => setStep(2)} className="text-sm font-bold text-brand hover:underline">
+                                                Continuar
+                                            </button>
                                         </div>
-                                    ) : (
-                                        <>
-                                            <div>
-                                                <label className="block text-sm font-bold text-gray-700 mb-1">CNPJ</label>
-                                                <input
-                                                    type="text"
-                                                    value={formData.cnpj}
-                                                    onChange={handleCnpjChange}
-                                                    placeholder="00.000.000/0000-00"
-                                                    className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-bold text-gray-700 mb-1">Inscrição Estadual</label>
-                                                <input
-                                                    type="text"
-                                                    value={formData.ie}
-                                                    onChange={(e) => setFormData({ ...formData, ie: e.target.value })}
-                                                    className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                                                />
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-
-                                <div className="mt-6 flex justify-end">
-                                    <button
-                                        onClick={nextStep}
-                                        disabled={!isStep1Valid()}
-                                        className="bg-brand text-white font-bold py-3 px-6 rounded-lg hover:bg-brand/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                                    >
-                                        Continuar
-                                        <ArrowRight size={18} />
-                                    </button>
-                                </div>
+                                        <div className="flex justify-end">
+                                            <button
+                                                onClick={() => setStep(2)}
+                                                className="bg-brand text-white font-bold py-3 px-6 rounded-lg hover:bg-brand/90 transition-all flex items-center gap-2"
+                                            >
+                                                Ir para Entrega
+                                                <ArrowRight size={18} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <AuthForm onSuccess={() => setStep(2)} />
+                                )}
                             </div>
                         ) : (
                             // Summary of Step 1
-                            <div className="text-sm text-gray-600 pl-8">
-                                <p className="font-medium">{personType === "pf" ? formData.name : formData.companyName}</p>
-                                <p>{formData.email} • {formData.phone}</p>
+                            <div className="text-sm text-gray-600 pl-8 flex items-center justify-between">
+                                <div>
+                                    <p className="font-medium">{user?.user_metadata?.full_name || personType === "pf" ? formData.name : formData.companyName}</p>
+                                    <p>{user?.email || formData.email} • {formData.phone}</p>
+                                </div>
+                                <CheckCircle size={18} className="text-green-500" />
                             </div>
                         )}
                     </div>
