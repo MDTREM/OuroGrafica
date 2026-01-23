@@ -58,6 +58,13 @@ export default function CheckoutPage() {
         const existing = document.getElementById(scriptId);
         if (existing) existing.remove();
 
+        // Initialize $gn stub if not exists
+        // @ts-ignore
+        if (typeof window.$gn === 'undefined') {
+            // @ts-ignore
+            window.$gn = { validForm: true, processed: false, done: {}, ready: function (fn) { window.$gn.done = fn; } };
+        }
+
         const script = document.createElement('script');
         script.id = scriptId;
         script.type = 'text/javascript';
