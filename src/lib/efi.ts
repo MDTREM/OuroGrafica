@@ -137,30 +137,28 @@ export class EfiService {
             throw new Error("Erro ao gerar QR Code");
         }
     }
-}
-
     /**
      * 4. Consultar Status da Cobrança
      */
     async getPixStatus(txid: string) {
-    const token = await this.authenticate();
+        const token = await this.authenticate();
 
-    try {
-        const response = await axios({
-            method: "GET",
-            url: `${EFI_URL}/v2/cob/${txid}`,
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            httpsAgent: this.agent,
-        });
+        try {
+            const response = await axios({
+                method: "GET",
+                url: `${EFI_URL}/v2/cob/${txid}`,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                httpsAgent: this.agent,
+            });
 
-        return response.data; // { status: "ATIVAV", "CONCLUIDA", ... }
-    } catch (error: any) {
-        console.error("❌ Efí Get Status Error:", error.response?.data || error.message);
-        throw new Error("Erro ao consultar status do PIX");
+            return response.data; // { status: "ATIVAV", "CONCLUIDA", ... }
+        } catch (error: any) {
+            console.error("❌ Efí Get Status Error:", error.response?.data || error.message);
+            throw new Error("Erro ao consultar status do PIX");
+        }
     }
-}
 }
 
 export const efiService = new EfiService();
