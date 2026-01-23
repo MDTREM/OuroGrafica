@@ -74,7 +74,7 @@ export async function createPixOrder(data: CheckoutData) {
         return { success: false, error: error.message };
     }
 }
-}
+
 
 export async function checkPaymentStatus(orderId: string) {
     try {
