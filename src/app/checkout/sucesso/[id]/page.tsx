@@ -26,11 +26,19 @@ export default function OrderSuccessPage() {
 
         fetchOrder();
 
+        // Start Pooling
         const interval = setInterval(async () => {
-            const { data } = await supabase.from('orders').select('status').eq('id', orderId).single();
-            if (data && data.status === 'paid') {
-                setOrder((prev: any) => ({ ...prev, status: 'paid' }));
-                clearInterval(interval);
+            try {
+                // Dynamic check via Server Action
+                const { checkPaymentStatus } = await import('@/actions/checkout-actions');
+                const res = await checkPaymentStatus(orderId);
+
+                if (res && res.status === 'paid') {
+                    setOrder((prev: any) => ({ ...prev, status: 'paid' }));
+                    clearInterval(interval);
+                }
+            } catch (err) {
+                console.error("Polling error", err);
             }
         }, 5000); // Check every 5s
 

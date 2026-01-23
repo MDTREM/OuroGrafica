@@ -74,3 +74,43 @@ export async function createPixOrder(data: CheckoutData) {
         return { success: false, error: error.message };
     }
 }
+}
+
+export async function checkPaymentStatus(orderId: string) {
+    try {
+        // 1. Buscar pedido para pegar o txid
+        const { data: order, error } = await supabase
+            .from("orders")
+            .select("txid, status")
+            .eq("id", orderId)
+            .single();
+
+        if (error || !order || !order.txid) {
+            return { success: false, status: order?.status || 'unknown' };
+        }
+
+        if (order.status === 'paid' || order.status === 'Produção') {
+            return { success: true, status: 'paid' };
+        }
+
+        // 2. Consultar na Efí via Server-Side (com certificado)
+        const pixData = await efiService.getPixStatus(order.txid);
+
+        // Status na Efí: ATIVA, CONCLUIDA, REMOVIDA_PELO_USUARIO_RECEBEDOR, REMOVIDA_PELO_PSP
+        if (pixData.status === 'CONCLUIDA') {
+            // 3. Atualizar no Banco
+            await supabase
+                .from("orders")
+                .update({ status: 'Produção' }) // Paid = Produção for us
+                .eq("id", orderId);
+
+            return { success: true, status: 'paid' };
+        }
+
+        return { success: true, status: 'pending' };
+
+    } catch (error) {
+        console.error("Check Status Error:", error);
+        return { success: false };
+    }
+}

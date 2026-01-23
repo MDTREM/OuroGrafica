@@ -109,8 +109,18 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         if (ordersData) {
             const mappedOrders: Order[] = ordersData.map((o: any) => ({
                 ...o,
-                items: o.items || [], // Ensure items array
-                customerName: o.customer_info?.name || "Cliente Desconhecido",
+                items: typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []), // Ensure items array handles JSON/Text
+                customer_info: o.customer_info || {
+                    name: o.customer_name || "Cliente sem nome",
+                    email: o.customer_email || "Sem email",
+                    phone: o.customer_phone || "Sem telefone", // We need to add phone/address columns to DB if they don't exist
+                    cpf: o.customer_document || ""
+                },
+                // For now, if address is not in DB, use empty defaults or existing JSON if present
+                address_info: o.address_info || {
+                    zip: "", street: "", number: "", complement: "", district: "", city: "", state: ""
+                },
+                customerName: o.customer_name || o.customer_info?.name || "Cliente Desconhecido",
                 date: new Date(o.created_at).toLocaleDateString('pt-BR'),
             }));
             setOrders(mappedOrders);

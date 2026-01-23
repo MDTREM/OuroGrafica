@@ -22,6 +22,9 @@ export function Header() {
                     <Link href="/sobre" className="text-sm font-medium text-gray-600 hover:text-brand transition-colors">
                         Sobre Nós
                     </Link>
+                    <Link href="/rastreio" className="text-sm font-medium text-gray-600 hover:text-brand transition-colors">
+                        Rastrear Pedido
+                    </Link>
                 </nav>
                 <div className="flex items-center gap-4">
                     <Button variant="outline" className="hidden sm:flex text-gray-900 border-gray-200 hover:border-brand hover:text-brand">
