@@ -168,43 +168,43 @@ export default function CheckoutPage() {
     };
 
     const handleFinishOrder = async () => {
-        if (!isStep3Valid()) {
+        if (paymentMethod === "credit" && !isStep3Valid()) {
             alert("Por favor, preencha os dados do cartão corretamente.");
             return;
         }
 
         setIsSubmitting(true);
 
-        const orderData = {
-            customer_info: {
-                ...formData,
-                type: personType
-            },
-            address_info: {
-                zip: formData.zip,
-                address: formData.address,
-                number: formData.number,
-                complement: formData.complement,
-                district: formData.district,
-                city: formData.city,
-                state: formData.state,
-                shipping_method: 'pickup' // Hardcoded for now as per UI
-            },
-            payment_method: paymentMethod,
-            total: total,
+        // Prepare data for server action
+        const checkoutPayload = {
+            userId: user?.id,
             items: items,
-            userId: user?.id
+            total: total,
+            customer: {
+                name: personType === 'pf' ? formData.name : formData.companyName,
+                cpf: personType === 'pf' ? formData.cpf : formData.cnpj, // Server will handle stripping chars
+                email: formData.email,
+            }
         };
 
         try {
-            const { createOrder } = await import('@/actions/checkout-actions');
-            const res = await createOrder(orderData);
+            if (paymentMethod === 'pix') {
+                // Import server action dynamically or at top (Next.js server actions can be imported normaly)
+                // But since we are inside a client component ensuring we call it correctly
+                const { createPixOrder } = await import('@/actions/checkout-actions');
 
-            if (res.success && res.orderId) {
-                clearCart();
-                router.push(`/checkout/sucesso/${res.orderId}`);
+                const res = await createPixOrder(checkoutPayload);
+
+                if (res.success && res.order && res.order.id) {
+                    clearCart();
+                    router.push(`/checkout/sucesso/${res.order.id}`); // Redirect to success/payment page
+                } else {
+                    alert(res.error || "Erro ao gerar PIX. Verifique os dados e tente novamente.");
+                    setIsSubmitting(false);
+                }
             } else {
-                alert(res.error || 'Ocorreu um erro ao finalizar o pedido. Tente novamente.');
+                // Future Credit Card Logic
+                alert("Pagamento por Cartão será implementado em breve. Por favor, escolha PIX.");
                 setIsSubmitting(false);
             }
         } catch (error) {
@@ -552,7 +552,7 @@ export default function CheckoutPage() {
                                         <CheckCircle size={16} className="text-orange-600 flex-shrink-0" />
                                         <div>
                                             <p className="text-xs font-bold text-orange-700">Pagamento Certificado</p>
-                                            <p className="text-[10px] text-orange-600">Processado por Asaas</p>
+                                            <p className="text-[10px] text-orange-600">Processado por Efí Bank</p>
                                         </div>
                                     </div>
                                 </div>
