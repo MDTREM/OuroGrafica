@@ -1,3 +1,7 @@
+"use client";
+
+
+
 import { Container } from "@/components/ui/Container";
 import Link from "next/link";
 import { ChevronRight, User, Package, Heart, Headphones, FileText, LogOut, Menu as MenuIcon, Printer, Wrench, Search } from "lucide-react";
