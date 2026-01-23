@@ -87,10 +87,14 @@ export class EfiService {
             nome: nome,
         };
 
+        console.log(`🔍 Criando PIX. Documento: ${document} (Clean: ${cleanDoc}, Len: ${cleanDoc.length})`);
+
         if (cleanDoc.length === 14) {
             devedor.cnpj = cleanDoc;
-        } else {
+        } else if (cleanDoc.length === 11) {
             devedor.cpf = cleanDoc;
+        } else {
+            throw new Error(`CPF/CNPJ inválido. Foram informados ${cleanDoc.length} números. Verifique os dados.`);
         }
 
         const data = {
