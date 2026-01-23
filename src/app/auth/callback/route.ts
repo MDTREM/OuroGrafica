@@ -13,10 +13,9 @@ export async function GET(request: Request) {
     const next = nextParam || nextCookie || '/'
 
     if (code) {
-        // Create response with redirect early to attach cookies
         const response = NextResponse.redirect(`${origin}${next}`)
 
-        // Clean up the redirect cookie if it existed
+        // Clean up the redirect cookie
         if (nextCookie) {
             response.cookies.delete('auth-redirect')
         }
@@ -30,11 +29,10 @@ export async function GET(request: Request) {
                         return cookieStore.get(name)?.value
                     },
                     set(name: string, value: string, options: CookieOptions) {
-                        cookieStore.set({ name, value, ...options })
+                        // Note: cookieStore is read-only in Route Handlers, so we only set on response
                         response.cookies.set({ name, value, ...options })
                     },
                     remove(name: string, options: CookieOptions) {
-                        cookieStore.delete({ name, ...options })
                         response.cookies.delete({ name, ...options })
                     },
                 },
