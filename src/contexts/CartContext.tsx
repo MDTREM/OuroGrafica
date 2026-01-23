@@ -118,16 +118,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     const productTotal = subtotal - designFees;
 
-    // Calculate Discount
+    // Calculate Discount (Apply to Subtotal including Design Fees)
     let discount = 0;
     if (coupon) {
         if (coupon.type === 'percentage') {
-            discount = productTotal * (coupon.value / 100);
+            discount = subtotal * (coupon.value / 100);
         } else {
             discount = coupon.value;
         }
-        // Cap discount at productTotal
-        if (discount > productTotal) discount = productTotal;
+        // Cap discount at subtotal
+        if (discount > subtotal) discount = subtotal;
     }
 
     const total = Math.max(0, productTotal - discount + designFees + shipping);

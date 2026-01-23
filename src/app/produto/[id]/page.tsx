@@ -108,11 +108,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         // If price is per m², then UnitPrice = Area * Price
         // If dimensions are missing, price is 0 (or base price?)
         calculatedBasePrice = (area > 0 ? area : 0) * price * quantity;
+    } else if (product?.customQuantity) {
+        // Simple Unit Price Logic for items with counter (e.g. Stickers, DTF unit)
+        // Assumes 'price' is the price per 1 unit.
+        calculatedBasePrice = price * quantity;
     } else {
-        // Standard Logic (Pack based or Unit based)
-        // Check if unit implies "1 un" or "100 un"
-        // Existing logic assumes price is for a batch of 100 if unit is not specified, 
-        // but let's stick to the previous working logic for non-custom items to avoid breaking changes.
+        // Legacy/Batch Logic (Cards, Flyers)
+        // Assumes 'price' is for a batch of 100 units IF not specified otherwise by variations.
+        // NOTE: This logic might need review for cards, but keeping existing behavior for non-customQuantity items.
         const quantityMultiplier = quantity / 100;
         calculatedBasePrice = price * (quantityMultiplier > 0 ? quantityMultiplier : 1);
     }
