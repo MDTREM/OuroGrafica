@@ -47,6 +47,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const [designOption, setDesignOption] = useState<"upload" | "hire">("upload");
     const [showFullDesc, setShowFullDesc] = useState(false);
 
+    // Alert Modal State
+    const [showUploadAlert, setShowUploadAlert] = useState(false);
+
     // Upload State
     const [isUploading, setIsUploading] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<{ name: string; url: string } | null>(null);
@@ -158,8 +161,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         if (!product) return;
 
         // Validation: Require file if "upload" option selected
+        // Validation: Require file if "upload" option selected
         if (designOption === "upload" && !uploadedFile) {
-            alert("Por favor, envie o arquivo da sua arte antes de continuar.\nOu selecione 'Contratar Criação' se não tiver o arquivo.");
+            setShowUploadAlert(true);
             return;
         }
 
@@ -721,6 +725,32 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     </button>
                 </Container>
             </div>
-        </div>
+
+            {/* CUSTOM ALERT MODAL */}
+            {showUploadAlert && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 relative animate-in zoom-in-95 duration-200">
+                        <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-4 mx-auto text-brand">
+                            <UploadCloud size={24} />
+                        </div>
+                        <h3 className="text-xl font-bold text-center text-gray-900 mb-2">Upload Necessário</h3>
+                        <p className="text-gray-600 text-center mb-6 leading-relaxed text-sm">
+                            Você selecionou a opção <strong>"Já tenho minha arte"</strong>, mas não enviou nenhum arquivo.
+                            <br /><br />
+                            Por favor, envie seu arquivo ou mude a opção para <strong>"Contratar Criação"</strong>.
+                        </p>
+                        <button
+                            onClick={() => setShowUploadAlert(false)}
+                            className="w-full bg-brand hover:bg-brand/90 text-white font-bold py-3.5 rounded-xl transition-colors"
+                        >
+                            Entendi, vou enviar
+                        </button>
+                    </div>
+                </div>
+            )}
+
+        </Container>
+            </div >
+        </div >
     );
 }
