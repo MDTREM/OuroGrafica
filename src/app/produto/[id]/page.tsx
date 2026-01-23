@@ -350,7 +350,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                         </div>
                                         <div className="text-right">
                                             <span className="text-xs text-gray-500 block">Valor Unitário Aproximado</span>
-                                            <span className="text-lg font-bold text-gray-900">{formatPrice(price / 100)}</span>
+                                            <span className="text-lg font-bold text-gray-900">{formatPrice(product.customQuantity ? price : price / 100)}</span>
                                         </div>
                                     </div>
                                     <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center bg-gray-50 -mx-4 -mb-4 p-4 rounded-b-xl">
