@@ -40,10 +40,14 @@ export interface Product {
         images?: { [key: string]: string }; // Optional image override per option
     }[];
 
-    // Custom Quantity Logic
     customQuantity?: boolean;
     minQuantity?: number;
     maxQuantity?: number;
+
+    // Price Table (Quantity -> Total Price)
+    priceBreakdowns?: {
+        [quantity: number]: number;
+    };
 
     // Custom Dimensions (m2)
     allowCustomDimensions?: boolean; // If true, show width/height inputs

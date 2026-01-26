@@ -135,10 +135,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         calculatedBasePrice = price * quantity;
     } else {
         // Legacy/Batch Logic (Cards, Flyers)
-        // Assumes 'price' is for a batch of 100 units IF not specified otherwise by variations.
-        // NOTE: This logic might need review for cards, but keeping existing behavior for non-customQuantity items.
-        const quantityMultiplier = quantity / 100;
-        calculatedBasePrice = price * (quantityMultiplier > 0 ? quantityMultiplier : 1);
+        // Check for Fixed Price Breakdown first
+        if (product.priceBreakdowns && product.priceBreakdowns[quantity]) {
+            calculatedBasePrice = product.priceBreakdowns[quantity];
+        } else {
+            // Fallback to multiplier logic
+            const quantityMultiplier = quantity / 100;
+            calculatedBasePrice = price * (quantityMultiplier > 0 ? quantityMultiplier : 1);
+        }
     }
 
     // Add Variation Prices
@@ -410,8 +414,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                     {(product.quantities && product.quantities.length > 0 ? product.quantities : ["100 un.", "250 un.", "500 un.", "1000 un."]).map((qtyStr, idx) => {
                                         // Extract number from string if possible, else use index logic
                                         const qtyNum = parseInt(qtyStr.match(/\d+/)?.[0] || "100");
-                                        // Mock price calc
-                                        const optionPrice = price * (qtyNum / 100);
+
+                                        // Calculate Option Price
+                                        let optionPrice = 0;
+                                        if (product.priceBreakdowns && product.priceBreakdowns[qtyNum]) {
+                                            optionPrice = product.priceBreakdowns[qtyNum];
+                                        } else {
+                                            optionPrice = price * (qtyNum / 100);
+                                        }
 
                                         return (
                                             <div

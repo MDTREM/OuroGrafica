@@ -54,6 +54,10 @@ export default function NewProductPage() {
     const [tempFinish, setTempFinish] = useState("");
     const [tempImage, setTempImage] = useState("");
 
+    // Temp state for price breakdown
+    const [tempPriceQty, setTempPriceQty] = useState("");
+    const [tempPriceVal, setTempPriceVal] = useState("");
+
     // UI Control for Optional Variations
     const [hasVariations, setHasVariations] = useState(true);
     const [newVariationName, setNewVariationName] = useState("");
@@ -249,6 +253,88 @@ export default function NewProductPage() {
                                     checked={formData.allowCustomDimensions || false}
                                     onCheckedChange={(checked) => setFormData(prev => ({ ...prev, allowCustomDimensions: checked }))}
                                 />
+                            </div>
+                        </div>
+
+
+                        {/* Price Table (Quantity-Based) */}
+                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <div className="flex items-center justify-between mb-4">
+                                <div>
+                                    <label className="text-sm font-bold text-gray-900">Tabela de Preços</label>
+                                    <p className="text-xs text-gray-500">Defina preços específicos para quantidades específicas.</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex gap-2 items-end">
+                                    <div className="space-y-1 flex-1">
+                                        <label className="text-xs text-gray-500">Quantidade</label>
+                                        <Input
+                                            type="number"
+                                            placeholder="Ex: 500"
+                                            value={tempPriceQty}
+                                            onChange={(e) => setTempPriceQty(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="space-y-1 flex-1">
+                                        <label className="text-xs text-gray-500">Valor Total (R$)</label>
+                                        <Input
+                                            type="number"
+                                            placeholder="Ex: 130.00"
+                                            value={tempPriceVal}
+                                            onChange={(e) => setTempPriceVal(e.target.value)}
+                                        />
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const qty = parseInt(tempPriceQty);
+                                            const val = parseFloat(tempPriceVal);
+                                            if (qty && val >= 0) {
+                                                setFormData(prev => ({
+                                                    ...prev,
+                                                    priceBreakdowns: { ...prev.priceBreakdowns, [qty]: val },
+                                                    // Optionally sync with quantities list
+                                                    quantities: prev.quantities ? Array.from(new Set([...prev.quantities, `${qty}`])) : [`${qty}`]
+                                                }));
+                                                setTempPriceQty("");
+                                                setTempPriceVal("");
+                                            }
+                                        }}
+                                        className="bg-brand text-white p-2.5 rounded-xl hover:bg-brand-dark mb-0.5"
+                                    >
+                                        <Plus size={18} />
+                                    </button>
+                                </div>
+
+                                <div className="space-y-2">
+                                    {formData.priceBreakdowns && Object.entries(formData.priceBreakdowns).length > 0 ? (
+                                        Object.entries(formData.priceBreakdowns)
+                                            .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
+                                            .map(([qty, price]) => (
+                                                <div key={qty} className="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-gray-200">
+                                                    <span className="text-sm font-medium">{qty} un.</span>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-sm text-brand font-bold">R$ {price.toFixed(2)}</span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                const newBreakdown = { ...formData.priceBreakdowns };
+                                                                delete newBreakdown[parseInt(qty)];
+                                                                setFormData(prev => ({ ...prev, priceBreakdowns: newBreakdown }));
+                                                            }}
+                                                            className="text-gray-400 hover:text-red-500"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))
+                                    ) : (
+                                        <p className="text-xs text-gray-400 text-center py-2">Nenhum preço fixo configurado.</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
