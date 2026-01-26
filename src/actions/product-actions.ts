@@ -32,7 +32,8 @@ export async function getProductsByCategory(
         let query = supabase
             .from('products')
             .select('*')
-            .eq('category', categorySlug);
+            .eq('category', categorySlug)
+            .eq('active', true);
 
         if (options?.subcategorySlug) {
             query = query.eq('subcategory', options.subcategorySlug);

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/Input";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 export default function AdminProductsPage() {
-    const { products, deleteProduct, importProducts, duplicateProduct, categories } = useAdmin();
+    const { products, deleteProduct, importProducts, duplicateProduct, categories, updateProduct } = useAdmin();
 
     // URL State Management
     const searchParams = useSearchParams();
@@ -161,6 +161,7 @@ export default function AdminProductsPage() {
                             <tr>
                                 <th className="px-6 py-4">Produto</th>
                                 <th className="px-6 py-4">Categoria</th>
+                                <th className="px-6 py-4">Status</th>
                                 <th className="px-6 py-4">Preço</th>
                                 <th className="px-6 py-4">Destaques</th>
                                 <th className="px-6 py-4 text-right">Ações</th>
@@ -185,6 +186,19 @@ export default function AdminProductsPage() {
                                         <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700">
                                             {product.category}
                                         </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <button
+                                            onClick={async () => {
+                                                await updateProduct({ ...product, active: !product.active });
+                                            }}
+                                            className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors ${product.active !== false
+                                                    ? "bg-green-100 text-green-700 hover:bg-green-200"
+                                                    : "bg-red-100 text-red-700 hover:bg-red-200"
+                                                }`}
+                                        >
+                                            {product.active !== false ? "Ativo" : "Inativo"}
+                                        </button>
                                     </td>
                                     <td className="px-6 py-4 font-bold">{formatPrice(product.price)}</td>
                                     <td className="px-6 py-4">

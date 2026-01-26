@@ -12,6 +12,7 @@ export interface Product {
     image?: string;
     images?: string[]; // Array of images
     color?: string; // For placeholder/UI theming
+    active?: boolean;
 
     // Extended Details
     subcategory?: string;

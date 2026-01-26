@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 // Helper to fetch products for a section
 async function getProductsForSection(section: Section): Promise<Product[]> {
-  const { data: allProducts } = await supabase.from('products').select('*');
+  const { data: allProducts } = await supabase.from('products').select('*').eq('active', true);
   if (!allProducts) return [];
 
   let filtered = allProducts as Product[];
