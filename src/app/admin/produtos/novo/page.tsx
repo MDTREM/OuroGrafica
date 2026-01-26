@@ -239,7 +239,14 @@ export default function NewProductPage() {
                                 placeholder="0.00"
                                 value={formData.price}
                                 onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
+                                disabled={formData.priceBreakdowns && Object.keys(formData.priceBreakdowns).length > 0}
+                                className={formData.priceBreakdowns && Object.keys(formData.priceBreakdowns).length > 0 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : ""}
                             />
+                            {formData.priceBreakdowns && Object.keys(formData.priceBreakdowns).length > 0 && (
+                                <p className="text-xs text-orange-600 mt-1 col-span-2">
+                                    * O preço base é ignorado quando a Tabela de Preços está ativa.
+                                </p>
+                            )}
                         </div>
 
                         {/* Custom Dimensions Toggle (m²) */}

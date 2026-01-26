@@ -33,7 +33,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     const mappedProduct: Product = {
                         ...data,
                         customText: data.custom_text,
-                        hasDesignOption: data.has_design_option !== undefined ? data.has_design_option : true
+                        hasDesignOption: data.has_design_option !== undefined ? data.has_design_option : true,
+                        priceBreakdowns: data.price_breakdowns || {}
                     };
                     setProduct(mappedProduct);
                 }
