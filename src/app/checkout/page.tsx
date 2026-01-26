@@ -77,23 +77,26 @@ export default function CheckoutPage() {
 
         // Random version buster as per Efí docs
         const v = parseInt(String(Math.random() * 1000000));
-        // Proxy the script through our backend to avoid blockers -> CHANGED TO DIRECT PER SUPPORT
-        // script.src = `/api/efi/script?v=${v}`;
-        script.src = `https://payment-token.efi.com.br/payment-token/${accountId}/protect?v=${v}`;
+        // Efí Official CDN Script
+        script.src = "https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi.min.js";
 
         script.onload = () => {
-            console.log("Efí Script Loaded");
-            setConnectionStatus('Sucesso');
+            console.log("Efí Script Loaded (CDN)");
             setScriptLoaded(true);
+
+            // Initialize if needed or just verify it exists
+            // The CDN script exposes 'EfiPay' constructor. 
+            // We'll treat the connection as success if it loads.
+            setConnectionStatus('Conectado');
         };
 
         script.onerror = () => {
-            console.error("Error loading Efí Script");
+            console.error("Error loading Efí Script from CDN");
             setConnectionStatus('Erro ao baixar');
             setScriptLoaded(true);
         };
 
-        document.head.appendChild(script);
+        document.body.appendChild(script);
     };
 
     useEffect(() => {
@@ -287,38 +290,41 @@ export default function CheckoutPage() {
                         throw new Error("Configuração (Account ID) ausente. Se estiver na Vercel, adicione a variável de ambiente.");
                     }
 
-                    // @ts-ignore
-                    if (typeof window.$gn === 'undefined' || typeof window.$gn.creditCard !== 'function') {
-                        loadEfiScript(); // Try to reload if missing
-                        throw new Error("Erro na conexão com Efí. Verifique se o domínio 'ourografica.site' está liberado no painel da Efí (API > Configurações).");
-                    }
+                    // 2. BUSCAR TOKEN DO CARTÃO (Efí)
+                    // New SDK Usage: EfiPay.PaymentToken(accountId, callback)
+                    console.log("Iniciando geração de token...");
 
-                    // Card Data for Tokenization
-                    const cardData = {
-                        brand: "visa", // Script auto-detects, but basic structure needed? Efí uses specific function.
-                        number: formData.cardNumber.replace(/\s/g, ""),
-                        cvv: formData.cardCvv,
-                        expiration_month: formData.cardExpiry.split('/')[0],
-                        expiration_year: "20" + formData.cardExpiry.split('/')[1],
-                        reuse: false
-                    };
+                    // @ts-ignore
+                    if (typeof window.EfiPay === 'undefined') {
+                        throw new Error("Biblioteca de pagamento não carregada. Recarregue a página.");
+                    }
 
                     const paymentToken = await new Promise<string>((resolve, reject) => {
                         // @ts-ignore
-                        window.$gn.creditCard(cardData, (error, response) => {
-                            if (error) {
-                                reject(error);
+                        EfiPay.PaymentToken(accountId, (result: any) => {
+                            console.log("Efí Callback:", result);
+                            if (result.payment_token) {
+                                resolve(result.payment_token);
                             } else {
-                                resolve(response.data.payment_token);
+                                reject(new Error("Falha ao gerar token do cartão. Verifique os dados."));
                             }
-                        });
+                        },
+                            // Card Data Object
+                            {
+                                brand: "visa",
+                                number: formData.cardNumber.replace(/\s/g, ""),
+                                cvv: formData.cardCvv,
+                                expirationMonth: formData.cardExpiry.split('/')[0],
+                                expirationYear: `20${formData.cardExpiry.split('/')[1]}`,
+                                reuse: false
+                            });
                     });
 
-                    // 2. Call Server Action
+                    // 3. Processar Pedido no Backend
                     const res = await createCreditCardOrder({
                         ...checkoutPayload,
                         paymentToken: paymentToken,
-                        installments: 1, // Default 1 for now, add selector later
+                        installments: 1, // Default 1 for now
                         billingAddress: {
                             street: formData.address,
                             number: formData.number,
@@ -330,7 +336,7 @@ export default function CheckoutPage() {
                         },
                         cardHolder: {
                             name: formData.cardName,
-                            cpf: personType === 'pf' ? formData.cpf : formData.cnpj, // Holder usually same as customer
+                            cpf: personType === 'pf' ? formData.cpf : formData.cnpj,
                             email: formData.email,
                             phone: formData.phone,
                             birth: "1990-01-01"
