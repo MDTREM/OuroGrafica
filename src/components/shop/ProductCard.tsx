@@ -13,9 +13,10 @@ interface ProductCardProps {
     unit?: string;
     description: string;
     image?: string;
+    priceBreakdowns?: { [quantity: number]: number };
 }
 
-export function ProductCard({ id, title, price, unit, description, image }: ProductCardProps) {
+export function ProductCard({ id, title, price, unit, description, image, priceBreakdowns }: ProductCardProps) {
     const { isFavorite, toggleFavorite } = useFavorites();
     const isFav = isFavorite(id);
 
@@ -69,8 +70,38 @@ export function ProductCard({ id, title, price, unit, description, image }: Prod
 
                 <div className="mt-auto">
                     <div className="mb-0">
-                        <span className="text-xl font-bold text-brand block">{formatPrice(price)}</span>
-                        {unit && <span className="text-xs text-gray-500 font-medium block">/ {unit}</span>}
+                        <div className="mb-0">
+                            {(() => {
+                                // Check if there is a price breakdown available
+                                if (priceBreakdowns && Object.keys(priceBreakdowns).length > 0) {
+                                    // Find the lowest price from the breakdown (usually the smallest quantity)
+                                    const entries = Object.entries(priceBreakdowns);
+                                    if (entries.length > 0) {
+                                        // Sort by quantity to find minimal starting entry or just min price? 
+                                        // Usually "Starting From" implies lowest price for minimal quantity? 
+                                        // Or lowest unit price? Usually "A partir de R$ 29,90" means the cheapest pack.
+                                        const minPrice = Math.min(...Object.values(priceBreakdowns).map(Number));
+
+                                        if (minPrice > 0) {
+                                            return (
+                                                <>
+                                                    <span className="text-xs text-gray-500 font-medium mb-0.5 block">A partir de</span>
+                                                    <span className="text-xl font-bold text-brand block">{formatPrice(minPrice)}</span>
+                                                </>
+                                            )
+                                        }
+                                    }
+                                }
+
+                                // Fallback to standard price
+                                return (
+                                    <>
+                                        <span className="text-xl font-bold text-brand block">{formatPrice(price)}</span>
+                                        {unit && <span className="text-xs text-gray-500 font-medium block">/ {unit}</span>}
+                                    </>
+                                )
+                            })()}
+                        </div>
                     </div>
                 </div>
             </div>

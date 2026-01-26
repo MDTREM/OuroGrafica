@@ -61,7 +61,12 @@ export async function getProductsByCategory(
             return [];
         }
 
-        return data as Product[];
+        return data.map((p: any) => ({
+            ...p,
+            customText: p.custom_text,
+            hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : true,
+            priceBreakdowns: p.price_breakdowns || {}
+        })) as Product[];
     } catch (error) {
         console.error('Unexpected error fetching products:', error);
         return [];
