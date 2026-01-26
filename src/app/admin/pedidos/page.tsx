@@ -150,6 +150,26 @@ export default function AdminOrdersPage() {
                                         <p className="text-sm text-gray-500">Endereço não informado.</p>
                                     )}
                                 </div>
+                                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                    <h3 className="font-bold text-gray-900 mb-2">Pagamento</h3>
+                                    <div className="space-y-1 text-sm text-gray-600">
+                                        <p>
+                                            <strong className="text-gray-900">Método: </strong>
+                                            {selectedOrder.payment_method === 'pix' ? (
+                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium text-xs">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Pix
+                                                </span>
+                                            ) : selectedOrder.payment_method === 'credit_card' || selectedOrder.payment_method === 'credit' ? (
+                                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium text-xs">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div> Cartão de Crédito
+                                                </span>
+                                            ) : (
+                                                <span className="text-gray-500">{selectedOrder.payment_method || "Não informado"}</span>
+                                            )}
+                                        </p>
+                                        <p><strong className="text-gray-900">Total:</strong> <span className="text-brand font-bold">{formatPrice(selectedOrder.total)}</span></p>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* 2. Items List */}
