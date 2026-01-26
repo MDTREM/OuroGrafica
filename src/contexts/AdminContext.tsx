@@ -240,13 +240,35 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id, ...rest } = product;
 
-        const newProduct = {
-            ...rest,
+        const safePayload = {
             title: `${product.title} (Cópia)`,
-            // slug not in type, relying on auto-gen or omitted
+            description: product.description,
+            price: product.price,
+            category: product.category,
+            active: false, // duplications start inactive usually
+            image: product.image,
+            images: product.images,
+            variations: product.variations,
+            technicalSpecs: product.technicalSpecs,
+            quantities: product.quantities,
+            formats: product.formats,
+            finishes: product.finishes,
+            customQuantity: product.customQuantity,
+            minQuantity: product.minQuantity,
+            maxQuantity: product.maxQuantity,
+            allowCustomDimensions: product.allowCustomDimensions,
+            isNew: product.isNew,
+            isFeatured: product.isFeatured,
+            isBestSeller: product.isBestSeller,
+            fullDescription: product.fullDescription,
+            subcategory: product.subcategory,
+            unit: product.unit,
+            color: product.color,
+            price_per_m2: product.pricePerM2,
+            custom_text: product.customText
         };
 
-        const { data, error } = await supabase.from('products').insert([newProduct]).select().single();
+        const { data, error } = await supabase.from('products').insert([safePayload]).select().single();
         if (data && !error) {
             setProducts(prev => [data, ...prev]);
         } else {
@@ -256,8 +278,36 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     };
 
     const importProducts = async (newProducts: Product[]) => {
-        // Bulk insert
-        const { data, error } = await supabase.from('products').insert(newProducts).select();
+        // Bulk insert with sanitization
+        const safeProducts = newProducts.map(p => ({
+            title: p.title,
+            description: p.description,
+            price: p.price,
+            category: p.category,
+            active: p.active,
+            image: p.image,
+            images: p.images,
+            variations: p.variations,
+            technicalSpecs: p.technicalSpecs,
+            quantities: p.quantities,
+            formats: p.formats,
+            finishes: p.finishes,
+            customQuantity: p.customQuantity,
+            minQuantity: p.minQuantity,
+            maxQuantity: p.maxQuantity,
+            allowCustomDimensions: p.allowCustomDimensions,
+            isNew: p.isNew,
+            isFeatured: p.isFeatured,
+            isBestSeller: p.isBestSeller,
+            fullDescription: p.fullDescription,
+            subcategory: p.subcategory,
+            unit: p.unit,
+            color: p.color,
+            price_per_m2: p.pricePerM2,
+            custom_text: p.customText
+        }));
+
+        const { data, error } = await supabase.from('products').insert(safeProducts).select();
         if (data && !error) setProducts(prev => [...data, ...prev]);
     };
 
