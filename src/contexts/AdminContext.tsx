@@ -152,6 +152,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             return { success: true };
         }
         console.error("Error updating product:", error);
+        alert(`Erro ao atualizar produto: ${error.message}`);
         return { success: false, error };
     };
 
