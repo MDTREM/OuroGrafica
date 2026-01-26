@@ -78,16 +78,31 @@ export default function CheckoutPage() {
         // Random version buster as per Efí docs
         const v = parseInt(String(Math.random() * 1000000));
         // Efí Official CDN Script
-        script.src = "https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi.min.js";
+        script.src = `https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi.min.js?v=${v}`;
 
         script.onload = () => {
-            console.log("Efí Script Loaded (CDN)");
-            setScriptLoaded(true);
+            console.log("Efí Script Source Loaded (CDN)");
 
-            // Initialize if needed or just verify it exists
-            // The CDN script exposes 'EfiPay' constructor. 
-            // We'll treat the connection as success if it loads.
-            setConnectionStatus('Conectado');
+            // Wait a small moment to ensure global is set, or retry
+            let attempts = 0;
+            const checkEfiPay = setInterval(() => {
+                attempts++;
+                // @ts-ignore
+                if (typeof window.EfiPay !== 'undefined') {
+                    clearInterval(checkEfiPay);
+                    console.log("Global EfiPay Available");
+                    setScriptLoaded(true);
+                    setConnectionStatus('Conectado');
+                } else {
+                    console.log(`Waiting for EfiPay... (${attempts})`);
+                    if (attempts >= 10) { // 5 seconds max
+                        clearInterval(checkEfiPay);
+                        console.error("EfiPay not defined after timeout");
+                        setConnectionStatus('Erro ao inicializar');
+                        setScriptLoaded(true); // Let it fail gracefully or show error
+                    }
+                }
+            }, 500);
         };
 
         script.onerror = () => {
