@@ -8,8 +8,9 @@ import { getPagesConfig } from "@/actions/homepage-actions";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Aluguel de Impressoras (Outsourcing) | Ouro Gráfica",
-    description: "Reduza custos com aluguel de impressoras para empresas em Ouro Preto e região. Manutenção e suprimentos inclusos. Peça sua cotação!",
+    title: "Aluguel de Impressoras em Ouro Preto e Região | Outsourcing",
+    description: "Reduza custos com aluguel de impressoras para empresas em Ouro Preto, Mariana e Itabirito. Manutenção e toner inclusos. Planos personalizados para sua empresa.",
+    keywords: ["Aluguel de Impressoras Ouro Preto", "Locação de Impressoras Mariana", "Outsourcing de Impressão", "Aluguel Multifuncional", "Ouro Gráfica Impressoras"],
 };
 
 const BRANDS = [
@@ -42,8 +43,8 @@ const advantages = [
         colorText: "text-orange-600"
     },
     {
-        title: "Atualização tecnológica",
-        text: "Conte com equipamentos atualizados e garanta os melhores resultados, sem a necessidade de um novo investimento.",
+        title: "Atendimento Regional",
+        text: "Atendimento técnico rápido e presencial para empresas em Ouro Preto, Mariana, Itabirito e toda a Região dos Inconfidentes.",
         colorBg: "bg-orange-50",
         colorText: "text-orange-600"
     },

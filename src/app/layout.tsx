@@ -23,13 +23,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ourografica.site'),
-  title: "Ouro Gráfica | Impressão Digital e Manutenção de Impressoras",
-  description: "Destaque sua marca com cartões de visita, flyers e materiais gráficos premium.",
+  title: {
+    template: '%s | Ouro Gráfica Ouro Preto',
+    default: 'Ouro Gráfica | Impressão Digital e Soluções em Ouro Preto',
+  },
+  description: "Sua gráfica de confiança em Ouro Preto e Região. Cartões de visita, banners, aluguel de impressoras e manutenção. Qualidade e agilidade perto de você.",
+  keywords: ["Gráfica Ouro Preto", "Impressão Digital", "Aluguel de Impressoras", "Manutenção de Impressoras", "Ouro Preto", "Mariana", "Itabirito", "MDTREM"],
   openGraph: {
-    title: "Ouro Gráfica | Impressão Digital de Alta Qualidade",
-    description: "Cartões de visita, flyers, banners e manutenção de impressoras em Ouro Preto.",
+    title: "Ouro Gráfica | Impressão Digital em Ouro Preto",
+    description: "Cartões, banners e locação de impressoras na Região dos Inconfidentes.",
     url: 'https://ourografica.site',
-    siteName: 'Ouro Gráfica',
+    siteName: 'Ouro Gráfica Ouro Preto',
     locale: 'pt_BR',
     type: 'website',
   },

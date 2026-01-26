@@ -12,8 +12,15 @@ import { getHomepageConfig, Section } from "@/actions/homepage-actions";
 import { supabase } from "@/lib/supabase"; // Import supabase
 import { Product } from "@/data/mockData";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { Metadata } from "next";
 
-
+export const metadata: Metadata = {
+  title: "Gráfica em Ouro Preto | Impressão Digital e Personalizados",
+  description: "Procurando Gráfica em Ouro Preto? Cartões de visita, banners, adesivos, encadernação e personalizados. Atendemos Ouro Preto, Mariana e toda região.",
+  alternates: {
+    canonical: 'https://ourografica.site',
+  },
+};
 
 // Helper to fetch products for a section
 async function getProductsForSection(section: Section): Promise<Product[]> {
