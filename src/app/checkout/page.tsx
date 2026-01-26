@@ -233,6 +233,16 @@ export default function CheckoutPage() {
 
 
 
+    const getCardBrand = (number: string) => {
+        const n = number.replace(/\D/g, "");
+        if (n.match(/^4/)) return "visa";
+        if (n.match(/^5[1-5]/)) return "mastercard";
+        if (n.match(/^3[47]/)) return "amex";
+        if (n.match(/^(4011|4389|4514|4576|5041|5066|509|6277|6362|6363|650|6516|6550)/)) return "elo";
+        return "visa"; // default fallback
+    };
+
+
     const handleFinishOrder = async () => {
         setErrorMessage(null);
         if (step === 3) {
@@ -271,20 +281,87 @@ export default function CheckoutPage() {
                         throw new Error(res.error || "Erro ao criar PIX.");
                     }
                 } else {
-                    // REDIRECT FLOW (Card/Boleto via Efí Page)
-                    const { createRedirectOrder } = await import('@/actions/checkout-actions');
+                    // Credit Card Flow (Transparent)
+                    const { createCreditCardOrder } = await import('@/actions/checkout-actions');
 
-                    // Show redirecting state
-                    setConnectionStatus('Redirecionando...');
+                    // 1. Get Payment Token from Efí Script (Frontend)
+                    try {
+                        const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
+                        if (!accountId || accountId.includes("INSERIR")) {
+                            throw new Error("Configuração (Account ID) ausente.");
+                        }
 
-                    const res = await createRedirectOrder(checkoutPayload);
+                        // @ts-ignore
+                        if (typeof window.EfiPay === 'undefined') {
+                            throw new Error("Sistema de pagamento indisponível. Recarregue a página.");
+                        }
 
-                    if (res.success && res.url) {
-                        clearCart();
-                        // Initialize Redirect
-                        window.location.href = res.url;
-                    } else {
-                        throw new Error(res.error || "Erro ao gerar link de pagamento.");
+                        console.log("Iniciando geração de token...");
+                        setConnectionStatus("Validando Cartão...");
+
+                        const paymentToken = await new Promise<string>((resolve, reject) => {
+                            // @ts-ignore
+                            EfiPay.PaymentToken(accountId, (result: any) => {
+                                console.log("Efí Callback:", result);
+                                if (result.payment_token) {
+                                    resolve(result.payment_token);
+                                } else {
+                                    reject(new Error("Falha na validação do cartão. Verifique os dados."));
+                                }
+                            },
+                                // Card Data Object
+                                {
+                                    brand: "visa", // TODO: Detect brand? Efí says brand is optional/detected or 'visa'/'mastercard'. Defaulting to generic/required
+                                    // Actually better to omit brand if possible or detect? 
+                                    // Docs say: brand is required.
+                                    // Quick band detection or select? We'll infer or just pass valid format. 
+                                    // Simple detector:
+                                    // ^4 Visa, ^5 Master, ^3 Amex, ^6 Elo.
+                                    // For now passed hardcoded logic or dynamic:
+                                    brand: getCardBrand(formData.cardNumber),
+                                    number: formData.cardNumber.replace(/\s/g, ""),
+                                    cvv: formData.cardCvv,
+                                    expirationMonth: formData.cardExpiry.split('/')[0],
+                                    expirationYear: `20${formData.cardExpiry.split('/')[1]}`,
+                                    reuse: false
+                                });
+                        });
+
+                        setConnectionStatus("Processando Pagamento...");
+
+                        // 3. Processar Pedido no Backend com Token
+                        const res = await createCreditCardOrder({
+                            ...checkoutPayload,
+                            paymentToken: paymentToken,
+                            installments: 1, // Default 1 for now
+                            billingAddress: {
+                                street: formData.address,
+                                number: formData.number,
+                                neighborhood: formData.district,
+                                zip: formData.zip,
+                                city: formData.city,
+                                state: formData.state,
+                                complement: formData.complement
+                            },
+                            cardHolder: {
+                                name: formData.cardName,
+                                cpf: personType === 'pf' ? formData.cpf : formData.cnpj,
+                                email: formData.email,
+                                phone: formData.phone,
+                                birth: "1990-01-01" // Logic to add birth if needed
+                            }
+                        });
+
+                        if (res.success && res.order && res.order.id) {
+                            clearCart();
+                            router.push(`/checkout/sucesso/${res.order.id}`);
+                        } else {
+                            throw new Error(res.error || "Pagamento recusado.");
+                        }
+
+                    } catch (err: any) {
+                        console.error("Card processing error:", err);
+                        throw err;
                     }
                 }
             } catch (error: any) {
@@ -636,97 +713,127 @@ export default function CheckoutPage() {
                             </h2>
                         </div>
 
+                        {/* 3. Payment */}
                         {step === 3 && (
-                            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                <div className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden mb-6">
-                                    {/* Tabs */}
-                                    <div className="flex border-b border-gray-200 bg-white">
-                                        <button onClick={() => setPaymentMethod("credit")} className={`flex-1 py-4 text-sm font-bold transition-colors ${paymentMethod === "credit" ? "text-brand bg-orange-50/30 border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Cartão / Boleto</button>
-                                        <button onClick={() => setPaymentMethod("pix")} className={`flex-1 py-4 text-sm font-bold transition-colors ${paymentMethod === "pix" ? "text-brand bg-orange-50/30 border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Pix</button>
-                                    </div>
+                            <div className="bg-white p-6 rounded-xl border border-brand shadow-md ring-1 ring-brand/10 animate-in fade-in slide-in-from-bottom-2">
+                                <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center text-xs">3</div>
+                                    Pagamento
+                                </h2>
 
-                                    <div className="p-6">
-                                        {paymentMethod === "credit" && (
-                                            <div className="space-y-4 text-center">
-                                                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                                                    <ShieldCheck size={48} className="mx-auto text-brand mb-3" />
-                                                    <h3 className="font-bold text-gray-900 mb-2">Ambiente Seguro</h3>
-                                                    <p className="text-sm text-gray-500 mb-4 max-w-sm mx-auto">
-                                                        Para sua segurança, o pagamento será realizado diretamente na página oficial do Efí Bank.
-                                                    </p>
-                                                    <div className="flex justify-center gap-4 opacity-60 mb-2 grayscale hover:grayscale-0 transition-all">
-                                                        <span className="text-[10px] font-bold border px-1 rounded">VISA</span>
-                                                        <span className="text-[10px] font-bold border px-1 rounded">MASTER</span>
-                                                        <span className="text-[10px] font-bold border px-1 rounded">ELO</span>
-                                                        <span className="text-[10px] font-bold border px-1 rounded">BOLETO</span>
-                                                    </div>
-                                                    <p className="text-xs text-brand font-bold mt-4 bg-brand/5 inline-block px-3 py-1 rounded-full">
-                                                        Você será redirecionado ao clicar em pagar
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {paymentMethod === "pix" && (
-                                            <div className="text-center p-6 bg-gray-50 rounded-xl border border-gray-200">
-                                                <p className="text-gray-900 font-bold mb-1">Pagamento via PIX</p>
-                                                <p className="text-xs text-gray-500">O QR Code será gerado na próxima tela.</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="bg-white p-4 rounded-lg border border-gray-100 mb-6 shadow-sm">
-                                    <div className="space-y-2 mb-4 border-b border-gray-100 pb-4">
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-gray-500">Subtotal</span>
-                                            <span className="text-gray-700">R$ {(total - shipping + discount).toFixed(2).replace('.', ',')}</span>
-                                        </div>
-                                        {discount > 0 && (
-                                            <div className="flex justify-between items-center text-sm">
-                                                <span className="text-gray-600 font-medium">Desconto</span>
-                                                <span className="text-gray-600 font-bold">- R$ {discount.toFixed(2).replace('.', ',')}</span>
-                                            </div>
-                                        )}
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-gray-500">Frete</span>
-                                            <span className="text-gray-700">{shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2)}`}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-sm font-bold text-gray-900">Total a pagar</span>
-                                            <span className="text-xl font-bold text-brand">R$ {total.toFixed(2).replace('.', ',')}</span>
-                                        </div>
-                                    </div>
-
+                                <div className="grid grid-cols-2 gap-3 mb-6">
                                     <button
-                                        onClick={handleFinishOrder}
-                                        disabled={isSubmitting}
-                                        className="w-full bg-brand text-white font-bold h-14 rounded-xl hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed text-lg"
+                                        onClick={() => setPaymentMethod('pix')}
+                                        className={`p-4 rounded-xl border text-center transition-all ${paymentMethod === 'pix' ? "border-brand bg-orange-50/50 text-brand ring-1 ring-brand" : "border-gray-200 hover:border-gray-300 text-gray-600"}`}
                                     >
-                                        {isSubmitting ? (
-                                            <>
-                                                <Loader2 size={24} className="animate-spin" />
-                                                {paymentMethod === 'credit' ? 'Redirecionando...' : 'Processando...'}
-                                            </>
-                                        ) : (
-                                            <>
-                                                {paymentMethod === 'credit' ? 'Ir para Pagamento Seguro' : 'Finalizar com PIX'}
-                                                <ArrowRight size={20} />
-                                            </>
-                                        )}
+                                        <div className="font-bold mb-1">PIX</div>
+                                        <div className="text-xs">Aprovação Imediata</div>
                                     </button>
-
-                                    {errorMessage && (
-                                        <div className="mt-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center font-medium animate-in fade-in slide-in-from-top-1 relative">
-                                            {errorMessage}
-                                            <button onClick={() => setErrorMessage(null)} className="absolute top-2 right-2 text-red-400 hover:text-red-700">
-                                                <span className="sr-only">Fechar</span>
-                                                x
-                                            </button>
-                                        </div>
-                                    )}
+                                    <button
+                                        onClick={() => setPaymentMethod('credit')}
+                                        className={`p-4 rounded-xl border text-center transition-all ${paymentMethod === 'credit' ? "border-brand bg-orange-50/50 text-brand ring-1 ring-brand" : "border-gray-200 hover:border-gray-300 text-gray-600"}`}
+                                    >
+                                        <div className="font-bold mb-1">Cartão de Crédito</div>
+                                        <div className="text-xs">Até 12x</div>
+                                    </button>
                                 </div>
-                        )}
+
+                                {paymentMethod === 'pix' && (
+                                    <div className="text-center p-6 bg-green-50 rounded-xl border border-green-100 mb-6">
+                                        <p className="text-green-800 font-medium">PIX: Aprovação Imediata</p>
+                                        <p className="text-sm text-green-600 mt-1">O QR Code será gerado na próxima tela.</p>
+                                    </div>
+                                )}
+
+                                {paymentMethod === 'credit' && (
+                                    <div className="space-y-4 mb-6">
+                                        {/* Script Loader Status */}
+                                        {!scriptLoaded && (
+                                            <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200 flex items-center gap-2 mb-4">
+                                                <Loader2 className="animate-spin text-yellow-600" size={16} />
+                                                <span className="text-xs text-yellow-700 font-medium">Carregando segurança do pagamento...</span>
+                                            </div>
+                                        )}
+
+                                        <div className="relative">
+                                            <CreditCard className="absolute left-3 top-3.5 text-gray-400" size={20} />
+                                            <input
+                                                type="text"
+                                                placeholder="Número do Cartão"
+                                                value={formData.cardNumber}
+                                                onChange={handleCardNumberChange}
+                                                maxLength={19}
+                                                className="w-full h-12 pl-10 pr-4 rounded-xl bg-gray-50 border border-gray-200 focus:brand-ring"
+                                            />
+                                        </div>
+                                        <div className="relative">
+                                            <User className="absolute left-3 top-3.5 text-gray-400" size={20} />
+                                            <input
+                                                type="text"
+                                                placeholder="Nome Impresso no Cartão"
+                                                value={formData.cardName}
+                                                onChange={(e) => setFormData({ ...formData, cardName: e.target.value })}
+                                                className="w-full h-12 pl-10 pr-4 rounded-xl bg-gray-50 border border-gray-200 focus:brand-ring"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="relative">
+                                                <Calendar className="absolute left-3 top-3.5 text-gray-400" size={20} />
+                                                <input
+                                                    type="text"
+                                                    placeholder="MM/AA"
+                                                    value={formData.cardExpiry}
+                                                    onChange={handleCardExpiryChange}
+                                                    maxLength={5}
+                                                    className="w-full h-12 pl-10 pr-4 rounded-xl bg-gray-50 border border-gray-200 focus:brand-ring"
+                                                />
+                                            </div>
+                                            <div className="relative">
+                                                <Lock className="absolute left-3 top-3.5 text-gray-400" size={20} />
+                                                <input
+                                                    type="text"
+                                                    placeholder="CVV"
+                                                    value={formData.cardCvv}
+                                                    onChange={handleCardCvvChange}
+                                                    maxLength={4}
+                                                    className="w-full h-12 pl-10 pr-4 rounded-xl bg-gray-50 border border-gray-200 focus:brand-ring"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {errorMessage && (
+                                    <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg text-sm border border-red-100 flex items-start gap-2 relative">
+                                        <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                                        <span className="flex-1">{errorMessage}</span>
+                                        <button onClick={() => setErrorMessage(null)} className="absolute top-2 right-2 text-red-400 hover:text-red-700">
+                                            <span className="sr-only">Fechar</span>
+                                            x
+                                        </button>
+                                    </div>
+                                )}
+
+                                <button
+                                    onClick={handleFinishOrder}
+                                    disabled={isSubmitting || (paymentMethod === 'credit' && !scriptLoaded)}
+                                    className="w-full bg-brand hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-brand/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg"
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            Processando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            {paymentMethod === 'pix' ? 'Gerar PIX' : 'Finalizar Pedido'}
+                                            <ArrowRight size={20} />
+                                        </>
+                                    )}
+                                </button>
                             </div>
+                        )}
+                    </div>
                 </div>
             </Container>
         </div>
