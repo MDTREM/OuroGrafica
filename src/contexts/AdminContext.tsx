@@ -100,7 +100,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 ...p,
                 customText: p.custom_text || p.customText, // Handle DB mapping
                 pricePerM2: p.price_per_m2 || p.pricePerM2,
-                hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : true // Default true
+                hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : true, // Default true
+                priceBreakdowns: p.price_breakdowns || {}
             }));
             setProducts(mappedProducts);
         }
@@ -178,7 +179,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             unit: product.unit,
             color: product.color,
             custom_text: product.customText,
-            price_per_m2: product.pricePerM2
+            price_per_m2: product.pricePerM2,
+            price_breakdowns: product.priceBreakdowns
         };
 
         const { data, error } = await supabase.from('products').insert([safePayload]).select().single();
@@ -226,7 +228,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             color: updatedProduct.color,
             price_per_m2: updatedProduct.pricePerM2,
             custom_text: updatedProduct.customText,
-            has_design_option: updatedProduct.hasDesignOption
+            has_design_option: updatedProduct.hasDesignOption,
+            price_breakdowns: updatedProduct.priceBreakdowns
         };
 
         const { error } = await supabase.from('products').update(safePayload).eq('id', updatedProduct.id);

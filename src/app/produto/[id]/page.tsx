@@ -411,7 +411,20 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                         <span>Qtd</span>
                                         <span>Total</span>
                                     </div>
-                                    {(product.quantities && product.quantities.length > 0 ? product.quantities : ["100 un.", "250 un.", "500 un.", "1000 un."]).map((qtyStr, idx) => {
+                                    {(() => {
+                                        let list: string[] = [];
+                                        if (product.priceBreakdowns && Object.keys(product.priceBreakdowns).length > 0) {
+                                            list = Object.keys(product.priceBreakdowns)
+                                                .map(Number)
+                                                .sort((a, b) => a - b)
+                                                .map(q => `${q} un.`);
+                                        } else if (product.quantities && product.quantities.length > 0) {
+                                            list = product.quantities;
+                                        } else {
+                                            list = ["100 un.", "250 un.", "500 un.", "1000 un."];
+                                        }
+                                        return list;
+                                    })().map((qtyStr, idx) => {
                                         // Extract number from string if possible, else use index logic
                                         const qtyNum = parseInt(qtyStr.match(/\d+/)?.[0] || "100");
 
