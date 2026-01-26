@@ -211,3 +211,79 @@ export async function createCreditCardOrder(data: CheckoutData & { paymentToken:
         return { success: false, error: error.message };
     }
 }
+
+export async function createRedirectOrder(data: CheckoutData) {
+    try {
+        console.log("🚀 Iniciando PEDIDO REDIRECT...", data.customer.name);
+
+        if (data.total <= 0) throw new Error("Valor total inválido");
+
+        // 1. Salvar Pedido como Pendente
+        const { data: order, error } = await supabase
+            .from("orders")
+            .insert({
+                user_id: data.userId || null,
+                items: data.items,
+                total: data.total,
+                status: 'pending_payment',
+                payment_method: 'credit', // In redirect, it can be Card or Boleto
+                customer_name: data.customer.name,
+                customer_document: data.customer.cpf,
+                customer_email: data.customer.email,
+                customer_phone: data.customer.phone,
+                address_info: data.address,
+                display_id: Math.random().toString(36).substring(2, 10).toUpperCase(),
+            })
+            .select()
+            .single();
+
+        if (error || !order) throw new Error("Erro ao criar pedido no banco.");
+
+        // 2. Criar Transação na Efí (Charge)
+        const efiItems = data.items.map(item => ({
+            name: item.title,
+            value: Math.round(item.price * 100),
+            amount: item.quantity
+        }));
+
+        // Add shipping if needed? For now treating total as items sum or add shipping item
+        // If data.total > items sum, difference is shipping. 
+        // Logic: Efi calculates total from items. If we have shipping fee, add as item 'Frete'.
+        // Simple check:
+        const itemsTotal = efiItems.reduce((acc: number, item: any) => acc + (item.value * item.amount), 0);
+        const shippingCost = Math.round(data.total * 100) - itemsTotal;
+        if (shippingCost > 0) {
+            efiItems.push({
+                name: "Frete",
+                value: shippingCost,
+                amount: 1
+            });
+        }
+
+        const chargeData = await efiService.createCharge(efiItems);
+        const chargeId = chargeData.charge_id;
+
+        // 3. Gerar Link
+        const linkData = await efiService.createPaymentLink(
+            chargeId,
+            `Pedido #${order.display_id} - Ouro Gráfica`,
+            data.total
+        );
+
+        // 4. Atualizar Pedido com Link e TxId
+        await supabase
+            .from("orders")
+            .update({
+                txid: String(chargeId),
+                // We might want to store the link somewhere, maybe usage txid is enough or add column
+                // For now, we just return it. TXID is key for webhook.
+            })
+            .eq('id', order.id);
+
+        return { success: true, url: linkData.payment_url, orderId: order.id };
+
+    } catch (error: any) {
+        console.error("Redirect Order Error:", error);
+        return { success: false, error: error.message };
+    }
+}

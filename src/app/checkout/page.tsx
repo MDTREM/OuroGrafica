@@ -1,7 +1,7 @@
 "use client";
 
 import { Container } from "@/components/ui/Container";
-import { ArrowLeft, ArrowRight, CheckCircle, CreditCard, DollarSign, MapPin, Truck, Calendar, Lock, User, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle, CreditCard, DollarSign, MapPin, Truck, Calendar, Lock, User, ChevronRight, Loader2, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -235,131 +235,63 @@ export default function CheckoutPage() {
 
     const handleFinishOrder = async () => {
         setErrorMessage(null);
-        if (paymentMethod === "credit" && !isStep3Valid()) {
-            setErrorMessage("Por favor, preencha os dados do cartão corretamente.");
-            return;
-        }
+        if (step === 3) {
+            setIsSubmitting(true);
+            setErrorMessage('');
 
-        setIsSubmitting(true);
-
-        // Prepare data for server action
-        const checkoutPayload = {
-            userId: user?.id,
-            items: items,
-            total: total,
-            customer: {
-                name: personType === 'pf' ? formData.name : formData.companyName,
-                cpf: personType === 'pf' ? formData.cpf : formData.cnpj, // Server will handle stripping chars
-                email: formData.email,
-                phone: formData.phone,
-            },
-            address: {
-                zip: formData.zip,
-                street: formData.address,
-                number: formData.number,
-                complement: formData.complement,
-                district: formData.district,
-                city: formData.city,
-                state: formData.state,
-                shippingMethod: 'pickup' // For now default or check radio button logic if expanded
-            }
-        };
-
-        try {
-            if (paymentMethod === 'pix') {
-                const { createPixOrder } = await import('@/actions/checkout-actions');
-
-                const res = await createPixOrder(checkoutPayload);
-
-                if (res.success && res.order && res.order.id) {
-                    clearCart();
-                    router.push(`/checkout/sucesso/${res.order.id}`);
-                } else {
-                    console.error("Checkout Error:", res);
-                    setErrorMessage(res.error || "Erro ao gerar PIX. Verifique se o CPF/CNPJ é válido e tente novamente.");
-                    setIsSubmitting(false);
-                }
-            } else {
-                // Credit Card Flow
-                const { createCreditCardOrder } = await import('@/actions/checkout-actions');
-
-                // 1. Get Payment Token from Efí Script
-                try {
-                    const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
-                    if (!accountId || accountId.includes("INSERIR")) {
-                        throw new Error("Configuração (Account ID) ausente. Se estiver na Vercel, adicione a variável de ambiente.");
+            try {
+                const checkoutPayload = {
+                    userId: user?.id,
+                    items: items, // Assuming 'items' is available in scope
+                    total: total, // Assuming 'total' is available in scope
+                    customer: {
+                        name: personType === 'pf' ? formData.name : formData.companyName,
+                        cpf: personType === 'pf' ? formData.cpf : formData.cnpj,
+                        email: formData.email,
+                        phone: formData.phone
+                    },
+                    address: {
+                        zip: formData.zip,
+                        street: formData.address,
+                        number: formData.number,
+                        complement: formData.complement,
+                        district: formData.district,
+                        city: formData.city,
+                        state: formData.state
                     }
+                };
 
-                    // 2. BUSCAR TOKEN DO CARTÃO (Efí)
-                    // New SDK Usage: EfiPay.PaymentToken(accountId, callback)
-                    console.log("Iniciando geração de token...");
-
-                    // @ts-ignore
-                    if (typeof window.EfiPay === 'undefined') {
-                        throw new Error("Biblioteca de pagamento não carregada. Recarregue a página.");
-                    }
-
-                    const paymentToken = await new Promise<string>((resolve, reject) => {
-                        // @ts-ignore
-                        EfiPay.PaymentToken(accountId, (result: any) => {
-                            console.log("Efí Callback:", result);
-                            if (result.payment_token) {
-                                resolve(result.payment_token);
-                            } else {
-                                reject(new Error("Falha ao gerar token do cartão. Verifique os dados."));
-                            }
-                        },
-                            // Card Data Object
-                            {
-                                brand: "visa",
-                                number: formData.cardNumber.replace(/\s/g, ""),
-                                cvv: formData.cardCvv,
-                                expirationMonth: formData.cardExpiry.split('/')[0],
-                                expirationYear: `20${formData.cardExpiry.split('/')[1]}`,
-                                reuse: false
-                            });
-                    });
-
-                    // 3. Processar Pedido no Backend
-                    const res = await createCreditCardOrder({
-                        ...checkoutPayload,
-                        paymentToken: paymentToken,
-                        installments: 1, // Default 1 for now
-                        billingAddress: {
-                            street: formData.address,
-                            number: formData.number,
-                            neighborhood: formData.district,
-                            zip: formData.zip,
-                            city: formData.city,
-                            state: formData.state,
-                            complement: formData.complement
-                        },
-                        cardHolder: {
-                            name: formData.cardName,
-                            cpf: personType === 'pf' ? formData.cpf : formData.cnpj,
-                            email: formData.email,
-                            phone: formData.phone,
-                            birth: "1990-01-01"
-                        }
-                    });
-
+                if (paymentMethod === 'pix') {
+                    const { createPixOrder } = await import('@/actions/checkout-actions');
+                    const res = await createPixOrder(checkoutPayload);
                     if (res.success && res.order && res.order.id) {
                         clearCart();
                         router.push(`/checkout/sucesso/${res.order.id}`);
                     } else {
-                        throw new Error(res.error || "Erro ao processar cartão.");
+                        throw new Error(res.error || "Erro ao criar PIX.");
                     }
+                } else {
+                    // REDIRECT FLOW (Card/Boleto via Efí Page)
+                    const { createRedirectOrder } = await import('@/actions/checkout-actions');
 
-                } catch (err: any) {
-                    console.error("Card Token Error:", err);
-                    setErrorMessage(err.message || "Erro ao processar pagamento com cartão.");
-                    setIsSubmitting(false);
+                    // Show redirecting state
+                    setConnectionStatus('Redirecionando...');
+
+                    const res = await createRedirectOrder(checkoutPayload);
+
+                    if (res.success && res.url) {
+                        clearCart();
+                        // Initialize Redirect
+                        window.location.href = res.url;
+                    } else {
+                        throw new Error(res.error || "Erro ao gerar link de pagamento.");
+                    }
                 }
+            } catch (error: any) {
+                console.error(error);
+                setErrorMessage(error.message || 'Erro inesperado. Tente novamente.');
+                setIsSubmitting(false);
             }
-        } catch (error) {
-            console.error(error);
-            setErrorMessage('Erro inesperado de conexão. Tente novamente.');
-            setIsSubmitting(false);
         }
     };
 
@@ -382,6 +314,15 @@ export default function CheckoutPage() {
 
     return (
         <div className="bg-gray-50 min-h-screen pb-32 md:pb-24">
+            {/* Overlay for Redirecting */}
+            {connectionStatus === 'Redirecionando...' && (
+                <div className="fixed inset-0 bg-white/90 z-50 flex flex-col items-center justify-center p-4">
+                    <div className="w-16 h-16 border-4 border-brand border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">Redirecionando para Pagamento Seguro...</h2>
+                    <p className="text-gray-500 text-center">Você será levado para a página da Efí para concluir sua compra com segurança.</p>
+                </div>
+            )}
+
             {/* Header */}
             <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30">
                 <Container className="flex items-center gap-4">
@@ -692,117 +633,42 @@ export default function CheckoutPage() {
                                 <div className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden mb-6">
                                     {/* Tabs */}
                                     <div className="flex border-b border-gray-200 bg-white">
-                                        <button onClick={() => setPaymentMethod("credit")} className={`flex-1 py-3 text-sm font-bold transition-colors ${paymentMethod === "credit" ? "text-gray-900 bg-gray-50 box-shadow-inner border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Cartão</button>
-                                        <button onClick={() => setPaymentMethod("pix")} className={`flex-1 py-3 text-sm font-bold transition-colors ${paymentMethod === "pix" ? "text-gray-900 bg-gray-50 border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Pix</button>
+                                        <button onClick={() => setPaymentMethod("credit")} className={`flex-1 py-4 text-sm font-bold transition-colors ${paymentMethod === "credit" ? "text-brand bg-orange-50/30 border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Cartão / Boleto</button>
+                                        <button onClick={() => setPaymentMethod("pix")} className={`flex-1 py-4 text-sm font-bold transition-colors ${paymentMethod === "pix" ? "text-brand bg-orange-50/30 border-b-2 border-brand" : "text-gray-400 hover:text-gray-600"}`}>Pix</button>
                                     </div>
 
                                     <div className="p-6">
                                         {paymentMethod === "credit" && (
-                                            <div className="space-y-4">
-                                                {!scriptLoaded && (
-                                                    <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200 flex items-center gap-2 mb-4">
-                                                        <Loader2 className="animate-spin text-yellow-600" size={16} />
-                                                        <span className="text-xs text-yellow-700 font-medium">Carregando segurança do pagamento...</span>
+                                            <div className="space-y-4 text-center">
+                                                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                                    <ShieldCheck size={48} className="mx-auto text-brand mb-3" />
+                                                    <h3 className="font-bold text-gray-900 mb-2">Ambiente Seguro Efí</h3>
+                                                    <p className="text-sm text-gray-500 mb-4 max-w-sm mx-auto">
+                                                        Para sua segurança, o pagamento com cartão ou boleto será realizado diretamente na página criptografada do Efí Bank.
+                                                    </p>
+                                                    <div className="flex justify-center gap-4 opacity-60 mb-2 grayscale hover:grayscale-0 transition-all">
+                                                        {/* Simple Text Placeholders for Logos if Icons not avail */}
+                                                        <span className="text-[10px] font-bold border px-1 rounded">VISA</span>
+                                                        <span className="text-[10px] font-bold border px-1 rounded">MASTER</span>
+                                                        <span className="text-[10px] font-bold border px-1 rounded">ELO</span>
+                                                        <span className="text-[10px] font-bold border px-1 rounded">BOLETO</span>
                                                     </div>
-                                                )}
-
-                                                <div className="relative">
-                                                    <CreditCard className="absolute left-3 top-3 text-gray-400" size={20} />
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Número do Cartão"
-                                                        value={formData.cardNumber}
-                                                        onChange={handleCardNumberChange}
-                                                        className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
-                                                    />
-                                                </div>
-                                                <div className="relative">
-                                                    <User className="absolute left-3 top-3 text-gray-400" size={20} />
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Nome Impresso no Cartão"
-                                                        value={formData.cardName}
-                                                        onChange={(e) => setFormData({ ...formData, cardName: e.target.value })}
-                                                        className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
-                                                    />
-                                                </div>
-                                                <div className="flex gap-4">
-                                                    <div className="relative flex-1">
-                                                        <Calendar className="absolute left-3 top-3 text-gray-400" size={20} />
-                                                        <input
-                                                            type="text"
-                                                            placeholder="MM/AA"
-                                                            value={formData.cardExpiry}
-                                                            onChange={handleCardExpiryChange}
-                                                            className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
-                                                        />
-                                                    </div>
-                                                    <div className="relative flex-1">
-                                                        <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
-                                                        <input
-                                                            type="text"
-                                                            placeholder="CVV"
-                                                            value={formData.cardCvv}
-                                                            onChange={handleCardCvvChange}
-                                                            className="w-full h-11 pl-10 pr-4 rounded-lg bg-white border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-sm"
-                                                        />
-                                                    </div>
+                                                    <p className="text-xs text-brand font-bold mt-4 bg-brand/5 inline-block px-3 py-1 rounded-full">
+                                                        Você será redirecionado ao clicar em pagar
+                                                    </p>
                                                 </div>
                                             </div>
                                         )}
-                                        {paymentMethod === "pix" && <div className="text-center text-sm text-gray-500">QR Code será gerado ao finalizar.</div>}
+                                        {paymentMethod === "pix" && (
+                                            <div className="text-center p-6 bg-green-50 rounded-xl border border-green-100">
+                                                <p className="text-green-800 font-bold mb-1">Desconto de 5% no PIX!</p>
+                                                <p className="text-xs text-green-600">O QR Code será gerado na próxima tela.</p>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
-                                {/* Security Badges */}
-                                <div className="grid grid-cols-2 gap-3 mb-6">
-                                    <div className="flex items-center gap-2 bg-green-50 p-3 rounded-lg border border-green-100">
-                                        <Lock size={16} className="text-green-600 flex-shrink-0" />
-                                        <div>
-                                            <p className="text-xs font-bold text-green-700">Ambiente Seguro</p>
-                                            <p className="text-[10px] text-green-600">Seus dados estão protegidos</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2 bg-orange-50 p-3 rounded-lg border border-orange-100">
-                                        <CheckCircle size={16} className="text-orange-600 flex-shrink-0" />
-                                        <div>
-                                            <p className="text-xs font-bold text-orange-700">Pagamento Certificado</p>
-                                            <p className="text-[10px] text-orange-600">Processado por Efí Bank</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Summary inside content */}
-                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
-                                    <div className="space-y-4 mb-4 border-b border-gray-100 pb-4">
-                                        <h4 className="font-bold text-gray-900 text-sm">Itens</h4>
-                                        <div className="space-y-3">
-                                            {items.map((item) => (
-                                                <div key={item.id} className="flex gap-3">
-                                                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden border border-gray-200">
-                                                        {item.image && <img src={item.image} className="w-full h-full object-cover" />}
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <p className="text-xs font-bold text-gray-900 line-clamp-2">{item.title}</p>
-                                                        <p className="text-[10px] text-gray-500">{item.quantity}x R$ {item.price.toFixed(2)}</p>
-                                                        {item.details?.dimensions && (
-                                                            <p className="text-[10px] text-gray-600 bg-gray-100 px-1 py-0.5 rounded w-fit mt-0.5 border border-gray-200">
-                                                                {item.details.dimensions.width}x{item.details.dimensions.height} cm
-                                                            </p>
-                                                        )}
-                                                        {item.details?.selectedVariations && Object.entries(item.details.selectedVariations).map(([key, value]) => (
-                                                            <p key={key} className="text-[10px] text-gray-500 mt-0.5">
-                                                                {key}: <span className="font-medium text-gray-700">{value}</span>
-                                                            </p>
-                                                        ))}
-                                                    </div>
-                                                    <div className="text-xs font-bold text-gray-900">
-                                                        R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
+                                <div className="bg-white p-4 rounded-lg border border-gray-100 mb-6 shadow-sm">
                                     <div className="space-y-2 mb-4 border-b border-gray-100 pb-4">
                                         <div className="flex justify-between items-center text-sm">
                                             <span className="text-gray-500">Subtotal</span>
@@ -823,35 +689,31 @@ export default function CheckoutPage() {
                                         <span className="text-sm font-bold text-gray-900">Total a pagar</span>
                                         <span className="text-xl font-bold text-brand">R$ {total.toFixed(2).replace('.', ',')}</span>
                                     </div>
-                                    <p className="text-xs text-center text-gray-400 mt-2">Ao finalizar, você concorda com os <Link href="/termos-de-uso" target="_blank" className="underline hover:text-gray-600">termos</Link>.</p>
                                 </div>
 
                                 <button
                                     onClick={handleFinishOrder}
                                     disabled={isSubmitting}
-                                    className="w-full bg-brand text-white font-bold h-12 rounded-full hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                                    className="w-full bg-brand text-white font-bold h-14 rounded-xl hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed text-lg"
                                 >
                                     {isSubmitting ? (
                                         <>
-                                            <Loader2 size={20} className="animate-spin" /> Processando...
+                                            <Loader2 size={24} className="animate-spin" />
+                                            {paymentMethod === 'credit' ? 'Redirecionando...' : 'Processando...'}
                                         </>
                                     ) : (
-                                        "Finalizar Pedido"
+                                        <>
+                                            {paymentMethod === 'credit' ? 'Ir para Pagamento Seguro' : 'Finalizar com PIX'}
+                                            <ArrowRight size={20} />
+                                        </>
                                     )}
                                 </button>
+
                                 {errorMessage && (
                                     <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center font-medium animate-in fade-in slide-in-from-top-1">
                                         {errorMessage}
-                                        <button
-                                            onClick={(e) => { e.preventDefault(); loadEfiScript(); setErrorMessage(null); }}
-                                            className="block w-full mt-2 text-xs font-bold underline hover:text-red-800"
-                                        >
-                                            Tentar Conectar Novamente
-                                        </button>
                                     </div>
                                 )}
-
-
                             </div>
                         )}
                     </div>

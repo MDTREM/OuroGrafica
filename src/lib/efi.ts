@@ -256,6 +256,76 @@ export class EfiService {
             throw new Error(`Erro no pagamento com cartão: ${error.response?.data?.error_description || error.message}`);
         }
     }
+    /**
+     * 6. Criar Cobrança Simples (Necessário para Link de Pagamento)
+     * POST /v1/charge
+     */
+    async createCharge(items: { name: string; value: number; amount: number }[], shippings?: { name: string; value: number }[]) {
+        const token = await this.authenticate();
+
+        const data: any = {
+            items: items,
+        };
+
+        if (shippings && shippings.length > 0) {
+            data.shippings = shippings;
+        }
+
+        try {
+            const response = await axios({
+                method: "POST",
+                url: `${EFI_URL}/v1/charge`,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                httpsAgent: this.agent,
+                data: data,
+            });
+
+            // Returns { code, data: { charge_id, status, ... } }
+            return response.data.data;
+        } catch (error: any) {
+            console.error("❌ Efí Create Charge Error:", error.response?.data || error.message);
+            throw new Error("Erro ao criar transação para link de pagamento.");
+        }
+    }
+
+    /**
+     * 7. Gerar Link de Pagamento
+     * POST /v1/charge/:id/link
+     */
+    async createPaymentLink(chargeId: number, title: string, price: number, expiryDate?: string) {
+        const token = await this.authenticate();
+
+        const data = {
+            billet_discount: 0,
+            card_discount: 0,
+            message: title,
+            expire_at: expiryDate || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 3 days default
+            request_delivery_address: false,
+            payment_method: "all" // Allow Boleto and Card
+        };
+
+        try {
+            const response = await axios({
+                method: "POST",
+                url: `${EFI_URL}/v1/charge/${chargeId}/link`,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                httpsAgent: this.agent,
+                data: data,
+            });
+
+            // Returns { code, data: { payment_url, payment_link_id, ... } }
+            return response.data.data;
+        } catch (error: any) {
+            console.error("❌ Efí Create Link Error:", error.response?.data || error.message);
+            throw new Error("Erro ao gerar link de pagamento.");
+        }
+    }
 }
 
 export const efiService = new EfiService();
