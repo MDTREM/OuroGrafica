@@ -85,7 +85,6 @@ export function ProductCard({ id, title, price, unit, description, image, priceB
                                         if (minPrice > 0) {
                                             return (
                                                 <>
-                                                    <span className="text-xs text-gray-500 font-medium mb-0.5 block">A partir de</span>
                                                     <span className="text-xl font-bold text-brand block">{formatPrice(minPrice)}</span>
                                                 </>
                                             )

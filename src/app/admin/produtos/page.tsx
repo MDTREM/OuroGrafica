@@ -194,14 +194,22 @@ export default function AdminProductsPage() {
                                             }}
                                             title={product.active !== false ? "Desativar Produto" : "Ativar Produto"}
                                             className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${product.active !== false
-                                                    ? "bg-green-100 text-green-600 hover:bg-green-200"
-                                                    : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                                                ? "bg-green-100 text-green-600 hover:bg-green-200"
+                                                : "bg-gray-100 text-gray-400 hover:bg-gray-200"
                                                 }`}
                                         >
                                             {product.active !== false ? <Eye size={20} /> : <EyeOff size={20} />}
                                         </button>
                                     </td>
-                                    <td className="px-6 py-4 font-bold">{formatPrice(product.price)}</td>
+                                    <td className="px-6 py-4 font-bold">
+                                        {(() => {
+                                            if (product.priceBreakdowns && Object.keys(product.priceBreakdowns).length > 0) {
+                                                const minPrice = Math.min(...Object.values(product.priceBreakdowns).map(val => Number(val)));
+                                                if (minPrice > 0) return formatPrice(minPrice);
+                                            }
+                                            return formatPrice(product.price);
+                                        })()}
+                                    </td>
                                     <td className="px-6 py-4">
                                         <div className="flex gap-1">
                                             {product.isFeatured && (
