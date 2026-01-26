@@ -316,10 +316,18 @@ export default function CheckoutPage() {
         <div className="bg-gray-50 min-h-screen pb-32 md:pb-24">
             {/* Overlay for Redirecting */}
             {connectionStatus === 'Redirecionando...' && (
-                <div className="fixed inset-0 bg-white/90 z-50 flex flex-col items-center justify-center p-4">
-                    <div className="w-16 h-16 border-4 border-brand border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">Redirecionando para Pagamento Seguro...</h2>
-                    <p className="text-gray-500 text-center">Você será levado para a página da Efí para concluir sua compra com segurança.</p>
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-in fade-in">
+                    <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl scale-100 animate-in zoom-in-95">
+                        <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Loader2 className="w-8 h-8 text-brand animate-spin" />
+                        </div>
+                        <h2 className="text-xl font-bold text-gray-900 mb-2">Redirecionando</h2>
+                        <p className="text-gray-500 mb-6">Aguarde, estamos te levando para o ambiente seguro da Efí...</p>
+
+                        <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                            <div className="h-full bg-brand animate-progress origin-left w-full"></div>
+                        </div>
+                    </div>
                 </div>
             )}
 
@@ -642,12 +650,11 @@ export default function CheckoutPage() {
                                             <div className="space-y-4 text-center">
                                                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                                                     <ShieldCheck size={48} className="mx-auto text-brand mb-3" />
-                                                    <h3 className="font-bold text-gray-900 mb-2">Ambiente Seguro Efí</h3>
+                                                    <h3 className="font-bold text-gray-900 mb-2">Ambiente Seguro</h3>
                                                     <p className="text-sm text-gray-500 mb-4 max-w-sm mx-auto">
-                                                        Para sua segurança, o pagamento com cartão ou boleto será realizado diretamente na página criptografada do Efí Bank.
+                                                        Para sua segurança, o pagamento será realizado diretamente na página oficial do Efí Bank.
                                                     </p>
                                                     <div className="flex justify-center gap-4 opacity-60 mb-2 grayscale hover:grayscale-0 transition-all">
-                                                        {/* Simple Text Placeholders for Logos if Icons not avail */}
                                                         <span className="text-[10px] font-bold border px-1 rounded">VISA</span>
                                                         <span className="text-[10px] font-bold border px-1 rounded">MASTER</span>
                                                         <span className="text-[10px] font-bold border px-1 rounded">ELO</span>
@@ -660,9 +667,9 @@ export default function CheckoutPage() {
                                             </div>
                                         )}
                                         {paymentMethod === "pix" && (
-                                            <div className="text-center p-6 bg-green-50 rounded-xl border border-green-100">
-                                                <p className="text-green-800 font-bold mb-1">Desconto de 5% no PIX!</p>
-                                                <p className="text-xs text-green-600">O QR Code será gerado na próxima tela.</p>
+                                            <div className="text-center p-6 bg-gray-50 rounded-xl border border-gray-200">
+                                                <p className="text-gray-900 font-bold mb-1">Pagamento via PIX</p>
+                                                <p className="text-xs text-gray-500">O QR Code será gerado na próxima tela.</p>
                                             </div>
                                         )}
                                     </div>
@@ -676,47 +683,50 @@ export default function CheckoutPage() {
                                         </div>
                                         {discount > 0 && (
                                             <div className="flex justify-between items-center text-sm">
-                                                <span className="text-green-600 font-medium">Desconto</span>
-                                                <span className="text-green-600 font-bold">- R$ {discount.toFixed(2).replace('.', ',')}</span>
+                                                <span className="text-gray-600 font-medium">Desconto</span>
+                                                <span className="text-gray-600 font-bold">- R$ {discount.toFixed(2).replace('.', ',')}</span>
                                             </div>
                                         )}
                                         <div className="flex justify-between items-center text-sm">
                                             <span className="text-gray-500">Frete</span>
                                             <span className="text-gray-700">{shipping === 0 ? 'Grátis' : `R$ ${shipping.toFixed(2)}`}</span>
                                         </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm font-bold text-gray-900">Total a pagar</span>
+                                            <span className="text-xl font-bold text-brand">R$ {total.toFixed(2).replace('.', ',')}</span>
+                                        </div>
                                     </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm font-bold text-gray-900">Total a pagar</span>
-                                        <span className="text-xl font-bold text-brand">R$ {total.toFixed(2).replace('.', ',')}</span>
-                                    </div>
-                                </div>
 
-                                <button
-                                    onClick={handleFinishOrder}
-                                    disabled={isSubmitting}
-                                    className="w-full bg-brand text-white font-bold h-14 rounded-xl hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed text-lg"
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <Loader2 size={24} className="animate-spin" />
-                                            {paymentMethod === 'credit' ? 'Redirecionando...' : 'Processando...'}
-                                        </>
-                                    ) : (
-                                        <>
-                                            {paymentMethod === 'credit' ? 'Ir para Pagamento Seguro' : 'Finalizar com PIX'}
-                                            <ArrowRight size={20} />
-                                        </>
+                                    <button
+                                        onClick={handleFinishOrder}
+                                        disabled={isSubmitting}
+                                        className="w-full bg-brand text-white font-bold h-14 rounded-xl hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed text-lg"
+                                    >
+                                        {isSubmitting ? (
+                                            <>
+                                                <Loader2 size={24} className="animate-spin" />
+                                                {paymentMethod === 'credit' ? 'Redirecionando...' : 'Processando...'}
+                                            </>
+                                        ) : (
+                                            <>
+                                                {paymentMethod === 'credit' ? 'Ir para Pagamento Seguro' : 'Finalizar com PIX'}
+                                                <ArrowRight size={20} />
+                                            </>
+                                        )}
+                                    </button>
+
+                                    {errorMessage && (
+                                        <div className="mt-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center font-medium animate-in fade-in slide-in-from-top-1 relative">
+                                            {errorMessage}
+                                            <button onClick={() => setErrorMessage(null)} className="absolute top-2 right-2 text-red-400 hover:text-red-700">
+                                                <span className="sr-only">Fechar</span>
+                                                x
+                                            </button>
+                                        </div>
                                     )}
-                                </button>
-
-                                {errorMessage && (
-                                    <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center font-medium animate-in fade-in slide-in-from-top-1">
-                                        {errorMessage}
-                                    </div>
-                                )}
-                            </div>
+                                </div>
                         )}
-                    </div>
+                            </div>
                 </div>
             </Container>
         </div>

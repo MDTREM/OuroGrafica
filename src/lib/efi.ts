@@ -286,8 +286,8 @@ export class EfiService {
             // Returns { code, data: { charge_id, status, ... } }
             return response.data.data;
         } catch (error: any) {
-            console.error("❌ Efí Create Charge Error:", error.response?.data || error.message);
-            throw new Error("Erro ao criar transação para link de pagamento.");
+            console.error("❌ Efí Create Charge Error:", JSON.stringify(error.response?.data || error.message, null, 2));
+            throw new Error(`Erro ao criar transação: ${error.response?.data?.error_description || error.message}`);
         }
     }
 
@@ -322,8 +322,8 @@ export class EfiService {
             // Returns { code, data: { payment_url, payment_link_id, ... } }
             return response.data.data;
         } catch (error: any) {
-            console.error("❌ Efí Create Link Error:", error.response?.data || error.message);
-            throw new Error("Erro ao gerar link de pagamento.");
+            console.error("❌ Efí Create Link Error:", JSON.stringify(error.response?.data || error.message, null, 2));
+            throw new Error(`Erro ao gerar link: ${error.response?.data?.error_description || error.message}`);
         }
     }
 }
