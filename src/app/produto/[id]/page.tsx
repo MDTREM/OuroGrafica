@@ -58,6 +58,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
     // Alert Modal State
     const [showUploadAlert, setShowUploadAlert] = useState(false);
+    const [showTextAlert, setShowTextAlert] = useState(false);
 
     // Upload State
     const [isUploading, setIsUploading] = useState(false);
@@ -185,8 +186,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
         // Validation: Required Custom Text
         if (product.customText?.enabled && product.customText.required && !customTextValue.trim()) {
-            setShowTextError(true);
-            // Scroll to error if needed (optional)
+            setShowTextAlert(true); // Trigger Popup
             return;
         }
 
@@ -495,7 +495,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                                 </span>
                                             )}
                                         </h3>
-                                        <div className="flex flex-wrap gap-3">
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                             {variation.options.map((option, oIdx) => {
                                                 const isSelected = selectedVariations[variation.name] === option;
                                                 const varImage = variation.images?.[option];
@@ -524,7 +524,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                                         className={cn(
                                                             "relative group transition-all rounded-xl border flex items-center justify-center overflow-hidden",
                                                             varImage
-                                                                ? "w-16 h-16 p-0" // Image tile style
+                                                                ? "w-full h-auto aspect-square p-1 bg-white" // Responsive square container
                                                                 : "px-4 py-2 min-h-[40px]", // Text button style
                                                             isSelected
                                                                 ? "border-brand ring-1 ring-brand bg-brand/5 text-brand"
@@ -534,7 +534,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                                     >
                                                         {varImage ? (
                                                             <>
-                                                                <img src={varImage} alt={option} className="w-full h-full object-cover" />
+                                                                <img src={varImage} alt={option} className="w-full h-full object-contain" />
                                                                 {isSelected && (
                                                                     <div className="absolute inset-0 bg-brand/20 z-10 flex items-center justify-center">
                                                                         <div className="bg-white rounded-full p-0.5 shadow-sm">
@@ -563,30 +563,22 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
                         {/* 5. CUSTOM TEXT INPUT (PERSONALIZATION) */}
                         {product.customText?.enabled && (
-                            <div className="mb-8 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+                            <div className="mb-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
                                 <label className="text-sm font-bold text-gray-900 mb-2 block flex items-center gap-2">
                                     {product.customText.label}
-                                    {product.customText.required && <span className="text-red-500 text-xs font-normal">* Obrigatório</span>}
                                 </label>
                                 <textarea
                                     className={cn(
                                         "w-full rounded-xl border p-3 text-sm focus:ring-2 outline-none transition-all resize-y min-h-[80px]",
-                                        showTextError && !customTextValue.trim()
-                                            ? "border-red-300 focus:border-red-500 focus:ring-red-100 bg-red-50"
-                                            : "border-gray-200 focus:border-brand focus:ring-brand/10 bg-white"
+                                        // Still keep visual cue if validation failed (optional) or just normal state
+                                        "border-gray-200 focus:border-brand focus:ring-brand/10 bg-white"
                                     )}
                                     placeholder={product.customText.placeholder}
                                     value={customTextValue}
                                     onChange={(e) => {
                                         setCustomTextValue(e.target.value);
-                                        if (e.target.value.trim()) setShowTextError(false);
                                     }}
                                 />
-                                {showTextError && !customTextValue.trim() && (
-                                    <p className="text-xs text-red-500 mt-1 font-medium animate-in slide-in-from-top-1">
-                                        Por favor, preencha este campo antes de continuar.
-                                    </p>
-                                )}
                             </div>
                         )}
 
@@ -851,6 +843,29 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                             className="w-full bg-brand hover:bg-brand/90 text-white font-bold py-3.5 rounded-xl transition-colors"
                         >
                             Entendi, vou enviar
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* CUSTOM TEXT ALERT MODAL */}
+            {showTextAlert && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 relative animate-in zoom-in-95 duration-200">
+                        <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4 mx-auto text-brand">
+                            <MessageCircle size={24} className="text-brand" />
+                        </div>
+                        <h3 className="text-xl font-bold text-center text-gray-900 mb-2">Preenchimento Necessário</h3>
+                        <p className="text-gray-600 text-center mb-6 leading-relaxed text-sm">
+                            O campo <strong>"{product?.customText?.label}"</strong> é obrigatório para este produto.
+                            <br /><br />
+                            Por favor, preencha as informações solicitadas antes de continuar.
+                        </p>
+                        <button
+                            onClick={() => setShowTextAlert(false)}
+                            className="w-full bg-brand hover:bg-brand/90 text-white font-bold py-3.5 rounded-xl transition-colors"
+                        >
+                            Voltar e Preencher
                         </button>
                     </div>
                 </div>
