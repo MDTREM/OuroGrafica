@@ -168,8 +168,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             subcategory: product.subcategory,
             unit: product.unit,
             color: product.color,
-            pricePerM2: product.pricePerM2,
-            custom_text: product.customText
+            custom_text: product.customText,
+            price_per_m2: product.pricePerM2
         };
 
         const { data, error } = await supabase.from('products').insert([safePayload]).select().single();
@@ -215,7 +215,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             subcategory: updatedProduct.subcategory,
             unit: updatedProduct.unit,
             color: updatedProduct.color,
-            pricePerM2: updatedProduct.pricePerM2,
+            price_per_m2: updatedProduct.pricePerM2,
             custom_text: updatedProduct.customText
         };
 
