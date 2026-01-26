@@ -28,7 +28,15 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     .eq('id', resolvedParams.id)
                     .single();
 
-                if (data) setProduct(data);
+                if (data) {
+                    // Map DB snake_case to TS camelCase
+                    const mappedProduct: Product = {
+                        ...data,
+                        customText: data.custom_text,
+                        hasDesignOption: data.has_design_option !== undefined ? data.has_design_option : true
+                    };
+                    setProduct(mappedProduct);
+                }
                 if (error) console.error("Error fetching product:", error);
             } catch (err) {
                 console.error("Failed to fetch product", err);
