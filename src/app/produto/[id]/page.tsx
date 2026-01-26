@@ -222,13 +222,13 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* LEFT COLUMN: IMAGES */}
                     <div>
-                        <div className="aspect-square bg-gray-100 rounded-2xl relative flex items-center justify-center overflow-hidden mb-4 border border-border">
+                        <div className="aspect-square bg-white rounded-2xl relative flex items-center justify-center overflow-hidden mb-4 border border-border">
                             {/* Main Image Display */}
                             {productImages.length > 0 || selectedVariationImage ? (
                                 <img
                                     src={selectedVariationImage || productImages[activeImage] || productImages[0]}
                                     alt={product.title}
-                                    className="w-full h-full object-cover animate-in fade-in zoom-in-50 duration-300"
+                                    className="w-full h-full object-contain animate-in fade-in zoom-in-50 duration-300"
                                     onError={(e) => {
                                         const target = e.target as HTMLImageElement;
                                         target.style.display = 'none';
