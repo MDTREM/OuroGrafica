@@ -2,7 +2,7 @@
 
 import { useAdmin } from "@/contexts/AdminContext";
 import { formatPrice } from "@/lib/utils";
-import { Plus, Search, Edit, Trash2, Upload, Copy } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Upload, Copy, Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
@@ -192,12 +192,13 @@ export default function AdminProductsPage() {
                                             onClick={async () => {
                                                 await updateProduct({ ...product, active: !product.active });
                                             }}
-                                            className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors ${product.active !== false
-                                                    ? "bg-green-100 text-green-700 hover:bg-green-200"
-                                                    : "bg-red-100 text-red-700 hover:bg-red-200"
+                                            title={product.active !== false ? "Desativar Produto" : "Ativar Produto"}
+                                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${product.active !== false
+                                                    ? "bg-green-100 text-green-600 hover:bg-green-200"
+                                                    : "bg-gray-100 text-gray-400 hover:bg-gray-200"
                                                 }`}
                                         >
-                                            {product.active !== false ? "Ativo" : "Inativo"}
+                                            {product.active !== false ? <Eye size={20} /> : <EyeOff size={20} />}
                                         </button>
                                     </td>
                                     <td className="px-6 py-4 font-bold">{formatPrice(product.price)}</td>
