@@ -180,7 +180,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             unit: updatedProduct.unit,
             color: updatedProduct.color,
             pricePerM2: updatedProduct.pricePerM2,
-            customText: updatedProduct.customText
+            custom_text: updatedProduct.customText
         };
 
         const { error } = await supabase.from('products').update(safePayload).eq('id', updatedProduct.id);
