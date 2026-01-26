@@ -99,7 +99,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             const mappedProducts = productsData.map((p: any) => ({
                 ...p,
                 customText: p.custom_text || p.customText, // Handle DB mapping
-                pricePerM2: p.price_per_m2 || p.pricePerM2
+                pricePerM2: p.price_per_m2 || p.pricePerM2,
+                hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : true // Default true
             }));
             setProducts(mappedProducts);
         }
@@ -224,7 +225,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             unit: updatedProduct.unit,
             color: updatedProduct.color,
             price_per_m2: updatedProduct.pricePerM2,
-            custom_text: updatedProduct.customText
+            custom_text: updatedProduct.customText,
+            has_design_option: updatedProduct.hasDesignOption
         };
 
         const { error } = await supabase.from('products').update(safePayload).eq('id', updatedProduct.id);
@@ -273,7 +275,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             unit: product.unit,
             color: product.color,
             price_per_m2: product.pricePerM2,
-            custom_text: product.customText
+            custom_text: product.customText,
+            has_design_option: product.hasDesignOption
         };
 
         const { data, error } = await supabase.from('products').insert([safePayload]).select().single();
@@ -312,7 +315,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             unit: p.unit,
             color: p.color,
             price_per_m2: p.pricePerM2,
-            custom_text: p.customText
+            custom_text: p.customText,
+            has_design_option: p.hasDesignOption
         }));
 
         const { data, error } = await supabase.from('products').insert(safeProducts).select();

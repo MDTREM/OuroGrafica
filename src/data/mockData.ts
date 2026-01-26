@@ -56,6 +56,9 @@ export interface Product {
         placeholder?: string;
         required?: boolean;
     };
+
+    // Design Option (Upload/Hire)
+    hasDesignOption?: boolean;
 }
 
 export interface User {

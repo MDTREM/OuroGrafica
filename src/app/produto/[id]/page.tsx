@@ -167,7 +167,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
         // Validation: Require file if "upload" option selected
         // Validation: Require file if "upload" option selected
-        if (designOption === "upload" && !uploadedFile) {
+        // Only if design option is enabled
+        const isDesignEnabled = product.hasDesignOption !== false;
+
+        if (isDesignEnabled && designOption === "upload" && !uploadedFile) {
             setShowUploadAlert(true);
             return;
         }
@@ -580,135 +583,138 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                         )}
 
                         {/* 6. DESIGN OPTIONS */}
-                        <div className="mb-8">
-                            <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">Arte Final</h3>
-                            <div className="grid grid-cols-1 gap-3">
-                                {/* Option 1: Upload */}
-                                <div
-                                    className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all ${designOption === "upload"
-                                        ? "border-brand bg-orange-50/10"
-                                        : "border-gray-200 hover:border-gray-300"
-                                        }`}
-                                    onClick={() => setDesignOption("upload")}
-                                >
-                                    <div className="flex items-start gap-3">
-                                        <div className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${designOption === "upload" ? "border-brand" : "border-gray-300"}`}>
-                                            {designOption === "upload" && <div className="w-2.5 h-2.5 bg-brand rounded-full"></div>}
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-center mb-1">
-                                                <span className={`font-bold ${designOption === "upload" ? "text-gray-900" : "text-gray-600"}`}>Já tenho minha arte</span>
-                                                <span className="text-xs font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Grátis</span>
+                        {product.hasDesignOption !== false && (
+                            <div className="mb-8">
+                                <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">Arte Final</h3>
+                                <div className="grid grid-cols-1 gap-3">
+                                    {/* Option 1: Upload */}
+                                    <div
+                                        className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all ${designOption === "upload"
+                                            ? "border-brand bg-orange-50/10"
+                                            : "border-gray-200 hover:border-gray-300"
+                                            }`}
+                                        onClick={() => setDesignOption("upload")}
+                                    >
+                                        <div className="flex items-start gap-3">
+                                            <div className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${designOption === "upload" ? "border-brand" : "border-gray-300"}`}>
+                                                {designOption === "upload" && <div className="w-2.5 h-2.5 bg-brand rounded-full"></div>}
                                             </div>
-                                            <p className="text-xs text-gray-500 mb-3">Envie seu arquivo pronto (PDF, Imagem, CorelDraw).</p>
-
-                                            {/* File Upload Logic */}
-                                            {designOption === "upload" && (
-                                                <div className="mt-3 animate-in fade-in slide-in-from-top-1">
-                                                    {!uploadedFile ? (
-                                                        <div className="flex gap-2 items-center">
-                                                            <input
-                                                                type="file"
-                                                                id="file-upload"
-                                                                className="hidden"
-                                                                accept=".pdf,.cdr,.ai,.psd,.jpg,.png,.jpeg"
-                                                                onChange={async (e) => {
-                                                                    const file = e.target.files?.[0];
-                                                                    if (!file) return;
-
-                                                                    setIsUploading(true);
-                                                                    try {
-                                                                        const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-                                                                        const { data, error } = await supabase.storage
-                                                                            .from('client-uploads')
-                                                                            .upload(fileName, file);
-
-                                                                        if (error) throw error;
-
-                                                                        // Get Public URL
-                                                                        const { data: publicUrlData } = supabase.storage
-                                                                            .from('client-uploads')
-                                                                            .getPublicUrl(fileName);
-
-                                                                        setUploadedFile({
-                                                                            name: file.name,
-                                                                            url: publicUrlData.publicUrl
-                                                                        });
-
-                                                                        // Optional: Show a nice toast or just inline state (implemented below)
-                                                                    } catch (err) {
-                                                                        console.error(err);
-                                                                        alert("Erro ao enviar arquivo. Tente novamente."); // Fallback
-                                                                    } finally {
-                                                                        setIsUploading(false);
-                                                                    }
-                                                                }}
-                                                            />
-                                                            <label
-                                                                htmlFor="file-upload"
-                                                                className={`flex-1 flex items-center justify-center gap-2 cursor-pointer bg-white border border-dashed rounded-lg py-3 transition-colors text-sm font-medium ${isUploading ? 'border-brand/50 bg-brand/5 text-brand cursor-wait' : 'border-gray-300 hover:bg-gray-50 text-gray-600'}`}
-                                                            >
-                                                                {isUploading ? (
-                                                                    <>
-                                                                        <div className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
-                                                                        Enviando...
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <UploadCloud size={18} className="text-brand" />
-                                                                        Escolher Arquivo (PDF, Imagem, Corel)
-                                                                    </>
-                                                                )}
-                                                            </label>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
-                                                            <div className="flex items-center gap-2 overflow-hidden">
-                                                                <div className="bg-green-100 p-1.5 rounded-full text-green-600 flex-shrink-0">
-                                                                    <Check size={14} />
-                                                                </div>
-                                                                <span className="text-sm text-green-800 font-medium truncate flex-1 min-w-0">{uploadedFile.name}</span>
-                                                            </div>
-                                                            <button
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    setUploadedFile(null);
-                                                                }}
-                                                                className="text-xs text-brand hover:text-orange-700 font-bold px-2 py-1"
-                                                            >
-                                                                Remover
-                                                            </button>
-                                                        </div>
-                                                    )}
+                                            <div className="flex-1">
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <span className={`font-bold ${designOption === "upload" ? "text-gray-900" : "text-gray-600"}`}>Já tenho minha arte</span>
+                                                    <span className="text-xs font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Grátis</span>
                                                 </div>
-                                            )}
+                                                <p className="text-xs text-gray-500 mb-3">Envie seu arquivo pronto (PDF, Imagem, CorelDraw).</p>
+
+                                                {/* File Upload Logic */}
+                                                {designOption === "upload" && (
+                                                    <div className="mt-3 animate-in fade-in slide-in-from-top-1">
+                                                        {!uploadedFile ? (
+                                                            <div className="flex gap-2 items-center">
+                                                                <input
+                                                                    type="file"
+                                                                    id="file-upload"
+                                                                    className="hidden"
+                                                                    accept=".pdf,.cdr,.ai,.psd,.jpg,.png,.jpeg"
+                                                                    onChange={async (e) => {
+                                                                        const file = e.target.files?.[0];
+                                                                        if (!file) return;
+
+                                                                        setIsUploading(true);
+                                                                        try {
+                                                                            const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                                                                            const { data, error } = await supabase.storage
+                                                                                .from('client-uploads')
+                                                                                .upload(fileName, file);
+
+                                                                            if (error) throw error;
+
+                                                                            // Get Public URL
+                                                                            const { data: publicUrlData } = supabase.storage
+                                                                                .from('client-uploads')
+                                                                                .getPublicUrl(fileName);
+
+                                                                            setUploadedFile({
+                                                                                name: file.name,
+                                                                                url: publicUrlData.publicUrl
+                                                                            });
+
+                                                                            // Optional: Show a nice toast or just inline state (implemented below)
+                                                                        } catch (err) {
+                                                                            console.error(err);
+                                                                            alert("Erro ao enviar arquivo. Tente novamente."); // Fallback
+                                                                        } finally {
+                                                                            setIsUploading(false);
+                                                                        }
+                                                                    }}
+                                                                />
+                                                                <label
+                                                                    htmlFor="file-upload"
+                                                                    className={`flex-1 flex items-center justify-center gap-2 cursor-pointer bg-white border border-dashed rounded-lg py-3 transition-colors text-sm font-medium ${isUploading ? 'border-brand/50 bg-brand/5 text-brand cursor-wait' : 'border-gray-300 hover:bg-gray-50 text-gray-600'}`}
+                                                                >
+                                                                    {isUploading ? (
+                                                                        <>
+                                                                            <div className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
+                                                                            Enviando...
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <UploadCloud size={18} className="text-brand" />
+                                                                            Escolher Arquivo (PDF, Imagem, Corel)
+                                                                        </>
+                                                                    )}
+                                                                </label>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
+                                                                <div className="flex items-center gap-2 overflow-hidden">
+                                                                    <div className="bg-green-100 p-1.5 rounded-full text-green-600 flex-shrink-0">
+                                                                        <Check size={14} />
+                                                                    </div>
+                                                                    <span className="text-sm text-green-800 font-medium truncate flex-1 min-w-0">{uploadedFile.name}</span>
+                                                                </div>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setUploadedFile(null);
+                                                                    }}
+                                                                    className="text-xs text-brand hover:text-orange-700 font-bold px-2 py-1"
+                                                                >
+                                                                    Remover
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Option 2: Hire Designer */}
-                                <div
-                                    className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all ${designOption === "hire"
-                                        ? "border-brand bg-orange-50/10"
-                                        : "border-gray-200 hover:border-gray-300"
-                                        }`}
-                                    onClick={() => setDesignOption("hire")}
-                                >
-                                    <div className="flex items-start gap-3">
-                                        <div className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${designOption === "hire" ? "border-brand" : "border-gray-300"}`}>
-                                            {designOption === "hire" && <div className="w-2.5 h-2.5 bg-brand rounded-full"></div>}
-                                        </div>
-                                        <div>
-                                            <div className="flex justify-between items-center mb-1 w-full gap-2">
-                                                <span className={`font-bold ${designOption === "hire" ? "text-gray-900" : "text-gray-600"}`}>Contratar Criação</span>
-                                                <span className="text-xs font-bold text-brand">+ R$ 35,00</span>
+                                    {/* Option 2: Hire Designer */}
+                                    <div
+                                        className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all ${designOption === "hire"
+                                            ? "border-brand bg-orange-50/10"
+                                            : "border-gray-200 hover:border-gray-300"
+                                            }`}
+                                        onClick={() => setDesignOption("hire")}
+                                    >
+                                        <div className="flex items-start gap-3">
+                                            <div className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${designOption === "hire" ? "border-brand" : "border-gray-300"}`}>
+                                                {designOption === "hire" && <div className="w-2.5 h-2.5 bg-brand rounded-full"></div>}
                                             </div>
-                                            <p className="text-xs text-gray-500">Nossa equipe cria a arte profissional para você.</p>
+                                            <div>
+                                                <div className="flex justify-between items-center mb-1 w-full gap-2">
+                                                    <span className={`font-bold ${designOption === "hire" ? "text-gray-900" : "text-gray-600"}`}>Contratar Criação</span>
+                                                    <span className="text-xs font-bold text-brand">+ R$ 35,00</span>
+                                                </div>
+                                                <p className="text-xs text-gray-500">Nossa equipe cria a arte profissional para você.</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
+                        )}
 
                         {/* 5. FREIGHT CALCULATOR */}
                         <div className="border border-gray-200 rounded-xl p-4 mb-8 bg-gray-50">

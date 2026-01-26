@@ -350,6 +350,20 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                             />
                         </div>
 
+                        {/* Design Option Config */}
+                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div className="flex items-center justify-between mb-2">
+                                <div>
+                                    <h4 className="font-medium text-gray-900">Opção de Arte Final?</h4>
+                                    <p className="text-xs text-gray-500">Exibe a seção para cliente enviar ou contratar arte.</p>
+                                </div>
+                                <Switch
+                                    checked={formData.hasDesignOption !== false} // Default true
+                                    onCheckedChange={(c) => setFormData(prev => ({ ...prev, hasDesignOption: c }))}
+                                />
+                            </div>
+                        </div>
+
                         {formData.customText?.enabled && (
                             <div className="grid grid-cols-1 gap-4 animate-in fade-in slide-in-from-top-2 border-t border-gray-200 pt-4">
                                 <Input
