@@ -329,6 +329,61 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                         </div>
                     </div>
 
+                    {/* Custom Text Input (Personalization) */}
+                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <div className="flex items-center justify-between mb-4">
+                            <div>
+                                <label className="text-sm font-bold text-gray-900">Personalização de Texto</label>
+                                <p className="text-xs text-gray-500">Adicione um campo para o cliente digitar algo (Ex: Nome, Turma).</p>
+                            </div>
+                            <Switch
+                                checked={formData.customText?.enabled || false}
+                                onCheckedChange={(checked) => setFormData(prev => ({
+                                    ...prev,
+                                    customText: {
+                                        enabled: checked,
+                                        label: prev.customText?.label || "Personalização",
+                                        placeholder: prev.customText?.placeholder || "Digite aqui...",
+                                        required: prev.customText?.required || false
+                                    }
+                                }))}
+                            />
+                        </div>
+
+                        {formData.customText?.enabled && (
+                            <div className="grid grid-cols-1 gap-4 animate-in fade-in slide-in-from-top-2 border-t border-gray-200 pt-4">
+                                <Input
+                                    label="Título do Campo (Label)"
+                                    placeholder="Ex: Qual o nome da criança?"
+                                    value={formData.customText.label}
+                                    onChange={(e) => setFormData(prev => ({
+                                        ...prev,
+                                        customText: { ...prev.customText!, label: e.target.value }
+                                    }))}
+                                />
+                                <Input
+                                    label="Dica (Placeholder)"
+                                    placeholder="Ex: Maria - 1º Ano B"
+                                    value={formData.customText.placeholder}
+                                    onChange={(e) => setFormData(prev => ({
+                                        ...prev,
+                                        customText: { ...prev.customText!, placeholder: e.target.value }
+                                    }))}
+                                />
+                                <div className="flex items-center gap-2">
+                                    <Switch
+                                        checked={formData.customText.required || false}
+                                        onCheckedChange={(c) => setFormData(prev => ({
+                                            ...prev,
+                                            customText: { ...prev.customText!, required: c }
+                                        }))}
+                                    />
+                                    <span className="text-sm text-gray-700">Preenchimento Obrigatório?</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     <div className="space-y-1">
                         <label className="text-sm font-medium text-gray-700">Descrição Curta</label>
                         <textarea
@@ -524,11 +579,47 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                                             <div className="flex flex-wrap gap-2 mb-2">
                                                 {variation.options.map((opt, oIdx) => {
                                                     const priceAddon = variation.prices?.[opt] || 0;
+                                                    const varImage = variation.images?.[opt];
                                                     return (
-                                                        <span key={oIdx} className="bg-white text-xs px-2 py-1 rounded border border-gray-200 flex items-center gap-1">
+                                                        <span key={oIdx} className="bg-white text-xs px-2 py-1 rounded border border-gray-200 flex items-center gap-1 group relative">
+
+                                                            {/* Image Preview / Upload */}
+                                                            <label className="cursor-pointer flex items-center justify-center w-5 h-5 rounded-full bg-gray-100 hover:bg-gray-200 overflow-hidden relative border border-gray-200">
+                                                                <input
+                                                                    type="file"
+                                                                    className="hidden"
+                                                                    accept="image/*"
+                                                                    onChange={async (e) => {
+                                                                        const file = e.target.files?.[0];
+                                                                        if (!file) return;
+
+                                                                        const formData = new FormData();
+                                                                        formData.append('file', file);
+                                                                        const url = await uploadImage(formData);
+
+                                                                        if (url) {
+                                                                            setFormData(prev => {
+                                                                                const newVars = [...(prev.variations || [])];
+                                                                                const currentImages = newVars[vIdx].images || {};
+                                                                                newVars[vIdx] = {
+                                                                                    ...newVars[vIdx],
+                                                                                    images: { ...currentImages, [opt]: url }
+                                                                                };
+                                                                                return { ...prev, variations: newVars };
+                                                                            });
+                                                                        }
+                                                                    }}
+                                                                />
+                                                                {varImage ? (
+                                                                    <img src={varImage} alt={opt} className="w-full h-full object-cover" />
+                                                                ) : (
+                                                                    <Upload size={10} className="text-gray-400" />
+                                                                )}
+                                                            </label>
+
                                                             {opt}
                                                             {priceAddon > 0 && <span className="text-green-600 font-bold ml-1">+{formatPrice(priceAddon)}</span>}
-                                                            <button type="button" onClick={() => removeOptionFromVariation(vIdx, oIdx)} className="text-gray-400 hover:text-red-500"><X size={10} /></button>
+                                                            <button type="button" onClick={() => removeOptionFromVariation(vIdx, oIdx)} className="text-gray-400 hover:text-red-500 ml-1"><X size={10} /></button>
                                                         </span>
                                                     );
                                                 })}

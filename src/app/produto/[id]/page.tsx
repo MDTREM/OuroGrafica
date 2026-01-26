@@ -57,6 +57,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     // Custom Dimensions State
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 }); // in cm
 
+    // Custom Text State
+    const [customTextValue, setCustomTextValue] = useState("");
+    const [showTextError, setShowTextError] = useState(false);
+
     // Initial Quantity State Management
     useEffect(() => {
         if (product) {
@@ -167,12 +171,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             return;
         }
 
+        // Validation: Required Custom Text
+        if (product.customText?.enabled && product.customText.required && !customTextValue.trim()) {
+            setShowTextError(true);
+            // Scroll to error if needed (optional)
+            return;
+        }
+
         addToCart({
             productId: product.id,
             title: product.title,
             price: finalPrice,
             quantity: 1, // Add as 1 item of the configured batch/product
-            image: productImages[0] || "",
+            image: productImages[activeImage] || productImages[0] || "",
             details: {
                 paper: product.technicalSpecs?.paper || "",
                 finish: selectedFinish,
@@ -182,7 +193,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 dimensions: product.allowCustomDimensions ? dimensions : undefined,
                 selectedVariations: selectedVariations, // Add selected variations to cart
                 fileUrl: uploadedFile?.url,
-                fileName: uploadedFile?.name
+                fileName: uploadedFile?.name,
+                customText: customTextValue // Add custom text
             }
         });
 
@@ -457,26 +469,65 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
                         {/* 4. DYNAMIC VARIATIONS */}
                         {product.variations && product.variations.length > 0 && (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                            <div className="mb-8 space-y-6">
                                 {product.variations.map((variation, vIdx) => (
                                     <div key={vIdx}>
-                                        <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">{variation.name}</h3>
-                                        <div className="flex flex-col gap-2">
+                                        <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center justify-between">
+                                            {variation.name}
+                                            {selectedVariations[variation.name] && (
+                                                <span className="text-xs font-normal text-brand bg-brand/5 px-2 py-0.5 rounded-full">
+                                                    {selectedVariations[variation.name]}
+                                                </span>
+                                            )}
+                                        </h3>
+                                        <div className="flex flex-wrap gap-3">
                                             {variation.options.map((option, oIdx) => {
+                                                const isSelected = selectedVariations[variation.name] === option;
+                                                const varImage = variation.images?.[option];
                                                 const priceAddon = variation.prices?.[option] || 0;
+
                                                 return (
                                                     <button
                                                         key={oIdx}
-                                                        onClick={() => setSelectedVariations(prev => ({ ...prev, [variation.name]: option }))}
+                                                        onClick={() => {
+                                                            setSelectedVariations(prev => ({ ...prev, [variation.name]: option }));
+                                                            // Auto-select image if present in gallery
+                                                            if (varImage) {
+                                                                const imgIndex = productImages.findIndex(img => img === varImage);
+                                                                if (imgIndex !== -1) setActiveImage(imgIndex);
+                                                            }
+                                                        }}
                                                         className={cn(
-                                                            "px-4 py-3 rounded-lg text-sm font-medium border text-left transition-all flex justify-between",
-                                                            selectedVariations[variation.name] === option
-                                                                ? "border-brand bg-orange-50 text-brand font-bold ring-1 ring-brand"
-                                                                : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
+                                                            "relative group transition-all rounded-xl border flex items-center justify-center overflow-hidden",
+                                                            varImage
+                                                                ? "w-16 h-16 p-0" // Image tile style
+                                                                : "px-4 py-2 min-h-[40px]", // Text button style
+                                                            isSelected
+                                                                ? "border-brand ring-1 ring-brand bg-brand/5 text-brand"
+                                                                : "border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50 bg-white"
                                                         )}
+                                                        title={option}
                                                     >
-                                                        <span>{option}</span>
-                                                        {priceAddon > 0 && <span className="text-xs font-bold text-green-600">+{formatPrice(priceAddon)}</span>}
+                                                        {varImage ? (
+                                                            <>
+                                                                <img src={varImage} alt={option} className="w-full h-full object-cover" />
+                                                                {isSelected && (
+                                                                    <div className="absolute inset-0 bg-brand/20 z-10 flex items-center justify-center">
+                                                                        <div className="bg-white rounded-full p-0.5 shadow-sm">
+                                                                            <Check size={12} className="text-brand" />
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                                <span className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[9px] px-1 py-0.5 truncate text-center backdrop-blur-sm">
+                                                                    {option}
+                                                                </span>
+                                                            </>
+                                                        ) : (
+                                                            <div className="flex flex-col items-center">
+                                                                <span className="text-sm font-medium">{option}</span>
+                                                                {priceAddon > 0 && <span className="text-[10px] text-green-600 font-bold">+{formatPrice(priceAddon)}</span>}
+                                                            </div>
+                                                        )}
                                                     </button>
                                                 )
                                             })}
@@ -486,7 +537,36 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                             </div>
                         )}
 
-                        {/* 4. DESIGN OPTIONS */}
+                        {/* 5. CUSTOM TEXT INPUT (PERSONALIZATION) */}
+                        {product.customText?.enabled && (
+                            <div className="mb-8 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+                                <label className="text-sm font-bold text-gray-900 mb-2 block flex items-center gap-2">
+                                    {product.customText.label}
+                                    {product.customText.required && <span className="text-red-500 text-xs font-normal">* Obrigatório</span>}
+                                </label>
+                                <textarea
+                                    className={cn(
+                                        "w-full rounded-xl border p-3 text-sm focus:ring-2 outline-none transition-all resize-y min-h-[80px]",
+                                        showTextError && !customTextValue.trim()
+                                            ? "border-red-300 focus:border-red-500 focus:ring-red-100 bg-red-50"
+                                            : "border-gray-200 focus:border-brand focus:ring-brand/10 bg-white"
+                                    )}
+                                    placeholder={product.customText.placeholder}
+                                    value={customTextValue}
+                                    onChange={(e) => {
+                                        setCustomTextValue(e.target.value);
+                                        if (e.target.value.trim()) setShowTextError(false);
+                                    }}
+                                />
+                                {showTextError && !customTextValue.trim() && (
+                                    <p className="text-xs text-red-500 mt-1 font-medium animate-in slide-in-from-top-1">
+                                        Por favor, preencha este campo antes de continuar.
+                                    </p>
+                                )}
+                            </div>
+                        )}
+
+                        {/* 6. DESIGN OPTIONS */}
                         <div className="mb-8">
                             <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">Arte Final</h3>
                             <div className="grid grid-cols-1 gap-3">

@@ -187,8 +187,16 @@ export default function AdminOrdersPage() {
                                                         {item.details.paper && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Papel: {item.details.paper}</span>}
                                                         {item.details.finish && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Acab: {item.details.finish}</span>}
                                                         {item.details.selectedVariations && Object.entries(item.details.selectedVariations).map(([key, value]) => (
-                                                            <span key={key} className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">{key}: {String(value)}</span>
+                                                            <span key={key} className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 border border-gray-200">
+                                                                <span className="font-bold">{key}:</span> {String(value)}
+                                                            </span>
                                                         ))}
+                                                        {item.details.customText && (
+                                                            <div className="w-full mt-1 p-2 bg-blue-50 border border-blue-100 rounded-lg text-blue-900 text-xs">
+                                                                <span className="font-bold block mb-0.5">Personalização (Texto):</span>
+                                                                {item.details.customText}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 )}
 

@@ -146,7 +146,45 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     };
 
     const updateProduct = async (updatedProduct: Product) => {
-        const { error } = await supabase.from('products').update(updatedProduct).eq('id', updatedProduct.id);
+        // Sanitize payload to avoid "column not found" errors
+        // whitelist fields that match DB columns
+        const safePayload = {
+            title: updatedProduct.title,
+            description: updatedProduct.description,
+            price: updatedProduct.price,
+            category: updatedProduct.category,
+            // categoryId? usually just category string in this project structure
+            active: updatedProduct.active,
+            image: updatedProduct.image,
+            images: updatedProduct.images,
+
+            // JSON/Array fields - assume DB handles them (Supabase usually does auto-conversion for JSONB)
+            variations: updatedProduct.variations,
+            technicalSpecs: updatedProduct.technicalSpecs,
+            quantities: updatedProduct.quantities,
+            formats: updatedProduct.formats,
+            finishes: updatedProduct.finishes,
+
+            // Booleans / Config
+            customQuantity: updatedProduct.customQuantity,
+            minQuantity: updatedProduct.minQuantity,
+            maxQuantity: updatedProduct.maxQuantity,
+            allowCustomDimensions: updatedProduct.allowCustomDimensions,
+            isNew: updatedProduct.isNew,
+            isFeatured: updatedProduct.isFeatured,
+            isBestSeller: updatedProduct.isBestSeller,
+
+            // Text
+            fullDescription: updatedProduct.fullDescription,
+            subcategory: updatedProduct.subcategory,
+            unit: updatedProduct.unit,
+            color: updatedProduct.color,
+            pricePerM2: updatedProduct.pricePerM2,
+            customText: updatedProduct.customText
+        };
+
+        const { error } = await supabase.from('products').update(safePayload).eq('id', updatedProduct.id);
+
         if (!error) {
             setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
             return { success: true };

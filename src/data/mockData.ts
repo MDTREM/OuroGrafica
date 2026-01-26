@@ -37,6 +37,7 @@ export interface Product {
         name: string;
         options: string[];
         prices?: { [key: string]: number }; // Optional price override per option
+        images?: { [key: string]: string }; // Optional image override per option
     }[];
 
     // Custom Quantity Logic
@@ -47,6 +48,14 @@ export interface Product {
     // Custom Dimensions (m2)
     allowCustomDimensions?: boolean; // If true, show width/height inputs
     pricePerM2?: number; // Optional override if price logic differs from base price
+
+    // Custom Text Input (Personalization)
+    customText?: {
+        enabled: boolean;
+        label: string;
+        placeholder?: string;
+        required?: boolean;
+    };
 }
 
 export interface User {

@@ -25,6 +25,7 @@ export interface CartItem {
         selectedVariations?: { [key: string]: string };
         fileUrl?: string;
         fileName?: string;
+        customText?: string; // User input for custom text field
     };
 }
 
