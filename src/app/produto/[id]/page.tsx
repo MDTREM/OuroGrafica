@@ -44,6 +44,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     const [selectedFinish, setSelectedFinish] = useState("");
     const [selectedVariations, setSelectedVariations] = useState<{ [key: string]: string }>({}); // New state for dynamic variations
     const [activeImage, setActiveImage] = useState(0);
+    const [selectedVariationImage, setSelectedVariationImage] = useState<string | null>(null);
     const [designOption, setDesignOption] = useState<"upload" | "hire">("upload");
     const [showFullDesc, setShowFullDesc] = useState(false);
 
@@ -183,7 +184,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             title: product.title,
             price: finalPrice,
             quantity: 1, // Add as 1 item of the configured batch/product
-            image: productImages[activeImage] || productImages[0] || "",
+            image: selectedVariationImage || productImages[activeImage] || productImages[0] || "",
             details: {
                 paper: product.technicalSpecs?.paper || "",
                 finish: selectedFinish,
@@ -223,11 +224,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     <div>
                         <div className="aspect-square bg-gray-100 rounded-2xl relative flex items-center justify-center overflow-hidden mb-4 border border-border">
                             {/* Main Image Display */}
-                            {productImages.length > 0 ? (
+                            {productImages.length > 0 || selectedVariationImage ? (
                                 <img
-                                    src={productImages[activeImage] || productImages[0]}
+                                    src={selectedVariationImage || productImages[activeImage] || productImages[0]}
                                     alt={product.title}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover animate-in fade-in zoom-in-50 duration-300"
                                     onError={(e) => {
                                         const target = e.target as HTMLImageElement;
                                         target.style.display = 'none';
@@ -252,7 +253,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                 {productImages.map((img, idx) => (
                                     <button
                                         key={idx}
-                                        onClick={() => setActiveImage(idx)}
+                                        onClick={() => {
+                                            setActiveImage(idx);
+                                            setSelectedVariationImage(null); // Clear variation override
+                                        }}
                                         className={cn(
                                             "min-w-[70px] w-[70px] h-[70px] rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all overflow-hidden relative bg-gray-50",
                                             activeImage === idx
@@ -491,10 +495,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                                         key={oIdx}
                                                         onClick={() => {
                                                             setSelectedVariations(prev => ({ ...prev, [variation.name]: option }));
-                                                            // Auto-select image if present in gallery
+                                                            // Always show the variation image if available
                                                             if (varImage) {
+                                                                setSelectedVariationImage(varImage);
+                                                                // Also sync with gallery if possible for UX consistency (optional)
                                                                 const imgIndex = productImages.findIndex(img => img === varImage);
                                                                 if (imgIndex !== -1) setActiveImage(imgIndex);
+                                                            } else {
+                                                                // If no image for this option, consider keeping the current one or resetting?
+                                                                // Let's keep current behavior: don't clear unless switching to another image-less option?
+                                                                // Or better: clear selectedVariationImage to return to gallery view?
+                                                                // User request implies: "when clicking each variation image, it must appear".
+                                                                // It doesn't strictly say it should disappear if I click a text option.
+                                                                // But usually, selecting a text variation shouldn't necessarily hide the main product image.
                                                             }
                                                         }}
                                                         className={cn(
