@@ -36,7 +36,9 @@ export async function getProductsByCategory(
             .eq('active', true);
 
         if (options?.subcategorySlug) {
-            query = query.eq('subcategory', options.subcategorySlug);
+            // Decode slug: replace hyphens with spaces and use case-insensitive match
+            const decodedSub = options.subcategorySlug.replace(/-/g, ' ');
+            query = query.ilike('subcategory', decodedSub);
         }
 
         if (options?.minPrice !== undefined) {

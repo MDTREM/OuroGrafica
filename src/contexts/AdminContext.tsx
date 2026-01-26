@@ -93,8 +93,16 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
     const fetchData = async () => {
         // Products
+        // Products
         const { data: productsData } = await supabase.from('products').select('*');
-        if (productsData) setProducts(productsData);
+        if (productsData) {
+            const mappedProducts = productsData.map((p: any) => ({
+                ...p,
+                customText: p.custom_text || p.customText, // Handle DB mapping
+                pricePerM2: p.price_per_m2 || p.pricePerM2
+            }));
+            setProducts(mappedProducts);
+        }
 
         // Categories
         const { data: categoriesData } = await supabase.from('categories').select('*');
