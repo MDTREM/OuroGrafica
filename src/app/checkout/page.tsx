@@ -77,7 +77,7 @@ export default function CheckoutPage() {
 
         // Random version buster as per Efí docs
         const v = parseInt(String(Math.random() * 1000000));
-        script.src = `https://api.efi.com.br/v1/ancillary/payment-token/${accountId}/protect?v=${v}`;
+        script.src = `https://api.gerencianet.com.br/v1/ancillary/payment-token/${accountId}/protect?v=${v}`;
 
         script.onload = () => {
             console.log("Efí Script Loaded");
