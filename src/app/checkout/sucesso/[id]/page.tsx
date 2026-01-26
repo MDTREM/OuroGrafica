@@ -23,6 +23,7 @@ export default function SuccessPage() {
     const id = params.id as string;
     const [order, setOrder] = useState<OrderDetails | null>(null);
     const [loading, setLoading] = useState(true);
+    const [showToast, setShowToast] = useState(false);
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -68,8 +69,8 @@ export default function SuccessPage() {
     const copyToClipboard = (text: string) => {
         if (!text) return;
         navigator.clipboard.writeText(text);
-        // Could add toast here
-        alert("Código Pix copiado!");
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 3000);
     };
 
     if (loading) {
@@ -165,7 +166,7 @@ export default function SuccessPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full bg-orange-50 text-brand flex items-center justify-center">
                                 <Package size={20} />
                             </div>
                             <div>
@@ -183,7 +184,7 @@ export default function SuccessPage() {
 
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full bg-orange-50 text-brand flex items-center justify-center">
                                 <Truck size={20} />
                             </div>
                             <div>
@@ -203,9 +204,8 @@ export default function SuccessPage() {
                 <div className="grid grid-cols-1 gap-4">
                     <Link
                         href="/perfil/pedidos"
-                        className="w-full bg-gray-900 text-white font-bold h-14 rounded-xl hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 flex items-center justify-center gap-3"
+                        className="w-full bg-brand text-white font-bold h-14 rounded-xl hover:bg-brand/90 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-3"
                     >
-                        <ShoppingBag size={20} />
                         Acompanhar Meus Pedidos
                     </Link>
                     <Link
@@ -217,6 +217,14 @@ export default function SuccessPage() {
                 </div>
 
             </Container>
+
+            {/* Custom Toast */}
+            {showToast && (
+                <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-brand text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom-5">
+                    <CheckCircle size={20} className="text-white" />
+                    <span className="font-bold text-sm">Código Pix copiado!</span>
+                </div>
+            )}
         </div>
     );
 }

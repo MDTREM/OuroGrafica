@@ -77,7 +77,7 @@ export default function CheckoutPage() {
 
         // Random version buster as per Efí docs
         const v = parseInt(String(Math.random() * 1000000));
-        script.src = `https://api.gerencianet.com.br/v1/ancillary/payment-token/${accountId}/protect?v=${v}`;
+        script.src = `https://payment-token.efi.com.br/payment-token/${accountId}/protect?v=${v}`;
 
         script.onload = () => {
             console.log("Efí Script Loaded");
@@ -843,15 +843,7 @@ export default function CheckoutPage() {
                                     </div>
                                 )}
 
-                                {/* Debug Info */}
-                                <div className="mt-6 text-center">
-                                    <p className="text-[10px] text-gray-400">
-                                        ID Efí: {process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID ? `...${process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID.slice(-4)}` : 'Não identificado'}
-                                    </p>
-                                    <p className={`text-[10px] font-bold ${connectionStatus === 'Sucesso' ? 'text-green-500' : 'text-orange-500'}`}>
-                                        Status Conexão: {connectionStatus}
-                                    </p>
-                                </div>
+
                             </div>
                         )}
                     </div>

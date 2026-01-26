@@ -45,7 +45,7 @@ export function ProductCard({ id, title, price, unit, description, image }: Prod
                         src={image}
                         alt={title}
                         onError={() => setImgError(true)}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-contain p-1 group-hover:scale-105 transition-transform duration-500"
                     />
                 ) : (
                     <div className="w-full h-full bg-gray-50 flex flex-col items-center justify-center text-gray-300">

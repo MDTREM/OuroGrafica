@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useAdmin } from "@/contexts/AdminContext";
 import { Product } from "@/data/mockData";
+import { useState, useRef, useEffect } from "react";
 
 interface ProductRowProps {
     title: string;
@@ -25,6 +26,7 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
     } else if (productIds && productIds.length > 0) {
         // Manual selection (Client-side fallback)
         displayProducts = products.filter(p => productIds.includes(p.id));
+        displayProducts.sort((a, b) => productIds.indexOf(a.id) - productIds.indexOf(b.id));
     } else {
         // Fallback to filters (Client-side fallback)
         switch (filter) {
@@ -46,6 +48,36 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
 
     if (displayProducts.length === 0) return null;
 
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const handleScroll = () => {
+        if (!scrollRef.current) return;
+        const { scrollLeft } = scrollRef.current;
+        // Estimate item width including gap (approximate, refined by actual calculation if needed)
+        // Mobile w-160px (160) + gap-4 (16) = 176
+        // Desktop w-240px (240) + gap-4 (16) = 256
+        // We can dynamically get the first child width
+        const firstChild = scrollRef.current.firstElementChild as HTMLElement;
+        if (!firstChild) return;
+        const itemWidth = firstChild.offsetWidth + 16; // 16 is gap-4
+
+        const newIndex = Math.round(scrollLeft / itemWidth);
+        setActiveIndex(newIndex);
+    };
+
+    const scrollToIndex = (index: number) => {
+        if (!scrollRef.current) return;
+        const firstChild = scrollRef.current.firstElementChild as HTMLElement;
+        if (!firstChild) return;
+        const itemWidth = firstChild.offsetWidth + 16;
+
+        scrollRef.current.scrollTo({
+            left: index * itemWidth,
+            behavior: 'smooth'
+        });
+    };
+
     return (
         <Container>
             <div className="flex justify-between items-center mb-4">
@@ -56,12 +88,35 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
                     </Link>
                 )}
             </div>
-            <div className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 -mx-4 px-4 scrollbar-hide">
+
+            {/* Scroll Container */}
+            <div
+                ref={scrollRef}
+                onScroll={handleScroll}
+                className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 -mx-4 px-4 no-scrollbar"
+            >
                 {displayProducts.map((product) => (
                     <div key={product.id} className="w-[160px] md:w-[240px] flex-none snap-start">
                         <ProductCard {...product} />
                     </div>
                 ))}
+            </div>
+
+            {/* Pagination Dots */}
+            <div className="flexjustify-center gap-2 mt-2">
+                <div className="flex items-center justify-center gap-1.5 mx-auto">
+                    {displayProducts.map((_, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => scrollToIndex(idx)}
+                            className={`transition-all duration-300 rounded-full h-2 ${idx === activeIndex
+                                    ? "w-6 bg-brand"
+                                    : "w-2 bg-gray-200 hover:bg-gray-300"
+                                }`}
+                            aria-label={`Ir para item ${idx + 1}`}
+                        />
+                    ))}
+                </div>
             </div>
         </Container>
     );

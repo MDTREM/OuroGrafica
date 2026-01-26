@@ -354,8 +354,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
                             {product.customQuantity ? (
                                 <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex-1">
+                                    <div className="flex flex-col sm:flex-row items-center gap-4">
+                                        <div className="flex-1 w-full sm:w-auto">
                                             <label className="text-xs font-bold text-gray-500 mb-1 block">Escolha a quantidade</label>
                                             <div className="flex items-center gap-3">
                                                 <button
@@ -378,7 +378,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                                         if (product.maxQuantity && val > product.maxQuantity) val = product.maxQuantity;
                                                         setQuantity(val);
                                                     }}
-                                                    className="w-24 h-10 text-center font-bold text-lg border border-gray-200 rounded-lg focus:border-brand focus:ring-1 focus:ring-brand outline-none"
+                                                    className="flex-1 sm:flex-none w-full sm:w-24 h-10 text-center font-bold text-lg border border-gray-200 rounded-lg focus:border-brand focus:ring-1 focus:ring-brand outline-none"
                                                 />
                                                 <button
                                                     onClick={() => setQuantity(Math.min((product.maxQuantity || 10000), quantity + 1))}
@@ -391,7 +391,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                                 Mínimo: {product.minQuantity || 1} | Máximo: {product.maxQuantity || 1000}
                                             </p>
                                         </div>
-                                        <div className="text-right">
+                                        <div className="text-left sm:text-right w-full sm:w-auto mt-2 sm:mt-0 bg-gray-50 sm:bg-transparent p-3 sm:p-0 rounded-lg sm:rounded-none">
                                             <span className="text-xs text-gray-500 block">Valor Unitário Aproximado</span>
                                             <span className="text-lg font-bold text-gray-900">{formatPrice(product.customQuantity ? price : price / 100)}</span>
                                         </div>

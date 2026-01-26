@@ -45,6 +45,7 @@ export default function NewProductPage() {
         maxQuantity: 1000,
         allowCustomDimensions: false,
         variations: [],
+        hasDesignOption: true, // Default to true
     });
 
     // Helper for array inputs
@@ -332,6 +333,20 @@ export default function NewProductPage() {
                                     }
                                 }))}
                             />
+                        </div>
+
+                        {/* Design Option Config */}
+                        <div className="bg-white p-4 rounded-xl border border-gray-200 mb-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h4 className="font-medium text-gray-900">Opção de Arte Final?</h4>
+                                    <p className="text-xs text-gray-500">Exibe a seção para cliente enviar ou contratar arte.</p>
+                                </div>
+                                <Switch
+                                    checked={formData.hasDesignOption !== false} // Default true
+                                    onCheckedChange={(c) => setFormData(prev => ({ ...prev, hasDesignOption: c }))}
+                                />
+                            </div>
                         </div>
 
                         {formData.customText?.enabled && (
