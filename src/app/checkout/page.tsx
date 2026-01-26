@@ -17,7 +17,7 @@ export default function CheckoutPage() {
     const [personType, setPersonType] = useState<"pf" | "pj">("pf");
     const [loadingCep, setLoadingCep] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<"credit" | "pix">("credit");
-    const [scriptLoaded, setScriptLoaded] = useState(false);
+    // const [scriptLoaded, setScriptLoaded] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -44,79 +44,79 @@ export default function CheckoutPage() {
     const [connectionStatus, setConnectionStatus] = useState<string>('Aguardando...');
 
     // --- Script Injection for Efí Card ---
-    const loadEfiScript = () => {
-        setScriptLoaded(false);
-        setConnectionStatus('Carregando script...');
-        const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
+    // const loadEfiScript = () => {
+    //     setScriptLoaded(false);
+    //     setConnectionStatus('Carregando script...');
+    //     const accountId = process.env.NEXT_PUBLIC_EFI_ACCOUNT_ID;
 
-        // If ID matches placeholder or is missing, log but Unblock UI
-        if (!accountId || accountId.includes("INSERIR")) {
-            console.error("Efí Account ID missing or invalid:", accountId);
-            setConnectionStatus('ID Inválido');
-            setScriptLoaded(true);
-            return;
-        }
+    //     // If ID matches placeholder or is missing, log but Unblock UI
+    //     if (!accountId || accountId.includes("INSERIR")) {
+    //         console.error("Efí Account ID missing or invalid:", accountId);
+    //         setConnectionStatus('ID Inválido');
+    //         setScriptLoaded(true);
+    //         return;
+    //     }
 
-        const scriptId = 'efi-payment-token-script';
+    //     const scriptId = 'efi-payment-token-script';
 
-        // Remove existing if any to force reload
-        const existing = document.getElementById(scriptId);
-        if (existing) existing.remove();
+    //     // Remove existing if any to force reload
+    //     const existing = document.getElementById(scriptId);
+    //     if (existing) existing.remove();
 
-        // Initialize $gn stub if not exists
-        // @ts-ignore
-        if (typeof window.$gn === 'undefined') {
-            // @ts-ignore
-            window.$gn = { validForm: true, processed: false, done: {}, ready: function (fn) { window.$gn.done = fn; } };
-        }
+    //     // Initialize $gn stub if not exists
+    //     // @ts-ignore
+    //     if (typeof window.$gn === 'undefined') {
+    //         // @ts-ignore
+    //         window.$gn = { validForm: true, processed: false, done: {}, ready: function (fn) { window.$gn.done = fn; } };
+    //     }
 
-        const script = document.createElement('script');
-        script.id = scriptId;
-        script.type = 'text/javascript';
-        script.async = true;
+    //     const script = document.createElement('script');
+    //     script.id = scriptId;
+    //     script.type = 'text/javascript';
+    //     script.async = true;
 
-        // Random version buster as per Efí docs
-        const v = parseInt(String(Math.random() * 1000000));
-        // Efí Official CDN Script
-        script.src = `https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi.min.js?v=${v}`;
+    //     // Random version buster as per Efí docs
+    //     const v = parseInt(String(Math.random() * 1000000));
+    //     // Efí Official CDN Script
+    //     script.src = `https://cdn.jsdelivr.net/gh/efipay/js-payment-token-efi/dist/payment-token-efi.min.js?v=${v}`;
 
-        script.onload = () => {
-            console.log("Efí Script Source Loaded (CDN)");
+    //     script.onload = () => {
+    //         console.log("Efí Script Source Loaded (CDN)");
 
-            // Wait a small moment to ensure global is set, or retry
-            let attempts = 0;
-            const checkEfiPay = setInterval(() => {
-                attempts++;
-                // @ts-ignore
-                if (typeof window.EfiPay !== 'undefined') {
-                    clearInterval(checkEfiPay);
-                    console.log("Global EfiPay Available");
-                    setScriptLoaded(true);
-                    setConnectionStatus('Conectado');
-                } else {
-                    console.log(`Waiting for EfiPay... (${attempts})`);
-                    if (attempts >= 10) { // 5 seconds max
-                        clearInterval(checkEfiPay);
-                        console.error("EfiPay not defined after timeout");
-                        setConnectionStatus('Erro ao inicializar');
-                        setScriptLoaded(true); // Let it fail gracefully or show error
-                    }
-                }
-            }, 500);
-        };
+    //         // Wait a small moment to ensure global is set, or retry
+    //         let attempts = 0;
+    //         const checkEfiPay = setInterval(() => {
+    //             attempts++;
+    //             // @ts-ignore
+    //             if (typeof window.EfiPay !== 'undefined') {
+    //                 clearInterval(checkEfiPay);
+    //                 console.log("Global EfiPay Available");
+    //                 setScriptLoaded(true);
+    //                 setConnectionStatus('Conectado');
+    //             } else {
+    //                 console.log(`Waiting for EfiPay... (${attempts})`);
+    //                 if (attempts >= 10) { // 5 seconds max
+    //                     clearInterval(checkEfiPay);
+    //                     console.error("EfiPay not defined after timeout");
+    //                     setConnectionStatus('Erro ao inicializar');
+    //                     setScriptLoaded(true); // Let it fail gracefully or show error
+    //                 }
+    //             }
+    //         }, 500);
+    //     };
 
-        script.onerror = () => {
-            console.error("Error loading Efí Script from CDN");
-            setConnectionStatus('Erro ao baixar');
-            setScriptLoaded(true);
-        };
+    //     script.onerror = () => {
+    //         console.error("Error loading Efí Script from CDN");
+    //         setConnectionStatus('Erro ao baixar');
+    //         setScriptLoaded(true);
+    //     };
 
-        document.body.appendChild(script);
-    };
+    //     document.body.appendChild(script);
+    // };
 
-    useEffect(() => {
-        loadEfiScript();
-    }, []);
+    // useEffect(() => {
+    //     loadEfiScript();
+    // }, []);
 
     // --- Masks & Handlers ---
 
@@ -306,41 +306,32 @@ export default function CheckoutPage() {
                             throw new Error("Configuração (Account ID) ausente.");
                         }
 
-                        // @ts-ignore
-                        if (typeof window.EfiPay === 'undefined') {
-                            throw new Error("Sistema de pagamento indisponível. Recarregue a página.");
-                        }
-
                         console.log("Iniciando geração de token...");
                         setConnectionStatus("Validando Cartão...");
 
-                        const paymentToken = await new Promise<string>((resolve, reject) => {
-                            // @ts-ignore
-                            EfiPay.PaymentToken(accountId, (result: any) => {
-                                console.log("Efí Callback:", result);
-                                if (result.payment_token) {
-                                    resolve(result.payment_token);
-                                } else {
-                                    reject(new Error("Falha na validação do cartão. Verifique os dados."));
-                                }
-                            },
-                                // Card Data Object
-                                {
-                                    // brand: "visa", // TODO: Detect brand? Efí says brand is optional/detected or 'visa'/'mastercard'. Defaulting to generic/required
-                                    // Actually better to omit brand if possible or detect? 
-                                    // Docs say: brand is required.
-                                    // Quick band detection or select? We'll infer or just pass valid format. 
-                                    // Simple detector:
-                                    // ^4 Visa, ^5 Master, ^3 Amex, ^6 Elo.
-                                    // For now passed hardcoded logic or dynamic:
-                                    brand: getCardBrand(formData.cardNumber),
-                                    number: formData.cardNumber.replace(/\s/g, ""),
-                                    cvv: formData.cardCvv,
-                                    expirationMonth: formData.cardExpiry.split('/')[0],
-                                    expirationYear: `20${formData.cardExpiry.split('/')[1]}`,
-                                    reuse: false
-                                });
-                        });
+                        // Dynamic import for client-side execution
+                        const EfiPayModule = await import("payment-token-efi");
+                        // The default export might be EfiPay or named export. README says: import EfiPay from ...
+                        const EfiPay = EfiPayModule.default || EfiPayModule;
+
+                        const result = await EfiPay.CreditCard
+                            .setAccount(accountId)
+                            .setEnvironment("production") // or "sandbox" based on logic? Defaulting production per user context usually
+                            .setCreditCardData({
+                                brand: getCardBrand(formData.cardNumber),
+                                number: formData.cardNumber.replace(/\s/g, ""),
+                                cvv: formData.cardCvv,
+                                expirationMonth: formData.cardExpiry.split('/')[0],
+                                expirationYear: `20${formData.cardExpiry.split('/')[1]}`,
+                                holderName: formData.cardName,
+                                holderDocument: personType === 'pf' ? formData.cpf : formData.cnpj,
+                                reuse: false
+                            })
+                            .getPaymentToken();
+
+                        const paymentToken = result.payment_token;
+                        console.log("Token gerado:", paymentToken);
+
 
                         setConnectionStatus("Processando Pagamento...");
 
@@ -376,7 +367,9 @@ export default function CheckoutPage() {
 
                     } catch (err: any) {
                         console.error("Card processing error:", err);
-                        throw err;
+                        // Extract meaningful error
+                        const msg = err.error_description || err.message || "Erro ao processar cartão.";
+                        throw new Error(`Erro no pagamento: ${msg}`);
                     }
                 }
             } catch (error: any) {
@@ -762,14 +755,6 @@ export default function CheckoutPage() {
 
                                 {paymentMethod === 'credit' && (
                                     <div className="space-y-4 mb-6">
-                                        {/* Script Loader Status */}
-                                        {!scriptLoaded && (
-                                            <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200 flex items-center gap-2 mb-4">
-                                                <Loader2 className="animate-spin text-yellow-600" size={16} />
-                                                <span className="text-xs text-yellow-700 font-medium">Carregando segurança do pagamento...</span>
-                                            </div>
-                                        )}
-
                                         <div className="relative">
                                             <CreditCard className="absolute left-3 top-3.5 text-gray-400" size={20} />
                                             <input
@@ -831,7 +816,7 @@ export default function CheckoutPage() {
 
                                 <button
                                     onClick={handleFinishOrder}
-                                    disabled={isSubmitting || (paymentMethod === 'credit' && !scriptLoaded)}
+                                    disabled={isSubmitting}
                                     className="w-full bg-brand hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-brand/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg"
                                 >
                                     {isSubmitting ? (
