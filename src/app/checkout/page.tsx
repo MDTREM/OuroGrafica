@@ -311,7 +311,7 @@ export default function CheckoutPage() {
                             },
                                 // Card Data Object
                                 {
-                                    brand: "visa", // TODO: Detect brand? Efí says brand is optional/detected or 'visa'/'mastercard'. Defaulting to generic/required
+                                    // brand: "visa", // TODO: Detect brand? Efí says brand is optional/detected or 'visa'/'mastercard'. Defaulting to generic/required
                                     // Actually better to omit brand if possible or detect? 
                                     // Docs say: brand is required.
                                     // Quick band detection or select? We'll infer or just pass valid format. 
