@@ -695,7 +695,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                                                     <div className="bg-green-100 p-1.5 rounded-full text-green-600 flex-shrink-0">
                                                                         <Check size={14} />
                                                                     </div>
-                                                                    <span className="text-sm text-green-800 font-medium truncate flex-1 min-w-0">{uploadedFile.name}</span>
+                                                                    <span className="text-sm text-green-800 font-medium break-all line-clamp-2 flex-1 min-w-0">{uploadedFile.name}</span>
                                                                 </div>
                                                                 <button
                                                                     onClick={(e) => {
