@@ -136,7 +136,43 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
     // Actions
     const addProduct = async (product: Product) => {
-        const { data, error } = await supabase.from('products').insert([product]).select().single();
+        const safePayload = {
+            id: product.id,
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            category: product.category,
+            // categoryId? usually just category string in this project structure
+            active: product.active,
+            image: product.image,
+            images: product.images,
+
+            // JSON/Array fields
+            variations: product.variations,
+            technicalSpecs: product.technicalSpecs,
+            quantities: product.quantities,
+            formats: product.formats,
+            finishes: product.finishes,
+
+            // Booleans / Config
+            customQuantity: product.customQuantity,
+            minQuantity: product.minQuantity,
+            maxQuantity: product.maxQuantity,
+            allowCustomDimensions: product.allowCustomDimensions,
+            isNew: product.isNew,
+            isFeatured: product.isFeatured,
+            isBestSeller: product.isBestSeller,
+
+            // Text
+            fullDescription: product.fullDescription,
+            subcategory: product.subcategory,
+            unit: product.unit,
+            color: product.color,
+            pricePerM2: product.pricePerM2,
+            custom_text: product.customText
+        };
+
+        const { data, error } = await supabase.from('products').insert([safePayload]).select().single();
         if (data && !error) {
             setProducts(prev => [data, ...prev]);
             return { success: true, data };
