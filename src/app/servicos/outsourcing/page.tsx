@@ -132,20 +132,47 @@ export default async function OutsourcingPage() {
                 </Container>
             </div>
 
-            {/* SEO Content Section */}
-            <div className="py-12 bg-gray-50 border-y border-gray-100">
-                <Container className="max-w-4xl text-center space-y-6">
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                        Aluguel de Impressoras em Ouro Preto e Mariana (Outsourcing)
+            {/* SEO Content Section - Redesigned */}
+            <div className="py-16 bg-white">
+                <Container className="max-w-3xl text-center space-y-8">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm font-bold tracking-wide uppercase">
+                        <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                        Soluções Corporativas
+                    </div>
+
+                    <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+                        Aluguel de Impressoras para <span className="text-blue-600">Empresas Inteligentes</span>
                     </h1>
-                    <p className="text-lg text-gray-600 leading-relaxed">
-                        Reduza custos e aumente a produtividade da sua empresa com o <strong>Aluguel de Impressoras da Ouro Gráfica</strong>.
-                        Nosso serviço de Outsourcing de Impressão atende escritórios, clínicas e comércios em <strong>Ouro Preto, Mariana e Itabirito</strong>.
-                    </p>
-                    <p className="text-gray-500">
-                        Esqueça a dor de cabeça com compra de toner e manutenção. Com a locação, você tem máquinas modernas (Ricoh, Epson, Brother),
-                        suprimentos inclusos e suporte técnico presencial. A melhor solução de <em>gráfica para empresas</em> na Região dos Inconfidentes.
-                    </p>
+
+                    <div className="space-y-6 text-lg text-gray-600 leading-relaxed md:px-8">
+                        <p>
+                            Elimine custos variáveis e paradas inesperadas. Com o <strong>Outsourcing de Impressão da Ouro Gráfica</strong>,
+                            sua empresa em <strong>Ouro Preto, Mariana ou Itabirito</strong> ganha produtividade e redução de até 40% nos gastos.
+                        </p>
+                        <p className="text-base text-gray-500">
+                            Entregamos equipamentos modernos (Ricoh, Epson, Brother), gerenciamos todo o suprimento e oferecemos
+                            <span className="text-gray-900 font-semibold"> suporte técnico ilimitado</span>. Foco total no seu negócio, zero preocupação com impressão.
+                        </p>
+                    </div>
+
+                    <div className="pt-4 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <span className="block text-2xl font-bold text-gray-900">-40%</span>
+                            <span className="text-xs text-gray-500 font-medium uppercase">Custos</span>
+                        </div>
+                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <span className="block text-2xl font-bold text-gray-900">24h</span>
+                            <span className="text-xs text-gray-500 font-medium uppercase">Suporte</span>
+                        </div>
+                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <span className="block text-2xl font-bold text-gray-900">0</span>
+                            <span className="text-xs text-gray-500 font-medium uppercase">Prejuízo</span>
+                        </div>
+                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <span className="block text-2xl font-bold text-gray-900">100%</span>
+                            <span className="text-xs text-gray-500 font-medium uppercase">Fiscal</span>
+                        </div>
+                    </div>
                 </Container>
             </div>
 

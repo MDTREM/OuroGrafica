@@ -68,21 +68,36 @@ export default async function ManutencaoPage() {
                 </div>
             </Container>
 
-            {/* SEO Content Section */}
-            <div className="py-12 bg-gray-50 border-y border-gray-100">
-                <Container className="max-w-4xl text-center space-y-6">
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                        Manutenção de Impressoras em Ouro Preto, Mariana e Região
+            {/* SEO Content Section - Redeigned */}
+            <div className="py-16 bg-white">
+                <Container className="max-w-3xl text-center space-y-8">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand/10 text-brand text-sm font-bold tracking-wide uppercase">
+                        <span className="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                        Ouro Preto e Região
+                    </div>
+
+                    <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+                        Assistência Técnica Especializada em <span className="text-brand">Impressoras</span>
                     </h1>
-                    <p className="text-lg text-gray-600 leading-relaxed">
-                        A <strong>Ouro Gráfica</strong> é referência em assistência técnica especializada para impressoras jato de tinta e laser.
-                        Oferecemos serviços completos de conserto, limpeza de cabeçote, reset de almofadas e troca de peças para equipamentos
-                        <strong> Epson, Canon, HP, Brother</strong> e muito mais.
-                    </p>
-                    <p className="text-gray-500">
-                        Se você procura por <em>técnico de impressora em Ouro Preto</em> ou precisa de reparo urgente no Bauxita, Centro ou em Mariana,
-                        conte com nossa equipe. Diagnóstico rápido, garantia no serviço e peças originais.
-                    </p>
+
+                    <div className="space-y-6 text-lg text-gray-600 leading-relaxed md:px-8">
+                        <p>
+                            A <strong>Ouro Gráfica</strong> é a sua autorizada multimarcas em <strong>Ouro Preto</strong>.
+                            Realizamos reparos avançados em equipamentos <strong>Epson, Canon, HP e Brother</strong>,
+                            com laboratório próprio no bairro Bauxita e técnicos certificados.
+                        </p>
+                        <p className="text-base text-gray-500">
+                            Do reset de almofadas à troca de cabeçote: garantimos peças originais e o <span className="text-gray-900 font-semibold">melhor prazo da região</span>.
+                            Atendemos também Mariana, Itabirito e distritos.
+                        </p>
+                    </div>
+
+                    <div className="pt-4 flex flex-wrap justify-center gap-4 text-sm font-bold text-gray-400 uppercase tracking-wider">
+                        <span className="flex items-center gap-1"><span className="text-brand">•</span> Jato de Tinta</span>
+                        <span className="flex items-center gap-1"><span className="text-brand">•</span> Laser</span>
+                        <span className="flex items-center gap-1"><span className="text-brand">•</span> Plotter</span>
+                        <span className="flex items-center gap-1"><span className="text-brand">•</span> Térmicas</span>
+                    </div>
                 </Container>
             </div>
 
