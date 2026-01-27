@@ -8,7 +8,7 @@ import path from "path";
 const ENV = process.env.EFI_ENV || "production"; // 'production' or 'sandbox'
 
 const EFI_PIX_URL = ENV === "sandbox" ? "https://pix-h.api.efipay.com.br" : "https://pix.api.efipay.com.br";
-const EFI_PAY_URL = ENV === "sandbox" ? "https://sandbox.efipay.com.br" : "https://api.efipay.com.br"; // Resource URL (v1/charge usually on api.efipay)
+const EFI_PAY_URL = ENV === "sandbox" ? "https://sandbox.efipay.com.br" : "https://cobrancas.api.efipay.com.br"; // Resource URL for One Step
 const EFI_AUTH_PAY_URL = ENV === "sandbox" ? "https://sandbox.efipay.com.br" : "https://api.efipay.com.br"; // Auth URL
 
 const CLIENT_ID = process.env.EFI_CLIENT_ID;
