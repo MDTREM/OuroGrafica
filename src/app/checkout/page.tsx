@@ -518,17 +518,16 @@ export default function CheckoutPage() {
                                     Pagamento
                                 </h2>
 
-                                <div className="text-center p-6 bg-green-50 rounded-xl border border-green-100 mb-6">
-                                    <h3 className="text-lg font-bold text-green-800 mb-2">Pagamento via Pix</h3>
-                                    <p className="text-green-700 font-medium">Aprovação Imediata + 5% de Desconto</p>
-                                    <p className="text-sm text-green-600 mt-2">O código QR (Copia e Cola) será gerado na próxima tela após finalizar o pedido.</p>
+                                <div className="text-center p-6 bg-gray-50 rounded-xl border border-gray-100 mb-6">
+                                    <h3 className="text-lg font-bold text-gray-800 mb-2">Pagamento via Pix</h3>
+                                    <p className="text-sm text-gray-600 mt-2">O código QR (Copia e Cola) será gerado na próxima tela após finalizar o pedido.</p>
                                 </div>
 
-                                <div className="flex justify-end">
+                                <div className="flex justify-center">
                                     <button
                                         onClick={handleFinishOrder}
                                         disabled={isSubmitting}
-                                        className="bg-brand text-white font-bold py-4 px-8 rounded-xl hover:bg-brand/90 transition-all shadow-xl shadow-brand/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                                        className="bg-brand text-white font-bold py-4 px-12 rounded-xl hover:bg-brand/90 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed w-full md:w-auto"
                                     >
                                         {isSubmitting ? (
                                             <>
@@ -536,10 +535,7 @@ export default function CheckoutPage() {
                                                 Processando...
                                             </>
                                         ) : (
-                                            <>
-                                                Finalizar Pedido
-                                                <CheckCircle size={20} />
-                                            </>
+                                            "Finalizar Pedido"
                                         )}
                                     </button>
                                 </div>
