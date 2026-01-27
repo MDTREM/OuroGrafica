@@ -329,6 +329,11 @@ export default function CheckoutPage() {
                             })
                             .getPaymentToken();
 
+                        if (!result || !('payment_token' in result)) {
+                            console.error("Erro na geração do token:", result);
+                            throw new Error("Não foi possível gerar o token do cartão.");
+                        }
+
                         const paymentToken = result.payment_token;
                         console.log("Token gerado:", paymentToken);
 
@@ -365,16 +370,18 @@ export default function CheckoutPage() {
                             throw new Error(res.error || "Pagamento recusado.");
                         }
 
-                    } catch (err: any) {
+                    } catch (err: unknown) {
                         console.error("Card processing error:", err);
                         // Extract meaningful error
-                        const msg = err.error_description || err.message || "Erro ao processar cartão.";
+                        const errorAny = err as any;
+                        const msg = errorAny.error_description || errorAny.message || "Erro ao processar cartão.";
                         throw new Error(`Erro no pagamento: ${msg}`);
                     }
                 }
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error(error);
-                setErrorMessage(error.message || 'Erro inesperado. Tente novamente.');
+                const errorAny = error as any;
+                setErrorMessage(errorAny.message || 'Erro inesperado. Tente novamente.');
                 setIsSubmitting(false);
             }
         }
