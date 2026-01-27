@@ -18,101 +18,71 @@ const ENDPOINTS = [
 function loadEnv() {
     try {
         const envPath = path.resolve(__dirname, "../.env.local");
-        const content = fs.readFileSync(envPath, "utf8");
-        content.split("\n").forEach(line => {
-            const match = line.match(/^([^=]+)=(.*)$/);
-            if (match) {
-                const key = match[1].trim();
-                const value = match[2].trim().replace(/^['"]|['"]$/g, ""); // remove quotes
-                process.env[key] = value;
-            }
-        });
-    } catch (e) {
-        console.log("⚠️ Could not load .env.local manually");
-    }
+        if (fs.existsSync(envPath)) {
+            const content = fs.readFileSync(envPath, "utf8");
+            content.split("\n").forEach(line => {
+                const match = line.match(/^([^=]+)=(.*)$/);
+                if (match) {
+                    process.env[match[1].trim()] = match[2].trim().replace(/^['"]|['"]$/g, "");
+                }
+            });
+        }
+    } catch (e) { }
 }
 
 loadEnv();
 
 (async () => {
-    console.log("*** EFI ENDPOINT PROBE ***\n");
+    console.log("START_PROBE");
 
     // 1. Load Certificate
     let cert;
     try {
-        cert = fs.readFileSync(path.resolve(__dirname, "../", EFI_CERT_PATH));
-        console.log("✅ Certificate loaded from file.");
+        const p = path.resolve(__dirname, "../", EFI_CERT_PATH);
+        if (fs.existsSync(p)) cert = fs.readFileSync(p);
+        else { console.log("CERT_MISSING"); process.exit(1); }
     } catch (e) {
-        console.error("❌ Certificate failed:", e.message);
-        process.exit(1);
+        console.log("CERT_ERROR"); process.exit(1);
     }
 
-    const agent = new https.Agent({
-        pfx: cert,
-        passphrase: "",
-    });
+    const agent = new https.Agent({ pfx: cert, passphrase: "" });
 
     // 2. Authenticate
     const authUrl = "https://api.efipay.com.br/oauth/token";
     let token = "";
 
     try {
-        const authString = Buffer.from(
-            `${process.env.EFI_CLIENT_ID}:${process.env.EFI_CLIENT_SECRET}`
-        ).toString("base64");
-
-        console.log(`\n🔑 Authenticating at ${authUrl}...`);
+        const authString = Buffer.from(`${process.env.EFI_CLIENT_ID}:${process.env.EFI_CLIENT_SECRET}`).toString("base64");
         const response = await axios({
-            method: "POST",
-            url: authUrl,
-            headers: {
-                Authorization: `Basic ${authString}`,
-                "Content-Type": "application/json",
-            },
+            method: "POST", url: authUrl,
+            headers: { Authorization: `Basic ${authString}`, "Content-Type": "application/json" },
             data: { grant_type: "client_credentials" },
             httpsAgent: agent,
         });
-
         token = response.data.access_token;
-        console.log("✅ Authenticated! Token obtained.");
+        console.log("AUTH_SUCCESS");
     } catch (err) {
-        console.error("❌ Auth Failed:", err.response?.data || err.message);
+        console.log("AUTH_FAIL " + (err.response?.status || err.message));
         process.exit(1);
     }
 
-    // 3. Probe Endpoints for 'one-step'
-    console.log("\n📡 Probing /v1/charge/one-step on hosts...");
-
+    // 3. Probe
+    console.log("PROBING_HOSTS");
     for (const host of ENDPOINTS) {
         const url = `${host}/v1/charge/one-step`;
-        process.stdout.write(`👉 Probing ${host}... `);
-
         try {
             await axios({
-                method: "POST",
-                url: url,
-                headers: {
-                    Authorization: `Bearer ${token}`, // Pass token
-                    "Content-Type": "application/json" // JSON body
-                },
-                data: {}, // EMPTY BODY -> Should cause 400 Bad Request
-                httpsAgent: agent, // Use cert here too (mTLS might be needed)
-                validateStatus: () => true // Don't throw on error
+                method: "POST", url: url,
+                headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+                data: {},
+                httpsAgent: agent,
+                validateStatus: () => true
             }).then(res => {
-                if (res.status === 400 || res.status === 200) {
-                    console.log(`\n🎉 SUCCESS CANDIDATE! Status: ${res.status} (Likely Correct)`);
-                } else if (res.status === 401) {
-                    console.log(`❌ 401 Unauthorized (Auth failed here)`);
-                } else if (res.status === 404) {
-                    console.log(`❌ 404 Not Found (Endpoint missing)`);
-                } else {
-                    console.log(`⚠️ Status ${res.status}`);
-                }
+                console.log(`RESULT: ${host} -> ${res.status}`);
             });
-
         } catch (err) {
-            console.log(`❌ Network Error: ${err.message}`);
+            console.log(`RESULT: ${host} -> ERROR ${err.message}`);
         }
     }
-
+    console.log("END_PROBE");
 })();
