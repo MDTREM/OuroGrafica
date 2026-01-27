@@ -68,39 +68,6 @@ export default async function ManutencaoPage() {
                 </div>
             </Container>
 
-            {/* SEO Content Section - Redeigned */}
-            <div className="py-16 bg-white">
-                <Container className="max-w-3xl text-center space-y-8">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand/10 text-brand text-sm font-bold tracking-wide uppercase">
-                        <span className="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-                        Ouro Preto e Região
-                    </div>
-
-                    <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
-                        Assistência Técnica Especializada em <span className="text-brand">Impressoras</span>
-                    </h1>
-
-                    <div className="space-y-6 text-lg text-gray-600 leading-relaxed md:px-8">
-                        <p>
-                            A <strong>Ouro Gráfica</strong> é a sua autorizada multimarcas em <strong>Ouro Preto</strong>.
-                            Realizamos reparos avançados em equipamentos <strong>Epson, Canon, HP e Brother</strong>,
-                            com laboratório próprio no bairro Bauxita e técnicos certificados.
-                        </p>
-                        <p className="text-base text-gray-500">
-                            Do reset de almofadas à troca de cabeçote: garantimos peças originais e o <span className="text-gray-900 font-semibold">melhor prazo da região</span>.
-                            Atendemos também Mariana, Itabirito e distritos.
-                        </p>
-                    </div>
-
-                    <div className="pt-4 flex flex-wrap justify-center gap-4 text-sm font-bold text-gray-400 uppercase tracking-wider">
-                        <span className="flex items-center gap-1"><span className="text-brand">•</span> Jato de Tinta</span>
-                        <span className="flex items-center gap-1"><span className="text-brand">•</span> Laser</span>
-                        <span className="flex items-center gap-1"><span className="text-brand">•</span> Plotter</span>
-                        <span className="flex items-center gap-1"><span className="text-brand">•</span> Térmicas</span>
-                    </div>
-                </Container>
-            </div>
-
             {/* Brands Carousel (Infinite Scroll) */}
             <div className="py-10 overflow-hidden bg-white">
                 <style dangerouslySetInnerHTML={{
@@ -162,5 +129,3 @@ export default async function ManutencaoPage() {
         </div>
     );
 }
-
-

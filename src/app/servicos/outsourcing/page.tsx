@@ -132,45 +132,7 @@ export default async function OutsourcingPage() {
                 </Container>
             </div>
 
-            {/* SEO Content Section */}
-            <div className="py-12 bg-white border-b border-gray-100">
-                <Container className="max-w-4xl text-center space-y-6">
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                        Aluguel de Impressoras em <span className="text-brand">Ouro Preto, Mariana e Itabirito</span>
-                    </h1>
 
-                    <div className="space-y-4 text-gray-600 text-base md:text-lg leading-relaxed">
-                        <p>
-                            O serviço de <strong>Outsourcing de Impressão</strong> da Ouro Gráfica é a solução ideal para empresas que buscam
-                            reduzir custos e aumentar a produtividade. Fornecemos equipamentos modernos das marcas <strong>Ricoh, Epson e Brother</strong>.
-                        </p>
-                        <p>
-                            Esqueça a preocupação com compra de toners, peças de reposição e manutenção técnica.
-                            Com nossa locação, tudo isso está incluso no contrato. Sua empresa foca no negócio, e nós garantimos
-                            a impressão de qualidade.
-                        </p>
-                    </div>
-
-                    <div className="pt-4 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                            <span className="block text-xl font-bold text-brand mb-1">-40%</span>
-                            <span className="text-xs text-gray-500 font-medium uppercase">de Custos</span>
-                        </div>
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                            <span className="block text-xl font-bold text-brand mb-1">24h</span>
-                            <span className="text-xs text-gray-500 font-medium uppercase">Suporte Técnico</span>
-                        </div>
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                            <span className="block text-xl font-bold text-brand mb-1">Zero</span>
-                            <span className="text-xs text-gray-500 font-medium uppercase">Investimento Inicial</span>
-                        </div>
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                            <span className="block text-xl font-bold text-brand mb-1">100%</span>
-                            <span className="text-xs text-gray-500 font-medium uppercase">Dedutível no IR</span>
-                        </div>
-                    </div>
-                </Container>
-            </div>
 
             <Container className="space-y-20 pt-12">
 
