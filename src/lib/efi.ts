@@ -5,10 +5,13 @@ import fs from "fs";
 import path from "path";
 
 // Constants
-const EFI_URL = "https://pix.api.efipay.com.br"; // Production URL
+const EFI_PIX_URL = "https://pix.api.efipay.com.br"; // PIX Production URL
+const EFI_PAY_URL = "https://api.efipay.com.br"; // General/Card Production URL (Legacy/OneStep)
+
 const CLIENT_ID = process.env.EFI_CLIENT_ID;
 const CLIENT_SECRET = process.env.EFI_CLIENT_SECRET;
 const CERT_BASE64 = process.env.EFI_CERT_BASE64;
+const EFI_PIX_KEY = process.env.EFI_PIX_KEY;
 
 // Default to looking for 'producao.p12' in root path
 const EFI_CERT_PATH = process.env.EFI_CERT_PATH || "producao.p12";
@@ -53,12 +56,17 @@ export class EfiService {
     /**
      * 1. Autenticação (OAuth)
      * Obtém o Token Bearer válido por 1h
+     * @param baseUrl - Base URL to authenticate against (PIX or PAY)
      */
-    private async authenticate() {
+    private async authenticate(baseUrl: string) {
         try {
+            // NOTE: For General API (PAY), usually mTLS is not strictly required, 
+            // but for PIX it is. We try using the same agent (with cert) for both.
+            // If PAY endpoint rejects mTLS, we might need a separate agent without cert.
+
             const response = await axios({
                 method: "POST",
-                url: `${EFI_URL}/oauth/token`,
+                url: `${baseUrl}/oauth/token`,
                 headers: {
                     Authorization: `Basic ${this.credentials}`,
                     "Content-Type": "application/json",
@@ -71,16 +79,16 @@ export class EfiService {
 
             return response.data.access_token;
         } catch (error: any) {
-            console.error("❌ Efí Auth Error:", error.response?.data || error.message);
-            throw new Error(`Falha na autenticação da Efí: ${JSON.stringify(error.response?.data || error.message)}`);
+            console.error(`❌ Efí Auth Error (${baseUrl}):`, error.response?.data || error.message);
+            throw new Error(`Falha na autenticação da Efí (${baseUrl}): ${JSON.stringify(error.response?.data || error.message)}`);
         }
     }
 
     /**
-     * 2. Criar Cobrança Imediata
+     * 2. Criar Cobrança Imediata (PIX)
      */
     async createPixCharge(document: string, nome: string, total: string) {
-        const token = await this.authenticate();
+        const token = await this.authenticate(EFI_PIX_URL);
 
         const cleanDoc = document.replace(/\D/g, "");
         const devedor: any = {
@@ -105,13 +113,13 @@ export class EfiService {
             valor: {
                 original: total, // Ex: "10.50"
             },
-            chave: process.env.EFI_PIX_KEY, // Chave PIX da Ouro Gráfica
+            chave: EFI_PIX_KEY, // Chave PIX da Ouro Gráfica
         };
 
         try {
             const response = await axios({
                 method: "POST",
-                url: `${EFI_URL}/v2/cob`,
+                url: `${EFI_PIX_URL}/v2/cob`,
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -128,15 +136,15 @@ export class EfiService {
     }
 
     /**
-     * 3. Gerar QR Code (Imagem e Copia/Cola)
+     * 3. Gerar QR Code (Imagem e Copia/Cola) (PIX)
      */
     async getQrCode(locId: number) {
-        const token = await this.authenticate();
+        const token = await this.authenticate(EFI_PIX_URL);
 
         try {
             const response = await axios({
                 method: "GET",
-                url: `${EFI_URL}/v2/loc/${locId}/qrcode`,
+                url: `${EFI_PIX_URL}/v2/loc/${locId}/qrcode`,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -150,15 +158,15 @@ export class EfiService {
         }
     }
     /**
-     * 4. Consultar Status da Cobrança
+     * 4. Consultar Status da Cobrança (PIX)
      */
     async getPixStatus(txid: string) {
-        const token = await this.authenticate();
+        const token = await this.authenticate(EFI_PIX_URL);
 
         try {
             const response = await axios({
                 method: "GET",
-                url: `${EFI_URL}/v2/cob/${txid}`,
+                url: `${EFI_PIX_URL}/v2/cob/${txid}`,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -173,8 +181,9 @@ export class EfiService {
     }
 
     /**
-     * 5. Criar Cobrança Cartão de Crédito (One Step)
+     * 5. Criar Cobrança Cartão de Crédito (One Step) (PAY)
      * Requer `payment_token` gerado no front-end.
+     * Endpoint: /v1/charge/one-step  (Base URL: api.efipay.com.br)
      */
     async createCreditCardCharge(
         data: {
@@ -186,7 +195,8 @@ export class EfiService {
             total: number; // Used only for validation/logging
         }
     ) {
-        const token = await this.authenticate();
+        // Authenticate against PAY API
+        const token = await this.authenticate(EFI_PAY_URL);
 
         console.log(`🔍 Criando Pagamento Cartão. Cliente: ${data.customer.name}, Valor: ${data.total}`);
 
@@ -235,7 +245,7 @@ export class EfiService {
         try {
             const response = await axios({
                 method: "POST",
-                url: `${EFI_URL}/v1/charge/one-step`, // Note: One Step uses /v1
+                url: `${EFI_PAY_URL}/v1/charge/one-step`, // General API
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -257,11 +267,11 @@ export class EfiService {
         }
     }
     /**
-     * 6. Criar Cobrança Simples (Necessário para Link de Pagamento)
+     * 6. Criar Cobrança Simples (Necessário para Link de Pagamento) (PAY)
      * POST /v1/charge
      */
     async createCharge(items: { name: string; value: number; amount: number }[], shippings?: { name: string; value: number }[]) {
-        const token = await this.authenticate();
+        const token = await this.authenticate(EFI_PAY_URL);
 
         const data: any = {
             items: items,
@@ -274,7 +284,7 @@ export class EfiService {
         try {
             const response = await axios({
                 method: "POST",
-                url: `${EFI_URL}/v1/charge`,
+                url: `${EFI_PAY_URL}/v1/charge`,
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -292,11 +302,11 @@ export class EfiService {
     }
 
     /**
-     * 7. Gerar Link de Pagamento
+     * 7. Gerar Link de Pagamento (PAY)
      * POST /v1/charge/:id/link
      */
     async createPaymentLink(chargeId: number, title: string, price: number, expiryDate?: string) {
-        const token = await this.authenticate();
+        const token = await this.authenticate(EFI_PAY_URL);
 
         const data = {
             billet_discount: 0,
@@ -310,7 +320,7 @@ export class EfiService {
         try {
             const response = await axios({
                 method: "POST",
-                url: `${EFI_URL}/v1/charge/${chargeId}/link`,
+                url: `${EFI_PAY_URL}/v1/charge/${chargeId}/link`,
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
