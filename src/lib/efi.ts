@@ -254,6 +254,12 @@ export class EfiService {
                 data: payload,
             });
 
+            console.log("✅ Efí Response:", JSON.stringify(response.data, null, 2));
+
+            if (!response.data || !response.data.data) {
+                throw new Error(`Resposta inesperada da Efí: ${JSON.stringify(response.data)}`);
+            }
+
             // response.data usually contains { code: 200, data: { status: 'approved' | 'waiting' | 'unpaid', charge_id, total, ... } }
             return {
                 success: true,
