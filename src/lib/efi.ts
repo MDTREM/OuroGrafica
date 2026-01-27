@@ -6,7 +6,8 @@ import path from "path";
 
 // Constants
 const EFI_PIX_URL = "https://pix.api.efipay.com.br"; // PIX Production URL
-const EFI_PAY_URL = "https://cobrancas.api.efipay.com.br"; // General/Card Production URL
+const EFI_PAY_URL = "https://cobrancas.api.efipay.com.br"; // General/Card Production URL (Resource)
+const EFI_AUTH_PAY_URL = "https://api.efipay.com.br"; // General/Card Auth URL
 
 const CLIENT_ID = process.env.EFI_CLIENT_ID;
 const CLIENT_SECRET = process.env.EFI_CLIENT_SECRET;
@@ -195,9 +196,8 @@ export class EfiService {
             total: number; // Used only for validation/logging
         }
     ) {
-        // Authenticate using PIX URL (Centralized Auth usually works here)
-        // If this fails, we might need api.efipay.com.br/oauth/token
-        const token = await this.authenticate(EFI_PIX_URL);
+        // Authenticate using General/Legacy URL 
+        const token = await this.authenticate(EFI_AUTH_PAY_URL);
 
         console.log(`🔍 Criando Pagamento Cartão. Cliente: ${data.customer.name}, Valor: ${data.total}`);
 
@@ -278,7 +278,7 @@ export class EfiService {
      * POST /v1/charge
      */
     async createCharge(items: { name: string; value: number; amount: number }[], shippings?: { name: string; value: number }[]) {
-        const token = await this.authenticate(EFI_PAY_URL);
+        const token = await this.authenticate(EFI_AUTH_PAY_URL);
 
         const data: any = {
             items: items,
@@ -313,7 +313,7 @@ export class EfiService {
      * POST /v1/charge/:id/link
      */
     async createPaymentLink(chargeId: number, title: string, price: number, expiryDate?: string) {
-        const token = await this.authenticate(EFI_PAY_URL);
+        const token = await this.authenticate(EFI_AUTH_PAY_URL);
 
         const data = {
             billet_discount: 0,
