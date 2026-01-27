@@ -316,7 +316,7 @@ export default function CheckoutPage() {
 
                         const result = await EfiPay.CreditCard
                             .setAccount(accountId)
-                            .setEnvironment("production")
+                            .setEnvironment((process.env.NEXT_PUBLIC_EFI_ENV || "production") as any)
                             .setCreditCardData({
                                 brand: getCardBrand(formData.cardNumber),
                                 number: formData.cardNumber.replace(/\s/g, ""),

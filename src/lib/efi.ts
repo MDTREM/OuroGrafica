@@ -5,17 +5,19 @@ import fs from "fs";
 import path from "path";
 
 // Constants
-const EFI_PIX_URL = "https://pix.api.efipay.com.br"; // PIX Production URL
-const EFI_PAY_URL = "https://cobrancas.api.efipay.com.br"; // General/Card Production URL (Resource)
-const EFI_AUTH_PAY_URL = "https://api.efipay.com.br"; // General/Card Auth URL
+const ENV = process.env.EFI_ENV || "production"; // 'production' or 'sandbox'
+
+const EFI_PIX_URL = ENV === "sandbox" ? "https://pix-h.api.efipay.com.br" : "https://pix.api.efipay.com.br";
+const EFI_PAY_URL = ENV === "sandbox" ? "https://sandbox.efipay.com.br" : "https://cobrancas.api.efipay.com.br"; // Resource URL (some end points use api.efipay)
+const EFI_AUTH_PAY_URL = ENV === "sandbox" ? "https://sandbox.efipay.com.br" : "https://api.efipay.com.br"; // Auth URL
 
 const CLIENT_ID = process.env.EFI_CLIENT_ID;
 const CLIENT_SECRET = process.env.EFI_CLIENT_SECRET;
 const CERT_BASE64 = process.env.EFI_CERT_BASE64;
 const EFI_PIX_KEY = process.env.EFI_PIX_KEY;
 
-// Default to looking for 'producao.p12' in root path
-const EFI_CERT_PATH = process.env.EFI_CERT_PATH || "producao.p12";
+// Default to looking for 'producao.p12' or 'homologacao.p12'
+const EFI_CERT_PATH = process.env.EFI_CERT_PATH || (ENV === "sandbox" ? "homologacao.p12" : "producao.p12");
 
 if (!CLIENT_ID || !CLIENT_SECRET) {
     console.error("⚠️ Efí credentials missing. Check .env.local or Vercel Env Vars");
