@@ -132,45 +132,41 @@ export default async function OutsourcingPage() {
                 </Container>
             </div>
 
-            {/* SEO Content Section - Redesigned */}
-            <div className="py-16 bg-white">
-                <Container className="max-w-3xl text-center space-y-8">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm font-bold tracking-wide uppercase">
-                        <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                        Soluções Corporativas
-                    </div>
-
-                    <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
-                        Aluguel de Impressoras para <span className="text-blue-600">Empresas Inteligentes</span>
+            {/* SEO Content Section */}
+            <div className="py-12 bg-white border-b border-gray-100">
+                <Container className="max-w-4xl text-center space-y-6">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                        Aluguel de Impressoras em <span className="text-brand">Ouro Preto, Mariana e Itabirito</span>
                     </h1>
 
-                    <div className="space-y-6 text-lg text-gray-600 leading-relaxed md:px-8">
+                    <div className="space-y-4 text-gray-600 text-base md:text-lg leading-relaxed">
                         <p>
-                            Elimine custos variáveis e paradas inesperadas. Com o <strong>Outsourcing de Impressão da Ouro Gráfica</strong>,
-                            sua empresa em <strong>Ouro Preto, Mariana ou Itabirito</strong> ganha produtividade e redução de até 40% nos gastos.
+                            O serviço de <strong>Outsourcing de Impressão</strong> da Ouro Gráfica é a solução ideal para empresas que buscam
+                            reduzir custos e aumentar a produtividade. Fornecemos equipamentos modernos das marcas <strong>Ricoh, Epson e Brother</strong>.
                         </p>
-                        <p className="text-base text-gray-500">
-                            Entregamos equipamentos modernos (Ricoh, Epson, Brother), gerenciamos todo o suprimento e oferecemos
-                            <span className="text-gray-900 font-semibold"> suporte técnico ilimitado</span>. Foco total no seu negócio, zero preocupação com impressão.
+                        <p>
+                            Esqueça a preocupação com compra de toners, peças de reposição e manutenção técnica.
+                            Com nossa locação, tudo isso está incluso no contrato. Sua empresa foca no negócio, e nós garantimos
+                            a impressão de qualidade.
                         </p>
                     </div>
 
-                    <div className="pt-4 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                            <span className="block text-2xl font-bold text-gray-900">-40%</span>
-                            <span className="text-xs text-gray-500 font-medium uppercase">Custos</span>
+                    <div className="pt-4 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <span className="block text-xl font-bold text-brand mb-1">-40%</span>
+                            <span className="text-xs text-gray-500 font-medium uppercase">de Custos</span>
                         </div>
-                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                            <span className="block text-2xl font-bold text-gray-900">24h</span>
-                            <span className="text-xs text-gray-500 font-medium uppercase">Suporte</span>
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <span className="block text-xl font-bold text-brand mb-1">24h</span>
+                            <span className="text-xs text-gray-500 font-medium uppercase">Suporte Técnico</span>
                         </div>
-                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                            <span className="block text-2xl font-bold text-gray-900">0</span>
-                            <span className="text-xs text-gray-500 font-medium uppercase">Prejuízo</span>
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <span className="block text-xl font-bold text-brand mb-1">Zero</span>
+                            <span className="text-xs text-gray-500 font-medium uppercase">Investimento Inicial</span>
                         </div>
-                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                            <span className="block text-2xl font-bold text-gray-900">100%</span>
-                            <span className="text-xs text-gray-500 font-medium uppercase">Fiscal</span>
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <span className="block text-xl font-bold text-brand mb-1">100%</span>
+                            <span className="text-xs text-gray-500 font-medium uppercase">Dedutível no IR</span>
                         </div>
                     </div>
                 </Container>
