@@ -195,8 +195,9 @@ export class EfiService {
             total: number; // Used only for validation/logging
         }
     ) {
-        // Authenticate against PAY API
-        const token = await this.authenticate(EFI_PAY_URL);
+        // Authenticate using PIX URL (Centralized Auth usually works here)
+        // If this fails, we might need api.efipay.com.br/oauth/token
+        const token = await this.authenticate(EFI_PIX_URL);
 
         console.log(`🔍 Criando Pagamento Cartão. Cliente: ${data.customer.name}, Valor: ${data.total}`);
 
