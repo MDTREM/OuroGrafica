@@ -68,6 +68,24 @@ export default async function ManutencaoPage() {
                 </div>
             </Container>
 
+            {/* SEO Content Section */}
+            <div className="py-12 bg-gray-50 border-y border-gray-100">
+                <Container className="max-w-4xl text-center space-y-6">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                        Manutenção de Impressoras em Ouro Preto, Mariana e Região
+                    </h1>
+                    <p className="text-lg text-gray-600 leading-relaxed">
+                        A <strong>Ouro Gráfica</strong> é referência em assistência técnica especializada para impressoras jato de tinta e laser.
+                        Oferecemos serviços completos de conserto, limpeza de cabeçote, reset de almofadas e troca de peças para equipamentos
+                        <strong> Epson, Canon, HP, Brother</strong> e muito mais.
+                    </p>
+                    <p className="text-gray-500">
+                        Se você procura por <em>técnico de impressora em Ouro Preto</em> ou precisa de reparo urgente no Bauxita, Centro ou em Mariana,
+                        conte com nossa equipe. Diagnóstico rápido, garantia no serviço e peças originais.
+                    </p>
+                </Container>
+            </div>
+
             {/* Brands Carousel (Infinite Scroll) */}
             <div className="py-10 overflow-hidden bg-white">
                 <style dangerouslySetInnerHTML={{

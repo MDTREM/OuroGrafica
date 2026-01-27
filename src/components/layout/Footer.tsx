@@ -39,7 +39,16 @@ export function Footer() {
                         </div>
                     </div>
 
-                    {/* Column 4: CNPJ */}
+                    {/* Column 4: Serviços (SEO) */}
+                    <div>
+                        <h3 className="font-bold text-foreground mb-4">Serviços</h3>
+                        <ul className="space-y-2 text-sm text-gray-500">
+                            <li><Link href="/servicos/manutencao" className="hover:text-brand transition-colors">Manutenção de Impressoras</Link></li>
+                            <li><Link href="/servicos/outsourcing" className="hover:text-brand transition-colors">Locação de Impressoras</Link></li>
+                        </ul>
+                    </div>
+
+                    {/* Column 5: CNPJ */}
                     <div>
                         <h3 className="font-bold text-foreground mb-4">Informações Legais</h3>
                         <p className="text-sm text-gray-500">

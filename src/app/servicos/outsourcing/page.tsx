@@ -132,6 +132,23 @@ export default async function OutsourcingPage() {
                 </Container>
             </div>
 
+            {/* SEO Content Section */}
+            <div className="py-12 bg-gray-50 border-y border-gray-100">
+                <Container className="max-w-4xl text-center space-y-6">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                        Aluguel de Impressoras em Ouro Preto e Mariana (Outsourcing)
+                    </h1>
+                    <p className="text-lg text-gray-600 leading-relaxed">
+                        Reduza custos e aumente a produtividade da sua empresa com o <strong>Aluguel de Impressoras da Ouro Gráfica</strong>.
+                        Nosso serviço de Outsourcing de Impressão atende escritórios, clínicas e comércios em <strong>Ouro Preto, Mariana e Itabirito</strong>.
+                    </p>
+                    <p className="text-gray-500">
+                        Esqueça a dor de cabeça com compra de toner e manutenção. Com a locação, você tem máquinas modernas (Ricoh, Epson, Brother),
+                        suprimentos inclusos e suporte técnico presencial. A melhor solução de <em>gráfica para empresas</em> na Região dos Inconfidentes.
+                    </p>
+                </Container>
+            </div>
+
             <Container className="space-y-20 pt-12">
 
                 {/* Vantagens */}

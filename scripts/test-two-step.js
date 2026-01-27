@@ -13,18 +13,15 @@ if (fs.existsSync(envPath)) {
 }
 
 (async () => {
-    console.log("DEBUG_401_START");
+    console.log("DEBUG_TWO_STEP_START");
 
     const certPath = path.resolve(__dirname, "../producao.p12");
-    if (!fs.existsSync(certPath)) {
-        console.log("CERT_MISSING: " + certPath);
-        process.exit(1);
-    }
+    if (!fs.existsSync(certPath)) process.exit(1);
     const cert = fs.readFileSync(certPath);
     const agent = new https.Agent({ pfx: cert, passphrase: "" });
 
-    // 1. Auth (API)
     let token;
+    // 1. Auth
     try {
         const creds = Buffer.from(process.env.EFI_CLIENT_ID + ":" + process.env.EFI_CLIENT_SECRET).toString("base64");
         const res = await axios.post("https://api.efipay.com.br/oauth/token",
@@ -33,20 +30,22 @@ if (fs.existsSync(envPath)) {
         );
         token = res.data.access_token;
         console.log("AUTH_OK");
-        console.log("SCOPES_RECEIVED: ", res.data.scope || "NO_SCOPE_FIELD");
-    } catch (e) { console.log("AUTH_FAIL", e.message); process.exit(1); }
+    } catch (e) { console.log("AUTH_FAIL"); process.exit(1); }
 
-    // 2. Hit Cobrancas
+    // 2. Create Charge (Step 1 of 2)
     try {
-        console.log("ATTEMPTING: https://cobrancas.api.efipay.com.br/v1/charge/one-step");
-        await axios.post("https://cobrancas.api.efipay.com.br/v1/charge/one-step",
-            {},
+        console.log("ATTEMPTING: POST https://api.efipay.com.br/v1/charge");
+        const res = await axios.post("https://api.efipay.com.br/v1/charge",
+            {
+                items: [{ name: "Test Item", value: 100, amount: 1 }]
+            },
             { headers: { Authorization: "Bearer " + token }, httpsAgent: agent }
         );
-        console.log("UNEXPECTED_SUCCESS_200");
+        console.log("CHARGE_CREATE_SUCCESS: " + res.status);
+        console.log("BODY: " + JSON.stringify(res.data, null, 2));
     } catch (e) {
         if (e.response) {
-            console.log(`STATUS: ${e.response.status}`);
+            console.log(`CHARGE_FAIL: ${e.response.status}`);
             console.log("BODY:", JSON.stringify(e.response.data));
         } else {
             console.log("NET_ERROR:", e.message);
