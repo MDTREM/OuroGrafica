@@ -27,30 +27,30 @@ export async function BlogPreviewSection({ title, postIds }: { title?: string, p
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {posts.map((post: any) => (
                         <Link key={post.id} href={`/blog/${post.slug}`} className="group">
-                            <article className="border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col bg-white">
-                                <div className="aspect-[16/10] overflow-hidden relative">
+                            <article className="border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col bg-white">
+                                <div className="aspect-[16/9] overflow-hidden relative">
                                     <img
                                         src={post.cover_image || 'https://images.unsplash.com/photo-1562564055-71e051d33c19?q=80&w=2070&auto=format&fit=crop'}
                                         alt={post.title}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />
                                 </div>
-                                <div className="p-6 flex-1 flex flex-col">
-                                    <div className="flex items-center gap-2 text-xs text-gray-400 mb-3">
-                                        <Calendar size={14} />
+                                <div className="p-5 flex-1 flex flex-col">
+                                    <div className="flex items-center gap-2 text-[10px] text-gray-400 mb-2 uppercase tracking-wide font-medium">
+                                        <Calendar size={12} />
                                         {new Date(post.created_at).toLocaleDateString('pt-BR')}
                                     </div>
-                                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#FF6B07] transition-colors text-lg">
+                                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#FF6B07] transition-colors text-base">
                                         {post.title}
                                     </h3>
-                                    <p className="text-gray-500 text-sm line-clamp-3 mb-4 flex-1">
+                                    <p className="text-gray-500 text-sm line-clamp-3 mb-3 flex-1 leading-relaxed">
                                         {post.excerpt}
                                     </p>
-                                    <span className="text-[#FF6B07] text-sm font-bold flex items-center gap-1 group-hover:gap-2 transition-all mt-auto">
-                                        Ler mais <ArrowRight size={16} />
+                                    <span className="text-[#FF6B07] text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all mt-auto">
+                                        Ler mais <ArrowRight size={14} />
                                     </span>
                                 </div>
                             </article>

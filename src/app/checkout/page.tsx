@@ -316,7 +316,7 @@ export default function CheckoutPage() {
 
                         const result = await EfiPay.CreditCard
                             .setAccount(accountId)
-                            .setEnvironment("production") // or "sandbox" based on logic? Defaulting production per user context usually
+                            .setEnvironment("production")
                             .setCreditCardData({
                                 brand: getCardBrand(formData.cardNumber),
                                 number: formData.cardNumber.replace(/\s/g, ""),
@@ -742,14 +742,12 @@ export default function CheckoutPage() {
                                         className={`p-4 rounded-xl border text-center transition-all ${paymentMethod === 'pix' ? "border-brand bg-orange-50/50 text-brand ring-1 ring-brand" : "border-gray-200 hover:border-gray-300 text-gray-600"}`}
                                     >
                                         <div className="font-bold mb-1">PIX</div>
-                                        <div className="text-xs">Aprovação Imediata</div>
                                     </button>
                                     <button
                                         onClick={() => setPaymentMethod('credit')}
                                         className={`p-4 rounded-xl border text-center transition-all ${paymentMethod === 'credit' ? "border-brand bg-orange-50/50 text-brand ring-1 ring-brand" : "border-gray-200 hover:border-gray-300 text-gray-600"}`}
                                     >
                                         <div className="font-bold mb-1">Cartão de Crédito</div>
-                                        <div className="text-xs">Até 12x</div>
                                     </button>
                                 </div>
 
