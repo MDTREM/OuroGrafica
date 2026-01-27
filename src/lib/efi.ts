@@ -6,7 +6,7 @@ import path from "path";
 
 // Constants
 const EFI_PIX_URL = "https://pix.api.efipay.com.br"; // PIX Production URL
-const EFI_PAY_URL = "https://api.efipay.com.br"; // General/Card Production URL (Legacy/OneStep)
+const EFI_PAY_URL = "https://cobrancas.api.efipay.com.br"; // General/Card Production URL
 
 const CLIENT_ID = process.env.EFI_CLIENT_ID;
 const CLIENT_SECRET = process.env.EFI_CLIENT_SECRET;
