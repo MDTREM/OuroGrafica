@@ -142,11 +142,11 @@ export default async function OutsourcingPage() {
                 {/* SEO Text Section */}
                 <div className="max-w-4xl mx-auto mb-12 text-center space-y-4">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                        Locação de Impressoras em <span className="text-orange-600">Ouro Preto</span>
+                        Locação de Impressoras em Ouro Preto
                     </h1>
                     <p className="text-base text-gray-600 leading-relaxed">
                         Reduza custos e aumente a produtividade da sua empresa com o serviço de <strong>Outsourcing de Impressão</strong> da Ouro Gráfica.
-                        Atendemos <strong>Ouro Preto, Mariana e Itabirito</strong> com planos de aluguel de impressoras adaptados à sua necessidade.
+                        Atendemos <strong>Ouro Preto e região</strong> com planos de aluguel de impressoras adaptados à sua necessidade.
                         Incluso manutenção, reposição de toner e suporte técnico rápido.
                     </p>
                 </div>

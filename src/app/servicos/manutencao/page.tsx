@@ -109,12 +109,12 @@ export default async function ManutencaoPage() {
                 {/* SEO Text Section */}
                 <div className="max-w-4xl mx-auto mb-12 text-center space-y-4">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                        Manutenção de Impressoras em <span className="text-orange-600">Ouro Preto</span> e Região
+                        Manutenção de Impressoras em Ouro Preto e Região
                     </h1>
                     <p className="text-base text-gray-600 leading-relaxed">
-                        Sua impressora parou? A <strong>Ouro Gráfica</strong> é especialista em manutenção de impressoras {BRANDS.slice(0, 4).map(b => b.name).join(', ')}.
+                        Sua impressora parou? A <strong>Ouro Gráfica</strong> é especialista em manutenção de impressoras.
                         Oferecemos diagnóstico rápido, peças originais e garantia no serviço.
-                        Atendemos empresas e residências em <strong>Ouro Preto</strong> e <strong>Mariana</strong>, resolvendo desde falhas de impressão até erros complexos de hardware.
+                        Atendemos empresas e residências, resolvendo desde falhas de impressão até erros complexos de hardware.
                     </p>
                 </div>
             </Container>
