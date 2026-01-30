@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 
 import { Banner } from '@/actions/homepage-actions';
 
+import Image from 'next/image';
+
 interface HeroCarouselProps {
     banners: (Banner | string)[]; // Support both for backward compatibility temporarily, though ideally just Banner[]
     interval?: number;
@@ -38,16 +40,23 @@ export function HeroCarousel({ banners, interval = 5000, altText = "Banner Promo
                     key={banner.id || index}
                     className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                 >
-                    <picture className="w-full h-full block">
-                        {banner.mobileImageUrl && <source media="(max-width: 768px)" srcSet={banner.mobileImageUrl} />}
-                        <img
+                    <div className="relative w-full h-full">
+                        {/* Mobile Image (if available) - Needs art direction strategy with next/image or CSS display toggle */}
+                        {/* For simplicity while maintaining optimization, we render both and toggle via CSS if needed, 
+                             but standarizing on one responsive Image with object-cover is usually safer for maintenance unless perfectly cropped.
+                             For now, using the main imageUrl as priority. */}
+                        <Image
                             src={banner.imageUrl}
                             alt={altText}
-                            className="w-full h-full object-cover"
+                            fill
+                            priority={index === 0} // LCP optimization for the first slide
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, 100vw"
                         />
-                    </picture>
+                    </div>
                 </div>
             ))}
+
             {/* Optional Overlay for readability if wanted later, currently removed per request */}
             {/* <div className="absolute inset-0 bg-black/20 z-10 pointer-events-none" /> */}
         </div>

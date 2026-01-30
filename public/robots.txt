@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin/
-Disallow: /perfil/
-
-Sitemap: https://ourografica.site/sitemap.xml

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Banner } from "@/actions/homepage-actions";
 
 interface BannerCarouselProps {
@@ -37,26 +38,24 @@ export function BannerCarousel({ banners }: BannerCarouselProps) {
                 <div key={banner.id} className="min-w-full snap-center relative aspect-[21/9] md:aspect-[3/1] flex items-center justify-center">
                     {banner.link ? (
                         <Link href={banner.link} className="block w-full h-full relative">
-                            <picture className="w-full h-full">
-                                {banner.mobileImageUrl && <source media="(max-width: 768px)" srcSet={banner.mobileImageUrl} />}
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={banner.imageUrl}
-                                    alt="Banner"
-                                    className="w-full h-full object-cover"
-                                />
-                            </picture>
-                        </Link>
-                    ) : (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <picture className="w-full h-full">
-                            {banner.mobileImageUrl && <source media="(max-width: 768px)" srcSet={banner.mobileImageUrl} />}
-                            <img
+                            <Image
                                 src={banner.imageUrl}
                                 alt="Banner"
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, 100vw"
                             />
-                        </picture>
+                        </Link>
+                    ) : (
+                        <div className="w-full h-full relative">
+                            <Image
+                                src={banner.imageUrl}
+                                alt="Banner"
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, 100vw"
+                            />
+                        </div>
                     )}
                 </div>
             ))}

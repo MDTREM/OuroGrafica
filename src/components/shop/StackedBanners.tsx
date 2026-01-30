@@ -1,6 +1,7 @@
 import { Container } from "@/components/ui/Container";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Banner } from "@/actions/homepage-actions";
 
 interface StackedBannersProps {
@@ -21,24 +22,24 @@ export function StackedBanners({ banners }: StackedBannersProps) {
                     >
                         {banner.link ? (
                             <Link href={banner.link} className="block w-full h-full relative">
-                                <picture className="w-full h-full">
-                                    {banner.mobileImageUrl && <source media="(max-width: 768px)" srcSet={banner.mobileImageUrl} />}
-                                    <img
-                                        src={banner.imageUrl}
-                                        alt="Banner"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </picture>
-                            </Link>
-                        ) : (
-                            <picture className="w-full h-full">
-                                {banner.mobileImageUrl && <source media="(max-width: 768px)" srcSet={banner.mobileImageUrl} />}
-                                <img
+                                <Image
                                     src={banner.imageUrl}
                                     alt="Banner"
-                                    className="w-full h-full object-cover"
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 100vw, 33vw"
                                 />
-                            </picture>
+                            </Link>
+                        ) : (
+                            <div className="w-full h-full relative">
+                                <Image
+                                    src={banner.imageUrl}
+                                    alt="Banner"
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 100vw, 33vw"
+                                />
+                            </div>
                         )}
                     </div>
                 ))}

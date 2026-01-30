@@ -3,6 +3,7 @@ import { Container } from '@/components/ui/Container';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Calendar, Share2, Facebook, Linkedin, Twitter, Clock, Tag } from 'lucide-react';
+import Image from 'next/image';
 
 interface Props {
     params: Promise<{ slug: string }>;
@@ -65,7 +66,7 @@ export default async function BlogPostPage({ params }: Props) {
         "description": post.meta_description || post.excerpt,
         "image": post.cover_image ? [post.cover_image] : [],
         "datePublished": post.created_at,
-        "dateModified": post.created_at, // Ideally we should have an updated_at column
+        "dateModified": post.updated_at || post.created_at,
         "author": {
             "@type": "Organization",
             "name": "Ouro Gráfica",
@@ -96,10 +97,13 @@ export default async function BlogPostPage({ params }: Props) {
             {/* Hero Header */}
             <div className="w-full h-[40vh] md:h-[50vh] relative bg-gray-900">
                 <div className="absolute inset-0 opacity-60 bg-black z-10" />
-                <img
+                <Image
                     src={post.cover_image || 'https://images.unsplash.com/photo-1562564055-71e051d33c19?q=80&w=2070&auto=format&fit=crop'}
                     alt={post.alt_text || post.title}
-                    className="w-full h-full object-cover absolute inset-0 text-transparent"
+                    fill
+                    priority
+                    className="object-cover"
+                    sizes="100vw"
                 />
 
                 <div className="absolute inset-0 z-20 flex items-center">

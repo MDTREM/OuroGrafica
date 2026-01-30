@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import { useFavorites } from "@/contexts/FavoritesContext";
@@ -42,11 +43,13 @@ export function ProductCard({ id, title, price, unit, description, image, priceB
             {/* Image Area */}
             <div className="aspect-[4/3] relative flex items-center justify-center overflow-hidden">
                 {image && !imgError ? (
-                    <img
+                    <Image
                         src={image}
                         alt={title}
+                        fill
+                        sizes="(max-width: 768px) 50vw, 33vw"
                         onError={() => setImgError(true)}
-                        className="w-full h-full object-contain p-1 group-hover:scale-105 transition-transform duration-500"
+                        className="object-contain p-1 group-hover:scale-105 transition-transform duration-500"
                     />
                 ) : (
                     <div className="w-full h-full bg-gray-50 flex flex-col items-center justify-center text-gray-300">

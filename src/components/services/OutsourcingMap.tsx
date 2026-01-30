@@ -12,7 +12,8 @@ export function OutsourcingMap() {
         { name: "Itabirito", x: "46%", y: "54%" },
         { name: "Ouro Branco", x: "49%", y: "72%" },
         { name: "Ponte Nova", x: "70%", y: "62%" },
-        { name: "Cachoeira do Campo", x: "46%", y: "61%" }
+        { name: "Cachoeira do Campo", x: "46%", y: "61%" },
+        { name: "Conselheiro Lafaiete", x: "47%", y: "81%" }
     ];
 
     return (
