@@ -18,29 +18,35 @@ export function StackedBanners({ banners }: StackedBannersProps) {
                 {banners.map((banner) => (
                     <div
                         key={banner.id}
-                        className="w-full aspect-[2.5/1] rounded-2xl relative overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]"
+                        className="w-full relative overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]"
                     >
-                        {banner.link ? (
-                            <Link href={banner.link} className="block w-full h-full relative">
+                        <Link href={banner.link || '#'} className={`block w-full h-full ${!banner.link ? 'pointer-events-none' : ''}`}>
+                            {/* Mobile Image */}
+                            {banner.mobileImageUrl && (
+                                <div className="block md:hidden w-full h-auto">
+                                    <Image
+                                        src={banner.mobileImageUrl}
+                                        alt="Banner Mobile"
+                                        width={0}
+                                        height={0}
+                                        sizes="100vw"
+                                        className="w-full h-auto"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Desktop Image */}
+                            <div className={`${banner.mobileImageUrl ? 'hidden md:block' : 'block'} w-full h-auto`}>
                                 <Image
                                     src={banner.imageUrl}
                                     alt="Banner"
-                                    fill
-                                    className="object-cover"
+                                    width={0}
+                                    height={0}
                                     sizes="(max-width: 768px) 100vw, 33vw"
-                                />
-                            </Link>
-                        ) : (
-                            <div className="w-full h-full relative">
-                                <Image
-                                    src={banner.imageUrl}
-                                    alt="Banner"
-                                    fill
-                                    className="object-cover"
-                                    sizes="(max-width: 768px) 100vw, 33vw"
+                                    className="w-full h-auto"
                                 />
                             </div>
-                        )}
+                        </Link>
                     </div>
                 ))}
             </div>
