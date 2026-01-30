@@ -9,6 +9,19 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Manutenção de Impressoras em Ouro Preto | Ouro Gráfica",
     description: "Conserto e manutenção de impressoras Epson, Canon, HP e Brother. Troca de almofadas, limpeza de cabeçote e peças. Orçamento grátis no WhatsApp!",
+    keywords: [
+        "Manutenção de Impressora Ouro Preto",
+        "Conserto de Impressora",
+        "Assistência Técnica Epson",
+        "Assistência Técnica Canon",
+        "Assistência Técnica HP",
+        "Assistência Técnica Brother",
+        "Limpeza de Cabeçote",
+        "Troca de Almofadas",
+        "Reset Impressora",
+        "Arrumar Impressora Mariana",
+        "Técnico de Impressora"
+    ],
 };
 
 const BRANDS = [
