@@ -36,29 +36,33 @@ export function BannerCarousel({ banners }: BannerCarouselProps) {
         <div ref={scrollRef} className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory flex rounded-2xl overflow-hidden shadow-sm bg-gray-50">
             {banners.map((banner) => (
                 <div key={banner.id} className="min-w-full snap-center flex items-center justify-center bg-gray-50">
-                    {banner.link ? (
-                        <Link href={banner.link} className="block w-full h-full">
+                    <Link href={banner.link || '#'} className={`block w-full h-full ${!banner.link ? 'pointer-events-none' : ''}`}>
+                        {/* Mobile Image (Visible only on mobile if available) */}
+                        {banner.mobileImageUrl && (
+                            <div className="block md:hidden w-full h-auto">
+                                <Image
+                                    src={banner.mobileImageUrl}
+                                    alt="Banner Mobile"
+                                    width={0}
+                                    height={0}
+                                    sizes="100vw"
+                                    className="w-full h-auto"
+                                />
+                            </div>
+                        )}
+
+                        {/* Desktop Image (Hidden on mobile if mobile image exists) */}
+                        <div className={`${banner.mobileImageUrl ? 'hidden md:block' : 'block'} w-full h-auto`}>
                             <Image
                                 src={banner.imageUrl}
-                                alt="Banner"
-                                width={0}
-                                height={0}
-                                sizes="100vw"
-                                className="w-full h-auto"
-                            />
-                        </Link>
-                    ) : (
-                        <div className="w-full h-full">
-                            <Image
-                                src={banner.imageUrl}
-                                alt="Banner"
+                                alt="Banner Desktop"
                                 width={0}
                                 height={0}
                                 sizes="100vw"
                                 className="w-full h-auto"
                             />
                         </div>
-                    )}
+                    </Link>
                 </div>
             ))}
         </div>

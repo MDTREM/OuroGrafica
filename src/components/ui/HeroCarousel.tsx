@@ -40,15 +40,33 @@ export function HeroCarousel({ banners, interval = 5000, altText = "Banner Promo
                     key={banner.id || index}
                     className={`col-start-1 row-start-1 w-full transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                 >
-                    <Image
-                        src={banner.imageUrl}
-                        alt={altText}
-                        width={0}
-                        height={0}
-                        sizes="100vw"
-                        priority={index === 0}
-                        className="w-full h-auto object-contain"
-                    />
+                    {/* Mobile Image */}
+                    {banner.mobileImageUrl && (
+                        <div className="block md:hidden w-full h-auto">
+                            <Image
+                                src={banner.mobileImageUrl}
+                                alt={`${altText} Mobile`}
+                                width={0}
+                                height={0}
+                                sizes="100vw"
+                                priority={index === 0}
+                                className="w-full h-auto object-contain"
+                            />
+                        </div>
+                    )}
+
+                    {/* Desktop Image */}
+                    <div className={`${banner.mobileImageUrl ? 'hidden md:block' : 'block'} w-full h-auto`}>
+                        <Image
+                            src={banner.imageUrl}
+                            alt={altText}
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            priority={index === 0}
+                            className="w-full h-auto object-contain"
+                        />
+                    </div>
                 </div>
             ))}
         </div>
