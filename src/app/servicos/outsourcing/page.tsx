@@ -134,7 +134,7 @@ export default async function OutsourcingPage() {
             />
             {/* Banner Section */}
             <Container>
-                <div className="relative w-full aspect-[108/46] md:aspect-auto md:h-[300px] bg-black overflow-hidden group shadow-lg rounded-lg mb-12">
+                <div className="relative w-full bg-black overflow-hidden group shadow-lg rounded-lg mb-12">
                     {/* Hero Carousel */}
                     <HeroCarousel banners={banners} altText="Aluguel de Impressoras em Ouro Preto" />
                 </div>
