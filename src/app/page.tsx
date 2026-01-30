@@ -90,7 +90,36 @@ const jsonLd = {
   "sameAs": [
     "https://www.instagram.com/graficaouro/",
     "https://www.facebook.com/people/Ouro-Gr%C3%A1fica/61583717952045/"
-  ]
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Serviços Gráficos e de TI",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Manutenção de Impressoras",
+          "url": "https://ourografica.site/servicos/manutencao"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Aluguel de Impressoras (Outsourcing)",
+          "url": "https://ourografica.site/servicos/outsourcing"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Impressão Digital e Gráfica Rápida"
+        }
+      }
+    ]
+  }
 };
 
 

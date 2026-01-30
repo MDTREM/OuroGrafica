@@ -34,9 +34,12 @@ export const metadata: Metadata = {
     "Manutenção de Impressora Ouro Preto",
     "Conserto de Impressora Mariana",
     "Aluguel de Impressoras Ouro Preto",
+    "Locação de Impressoras Ouro Preto",
+    "Locação de Impressoras Mariana",
     "Impressão Digital",
     "Cartão de Visita Ouro Preto",
     "Banners",
+    "Outsourcing de Impressão",
     "MDTREM"
   ],
   openGraph: {

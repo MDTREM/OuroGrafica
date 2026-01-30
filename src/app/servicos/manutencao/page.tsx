@@ -58,13 +58,64 @@ export default async function ManutencaoPage() {
         ? config.maintenanceBanners
         : [{ id: '1', imageUrl: 'https://images.unsplash.com/photo-1599589392233-01d0c950a998?q=80&w=2070&auto=format&fit=crop' }];
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Manutenção de Impressoras em Ouro Preto",
+        "description": "Conserto e manutenção especializada de impressoras Epson, Canon, HP e Brother. Troca de peças, limpeza de cabeçote e reset de almofadas.",
+        "provider": {
+            "@type": "LocalBusiness",
+            "name": "Ouro Gráfica",
+            "image": "https://ourografica.site/icon.png",
+            "telephone": "+5531982190935",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Rua José Moringa, 9",
+                "addressLocality": "Ouro Preto",
+                "addressRegion": "MG",
+                "postalCode": "35400-000",
+                "addressCountry": "BR"
+            }
+        },
+        "areaServed": [
+            { "@type": "City", "name": "Ouro Preto" },
+            { "@type": "City", "name": "Mariana" }
+        ],
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Serviços de Manutenção",
+            "itemListElement": [
+                { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Troca de Almofadas de Impressora" } },
+                { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Limpeza de Cabeçote de Impressão" } },
+                { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Instalação de Bulk Ink" } },
+                { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Reparo de Placa Lógica" } }
+            ]
+        }
+    };
+
     return (
         <div className="bg-white pb-20 pt-6">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             {/* Banner Section - Admin Editable */}
             <Container>
-                <div className="relative w-full aspect-[108/46] md:aspect-auto md:h-[300px] bg-black overflow-hidden group shadow-lg rounded-lg">
+                <div className="relative w-full aspect-[108/46] md:aspect-auto md:h-[300px] bg-black overflow-hidden group shadow-lg rounded-lg mb-12">
                     {/* Hero Carousel */}
                     <HeroCarousel banners={banners} altText="Manutenção de Impressoras Ouro Gráfica" />
+                </div>
+
+                {/* SEO Text Section */}
+                <div className="max-w-4xl mx-auto mb-16 text-center space-y-6">
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                        Manutenção de Impressoras em <span className="text-blue-600">Ouro Preto</span> e Região
+                    </h1>
+                    <p className="text-lg text-gray-600 leading-relaxed">
+                        Sua impressora parou? A <strong>Ouro Gráfica</strong> é especialista em manutenção de impressoras {BRANDS.slice(0, 4).map(b => b.name).join(', ')}.
+                        Oferecemos diagnóstico rápido, peças originais e garantia no serviço.
+                        Atendemos empresas e residências em <strong>Ouro Preto</strong> e <strong>Mariana</strong>, resolvendo desde falhas de impressão até erros complexos de hardware.
+                    </p>
                 </div>
             </Container>
 

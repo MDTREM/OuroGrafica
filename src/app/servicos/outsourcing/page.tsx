@@ -91,13 +91,64 @@ export default async function OutsourcingPage() {
         ? config.outsourcingBanners
         : [{ id: '1', imageUrl: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop' }];
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Aluguel e Locação de Impressoras em Ouro Preto",
+        "description": "Serviço de locação de impressoras para empresas (Outsourcing). Reduza custos com aluguel de multifuncionais Ricoh, Epson e Brother com manutenção inclusa.",
+        "provider": {
+            "@type": "LocalBusiness",
+            "name": "Ouro Gráfica",
+            "image": "https://ourografica.site/icon.png",
+            "telephone": "+5531982190935",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Rua José Moringa, 9",
+                "addressLocality": "Ouro Preto",
+                "addressRegion": "MG",
+                "postalCode": "35400-000",
+                "addressCountry": "BR"
+            }
+        },
+        "areaServed": [
+            { "@type": "City", "name": "Ouro Preto" },
+            { "@type": "City", "name": "Mariana" },
+            { "@type": "City", "name": "Itabirito" }
+        ],
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Planos de Locação",
+            "itemListElement": [
+                { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Aluguel de Multifuncionais Laser" } },
+                { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Locação de Impressoras Jato de Tinta Empresarial" } },
+                { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Outsourcing de Impressão Completo" } }
+            ]
+        }
+    };
+
     return (
         <div className="bg-slate-50 min-h-screen pb-20 pt-6">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             {/* Banner Section */}
             <Container>
-                <div className="relative w-full aspect-[108/46] md:aspect-auto md:h-[300px] bg-black overflow-hidden group shadow-lg rounded-lg">
+                <div className="relative w-full aspect-[108/46] md:aspect-auto md:h-[300px] bg-black overflow-hidden group shadow-lg rounded-lg mb-12">
                     {/* Hero Carousel */}
                     <HeroCarousel banners={banners} altText="Aluguel de Impressoras em Ouro Preto" />
+                </div>
+
+                {/* SEO Text Section */}
+                <div className="max-w-4xl mx-auto mb-16 text-center space-y-6">
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                        Locação e Aluguel de Impressoras em <span className="text-blue-600">Ouro Preto</span>
+                    </h1>
+                    <p className="text-lg text-gray-600 leading-relaxed">
+                        Reduza custos e aumente a produtividade da sua empresa com o serviço de <strong>Outsourcing de Impressão</strong> da Ouro Gráfica.
+                        Atendemos <strong>Ouro Preto, Mariana e Itabirito</strong> com planos de aluguel de impressoras adaptados à sua necessidade.
+                        Incluso manutenção, reposição de toner e suporte técnico rápido.
+                    </p>
                 </div>
             </Container>
 
