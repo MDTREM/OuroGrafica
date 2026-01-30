@@ -35,25 +35,27 @@ export function BannerCarousel({ banners }: BannerCarouselProps) {
     return (
         <div ref={scrollRef} className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory flex rounded-2xl overflow-hidden shadow-sm bg-gray-50">
             {banners.map((banner) => (
-                <div key={banner.id} className="min-w-full snap-center relative aspect-[2/1] md:aspect-[3/1] flex items-center justify-center bg-gray-50">
+                <div key={banner.id} className="min-w-full snap-center flex items-center justify-center bg-gray-50">
                     {banner.link ? (
-                        <Link href={banner.link} className="block w-full h-full relative">
+                        <Link href={banner.link} className="block w-full h-full">
                             <Image
                                 src={banner.imageUrl}
                                 alt="Banner"
-                                fill
-                                className="object-contain md:object-cover"
-                                sizes="(max-width: 768px) 100vw, 100vw"
+                                width={0}
+                                height={0}
+                                sizes="100vw"
+                                className="w-full h-auto"
                             />
                         </Link>
                     ) : (
-                        <div className="w-full h-full relative">
+                        <div className="w-full h-full">
                             <Image
                                 src={banner.imageUrl}
                                 alt="Banner"
-                                fill
-                                className="object-cover"
-                                sizes="(max-width: 768px) 100vw, 100vw"
+                                width={0}
+                                height={0}
+                                sizes="100vw"
+                                className="w-full h-auto"
                             />
                         </div>
                     )}
