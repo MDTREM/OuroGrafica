@@ -11,7 +11,7 @@ import { BlogPreviewSection } from "@/components/shop/BlogPreviewSection";
 import { getHomepageConfig, Section } from "@/actions/homepage-actions";
 import { supabase } from "@/lib/supabase"; // Import supabase
 import { Product } from "@/data/mockData";
-import { mapProduct } from "@/actions/product-actions";
+import { mapProduct } from "@/lib/product-mapper";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { Metadata } from "next";
 

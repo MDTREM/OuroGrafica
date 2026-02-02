@@ -2,6 +2,7 @@
 
 import { supabase } from '@/lib/supabase';
 import { Product, Category } from '@/data/mockData';
+import { mapProduct } from '@/lib/product-mapper';
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
     try {
@@ -24,15 +25,7 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
     }
 }
 
-// Helper to map DB columns to Product interface
-export function mapProduct(p: any): Product {
-    return {
-        ...p,
-        customText: p.custom_text,
-        hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : true,
-        priceBreakdowns: p.price_breakdowns || {}
-    } as Product;
-}
+// Helper removed (moved to src/lib/product-mapper.ts)
 
 export async function getProductsByCategory(
     categorySlug: string,
