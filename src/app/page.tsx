@@ -11,6 +11,7 @@ import { BlogPreviewSection } from "@/components/shop/BlogPreviewSection";
 import { getHomepageConfig, Section } from "@/actions/homepage-actions";
 import { supabase } from "@/lib/supabase"; // Import supabase
 import { Product } from "@/data/mockData";
+import { mapProduct } from "@/actions/product-actions";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { Metadata } from "next";
 
@@ -27,7 +28,8 @@ async function getProductsForSection(section: Section): Promise<Product[]> {
   const { data: allProducts } = await supabase.from('products').select('*').eq('active', true);
   if (!allProducts) return [];
 
-  let filtered = allProducts as Product[];
+  // Map database columns to Product interface (camelCase)
+  let filtered = allProducts.map(mapProduct);
 
   if (section.settings?.productIds && section.settings.productIds.length > 0) {
     // Manual selection

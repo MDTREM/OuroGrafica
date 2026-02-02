@@ -18,7 +18,7 @@ export function StackedBanners({ banners }: StackedBannersProps) {
                 {banners.map((banner) => (
                     <div
                         key={banner.id}
-                        className="w-full relative overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02]"
+                        className="w-full relative overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] rounded-2xl"
                     >
                         <Link href={banner.link || '#'} className={`block w-full h-full ${!banner.link ? 'pointer-events-none' : ''}`}>
                             {/* Mobile Image */}

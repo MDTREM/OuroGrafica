@@ -24,11 +24,22 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
     }
 }
 
+// Helper to map DB columns to Product interface
+export function mapProduct(p: any): Product {
+    return {
+        ...p,
+        customText: p.custom_text,
+        hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : true,
+        priceBreakdowns: p.price_breakdowns || {}
+    } as Product;
+}
+
 export async function getProductsByCategory(
     categorySlug: string,
     options?: { minPrice?: number; maxPrice?: number; shipping?: string; deadline?: string; subcategorySlug?: string }
 ): Promise<Product[]> {
     try {
+        // ... (query logic remains same, just replacing return)
         let query = supabase
             .from('products')
             .select('*')
@@ -37,8 +48,6 @@ export async function getProductsByCategory(
             .eq('active', true);
 
         if (options?.subcategorySlug) {
-            // Filter by subcategory ID/Slug directly
-            // The Admin saves the ID (which is usually the slug) into the 'subcategory' column
             query = query.eq('subcategory', options.subcategorySlug);
         }
 
@@ -50,11 +59,6 @@ export async function getProductsByCategory(
             query = query.lte('price', options.maxPrice);
         }
 
-        // Note: Assuming 'shipping_info' or similar column exists, or we filter locally. 
-        // For now, if there are specific "shipping" columns, we use them. 
-        // If not, we might need to skip strict DB filtering for shipping if unknown.
-        // Given 'mockData' had simple fields, I'll stick to price for DB for now.
-
         const { data, error } = await query;
 
         if (error) {
@@ -62,12 +66,7 @@ export async function getProductsByCategory(
             return [];
         }
 
-        return data.map((p: any) => ({
-            ...p,
-            customText: p.custom_text,
-            hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : true,
-            priceBreakdowns: p.price_breakdowns || {}
-        })) as Product[];
+        return data.map(mapProduct);
     } catch (error) {
         console.error('Unexpected error fetching products:', error);
         return [];
