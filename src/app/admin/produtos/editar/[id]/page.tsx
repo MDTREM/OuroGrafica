@@ -171,6 +171,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             ...productToEdit,
             ...formData,
             image: formData.images?.[0] || "",
+            active: formData.active !== false, // Ensure boolean
         } as Product;
 
         const result = await updateProduct(updatedProduct);

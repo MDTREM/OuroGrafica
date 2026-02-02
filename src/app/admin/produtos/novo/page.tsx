@@ -45,7 +45,8 @@ export default function NewProductPage() {
         maxQuantity: 1000,
         allowCustomDimensions: false,
         variations: [],
-        hasDesignOption: true, // Default to true
+        hasDesignOption: true,
+        active: true, // Default to true
     });
 
     // Helper for array inputs
@@ -160,6 +161,7 @@ export default function NewProductPage() {
             category: formData.category || "Geral",
             price: Number(formData.price) || 0,
             image: formData.images?.[0] || "", // Use first image as main
+            active: formData.active !== false, // Ensure boolean
             ...formData,
         } as Product;
 

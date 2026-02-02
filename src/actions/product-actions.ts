@@ -32,7 +32,8 @@ export async function getProductsByCategory(
         let query = supabase
             .from('products')
             .select('*')
-            .eq('category', categorySlug)
+            // Use ilike to handle case sensitivity issues (e.g. "Banners" vs "banners")
+            .ilike('category', categorySlug)
             .eq('active', true);
 
         if (options?.subcategorySlug) {
