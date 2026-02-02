@@ -186,7 +186,13 @@ export default function NewProductPage() {
                         <p className="text-gray-500">Adicione um novo item ao catálogo.</p>
                     </div>
                 </div>
-
+                <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
+                    <span className="text-sm font-medium text-gray-700">Produto Ativo?</span>
+                    <Switch
+                        checked={formData.active !== false}
+                        onCheckedChange={(c) => setFormData(prev => ({ ...prev, active: c }))}
+                    />
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -36,9 +36,9 @@ export async function getProductsByCategory(
             .eq('active', true);
 
         if (options?.subcategorySlug) {
-            // Decode slug: replace hyphens with spaces and use case-insensitive match
-            const decodedSub = options.subcategorySlug.replace(/-/g, ' ');
-            query = query.ilike('subcategory', decodedSub);
+            // Filter by subcategory ID/Slug directly
+            // The Admin saves the ID (which is usually the slug) into the 'subcategory' column
+            query = query.eq('subcategory', options.subcategorySlug);
         }
 
         if (options?.minPrice !== undefined) {
