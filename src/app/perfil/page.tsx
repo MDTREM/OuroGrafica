@@ -9,6 +9,7 @@ export default function ProfilePage() {
     const { user, signOut } = useAuth();
 
     const menuItems = [
+        /* Hidden for Catalog Mode
         {
             label: "Meus Pedidos",
             description: "Acompanhe suas compras",
@@ -19,6 +20,7 @@ export default function ProfilePage() {
             description: "Gerencie seus endereços de entrega",
             href: "/perfil/enderecos"
         },
+        */
         {
             label: "Favoritos",
             description: "Produtos que você curtiu",

@@ -25,9 +25,13 @@ export default function MenuPage() {
     }, []);
 
     const accountItems = [
+        /* Hidden for Catalog Mode
         { icon: Search, label: "Rastrear Pedido", href: "/rastreio" },
+        */
         { icon: Headphones, label: "Central de Atendimento", href: "/atendimento" },
+        /* Hidden for Catalog Mode
         { icon: Package, label: "Meus Pedidos", href: "/perfil/pedidos" },
+        */
         { icon: Heart, label: "Favoritos", href: "/favoritos" },
     ];
 

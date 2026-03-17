@@ -71,18 +71,14 @@ export function ProductCard({ id, title, price, unit, description, image, priceB
                     {description}
                 </p>
 
+                {/* Price hidden for Catalog Mode
                 <div className="mt-auto">
                     <div className="mb-0">
                         <div className="mb-0">
                             {(() => {
-                                // Check if there is a price breakdown available
                                 if (priceBreakdowns && Object.keys(priceBreakdowns).length > 0) {
-                                    // Find the lowest price from the breakdown (usually the smallest quantity)
                                     const entries = Object.entries(priceBreakdowns);
                                     if (entries.length > 0) {
-                                        // Sort by quantity to find minimal starting entry or just min price? 
-                                        // Usually "Starting From" implies lowest price for minimal quantity? 
-                                        // Or lowest unit price? Usually "A partir de R$ 29,90" means the cheapest pack.
                                         const minPrice = Math.min(...Object.values(priceBreakdowns).map(Number));
 
                                         if (minPrice > 0) {
@@ -95,7 +91,6 @@ export function ProductCard({ id, title, price, unit, description, image, priceB
                                     }
                                 }
 
-                                // Fallback to standard price
                                 return (
                                     <>
                                         <span className="text-xl font-bold text-brand block">{formatPrice(price)}</span>
@@ -105,7 +100,8 @@ export function ProductCard({ id, title, price, unit, description, image, priceB
                             })()}
                         </div>
                     </div>
-                </div>
+                </div> 
+                */}
             </div>
 
             <Link href={`/produto/${id}`} className="absolute inset-0 z-0">

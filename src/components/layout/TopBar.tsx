@@ -90,16 +90,16 @@ export function TopBar() {
 
 
 
-                    {/* Divider */}
+                    {/* Cart hidden for Catalog Mode
                     <div className="hidden md:block w-px h-10 bg-gray-200"></div>
 
-                    {/* Cart */}
                     <Link href="/carrinho" className="relative text-gray-600 hover:text-brand transition-colors p-1">
                         <ShoppingCart size={24} />
                         {itemCount > 0 && (
                             <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand text-white text-[10px] font-bold flex items-center justify-center rounded-full border border-white">{itemCount}</span>
                         )}
                     </Link>
+                    */}
                 </div>
             </Container>
 
