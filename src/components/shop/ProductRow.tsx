@@ -3,7 +3,7 @@
 import { Container } from "@/components/ui/Container";
 import { ProductCard } from "@/components/shop/ProductCard";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAdmin } from "@/contexts/AdminContext";
 import { Product } from "@/data/mockData";
 import { useState, useRef, useEffect } from "react";
@@ -66,6 +66,11 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
         setActiveIndex(newIndex);
     };
 
+    const scrollBy = (offset: number) => {
+        if (!scrollRef.current) return;
+        scrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+    };
+
     const scrollToIndex = (index: number) => {
         if (!scrollRef.current) return;
         const firstChild = scrollRef.current.firstElementChild as HTMLElement;
@@ -89,21 +94,41 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
                 )}
             </div>
 
-            {/* Scroll Container */}
-            <div
-                ref={scrollRef}
-                onScroll={handleScroll}
-                className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 -mx-4 px-4 no-scrollbar"
-            >
-                {displayProducts.map((product) => (
-                    <div key={product.id} className="w-[160px] md:w-[240px] flex-none snap-start">
-                        <ProductCard {...product} />
-                    </div>
-                ))}
+            {/* Scroll Container Wrapper to add buttons */}
+            <div className="relative group/slider">
+                {/* Desktop Left Button */}
+                <button 
+                  onClick={() => scrollBy(-300)}
+                  className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -ml-5 z-10 bg-white shadow-lg border border-gray-100 w-10 h-10 rounded-full items-center justify-center text-gray-500 hover:text-brand hover:scale-110 transition-all opacity-0 group-hover/slider:opacity-100 disabled:opacity-0"
+                  aria-label="Anterior"
+                >
+                    <ChevronLeft size={24} />
+                </button>
+
+                <div
+                    ref={scrollRef}
+                    onScroll={handleScroll}
+                    className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 -mx-4 px-4 no-scrollbar"
+                >
+                    {displayProducts.map((product) => (
+                        <div key={product.id} className="w-[160px] md:w-[240px] flex-none snap-start">
+                            <ProductCard {...product} />
+                        </div>
+                    ))}
+                </div>
+
+                {/* Desktop Right Button */}
+                <button 
+                  onClick={() => scrollBy(300)}
+                  className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 -mr-5 z-10 bg-white shadow-lg border border-gray-100 w-10 h-10 rounded-full items-center justify-center text-gray-500 hover:text-brand hover:scale-110 transition-all opacity-0 group-hover/slider:opacity-100 disabled:opacity-0"
+                  aria-label="Próximo"
+                >
+                    <ChevronRight size={24} />
+                </button>
             </div>
 
             {/* Pagination Dots */}
-            <div className="flexjustify-center gap-2 mt-2">
+            <div className="flex justify-center gap-2 mt-2 md:hidden">
                 <div className="flex items-center justify-center gap-1.5 mx-auto">
                     {displayProducts.map((_, idx) => (
                         <button
