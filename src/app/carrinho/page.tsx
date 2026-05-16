@@ -56,7 +56,7 @@ function OrderDetailsModal({ isOpen, onClose, items }: { isOpen: boolean, onClos
                                 {item.details?.selectedVariations && Object.entries(item.details.selectedVariations).filter(([k, v]) => v && v !== "-" && k !== "Papel" && k !== "Material").map(([key, val]) => (
                                     <div key={key} className="space-y-1">
                                         <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">{key}</p>
-                                        <p className="text-xs font-semibold text-gray-700">{val}</p>
+                                        <p className="text-xs font-semibold text-gray-700">{String(val)}</p>
                                     </div>
                                 ))}
                                 {item.details?.customText && (
@@ -242,7 +242,7 @@ export default function CartPage() {
                                             {item.details?.selectedVariations && Object.entries(item.details.selectedVariations).map(([key, value]) => (
                                                 <div key={key} className="mt-1">
                                                     <span className="text-xs bg-gray-50 text-gray-500 px-2 py-0.5 rounded border border-gray-100">
-                                                        {key}: {value}
+                                                        {key}: {String(value)}
                                                     </span>
                                                 </div>
                                             ))}
