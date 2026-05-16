@@ -32,14 +32,14 @@ export function CookieBanner() {
             <Container className="py-4 md:py-6">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
                     <div className="flex items-start gap-4">
-                        <div className="hidden md:flex p-3 bg-brand/10 rounded-full text-brand">
+                        <div className="hidden md:flex p-3 bg-gradient-to-r from-brand to-brand-dark/10 rounded-full text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">
                             <Cookie size={24} />
                         </div>
                         <div>
-                            <h3 className="text-lg font-bold text-gray-900 mb-1">Nós valorizamos sua privacidade</h3>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-1">Nós valorizamos sua privacidade</h3>
                             <p className="text-sm text-gray-600 leading-relaxed max-w-2xl">
                                 Utilizamos cookies para melhorar sua experiência, analisar o tráfego do site e personalizar conteúdos.
-                                Ao continuar navegando, você concorda com nossa <a href="/politica-de-privacidade" className="text-brand font-bold hover:underline">Política de Privacidade</a>.
+                                Ao continuar navegando, você concorda com nossa <a href="/politica-de-privacidade" className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-semibold hover:underline">Política de Privacidade</a>.
                             </p>
                         </div>
                     </div>
@@ -53,7 +53,7 @@ export function CookieBanner() {
                         </Button>
                         <Button
                             onClick={handleAccept}
-                            className="flex-1 md:flex-none bg-brand text-brand-foreground hover:bg-brand/90"
+                            className="flex-1 md:flex-none bg-gradient-to-r from-brand to-brand-dark text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark-foreground hover:bg-gradient-to-r from-brand to-brand-dark/90"
                         >
                             Aceitar Cookies
                         </Button>

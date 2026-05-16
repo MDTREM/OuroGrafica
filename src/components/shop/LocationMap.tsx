@@ -28,10 +28,10 @@ export function LocationMap() {
                             href={googleMapsUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="pointer-events-auto bg-white text-[#1a1a1a] font-bold text-sm md:text-lg py-3 px-6 md:py-4 md:px-8 rounded-xl md:rounded-2xl shadow-2xl flex items-center gap-2 md:gap-3 hover:scale-105 transition-transform duration-300 border border-gray-100"
+                            className="pointer-events-auto bg-white text-[#1a1a1a] font-semibold text-sm md:text-lg py-3 px-6 md:py-4 md:px-8 rounded-xl md:rounded-2xl shadow-2xl flex items-center gap-2 md:gap-3 hover:scale-105 transition-transform duration-300 border border-gray-100"
                         >
-                            <div className="w-8 h-1 bg-brand rounded-full absolute bottom-2 md:bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <MapPin className="text-brand fill-brand text-white" size={20} />
+                            <div className="w-8 h-1 bg-gradient-to-r from-brand to-brand-dark rounded-full absolute bottom-2 md:bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <MapPin className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark fill-brand text-white" size={20} />
                             Ver no Mapa
                         </a>
                     </div>

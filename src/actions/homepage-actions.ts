@@ -34,6 +34,8 @@ export interface Section {
         icon: string;
         title: string;
         subtitle: string;
+        link?: string;
+        linkText?: string;
     }[];
 }
 
@@ -174,7 +176,7 @@ export async function savePagesConfig(config: PagesConfig): Promise<boolean> {
     }
 }
 
-export async function uploadImage(formData: FormData): Promise<string | null> {
+export async function uploadImage(formData: FormData, bucket: string = 'banners'): Promise<string | null> {
     try {
         const file = formData.get('file') as File;
         if (!file) return null;
@@ -185,19 +187,19 @@ export async function uploadImage(formData: FormData): Promise<string | null> {
         const filename = `${Date.now()}-${sanitizeFilename(file.name)}`;
 
         const { data, error } = await supabase.storage
-            .from('banners') // Using same bucket for simplicity
+            .from(bucket)
             .upload(filename, buffer, {
                 contentType: file.type,
                 upsert: true
             });
 
         if (error) {
-            console.error('Supabase storage upload error:', error);
+            console.error(`Supabase storage upload error in ${bucket}:`, error);
             return null;
         }
 
         const { data: { publicUrl } } = supabase.storage
-            .from('banners')
+            .from(bucket)
             .getPublicUrl(filename);
 
         return publicUrl;

@@ -85,6 +85,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [orders, setOrders] = useState<Order[]>([]);
+    const [coupons, setCoupons] = useState<Coupon[]>([]);
 
     // Initial Data Load (Supabase)
     useEffect(() => {
@@ -98,10 +99,22 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         if (productsData) {
             const mappedProducts = productsData.map((p: any) => ({
                 ...p,
-                customText: p.custom_text || p.customText, // Handle DB mapping
+                technicalSpecs: p.technical_specs || p.technicalSpecs,
+                customQuantity: p.custom_quantity !== undefined ? p.custom_quantity : p.customQuantity,
+                minQuantity: p.min_quantity !== undefined ? p.min_quantity : p.minQuantity,
+                maxQuantity: p.max_quantity !== undefined ? p.max_quantity : p.maxQuantity,
+                allowCustomDimensions: p.allow_custom_dimensions !== undefined ? p.allow_custom_dimensions : p.allowCustomDimensions,
+                isNew: p.is_new !== undefined ? p.is_new : p.isNew,
+                isFeatured: p.is_featured !== undefined ? p.is_featured : p.isFeatured,
+                isBestSeller: p.is_best_seller !== undefined ? p.is_best_seller : p.isBestSeller,
+                fullDescription: p.full_description || p.fullDescription,
+                customText: p.custom_text || p.customText,
                 pricePerM2: p.price_per_m2 || p.pricePerM2,
-                hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : true, // Default true
-                priceBreakdowns: p.price_breakdowns || {}
+                hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : (p.hasDesignOption !== undefined ? p.hasDesignOption : true),
+                priceBreakdowns: p.price_breakdowns || p.priceBreakdowns || {},
+                printing: p.technical_specs?.printing || p.printing || [],
+                extras: p.technical_specs?.extras || p.extras || [],
+                optionIllustrations: p.technical_specs?.option_illustrations || p.option_illustrations || p.optionIllustrations || {}
             }));
             setProducts(mappedProducts);
         }
@@ -139,90 +152,108 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         // Coupons
         const { data: couponsData } = await supabase.from('coupons').select('*');
-        if (couponsData) setCoupons(couponsData);
+        if (couponsData) {
+            const mappedCoupons = couponsData.map((c: any) => ({
+                ...c,
+                usageCount: c.usage_count !== undefined ? c.usage_count : c.usageCount,
+                limitPerUser: c.limit_per_user !== undefined ? c.limit_per_user : c.limitPerUser,
+            }));
+            setCoupons(mappedCoupons);
+        }
     };
 
     // Persistence - Removed useEffects as we save directly on actions
 
     // Actions
+    const mapProductFromDB = (p: any): Product => ({
+        ...p,
+        technicalSpecs: p.technical_specs || p.technicalSpecs,
+        customQuantity: p.custom_quantity !== undefined ? p.custom_quantity : p.customQuantity,
+        minQuantity: p.min_quantity !== undefined ? p.min_quantity : p.minQuantity,
+        maxQuantity: p.max_quantity !== undefined ? p.max_quantity : p.maxQuantity,
+        allowCustomDimensions: p.allow_custom_dimensions !== undefined ? p.allow_custom_dimensions : p.allowCustomDimensions,
+        isNew: p.is_new !== undefined ? p.is_new : p.isNew,
+        isFeatured: p.is_featured !== undefined ? p.is_featured : p.isFeatured,
+        isBestSeller: p.is_best_seller !== undefined ? p.is_best_seller : p.isBestSeller,
+        fullDescription: p.full_description || p.fullDescription,
+        customText: p.custom_text || p.customText,
+        pricePerM2: p.price_per_m2 || p.pricePerM2,
+        hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : (p.hasDesignOption !== undefined ? p.hasDesignOption : true),
+        priceBreakdowns: p.price_breakdowns || p.priceBreakdowns || {},
+        printing: p.printing || [],
+        extras: p.extras || [],
+        optionIllustrations: p.option_illustrations || p.optionIllustrations || {}
+    });
+
     const addProduct = async (product: Product) => {
         const safePayload = {
-            id: product.id,
+            id: product.id || crypto.randomUUID(),
             title: product.title,
             description: product.description,
-            price: product.price,
+            price: Number(product.price) || 0,
             category: product.category,
-            // categoryId? usually just category string in this project structure
             active: product.active,
             image: product.image,
             images: product.images,
-
-            // JSON/Array fields
             variations: product.variations,
-            technicalSpecs: product.technicalSpecs,
+            technical_specs: product.technicalSpecs,
             quantities: product.quantities,
             formats: product.formats,
             finishes: product.finishes,
-
-            // Booleans / Config
-            customQuantity: product.customQuantity,
-            minQuantity: product.minQuantity,
-            maxQuantity: product.maxQuantity,
-            allowCustomDimensions: product.allowCustomDimensions,
-            isNew: product.isNew,
-            isFeatured: product.isFeatured,
-            isBestSeller: product.isBestSeller,
-
-            // Text
-            fullDescription: product.fullDescription,
+            printing: product.printing,
+            extras: product.extras,
+            option_illustrations: product.optionIllustrations,
+            custom_quantity: product.customQuantity,
+            min_quantity: product.minQuantity,
+            max_quantity: product.maxQuantity,
+            allow_custom_dimensions: product.allowCustomDimensions,
+            is_new: product.isNew,
+            is_featured: product.isFeatured,
+            is_best_seller: product.isBestSeller,
+            full_description: product.fullDescription,
             subcategory: product.subcategory,
             unit: product.unit,
             color: product.color,
-            custom_text: product.customText,
             price_per_m2: product.pricePerM2,
+            custom_text: product.customText,
+            has_design_option: product.hasDesignOption,
             price_breakdowns: product.priceBreakdowns
         };
 
         const { data, error } = await supabase.from('products').insert([safePayload]).select().single();
         if (data && !error) {
-            setProducts(prev => [data, ...prev]);
-            return { success: true, data };
+            setProducts(prev => [mapProductFromDB(data), ...prev]);
+            return { success: true, data: mapProductFromDB(data) };
         }
         console.error("Error adding product:", error);
         return { success: false, error };
     };
 
     const updateProduct = async (updatedProduct: Product) => {
-        // Sanitize payload to avoid "column not found" errors
-        // whitelist fields that match DB columns
         const safePayload = {
             title: updatedProduct.title,
             description: updatedProduct.description,
-            price: updatedProduct.price,
+            price: Number(updatedProduct.price) || 0,
             category: updatedProduct.category,
-            // categoryId? usually just category string in this project structure
             active: updatedProduct.active,
             image: updatedProduct.image,
             images: updatedProduct.images,
-
-            // JSON/Array fields - assume DB handles them (Supabase usually does auto-conversion for JSONB)
             variations: updatedProduct.variations,
-            technicalSpecs: updatedProduct.technicalSpecs,
+            technical_specs: updatedProduct.technicalSpecs,
             quantities: updatedProduct.quantities,
             formats: updatedProduct.formats,
             finishes: updatedProduct.finishes,
-
-            // Booleans / Config
-            customQuantity: updatedProduct.customQuantity,
-            minQuantity: updatedProduct.minQuantity,
-            maxQuantity: updatedProduct.maxQuantity,
-            allowCustomDimensions: updatedProduct.allowCustomDimensions,
-            isNew: updatedProduct.isNew,
-            isFeatured: updatedProduct.isFeatured,
-            isBestSeller: updatedProduct.isBestSeller,
-
-            // Text
-            fullDescription: updatedProduct.fullDescription,
+            printing: updatedProduct.printing,
+            extras: updatedProduct.extras,
+            option_illustrations: updatedProduct.optionIllustrations,
+            custom_quantity: updatedProduct.customQuantity,
+            min_quantity: updatedProduct.minQuantity,
+            max_quantity: updatedProduct.maxQuantity,
+            allow_custom_dimensions: updatedProduct.allowCustomDimensions,
+            is_new: updatedProduct.isNew,
+            is_featured: updatedProduct.isFeatured,
+            is_best_seller: updatedProduct.isBestSeller,
+            full_description: updatedProduct.fullDescription,
             subcategory: updatedProduct.subcategory,
             unit: updatedProduct.unit,
             color: updatedProduct.color,
@@ -249,42 +280,44 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     };
 
     const duplicateProduct = async (product: Product) => {
-        // Create a copy without ID
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id, ...rest } = product;
 
         const safePayload = {
             title: `${product.title} (Cópia)`,
             description: product.description,
-            price: product.price,
+            price: Number(product.price) || 0,
             category: product.category,
-            active: false, // duplications start inactive usually
+            active: false,
             image: product.image,
             images: product.images,
             variations: product.variations,
-            technicalSpecs: product.technicalSpecs,
+            technical_specs: product.technicalSpecs,
             quantities: product.quantities,
             formats: product.formats,
             finishes: product.finishes,
-            customQuantity: product.customQuantity,
-            minQuantity: product.minQuantity,
-            maxQuantity: product.maxQuantity,
-            allowCustomDimensions: product.allowCustomDimensions,
-            isNew: product.isNew,
-            isFeatured: product.isFeatured,
-            isBestSeller: product.isBestSeller,
-            fullDescription: product.fullDescription,
+            printing: product.printing,
+            extras: product.extras,
+            option_illustrations: product.optionIllustrations,
+            custom_quantity: product.customQuantity,
+            min_quantity: product.minQuantity,
+            max_quantity: product.maxQuantity,
+            allow_custom_dimensions: product.allowCustomDimensions,
+            is_new: product.isNew,
+            is_featured: product.isFeatured,
+            is_best_seller: product.isBestSeller,
+            full_description: product.fullDescription,
             subcategory: product.subcategory,
             unit: product.unit,
             color: product.color,
             price_per_m2: product.pricePerM2,
             custom_text: product.customText,
-            has_design_option: product.hasDesignOption
+            has_design_option: product.hasDesignOption,
+            price_breakdowns: product.priceBreakdowns
         };
 
         const { data, error } = await supabase.from('products').insert([safePayload]).select().single();
         if (data && !error) {
-            setProducts(prev => [data, ...prev]);
+            setProducts(prev => [mapProductFromDB(data), ...prev]);
         } else {
             console.error("Error duplicating product:", error);
             alert("Erro ao duplicar produto. Veja o console.");
@@ -296,30 +329,34 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         const safeProducts = newProducts.map(p => ({
             title: p.title,
             description: p.description,
-            price: p.price,
+            price: Number(p.price) || 0,
             category: p.category,
             active: p.active,
             image: p.image,
             images: p.images,
             variations: p.variations,
-            technicalSpecs: p.technicalSpecs,
+            technical_specs: p.technicalSpecs,
             quantities: p.quantities,
             formats: p.formats,
             finishes: p.finishes,
-            customQuantity: p.customQuantity,
-            minQuantity: p.minQuantity,
-            maxQuantity: p.maxQuantity,
-            allowCustomDimensions: p.allowCustomDimensions,
-            isNew: p.isNew,
-            isFeatured: p.isFeatured,
-            isBestSeller: p.isBestSeller,
-            fullDescription: p.fullDescription,
+            custom_quantity: p.customQuantity,
+            min_quantity: p.minQuantity,
+            max_quantity: p.maxQuantity,
+            allow_custom_dimensions: p.allowCustomDimensions,
+            is_new: p.isNew,
+            is_featured: p.isFeatured,
+            is_best_seller: p.isBestSeller,
+            full_description: p.fullDescription,
             subcategory: p.subcategory,
             unit: p.unit,
             color: p.color,
             price_per_m2: p.pricePerM2,
             custom_text: p.customText,
-            has_design_option: p.hasDesignOption
+            has_design_option: p.hasDesignOption,
+            price_breakdowns: p.priceBreakdowns,
+            printing: p.printing,
+            extras: p.extras,
+            option_illustrations: p.optionIllustrations
         }));
 
         const { data, error } = await supabase.from('products').insert(safeProducts).select();
@@ -327,7 +364,18 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     };
 
     const addCategory = async (category: Category) => {
-        const { data, error } = await supabase.from('categories').insert([category]).select().single();
+        const safeCategory = {
+            id: category.id,
+            name: category.name,
+            parent_id: category.parentId || null, // Ensure empty string is null for FK
+            image: category.image,
+            icon: category.icon,
+            show_on_home: category.showOnHome,
+            show_on_menu: category.showOnMenu,
+            order_index: category.order_index
+        };
+
+        const { data, error } = await supabase.from('categories').insert([safeCategory]).select().single();
         if (data && !error) {
             setCategories(prev => [...prev, data]);
             return { success: true, data };
@@ -337,7 +385,17 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     };
 
     const updateCategory = async (updatedCategory: Category) => {
-        const { error } = await supabase.from('categories').update(updatedCategory).eq('id', updatedCategory.id);
+        const safeCategory = {
+            name: updatedCategory.name,
+            parent_id: updatedCategory.parentId || null, // Ensure empty string is null for FK
+            image: updatedCategory.image,
+            icon: updatedCategory.icon,
+            show_on_home: updatedCategory.showOnHome,
+            show_on_menu: updatedCategory.showOnMenu,
+            order_index: updatedCategory.order_index
+        };
+
+        const { error } = await supabase.from('categories').update(safeCategory).eq('id', updatedCategory.id);
         if (!error) setCategories(prev => prev.map(c => c.id === updatedCategory.id ? updatedCategory : c));
     };
 
@@ -369,13 +427,35 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     };
 
     // Coupons
-    const [coupons, setCoupons] = useState<Coupon[]>([]);
+
 
     // remove useEffect for coupons load/save as it is handled by fetchData and addCoupon actions
 
     const addCoupon = async (coupon: Partial<Coupon>) => {
-        const { data, error } = await supabase.from('coupons').insert([coupon]).select().single();
-        if (data && !error) setCoupons(prev => [...prev, data]);
+        try {
+            const payload = {
+                ...coupon,
+                limit_per_user: coupon.limitPerUser
+            };
+            // Remove camelCase version before insert
+            delete (payload as any).limitPerUser;
+
+            const { data, error } = await supabase.from('coupons').insert([payload]).select().single();
+            if (error) throw error;
+            if (data) {
+                const mappedCoupon = {
+                    ...data,
+                    limitPerUser: data.limit_per_user,
+                    usageCount: data.usage_count
+                };
+                setCoupons(prev => [...prev, mappedCoupon]);
+                return { success: true, data: mappedCoupon };
+            }
+            return { success: false, error: 'No data returned' };
+        } catch (error) {
+            console.error("Error adding coupon:", error);
+            return { success: false, error };
+        }
     };
 
     const deleteCoupon = async (id: string) => {
@@ -419,8 +499,28 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
 export function useAdmin() {
     const context = useContext(AdminContext);
+    // If context is undefined, it means we're likely in a page that skipped the provider 
+    // or during a hot-reload. We return a safe empty state instead of crashing.
     if (context === undefined) {
-        throw new Error("useAdmin must be used within an AdminProvider");
+        return {
+            products: [],
+            categories: [],
+            orders: [],
+            coupons: [],
+            stats: { totalSales: 0, pendingOrders: 0, totalProducts: 0, totalCustomers: 0 },
+            addProduct: async () => ({ success: false }),
+            updateProduct: async () => ({ success: false }),
+            deleteProduct: async () => {},
+            duplicateProduct: async () => {},
+            importProducts: async () => {},
+            addCategory: async () => ({ success: false }),
+            updateCategory: async () => {},
+            deleteCategory: async () => {},
+            updateOrderStatus: async () => {},
+            deleteOrder: async () => ({ success: false }),
+            addCoupon: async () => ({ success: false }),
+            deleteCoupon: async () => {},
+        } as unknown as AdminContextType;
     }
     return context;
 }

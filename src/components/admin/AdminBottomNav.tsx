@@ -30,7 +30,7 @@ export function AdminBottomNav() {
                             href={item.href}
                             className={`
                                 flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200 relative
-                                ${isActive ? "text-brand" : "text-gray-400 hover:text-gray-600"}
+                                ${isActive ? "text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" : "text-gray-400 hover:text-gray-600"}
                             `}
                         >
                             <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />

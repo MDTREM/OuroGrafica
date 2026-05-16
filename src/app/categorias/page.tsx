@@ -9,9 +9,9 @@ export default async function CategoriesPage() {
     return (
         <div className="bg-gray-50 min-h-screen pb-24">
             {/* Header */}
-            <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30 flex items-center justify-center">
-                <h1 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <LayoutGrid size={20} className="text-brand" />
+            <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30 hidden md:flex items-center justify-center">
+                <h1 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <LayoutGrid size={20} className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
                     Todas as Categorias
                 </h1>
             </div>
@@ -30,19 +30,19 @@ export default async function CategoriesPage() {
                                     {cat.image ? <img src={cat.image} className="w-full h-full object-cover rounded-lg" /> : <ImageIcon size={20} />}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="text-base font-bold text-gray-900 group-hover:text-brand transition-colors">{cat.name}</h3>
+                                    <h3 className="text-base font-semibold text-gray-900 group-hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors">{cat.name}</h3>
                                     <p className="text-xs text-gray-500 truncate">{cat.id}</p>
                                 </div>
-                                <ChevronRight size={20} className="text-gray-300 group-hover:text-brand" />
+                                <ChevronRight size={20} className="text-gray-300 group-hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
                             </Link>
                         );
                     })}
                 </div>
 
                 {/* Search Prompt */}
-                <div className="mt-8 text-center bg-brand/5 rounded-xl p-6 border border-brand/10">
+                <div className="mt-8 text-center bg-gradient-to-r from-brand to-brand-dark/5 rounded-xl p-6 border border-brand/10">
                     <p className="text-sm text-gray-600 mb-2">Não encontrou o que procura?</p>
-                    <Link href="/" className="inline-block text-brand font-bold hover:underline">
+                    <Link href="/" className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-semibold hover:underline">
                         Voltar para a Loja e Buscar
                     </Link>
                 </div>

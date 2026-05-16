@@ -26,7 +26,7 @@ export function AdminSidebar() {
         <aside className="w-64 bg-white border-r border-gray-100 hidden lg:flex flex-col h-screen sticky top-0">
             <div className="p-6 border-b border-gray-100">
                 <Link href="/admin" className="flex items-center gap-2">
-                    <img src="https://i.imgur.com/B9Cg1wQ.png" alt="Ouro Gráfica Admin" className="h-8 w-auto object-contain" />
+                    <img src='https://i.imgur.com/Kizb68g.png' alt='Vink' className='h-8 w-auto object-contain' />
                     <span className="text-xs font-bold bg-gray-900 text-white px-2 py-0.5 rounded-full">ADMIN</span>
                 </Link>
             </div>
@@ -41,11 +41,11 @@ export function AdminSidebar() {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${isActive
-                                ? "bg-brand text-white shadow-lg shadow-brand/20"
+                                ? "bg-gradient-to-r from-brand to-brand-dark text-white shadow-lg shadow-brand/20"
                                 : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 }`}
                         >
-                            <Icon size={18} className={isActive ? "text-white" : "text-brand"} />
+                            <Icon size={18} className={isActive ? "text-white" : "text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark"} />
                             {item.label}
                         </Link>
                     );

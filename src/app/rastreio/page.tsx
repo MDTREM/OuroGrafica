@@ -45,13 +45,13 @@ export default function TrackingPage() {
         switch (status) {
             case 'paid':
             case 'Produção':
-                return <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-2"><Package size={14} /> Em Produção</span>;
+                return <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2"><Package size={14} /> Em Produção</span>;
             case 'Enviado':
-                return <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-2"><Package size={14} /> Enviado</span>;
+                return <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2"><Package size={14} /> Enviado</span>;
             case 'Entregue':
-                return <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-2"><CheckCircle size={14} /> Entregue</span>;
+                return <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2"><CheckCircle size={14} /> Entregue</span>;
             default:
-                return <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-2"><Clock size={14} /> Aguardando Pagamento</span>;
+                return <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2"><Clock size={14} /> Aguardando Pagamento</span>;
         }
     };
 
@@ -59,7 +59,7 @@ export default function TrackingPage() {
         <div className="bg-gray-50 min-h-screen py-12">
             <Container className="max-w-2xl mx-auto">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Rastrear Pedido</h1>
+                    <h1 className="text-2xl font-semibold text-gray-900 mb-2">Rastrear Pedido</h1>
                     <p className="text-gray-500">Acompanhe o status do seu pedido em tempo real.</p>
                 </div>
 
@@ -67,7 +67,7 @@ export default function TrackingPage() {
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
                     <form onSubmit={handleSearch} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Número do Pedido (ID)</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Número do Pedido (ID)</label>
                             <input
                                 type="text"
                                 value={orderId}
@@ -78,7 +78,7 @@ export default function TrackingPage() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">CPF ou E-mail (usado na compra)</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">CPF ou E-mail (usado na compra)</label>
                             <input
                                 type="text"
                                 value={verification}
@@ -91,7 +91,7 @@ export default function TrackingPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-12 bg-brand text-white font-bold rounded-xl hover:bg-brand/90 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                            className="w-full h-12 bg-gradient-to-r from-brand to-brand-dark text-white font-semibold rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
                         >
                             {loading ? <Loader2 className="animate-spin" /> : <><Search size={20} /> Rastrear Agora</>}
                         </button>
@@ -110,11 +110,11 @@ export default function TrackingPage() {
                         <div className="bg-gray-900 text-white p-6 flex justify-between items-center">
                             <div>
                                 <p className="text-sm text-gray-400">Pedido</p>
-                                <h2 className="text-lg font-bold">#{order.id.slice(0, 8)}...</h2>
+                                <h2 className="text-lg font-semibold">#{order.id.slice(0, 8)}...</h2>
                             </div>
                             <div className="text-right">
                                 <p className="text-sm text-gray-400">Data</p>
-                                <p className="font-bold">{formatDate(order.created_at)}</p>
+                                <p className="font-semibold">{formatDate(order.created_at)}</p>
                             </div>
                         </div>
 
@@ -129,7 +129,7 @@ export default function TrackingPage() {
                             {/* Info Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                 <div className="bg-gray-50 p-4 rounded-xl">
-                                    <h3 className="font-bold text-gray-900 mb-2">Entrega</h3>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Entrega</h3>
                                     {order.address_info ? (
                                         <div className="text-sm text-gray-600">
                                             <p>{order.address_info.street}, {order.address_info.number}</p>
@@ -141,9 +141,9 @@ export default function TrackingPage() {
                                     )}
                                 </div>
                                 <div className="bg-gray-50 p-4 rounded-xl">
-                                    <h3 className="font-bold text-gray-900 mb-2">Cliente</h3>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Cliente</h3>
                                     <div className="text-sm text-gray-600">
-                                        <p className="font-bold text-gray-900">{order.customer_name || order.customer_info?.name}</p>
+                                        <p className="font-semibold text-gray-900">{order.customer_name || order.customer_info?.name}</p>
                                         <p>{order.customer_email || order.customer_info?.email}</p>
                                     </div>
                                 </div>
@@ -151,7 +151,7 @@ export default function TrackingPage() {
 
                             {/* Items */}
                             <div className="border-t border-gray-100 pt-6">
-                                <h3 className="font-bold text-gray-900 mb-4">Itens do Pedido</h3>
+                                <h3 className="font-semibold text-gray-900 mb-4">Itens do Pedido</h3>
                                 <div className="space-y-4">
                                     {Array.isArray(order.items) ? order.items.map((item: any, idx: number) => (
                                         <div key={idx} className="flex justify-between items-center text-sm">
@@ -160,11 +160,11 @@ export default function TrackingPage() {
                                                     {item.image && <img src={item.image} className="w-full h-full object-cover" />}
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-gray-900">{item.title}</p>
+                                                    <p className="font-semibold text-gray-900">{item.title}</p>
                                                     <p className="text-gray-500">{item.quantity} un.</p>
                                                 </div>
                                             </div>
-                                            <span className="font-bold text-gray-900">
+                                            <span className="font-semibold text-gray-900">
                                                 {formatPrice ? formatPrice(item.price * item.quantity) : `R$ ${item.price}`}
                                             </span>
                                         </div>
@@ -177,8 +177,8 @@ export default function TrackingPage() {
 
                             {/* Total */}
                             <div className="border-t border-gray-100 mt-6 pt-6 flex justify-between items-center">
-                                <span className="font-bold text-gray-900 text-lg">Total</span>
-                                <span className="font-bold text-brand text-2xl">
+                                <span className="font-semibold text-gray-900 text-base">Total</span>
+                                <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark text-xl">
                                     {formatPrice ? formatPrice(order.total) : `R$ ${order.total}`}
                                 </span>
                             </div>

@@ -31,6 +31,8 @@ export interface Product {
     quantities?: string[]; // ["100 un.", "500 un."]
     formats?: string[]; // ["9x5cm", "Quadrado"]
     finishes?: string[]; // ["Verniz Local", "Laminação Fosca"]
+    printing?: string[]; // NEW: ["4x0", "4x4"]
+    extras?: string[]; // NEW: ["Furo", "Dobra"]
 
     // Dynamic Variations (New)
     variations?: {
@@ -38,6 +40,7 @@ export interface Product {
         options: string[];
         prices?: { [key: string]: number }; // Optional price override per option
         images?: { [key: string]: string }; // Optional image override per option
+        illustrations?: { [key: string]: string }; // Optional illustration override per option
     }[];
 
     customQuantity?: boolean;
@@ -63,6 +66,9 @@ export interface Product {
 
     // Design Option (Upload/Hire)
     hasDesignOption?: boolean;
+
+    // Mapping for illustrations (works for formats, finishes, or variations)
+    optionIllustrations?: { [optionName: string]: string };
 }
 
 export interface User {
@@ -88,12 +94,13 @@ export interface Coupon {
     type: 'percentage' | 'fixed';
     value: number;
     active: boolean;
+    limitPerUser?: boolean;
     usageCount?: number;
 }
 
 export const USER: User = {
-    name: "Ouro Gráfica",
-    email: "conta@ourografica.com"
+    name: "Vink",
+    email: "conta@Vink.com"
 };
 
 export const CONSTANTS = {

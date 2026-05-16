@@ -169,7 +169,8 @@ export default function CheckoutPage() {
                         district: formData.district,
                         city: formData.city,
                         state: formData.state
-                    }
+                    },
+                    couponCode: coupon?.code
                 };
 
                 // Only PIX Flow
@@ -209,10 +210,10 @@ export default function CheckoutPage() {
             {/* Header */}
             <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30">
                 <Container className="flex items-center gap-4">
-                    <Link href="/carrinho" className="text-gray-500 hover:text-brand transition-colors p-1">
+                    <Link href="/carrinho" className="text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors p-1">
                         <ArrowLeft size={24} />
                     </Link>
-                    <h1 className="text-xl font-bold text-gray-900 flex-1 text-center pr-8">Checkout</h1>
+                    <h1 className="text-xl font-semibold text-gray-900 flex-1 text-center pr-8">Checkout</h1>
                 </Container>
             </div>
 
@@ -221,11 +222,11 @@ export default function CheckoutPage() {
                     {/* 1. Identification */}
                     <div className={`bg-white p-6 rounded-xl border transition-all ${step === 1 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 1 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>1</div>
+                            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 1 ? "bg-gradient-to-r from-brand to-brand-dark text-white" : "bg-gray-200 text-gray-500"}`}>1</div>
                                 Identificação
                             </h2>
-                            {step > 1 && <button onClick={() => setStep(1)} className="text-xs font-bold text-brand hover:underline">Alterar</button>}
+                            {step > 1 && <button onClick={() => setStep(1)} className="text-xs font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline">Alterar</button>}
                         </div>
 
                         {step === 1 ? (
@@ -238,7 +239,7 @@ export default function CheckoutPage() {
                                                     <User size={20} />
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm text-green-800 font-bold">Conectado como</p>
+                                                    <p className="text-sm text-green-800 font-semibold">Conectado como</p>
                                                     <p className="text-sm text-gray-700">{user.user_metadata?.full_name || user.email}</p>
                                                 </div>
                                             </div>
@@ -250,7 +251,7 @@ export default function CheckoutPage() {
                                         {/* Missing Data Form */}
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                                             <div>
-                                                <label className="block text-sm font-bold text-gray-700 mb-1">Telefone / WhatsApp</label>
+                                                <label className="block text-sm font-semibold text-gray-700 mb-1">Telefone / WhatsApp</label>
                                                 <input
                                                     type="text"
                                                     value={formData.phone}
@@ -288,7 +289,7 @@ export default function CheckoutPage() {
                                             {personType === "pf" ? (
                                                 <>
                                                     <div className="md:col-span-2">
-                                                        <label className="block text-sm font-bold text-gray-700 mb-1">Nome Completo</label>
+                                                        <label className="block text-sm font-semibold text-gray-700 mb-1">Nome Completo</label>
                                                         <input
                                                             type="text"
                                                             value={formData.name}
@@ -297,7 +298,7 @@ export default function CheckoutPage() {
                                                         />
                                                     </div>
                                                     <div className="md:col-span-1">
-                                                        <label className="block text-sm font-bold text-gray-700 mb-1">CPF</label>
+                                                        <label className="block text-sm font-semibold text-gray-700 mb-1">CPF</label>
                                                         <input
                                                             type="text"
                                                             value={formData.cpf}
@@ -310,7 +311,7 @@ export default function CheckoutPage() {
                                             ) : (
                                                 <>
                                                     <div className="md:col-span-2">
-                                                        <label className="block text-sm font-bold text-gray-700 mb-1">Razão Social</label>
+                                                        <label className="block text-sm font-semibold text-gray-700 mb-1">Razão Social</label>
                                                         <input
                                                             type="text"
                                                             value={formData.companyName}
@@ -319,7 +320,7 @@ export default function CheckoutPage() {
                                                         />
                                                     </div>
                                                     <div className="md:col-span-1">
-                                                        <label className="block text-sm font-bold text-gray-700 mb-1">CNPJ</label>
+                                                        <label className="block text-sm font-semibold text-gray-700 mb-1">CNPJ</label>
                                                         <input
                                                             type="text"
                                                             value={formData.cnpj}
@@ -329,7 +330,7 @@ export default function CheckoutPage() {
                                                         />
                                                     </div>
                                                     <div className="md:col-span-1">
-                                                        <label className="block text-sm font-bold text-gray-700 mb-1">Inscrição Estadual (Opcional)</label>
+                                                        <label className="block text-sm font-semibold text-gray-700 mb-1">Inscrição Estadual (Opcional)</label>
                                                         <input
                                                             type="text"
                                                             value={formData.ie}
@@ -345,7 +346,7 @@ export default function CheckoutPage() {
                                             <button
                                                 onClick={() => setStep(2)}
                                                 disabled={!isStep1Valid()}
-                                                className="bg-brand text-white font-bold py-3 px-6 rounded-lg hover:bg-brand/90 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-lg hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 Ir para Entrega
                                                 <ArrowRight size={18} />
@@ -371,18 +372,18 @@ export default function CheckoutPage() {
                     {/* 2. Delivery Address */}
                     <div className={`bg-white p-6 rounded-xl border transition-all ${step === 2 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 2 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>2</div>
+                            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 2 ? "bg-gradient-to-r from-brand to-brand-dark text-white" : "bg-gray-200 text-gray-500"}`}>2</div>
                                 Entrega
                             </h2>
-                            {step > 2 && <button onClick={() => setStep(2)} className="text-xs font-bold text-brand hover:underline">Alterar</button>}
+                            {step > 2 && <button onClick={() => setStep(2)} className="text-xs font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline">Alterar</button>}
                         </div>
 
                         {step === 2 && (
                             <div className="animate-in fade-in slide-in-from-top-2 duration-300">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                     <div className="md:col-span-2">
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">CEP</label>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-1">CEP</label>
                                         <div className="relative">
                                             <input
                                                 type="text"
@@ -392,11 +393,11 @@ export default function CheckoutPage() {
                                                 placeholder="00000-000"
                                                 className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                             />
-                                            {loadingCep && <Loader2 size={16} className="absolute right-3 top-3 animate-spin text-brand" />}
+                                            {loadingCep && <Loader2 size={16} className="absolute right-3 top-3 animate-spin text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />}
                                         </div>
                                     </div>
                                     <div className="md:col-span-2">
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Endereço</label>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-1">Endereço</label>
                                         <input
                                             type="text"
                                             value={formData.address}
@@ -405,7 +406,7 @@ export default function CheckoutPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Número</label>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-1">Número</label>
                                         <input
                                             id="number"
                                             type="text"
@@ -415,7 +416,7 @@ export default function CheckoutPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Complemento</label>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-1">Complemento</label>
                                         <input
                                             type="text"
                                             value={formData.complement}
@@ -424,7 +425,7 @@ export default function CheckoutPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Bairro</label>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-1">Bairro</label>
                                         <input
                                             type="text"
                                             value={formData.district}
@@ -433,7 +434,7 @@ export default function CheckoutPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">Cidade - UF</label>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-1">Cidade - UF</label>
                                         <div className="flex gap-2">
                                             <input
                                                 type="text"
@@ -451,16 +452,16 @@ export default function CheckoutPage() {
                                     </div>
                                 </div>
 
-                                <h3 className="font-bold text-gray-900 mb-3 text-sm">Opção de Entrega</h3>
+                                <h3 className="font-semibold text-gray-900 mb-3 text-sm">Opção de Entrega</h3>
                                 <div className="space-y-3 mb-6">
                                     <label className="flex items-center gap-4 bg-orange-50 p-4 rounded-xl border border-brand cursor-pointer relative">
-                                        <div className="w-10 h-10 rounded-full bg-white text-brand flex items-center justify-center flex-shrink-0">
+                                        <div className="w-10 h-10 rounded-full bg-white text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark flex items-center justify-center flex-shrink-0">
                                             <MapPin size={20} />
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex justify-between items-center mb-0.5">
-                                                <h3 className="font-bold text-gray-900 text-sm">Retirada na Loja (Ouro Preto)</h3>
-                                                <span className="font-bold text-brand">Grátis</span>
+                                                <h3 className="font-semibold text-gray-900 text-sm">Retirada na Loja (Ouro Preto)</h3>
+                                                <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">Grátis</span>
                                             </div>
                                             <p className="text-xs text-gray-500">Rua José Moringa, 9 - Bauxita</p>
                                         </div>
@@ -473,8 +474,8 @@ export default function CheckoutPage() {
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex justify-between items-center mb-0.5">
-                                                <h3 className="font-bold text-gray-900 text-sm">Entrega Local (Motoboy)</h3>
-                                                <span className="font-bold text-gray-500">Em breve</span>
+                                                <h3 className="font-semibold text-gray-900 text-sm">Entrega Local (Motoboy)</h3>
+                                                <span className="font-semibold text-gray-500">Em breve</span>
                                             </div>
                                             <p className="text-xs text-gray-500">Disponível apenas para Ouro Preto</p>
                                         </div>
@@ -486,7 +487,7 @@ export default function CheckoutPage() {
                                     <button
                                         onClick={nextStep}
                                         disabled={!isStep2Valid()}
-                                        className="bg-brand text-white font-bold py-3 px-6 rounded-lg hover:bg-brand/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                        className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-lg hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                     >
                                         Ir para Pagamento
                                         <ArrowRight size={18} />
@@ -505,21 +506,21 @@ export default function CheckoutPage() {
                     {/* 3. Payment */}
                     <div className={`bg-white p-6 rounded-xl border transition-all ${step === 3 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 3 ? "bg-brand text-white" : "bg-gray-200 text-gray-500"}`}>3</div>
+                            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 3 ? "bg-gradient-to-r from-brand to-brand-dark text-white" : "bg-gray-200 text-gray-500"}`}>3</div>
                                 Pagamento
                             </h2>
                         </div>
 
                         {step === 3 && (
                             <div className="bg-white p-6 rounded-xl border border-brand shadow-md ring-1 ring-brand/10 animate-in fade-in slide-in-from-bottom-2">
-                                <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center text-xs">3</div>
+                                <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-full bg-gradient-to-r from-brand to-brand-dark text-white flex items-center justify-center text-xs">3</div>
                                     Pagamento
                                 </h2>
 
                                 <div className="text-center p-6 bg-gray-50 rounded-xl border border-gray-100 mb-6">
-                                    <h3 className="text-lg font-bold text-gray-800 mb-2">Pagamento via Pix</h3>
+                                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Pagamento via Pix</h3>
                                     <p className="text-sm text-gray-600 mt-2">O código QR (Copia e Cola) será gerado na próxima tela após finalizar o pedido.</p>
                                 </div>
 
@@ -527,7 +528,7 @@ export default function CheckoutPage() {
                                     <button
                                         onClick={handleFinishOrder}
                                         disabled={isSubmitting}
-                                        className="bg-brand text-white font-bold py-4 px-12 rounded-xl hover:bg-brand/90 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed w-full md:w-auto"
+                                        className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-4 px-12 rounded hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed w-full md:w-auto"
                                     >
                                         {isSubmitting ? (
                                             <>

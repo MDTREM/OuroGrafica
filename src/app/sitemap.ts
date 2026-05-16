@@ -2,7 +2,7 @@ import { getPosts } from '@/actions/blog-actions';
 import { MetadataRoute } from 'next';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = 'https://ourografica.site';
+    const baseUrl = 'https://vink.com.br';
 
     // 1. Static Pages
     const routes = [

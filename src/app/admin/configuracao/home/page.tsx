@@ -245,10 +245,10 @@ export default function AdminHomeConfigPage() {
     return (
         <Container className="py-8 space-y-8">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold flex items-center gap-2">
-                    <Layout className="text-brand" /> Editor da Home
+                <h1 className="text-2xl font-semibold flex items-center gap-2">
+                    <Layout className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" /> Editor da Home
                 </h1>
-                <Button onClick={handleSave} disabled={saving} className="bg-brand text-brand-foreground hover:bg-brand/90">
+                <Button onClick={handleSave} disabled={saving} className="bg-gradient-to-r from-brand to-brand-dark text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark-foreground hover:bg-gradient-to-r from-brand to-brand-dark/90">
                     {saving ? 'Salvando...' : 'Salvar Alterações'}
                 </Button>
             </div>
@@ -256,7 +256,7 @@ export default function AdminHomeConfigPage() {
             {/* Sections Management */}
             <div className="bg-surface p-6 rounded-lg border border-border">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">Estrutura da Página</h2>
+                    <h2 className="text-xl font-semibold">Estrutura da Página</h2>
                     <div className="relative">
                         <Button
                             onClick={() => setIsAddingSection(!isAddingSection)}
@@ -310,14 +310,14 @@ export default function AdminHomeConfigPage() {
                                 <button
                                     onClick={() => moveSection(index, 'up')}
                                     disabled={index === 0}
-                                    className="p-1 text-gray-400 hover:text-brand disabled:opacity-30"
+                                    className="p-1 text-gray-400 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark disabled:opacity-30"
                                 >
                                     <ArrowUp size={18} />
                                 </button>
                                 <button
                                     onClick={() => moveSection(index, 'down')}
                                     disabled={index === config.sections.length - 1}
-                                    className="p-1 text-gray-400 hover:text-brand disabled:opacity-30"
+                                    className="p-1 text-gray-400 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark disabled:opacity-30"
                                 >
                                     <ArrowDown size={18} />
                                 </button>
@@ -339,7 +339,7 @@ export default function AdminHomeConfigPage() {
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-40">
                     <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto space-y-4">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-xl font-bold">Editar: {editingSection.name}</h3>
+                            <h3 className="text-xl font-semibold">Editar: {editingSection.name}</h3>
                             <button onClick={() => setEditingSection(null)} className="p-1 hover:bg-gray-100 rounded">
                                 <X size={24} />
                             </button>
@@ -385,9 +385,9 @@ export default function AdminHomeConfigPage() {
                                                                 }
                                                             });
                                                         }}
-                                                        className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all border ${isSelected ? 'bg-brand/5 border-brand' : 'hover:bg-gray-50 border-transparent'}`}
+                                                        className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all border ${isSelected ? 'bg-gradient-to-r from-brand to-brand-dark/5 border-brand' : 'hover:bg-gray-50 border-transparent'}`}
                                                     >
-                                                        <div className={`w-5 h-5 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${isSelected ? 'bg-brand border-brand' : 'border-gray-300 bg-white'}`}>
+                                                        <div className={`w-5 h-5 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${isSelected ? 'bg-gradient-to-r from-brand to-brand-dark border-brand' : 'border-gray-300 bg-white'}`}>
                                                             {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-[1px]" />}
                                                         </div>
 
@@ -400,7 +400,7 @@ export default function AdminHomeConfigPage() {
                                                         </div>
 
                                                         <div className="flex-1 min-w-0">
-                                                            <p className={`text-sm font-medium truncate ${isSelected ? 'text-brand-dark' : 'text-gray-900'}`}>{product.title}</p>
+                                                            <p className={`text-sm font-medium truncate ${isSelected ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark-dark' : 'text-gray-900'}`}>{product.title}</p>
                                                             <p className="text-xs text-gray-500 truncate">{product.category}</p>
                                                         </div>
                                                     </div>
@@ -425,7 +425,7 @@ export default function AdminHomeConfigPage() {
                                                 return (
                                                     <div key={id} className="flex items-center justify-between p-2 bg-white border border-gray-200 rounded-lg">
                                                         <div className="flex items-center gap-3">
-                                                            <span className="text-xs font-bold text-gray-400 w-4">{index + 1}</span>
+                                                            <span className="text-xs font-semibold text-gray-400 w-4">{index + 1}</span>
                                                             {product.image && <img src={product.image} className="w-8 h-8 rounded object-cover border border-gray-100" />}
                                                             <span className="text-sm font-medium text-gray-700">{product.title}</span>
                                                         </div>
@@ -442,7 +442,7 @@ export default function AdminHomeConfigPage() {
                                                                     }
                                                                 }}
                                                                 disabled={index === 0}
-                                                                className="p-1 text-gray-400 hover:text-brand disabled:opacity-30"
+                                                                className="p-1 text-gray-400 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark disabled:opacity-30"
                                                             >
                                                                 <ArrowUp size={16} />
                                                             </button>
@@ -458,7 +458,7 @@ export default function AdminHomeConfigPage() {
                                                                     }
                                                                 }}
                                                                 disabled={index === (editingSection.settings?.productIds?.length || 0) - 1}
-                                                                className="p-1 text-gray-400 hover:text-brand disabled:opacity-30"
+                                                                className="p-1 text-gray-400 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark disabled:opacity-30"
                                                             >
                                                                 <ArrowDown size={16} />
                                                             </button>
@@ -476,7 +476,7 @@ export default function AdminHomeConfigPage() {
                         {['banner-carousel', 'stacked-banners'].includes(editingSection.type) && (
                             <div className="space-y-4 border-t border-gray-100 pt-4">
                                 <div className="flex justify-between items-center">
-                                    <h4 className="font-bold">Banners desta seção</h4>
+                                    <h4 className="font-semibold">Banners desta seção</h4>
                                     <Button size="sm" onClick={addBannerToSection}>
                                         <Plus size={16} className="mr-1" /> Adicionar Banner
                                     </Button>
@@ -509,7 +509,7 @@ export default function AdminHomeConfigPage() {
                         {editingSection.type === 'info-banner' && (
                             <div className="space-y-4 border-t border-gray-100 pt-4">
                                 <div className="flex justify-between items-center">
-                                    <h4 className="font-bold">Ícones e Textos</h4>
+                                    <h4 className="font-semibold">Ícones e Textos</h4>
                                     <Button size="sm" onClick={addBenefitToSection}>
                                         <Plus size={16} className="mr-1" /> Adicionar Item
                                     </Button>
@@ -519,7 +519,7 @@ export default function AdminHomeConfigPage() {
                                     {editingSection.benefits?.map(benefit => (
                                         <div key={benefit.id} className="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 flex items-center justify-center bg-white rounded border border-gray-200 text-brand">
+                                                <div className="w-8 h-8 flex items-center justify-center bg-white rounded border border-gray-200 text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">
                                                     {/* We could render the actual icon here if we import the map, or just static for now */}
                                                     <Layout size={16} />
                                                 </div>
@@ -577,9 +577,9 @@ export default function AdminHomeConfigPage() {
                                                                 }
                                                             });
                                                         }}
-                                                        className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all border ${isSelected ? 'bg-brand/5 border-brand' : 'hover:bg-gray-50 border-transparent'}`}
+                                                        className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all border ${isSelected ? 'bg-gradient-to-r from-brand to-brand-dark/5 border-brand' : 'hover:bg-gray-50 border-transparent'}`}
                                                     >
-                                                        <div className={`w-5 h-5 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${isSelected ? 'bg-brand border-brand' : 'border-gray-300 bg-white'}`}>
+                                                        <div className={`w-5 h-5 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${isSelected ? 'bg-gradient-to-r from-brand to-brand-dark border-brand' : 'border-gray-300 bg-white'}`}>
                                                             {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-[1px]" />}
                                                         </div>
 
@@ -592,7 +592,7 @@ export default function AdminHomeConfigPage() {
                                                         </div>
 
                                                         <div className="flex-1 min-w-0">
-                                                            <p className={`text-sm font-medium truncate ${isSelected ? 'text-brand-dark' : 'text-gray-900'}`}>{post.title}</p>
+                                                            <p className={`text-sm font-medium truncate ${isSelected ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark-dark' : 'text-gray-900'}`}>{post.title}</p>
                                                             <div className="flex items-center gap-2 text-xs text-gray-500">
                                                                 <span className={post.published ? 'text-green-600' : 'text-yellow-600'}>{post.published ? 'Publicado' : 'Rascunho'}</span>
                                                                 <span>•</span>
@@ -625,7 +625,7 @@ export default function AdminHomeConfigPage() {
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
                         <div className="bg-white rounded-lg p-6 w-full max-w-md space-y-4">
                             <div className="flex justify-between items-center">
-                                <h3 className="text-xl font-bold">Editar Item</h3>
+                                <h3 className="text-xl font-semibold">Editar Item</h3>
                                 <button onClick={() => setEditingBenefit(null)}><X size={20} /></button>
                             </div>
 
@@ -646,6 +646,10 @@ export default function AdminHomeConfigPage() {
                                     <option value="clock">Relógio</option>
                                     <option value="map">Localização</option>
                                     <option value="phone">Telefone</option>
+                                    <option value="package">Pacote</option>
+                                    <option value="zap">Raio</option>
+                                    <option value="award">Prêmio</option>
+                                    <option value="gift">Presente</option>
                                 </select>
                             </div>
 
@@ -667,6 +671,24 @@ export default function AdminHomeConfigPage() {
                                 />
                             </div>
 
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Link (opcional)</label>
+                                <Input
+                                    value={editingBenefit.link || ''}
+                                    onChange={e => setEditingBenefit({ ...editingBenefit, link: e.target.value })}
+                                    placeholder="Ex: /cupons"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Texto do Link (opcional)</label>
+                                <Input
+                                    value={editingBenefit.linkText || ''}
+                                    onChange={e => setEditingBenefit({ ...editingBenefit, linkText: e.target.value })}
+                                    placeholder="Ex: Confira"
+                                />
+                            </div>
+
                             <div className="flex justify-end gap-2 mt-4">
                                 <Button variant="outline" onClick={() => setEditingBenefit(null)}>Cancelar</Button>
                                 <Button onClick={saveBenefit} disabled={!editingBenefit.title}>Salvar</Button>
@@ -681,14 +703,14 @@ export default function AdminHomeConfigPage() {
                 editingBanner && (
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
                         <div className="bg-white rounded-lg p-6 w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
-                            <h3 className="text-xl font-bold">Banner</h3>
+                            <h3 className="text-xl font-semibold">Banner</h3>
 
                             <div className="space-y-4">
                                 {/* Desktop Image */}
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Imagem Desktop (Principal)</label>
                                     <Input type="file" accept="image/*" onChange={handleBannerUpload} disabled={uploading} />
-                                    {uploading && <p className="text-xs text-brand">Carregando...</p>}
+                                    {uploading && <p className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">Carregando...</p>}
 
                                     {editingBanner.imageUrl && (
                                         <div className="mt-2 rounded-lg overflow-hidden border border-gray-200 bg-gray-100 max-h-40">
@@ -711,7 +733,7 @@ export default function AdminHomeConfigPage() {
                                     <label className="text-sm font-medium">Imagem Mobile (Opcional)</label>
                                     <p className="text-xs text-gray-500">Se não informada, a imagem desktop será usada.</p>
                                     <Input type="file" accept="image/*" onChange={handleMobileBannerUpload} disabled={uploadingMobile} />
-                                    {uploadingMobile && <p className="text-xs text-brand">Carregando...</p>}
+                                    {uploadingMobile && <p className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">Carregando...</p>}
 
                                     {editingBanner.mobileImageUrl && (
                                         <div className="mt-2 rounded-lg overflow-hidden border border-gray-200 bg-gray-100 max-h-40">

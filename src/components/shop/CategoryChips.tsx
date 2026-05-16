@@ -18,7 +18,7 @@ export function CategoryChips({ categories, activeCategory, onSelect }: Category
                     className={cn(
                         "flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap",
                         activeCategory === category
-                            ? "bg-brand text-white shadow-md shadow-brand/20"
+                            ? "bg-gradient-to-r from-brand to-brand-dark text-white shadow-md shadow-brand/20"
                             : "bg-surface-secondary text-gray-600 hover:bg-gray-200"
                     )}
                 >

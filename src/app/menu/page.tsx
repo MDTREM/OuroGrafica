@@ -36,15 +36,15 @@ export default function MenuPage() {
     ];
 
     const whatsappLink = (service: string) =>
-        `https://wa.me/5531982190935?text=${encodeURIComponent(`Olá, quero fazer um orçamento para ${service}`)}`;
+        `https://wa.me/5531989880161?text=${encodeURIComponent(`Olá, quero fazer um orçamento para ${service}`)}`;
 
 
     return (
         <div className="bg-gray-50 min-h-screen pb-24">
             {/* Header */}
             <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30 flex items-center justify-center">
-                <h1 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <MenuIcon size={20} className="text-brand" />
+                <h1 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <MenuIcon size={20} className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
                     Menu
                 </h1>
             </div>
@@ -64,12 +64,12 @@ export default function MenuPage() {
                             {user ? (
                                 <>
                                     <p className="text-sm text-gray-500 font-medium">Olá, {user.user_metadata?.name || user.email?.split('@')[0]}</p>
-                                    <Link href="/perfil" className="text-brand font-bold text-sm hover:underline">Minha Conta</Link>
+                                    <Link href="/perfil" className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-semibold text-sm hover:underline">Minha Conta</Link>
                                 </>
                             ) : (
                                 <>
                                     <p className="text-sm text-gray-500 font-medium">Olá, Visitante</p>
-                                    <Link href="/login" className="text-brand font-bold text-sm hover:underline">Entrar / Cadastro</Link>
+                                    <Link href="/login" className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-semibold text-sm hover:underline">Entrar / Cadastro</Link>
                                 </>
                             )}
                         </div>
@@ -96,7 +96,7 @@ export default function MenuPage() {
 
                 {/* 3. Categories */}
                 <div className="mb-6">
-                    <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3 pl-2">Nossas Categorias</h2>
+                    <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 pl-2">Nossas Categorias</h2>
                     <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
                         {categories.map((cat, idx) => (
                             <Link
@@ -113,20 +113,20 @@ export default function MenuPage() {
 
                 {/* 4. Services (Internal Links) */}
                 <div className="mb-6">
-                    <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3 pl-2">Serviços Técnicos</h2>
+                    <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 pl-2">Serviços Técnicos</h2>
                     <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
                         <Link
                             href="/servicos/outsourcing"
                             className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors border-b border-gray-50"
                         >
-                            <Printer size={18} className="text-brand" />
+                            <Printer size={18} className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
                             <span className="text-gray-700 font-medium text-sm">Aluguel de impressoras</span>
                         </Link>
                         <Link
                             href="/servicos/manutencao"
                             className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors"
                         >
-                            <Wrench size={18} className="text-brand" />
+                            <Wrench size={18} className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
                             <span className="text-gray-700 font-medium text-sm">Conserto de impressoras</span>
                         </Link>
                     </div>
@@ -152,7 +152,7 @@ export default function MenuPage() {
                 </div>
 
                 <div className="mt-8 text-center pb-8">
-                    <p className="text-xs text-gray-400">Ouro Gráfica © 2024</p>
+                    <p className="text-xs text-gray-400">Vink © 2024</p>
                 </div>
 
             </Container>

@@ -86,9 +86,9 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
     return (
         <Container>
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-foreground">{title}</h2>
+                <h2 className="text-xl font-semibold text-foreground">{title}</h2>
                 {link && (
-                    <Link href={link} className="text-sm font-medium text-brand hover:underline flex items-center gap-1">
+                    <Link href={link} className="text-sm font-medium text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline flex items-center gap-1">
                         Ver tudo <ArrowRight size={14} />
                     </Link>
                 )}
@@ -99,7 +99,7 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
                 {/* Desktop Left Button */}
                 <button 
                   onClick={() => scrollBy(-300)}
-                  className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -ml-5 z-10 bg-white shadow-lg border border-gray-100 w-10 h-10 rounded-full items-center justify-center text-gray-500 hover:text-brand hover:scale-110 transition-all opacity-0 group-hover/slider:opacity-100 disabled:opacity-0"
+                  className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -ml-5 z-10 bg-white shadow-lg border border-gray-100 w-10 h-10 rounded-full items-center justify-center text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:scale-110 transition-all opacity-0 group-hover/slider:opacity-100 disabled:opacity-0"
                   aria-label="Anterior"
                 >
                     <ChevronLeft size={24} />
@@ -111,12 +111,12 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
                     className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 -mx-4 px-4 no-scrollbar"
                 >
                     {displayProducts.map((product) => (
-                        <div key={product.id} className="w-[160px] md:w-[240px] flex-none snap-start">
+                        <div key={product.id} className="w-[280px] md:w-[240px] flex-none snap-start">
                             <ProductCard {...product} />
                         </div>
                     ))}
                 </div>
-
+ 
                 {/* Desktop Right Button */}
                 <button 
                   onClick={() => scrollBy(300)}
@@ -125,23 +125,6 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
                 >
                     <ChevronRight size={24} />
                 </button>
-            </div>
-
-            {/* Pagination Dots */}
-            <div className="flex justify-center gap-2 mt-2 md:hidden">
-                <div className="flex items-center justify-center gap-1.5 mx-auto">
-                    {displayProducts.map((_, idx) => (
-                        <button
-                            key={idx}
-                            onClick={() => scrollToIndex(idx)}
-                            className={`transition-all duration-300 rounded-full h-2 ${idx === activeIndex
-                                    ? "w-6 bg-brand"
-                                    : "w-2 bg-gray-200 hover:bg-gray-300"
-                                }`}
-                            aria-label={`Ir para item ${idx + 1}`}
-                        />
-                    ))}
-                </div>
             </div>
         </Container>
     );

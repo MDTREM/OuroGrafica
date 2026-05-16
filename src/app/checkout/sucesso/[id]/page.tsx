@@ -76,7 +76,7 @@ export default function SuccessPage() {
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <Loader2 className="animate-spin text-brand" size={48} />
+                <Loader2 className="animate-spin text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" size={48} />
             </div>
         );
     }
@@ -86,7 +86,7 @@ export default function SuccessPage() {
             <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center text-center p-4">
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">Pedido não encontrado</h1>
                 <p className="text-gray-500 mb-6">Não conseguimos localizar os detalhes deste pedido.</p>
-                <Link href="/" className="text-brand font-bold hover:underline">Voltar para a Loja</Link>
+                <Link href="/" className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-bold hover:underline">Voltar para a Loja</Link>
             </div>
         );
     }
@@ -98,7 +98,7 @@ export default function SuccessPage() {
             {/* Simple Header */}
             <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30">
                 <Container className="flex items-center justify-between">
-                    <Link href="/" className="text-gray-500 hover:text-brand transition-colors">
+                    <Link href="/" className="text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors">
                         <Home size={24} />
                     </Link>
                     <div className="text-sm font-bold text-gray-900">Pedido #{order.display_id || order.id.slice(0, 8)}</div>
@@ -144,7 +144,7 @@ export default function SuccessPage() {
                                             />
                                             <button
                                                 onClick={() => copyToClipboard(order.qr_code!)}
-                                                className="bg-brand hover:bg-brand/90 text-white p-3 rounded-xl transition-all shadow-lg shadow-brand/20 active:scale-95 flex-shrink-0"
+                                                className="bg-gradient-to-r from-brand to-brand-dark hover:bg-gradient-to-r from-brand to-brand-dark/90 text-white p-3 rounded-xl transition-all shadow-lg shadow-brand/20 active:scale-95 flex-shrink-0"
                                                 title="Copiar Código"
                                             >
                                                 <Copy size={20} />
@@ -166,7 +166,7 @@ export default function SuccessPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-full bg-orange-50 text-brand flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full bg-orange-50 text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark flex items-center justify-center">
                                 <Package size={20} />
                             </div>
                             <div>
@@ -184,7 +184,7 @@ export default function SuccessPage() {
 
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-full bg-orange-50 text-brand flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full bg-orange-50 text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark flex items-center justify-center">
                                 <Truck size={20} />
                             </div>
                             <div>
@@ -204,7 +204,7 @@ export default function SuccessPage() {
                 <div className="grid grid-cols-1 gap-4">
                     <Link
                         href="/perfil/pedidos"
-                        className="w-full bg-brand text-white font-bold h-14 rounded-xl hover:bg-brand/90 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-3"
+                        className="w-full bg-gradient-to-r from-brand to-brand-dark text-white font-bold h-14 rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-3"
                     >
                         Acompanhar Meus Pedidos
                     </Link>
@@ -220,7 +220,7 @@ export default function SuccessPage() {
 
             {/* Custom Toast */}
             {showToast && (
-                <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-brand text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom-5">
+                <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-brand to-brand-dark text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom-5">
                     <CheckCircle size={20} className="text-white" />
                     <span className="font-bold text-sm">Código Pix copiado!</span>
                 </div>

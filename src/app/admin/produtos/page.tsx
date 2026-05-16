@@ -99,11 +99,11 @@ export default function AdminProductsPage() {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Produtos</h1>
+                    <h1 className="text-2xl font-semibold text-gray-900">Produtos</h1>
                     <p className="text-gray-500">Gerencie seu catálogo.</p>
                 </div>
                 <div className="flex gap-2">
-                    <label className="bg-white border border-gray-200 text-gray-700 font-bold py-2.5 px-4 rounded-xl shadow-sm hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer">
+                    <label className="bg-white border border-gray-200 text-gray-700 font-semibold py-2.5 px-4 rounded-xl shadow-sm hover:bg-gray-50 transition-colors flex items-center gap-2 cursor-pointer">
                         <Upload size={18} />
                         Importar CSV
                         <input
@@ -113,7 +113,7 @@ export default function AdminProductsPage() {
                             onChange={handleFileUpload}
                         />
                     </label>
-                    <Link href="/admin/produtos/novo" className="bg-brand text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-brand/20 hover:bg-brand-dark transition-colors flex items-center gap-2">
+                    <Link href="/admin/produtos/novo" className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg shadow-brand/20 hover:bg-gradient-to-r from-brand to-brand-dark-dark transition-colors flex items-center gap-2">
                         <Plus size={18} />
                         Novo Produto
                     </Link>
@@ -201,7 +201,7 @@ export default function AdminProductsPage() {
                                             {product.active !== false ? <Eye size={20} /> : <EyeOff size={20} />}
                                         </button>
                                     </td>
-                                    <td className="px-6 py-4 font-bold">
+                                    <td className="px-6 py-4 font-semibold">
                                         {(() => {
                                             if (product.priceBreakdowns && Object.keys(product.priceBreakdowns).length > 0) {
                                                 const minPrice = Math.min(...Object.values(product.priceBreakdowns).map(val => Number(val)));

@@ -8,24 +8,24 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 function AdminGuard({ children }: { children: React.ReactNode }) {
-    const { user, isLoading, isAdmin } = useAuth();
+    const { isAdmin, isLoading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        if (!isLoading) {
-            if (!user) {
-                router.push("/login");
-            } else if (!isAdmin) {
-                router.push("/");
-            }
+        if (!isLoading && !isAdmin) {
+            router.push("/login");
         }
-    }, [user, isLoading, isAdmin, router]);
+    }, [isAdmin, isLoading, router]);
 
     if (isLoading) {
-        return <div className="flex h-screen items-center justify-center bg-gray-50 text-gray-500">Carregando...</div>;
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 w-full">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-brand"></div>
+            </div>
+        );
     }
 
-    if (!user || !isAdmin) {
+    if (!isAdmin) {
         return null;
     }
 

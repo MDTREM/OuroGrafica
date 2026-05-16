@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
     if (!product) {
         return {
-            title: "Produto Não Encontrado | Ouro Gráfica",
+            title: "Produto Não Encontrado | Vink",
             description: "O produto que você procura não está disponível."
         };
     }
@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     const images = product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : []);
 
     return {
-        title: `${product.title} | Ouro Gráfica`,
-        description: product.description || `Compre ${product.title} na Ouro Gráfica. Qualidade e rapidez.`,
+        title: `${product.title} | Vink`,
+        description: product.description || `Compre ${product.title} na Vink. Qualidade e rapidez.`,
         openGraph: {
             title: product.title,
             description: product.description,
@@ -48,7 +48,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center gap-4">
                 <p>Produto não encontrado.</p>
-                <a href="/" className="text-brand hover:underline">Voltar para a loja</a>
+                <a href="/" className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline">Voltar para a loja</a>
             </div>
         );
     }

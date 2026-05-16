@@ -21,7 +21,7 @@ export default function AdminOrdersPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Pedidos</h1>
+                <h1 className="text-2xl font-semibold text-gray-900">Pedidos</h1>
                 <p className="text-gray-500">Gerencie e atualize o status dos pedidos.</p>
             </div>
 
@@ -58,7 +58,7 @@ export default function AdminOrdersPage() {
                                     <td className="px-6 py-4">{order.date}</td>
                                     {/* Handle items as array or number for compatibility */}
                                     <td className="px-6 py-4">{Array.isArray(order.items) ? order.items.length : order.items} itens</td>
-                                    <td className="px-6 py-4 font-bold">{formatPrice(order.total)}</td>
+                                    <td className="px-6 py-4 font-semibold">{formatPrice(order.total)}</td>
                                     <td className="px-6 py-4">
                                         <select
                                             value={order.status}
@@ -80,7 +80,7 @@ export default function AdminOrdersPage() {
                                     <td className="px-6 py-4 text-right flex justify-end gap-2">
                                         <button
                                             onClick={() => setSelectedOrder(order)}
-                                            className="text-gray-400 hover:text-brand transition-colors"
+                                            className="text-gray-400 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors"
                                             title="Ver Detalhes"
                                         >
                                             <Eye size={18} />
@@ -110,7 +110,7 @@ export default function AdminOrdersPage() {
                     <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in-95">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
                             <div>
-                                <h2 className="text-xl font-bold text-gray-900">Pedido #{selectedOrder.display_id || selectedOrder.id.slice(0, 8).toUpperCase()}</h2>
+                                <h2 className="text-xl font-semibold text-gray-900">Pedido #{selectedOrder.display_id || selectedOrder.id.slice(0, 8).toUpperCase()}</h2>
                                 <p className="text-sm text-gray-500">Realizado em {selectedOrder.date}</p>
                             </div>
                             <button
@@ -125,7 +125,7 @@ export default function AdminOrdersPage() {
                             {/* 1. Customer & Status */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                    <h3 className="font-bold text-gray-900 mb-2">Dados do Cliente</h3>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Dados do Cliente</h3>
                                     {selectedOrder.customer_info ? (
                                         <div className="space-y-1 text-sm text-gray-600">
                                             <p><strong className="text-gray-900">Nome:</strong> {selectedOrder.customer_info.name}</p>
@@ -138,7 +138,7 @@ export default function AdminOrdersPage() {
                                     )}
                                 </div>
                                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                    <h3 className="font-bold text-gray-900 mb-2">Endereço de Entrega</h3>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Endereço de Entrega</h3>
                                     {selectedOrder.address_info ? (
                                         <div className="space-y-1 text-sm text-gray-600">
                                             <p>{selectedOrder.address_info.street}, {selectedOrder.address_info.number}</p>
@@ -151,7 +151,7 @@ export default function AdminOrdersPage() {
                                     )}
                                 </div>
                                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                    <h3 className="font-bold text-gray-900 mb-2">Pagamento</h3>
+                                    <h3 className="font-semibold text-gray-900 mb-2">Pagamento</h3>
                                     <div className="space-y-1 text-sm text-gray-600">
                                         <p>
                                             <strong className="text-gray-900">Método: </strong>
@@ -167,14 +167,14 @@ export default function AdminOrdersPage() {
                                                 <span className="text-gray-500">{selectedOrder.payment_method || "Não informado"}</span>
                                             )}
                                         </p>
-                                        <p><strong className="text-gray-900">Total:</strong> <span className="text-brand font-bold">{formatPrice(selectedOrder.total)}</span></p>
+                                        <p><strong className="text-gray-900">Total:</strong> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-semibold">{formatPrice(selectedOrder.total)}</span></p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* 2. Items List */}
                             <div>
-                                <h3 className="font-bold text-gray-900 mb-4">Itens do Pedido</h3>
+                                <h3 className="font-semibold text-gray-900 mb-4">Itens do Pedido</h3>
                                 <div className="space-y-4">
                                     {Array.isArray(selectedOrder.items) && selectedOrder.items.map((item, idx) => (
                                         <div key={idx} className="flex gap-4 border border-gray-100 rounded-xl p-4 items-start">
@@ -190,8 +190,8 @@ export default function AdminOrdersPage() {
                                             {/* Info */}
                                             <div className="flex-1">
                                                 <div className="flex justify-between">
-                                                    <h4 className="font-bold text-gray-900">{item.title}</h4>
-                                                    <span className="font-bold text-brand">{formatPrice(item.price * item.quantity)}</span>
+                                                    <h4 className="font-semibold text-gray-900">{item.title}</h4>
+                                                    <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">{formatPrice(item.price * item.quantity)}</span>
                                                 </div>
                                                 <p className="text-sm text-gray-500">{item.quantity} unidades • {formatPrice(item.price)} un.</p>
 
@@ -199,7 +199,7 @@ export default function AdminOrdersPage() {
                                                 {item.details && (
                                                     <div className="mt-2 flex flex-wrap gap-2">
                                                         {item.details.dimensions && (
-                                                            <span className="text-xs font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded-md border border-blue-100">
+                                                            <span className="text-xs font-semibold bg-blue-50 text-blue-700 px-2 py-1 rounded-md border border-blue-100">
                                                                 Dimensões: {item.details.dimensions.width}x{item.details.dimensions.height} cm
                                                             </span>
                                                         )}
@@ -208,12 +208,12 @@ export default function AdminOrdersPage() {
                                                         {item.details.finish && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Acab: {item.details.finish}</span>}
                                                         {item.details.selectedVariations && Object.entries(item.details.selectedVariations).map(([key, value]) => (
                                                             <span key={key} className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 border border-gray-200">
-                                                                <span className="font-bold">{key}:</span> {String(value)}
+                                                                <span className="font-semibold">{key}:</span> {String(value)}
                                                             </span>
                                                         ))}
                                                         {item.details.customText && (
                                                             <div className="w-full mt-1 p-2 bg-blue-50 border border-blue-100 rounded-lg text-blue-900 text-xs">
-                                                                <span className="font-bold block mb-0.5">Personalização (Texto):</span>
+                                                                <span className="font-semibold block mb-0.5">Personalização (Texto):</span>
                                                                 {item.details.customText}
                                                             </div>
                                                         )}
@@ -224,7 +224,7 @@ export default function AdminOrdersPage() {
                                                 <div className="mt-3 pt-3 border-t border-gray-50 flex items-center gap-2">
                                                     {(item.details?.designOption === 'upload' || item.designOption === 'upload') ? (
                                                         <div className="flex items-center gap-2">
-                                                            <span className="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">Arte Enviada</span>
+                                                            <span className="text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded-full">Arte Enviada</span>
                                                             {(item.details?.fileUrl || item.details?.uploadedFile || item.uploadedFile) && (
                                                                 <a href={item.details?.fileUrl || item.details?.uploadedFile || item.uploadedFile} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
                                                                     Baixar Arquivo
@@ -233,7 +233,7 @@ export default function AdminOrdersPage() {
                                                         </div>
 
                                                     ) : (item.details?.designOption === 'hire' || item.designOption === 'hire') ? (
-                                                        <span className="text-xs font-bold text-orange-700 bg-orange-100 px-2 py-1 rounded-full">Solicitou Criação (+ Designer)</span>
+                                                        <span className="text-xs font-semibold text-orange-700 bg-orange-100 px-2 py-1 rounded-full">Solicitou Criação (+ Designer)</span>
                                                     ) : (
                                                         <span className="text-xs text-gray-400">Sem opção de arte selecionada</span>
                                                     )}
@@ -250,7 +250,7 @@ export default function AdminOrdersPage() {
                                     Status Atual: <strong className="text-gray-900">{selectedOrder.status}</strong>
                                 </div>
                                 <div className="text-xl">
-                                    Total: <strong className="text-brand">{formatPrice(selectedOrder.total)}</strong>
+                                    Total: <strong className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">{formatPrice(selectedOrder.total)}</strong>
                                 </div>
                             </div>
                         </div>

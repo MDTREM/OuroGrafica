@@ -157,7 +157,7 @@ export default function AddressesPage() {
     if (isAuthLoading || isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 size={32} className="animate-spin text-brand" />
+                <Loader2 size={32} className="animate-spin text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
             </div>
         );
     }
@@ -167,10 +167,10 @@ export default function AddressesPage() {
             {/* Header */}
             <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30">
                 <Container className="flex items-center gap-4">
-                    <Link href="/perfil" className="text-gray-500 hover:text-brand transition-colors p-1">
+                    <Link href="/perfil" className="text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors p-1">
                         <ArrowLeft size={24} />
                     </Link>
-                    <h1 className="text-xl font-bold text-gray-900 flex-1 text-center pr-8">Meus Endereços</h1>
+                    <h1 className="text-xl font-semibold text-gray-900 flex-1 text-center pr-8">Meus Endereços</h1>
                 </Container>
             </div>
 
@@ -182,9 +182,9 @@ export default function AddressesPage() {
                             <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center gap-2">
                                     <MapPin size={18} className="text-gray-400" />
-                                    <h3 className="font-bold text-gray-900">{addr.title}</h3>
+                                    <h3 className="font-semibold text-gray-900">{addr.title}</h3>
                                     {addr.is_default && (
-                                        <span className="text-[10px] font-bold bg-brand/10 text-brand px-2 py-0.5 rounded-full uppercase tracking-wide">Padrão</span>
+                                        <span className="text-[10px] font-semibold bg-gradient-to-r from-brand to-brand-dark/10 text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark px-2 py-0.5 rounded-full uppercase tracking-wide">Padrão</span>
                                     )}
                                 </div>
                             </div>
@@ -200,7 +200,7 @@ export default function AddressesPage() {
                             <div className="mt-4 pt-4 border-t border-gray-50 flex justify-end gap-2">
                                 <button
                                     onClick={() => handleOpenModal(addr)}
-                                    className="flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-brand px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                                    className="flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
                                     <Edit2 size={14} /> Editar
                                 </button>
@@ -208,14 +208,14 @@ export default function AddressesPage() {
                                     <>
                                         <button
                                             onClick={() => handleSetDefault(addr.id)}
-                                            className="flex items-center gap-1 text-xs font-bold text-brand hover:text-brand-dark px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors mr-auto"
+                                            className="flex items-center gap-1 text-xs font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark-dark px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors mr-auto"
                                         >
                                             <Star size={14} /> Tornar Padrão
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => handleDelete(addr.id)}
-                                            className="flex items-center gap-1 text-xs font-bold text-red-500 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
+                                            className="flex items-center gap-1 text-xs font-semibold text-red-500 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
                                         >
                                             <Trash2 size={14} /> Excluir
                                         </button>
@@ -235,7 +235,7 @@ export default function AddressesPage() {
                 {/* Add New Button */}
                 <Button
                     onClick={() => handleOpenModal()}
-                    className="w-full bg-white border-2 border-dashed border-gray-300 text-gray-500 hover:border-brand hover:text-brand hover:bg-orange-50 font-bold h-12 rounded-xl flex items-center justify-center gap-2 shadow-none"
+                    className="w-full bg-white border-2 border-dashed border-gray-300 text-gray-500 hover:border-brand hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:bg-orange-50 font-semibold h-12 rounded-xl flex items-center justify-center gap-2 shadow-none"
                 >
                     <Plus size={20} />
                     Adicionar Novo Endereço
@@ -246,13 +246,13 @@ export default function AddressesPage() {
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl animate-in zoom-in-95 duration-200">
-                        <h2 className="text-lg font-bold text-gray-900 mb-6">
+                        <h2 className="text-lg font-semibold text-gray-900 mb-6">
                             {editingAddress ? "Editar Endereço" : "Novo Endereço"}
                         </h2>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase">Nome do Local</label>
+                                <label className="text-xs font-semibold text-gray-500 uppercase">Nome do Local</label>
                                 <input
                                     type="text"
                                     placeholder="Ex: Minha Casa"
@@ -263,7 +263,7 @@ export default function AddressesPage() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-xs font-bold text-gray-500 uppercase">CEP</label>
+                                    <label className="text-xs font-semibold text-gray-500 uppercase">CEP</label>
                                     <input
                                         type="text"
                                         placeholder="00000-000"
@@ -275,7 +275,7 @@ export default function AddressesPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-bold text-gray-500 uppercase">Estado (UF)</label>
+                                    <label className="text-xs font-semibold text-gray-500 uppercase">Estado (UF)</label>
                                     <input
                                         type="text"
                                         placeholder="MG"
@@ -286,7 +286,7 @@ export default function AddressesPage() {
                                 </div>
                             </div>
                             <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase">Cidade</label>
+                                <label className="text-xs font-semibold text-gray-500 uppercase">Cidade</label>
                                 <input
                                     type="text"
                                     placeholder="Nome da Cidade"
@@ -296,7 +296,7 @@ export default function AddressesPage() {
                                 />
                             </div>
                             <div>
-                                <label className="text-xs font-bold text-gray-500 uppercase">Logradouro</label>
+                                <label className="text-xs font-semibold text-gray-500 uppercase">Logradouro</label>
                                 <input
                                     type="text"
                                     placeholder="Rua, Avenida..."
@@ -307,7 +307,7 @@ export default function AddressesPage() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-xs font-bold text-gray-500 uppercase">Bairro</label>
+                                    <label className="text-xs font-semibold text-gray-500 uppercase">Bairro</label>
                                     <input
                                         type="text"
                                         placeholder="Bairro"
@@ -317,7 +317,7 @@ export default function AddressesPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-bold text-gray-500 uppercase">Complemento</label>
+                                    <label className="text-xs font-semibold text-gray-500 uppercase">Complemento</label>
                                     <input
                                         type="text"
                                         placeholder="Apto, Sala..."
@@ -333,7 +333,7 @@ export default function AddressesPage() {
                             <Button variant="outline" onClick={() => setIsModalOpen(false)} className="flex-1 border-gray-200 text-gray-700">
                                 Cancelar
                             </Button>
-                            <Button onClick={handleSave} disabled={isSaving} className="flex-1 bg-brand text-white hover:bg-brand/90 font-bold flex items-center justify-center gap-2">
+                            <Button onClick={handleSave} disabled={isSaving} className="flex-1 bg-gradient-to-r from-brand to-brand-dark text-white hover:bg-gradient-to-r from-brand to-brand-dark/90 font-semibold flex items-center justify-center gap-2">
                                 {isSaving && <Loader2 size={16} className="animate-spin" />}
                                 Salvar
                             </Button>

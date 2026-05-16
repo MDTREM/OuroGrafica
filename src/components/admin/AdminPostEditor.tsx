@@ -27,7 +27,7 @@ const CATEGORIES = [
 const INTERNAL_LINKS = [
     { label: 'Serviço: Manutenção', url: '/servicos/manutencao' },
     { label: 'Serviço: Outsourcing', url: '/servicos/outsourcing' },
-    { label: 'Página: Contato', url: 'https://wa.me/5531982190935' },
+    { label: 'Página: Contato', url: 'https://wa.me/5531989880161' },
     { label: 'Blog Home', url: '/blog' },
 ];
 
@@ -46,7 +46,7 @@ const PROBLEM_SOLUTION_TEMPLATE = `
 <div class="my-8 p-6 bg-blue-50 rounded-xl border border-blue-200 text-center">
     <h3 class="text-xl font-bold text-blue-900 mb-2">Precisa de ajuda profissional?</h3>
     <p class="text-blue-700 mb-4">Nossa equipe técnica resolve isso rápido para você.</p>
-    <a href="https://wa.me/5531982190935" class="inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">Falar com Técnico</a>
+    <a href="https://wa.me/5531989880161" class="inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">Falar com Técnico</a>
 </div>
 
 <h2>Como resolver (Passo a Passo)</h2>
@@ -141,7 +141,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
             html = `\n<div class="not-prose my-8 p-6 bg-green-50 rounded-xl border border-green-200 text-center">
     <h3 class="text-xl font-bold text-green-800 mb-2">Precisa de ajuda agora?</h3>
     <p class="text-green-700 mb-4">Fale diretamente com nossa equipe técnica pelo WhatsApp.</p>
-    <a href="https://wa.me/5531982190935" target="_blank" class="inline-flex items-center gap-2 bg-green-600 text-white font-bold py-3 px-6 rounded-full hover:bg-green-700 transition-colors">
+    <a href="https://wa.me/5531989880161" target="_blank" class="inline-flex items-center gap-2 bg-green-600 text-white font-bold py-3 px-6 rounded-full hover:bg-green-700 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         Chamar no WhatsApp
     </a>
@@ -347,8 +347,8 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                             <img src="/icon.png" className="opacity-50" onError={(e) => e.currentTarget.style.display = 'none'} />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-sm text-[#202124]">Ouro Gráfica</span>
-                                            <span className="text-xs text-[#5f6368]">https://ourografica.site › blog › {formData.slug || 'slug-do-post'}</span>
+                                            <span className="text-sm text-[#202124]">Vink</span>
+                                            <span className="text-xs text-[#5f6368]">https://vink.com.br › blog › {formData.slug || 'slug-do-post'}</span>
                                         </div>
                                     </div>
                                     <h3 className="text-xl text-[#1a0dab] font-medium hover:underline cursor-pointer truncate">

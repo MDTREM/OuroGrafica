@@ -17,7 +17,7 @@ export function BottomNav() {
     const navItems = [
         { href: "/", label: "Início", icon: Home },
         { href: "/categorias", label: "Produtos", icon: LayoutGrid },
-        { href: "/servicos", label: "Serviços", icon: Wrench },
+
         { href: "/menu", label: "Menu", icon: Menu },
     ];
 
@@ -34,7 +34,7 @@ export function BottomNav() {
                             href={item.href}
                             className={cn(
                                 "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200 relative",
-                                isActive ? "text-brand" : "text-gray-400 hover:text-gray-600"
+                                isActive ? "text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" : "text-gray-400 hover:text-gray-600"
                             )}
                         >
                             <div className="relative">

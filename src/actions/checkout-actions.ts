@@ -27,6 +27,7 @@ interface CheckoutData {
         state: string;
         shippingMethod?: string; // 'pickup' or 'delivery'
     };
+    couponCode?: string;
 }
 
 export async function createPixOrder(data: CheckoutData) {
@@ -70,6 +71,7 @@ export async function createPixOrder(data: CheckoutData) {
                 customer_phone: data.customer.phone,
 
                 address_info: data.address, // Saving full address object
+                coupon_code: data.couponCode,
 
                 txid: charge.txid,
                 qr_code: qrCodeData.qrcode, // Copia e Cola
@@ -266,7 +268,7 @@ export async function createRedirectOrder(data: CheckoutData) {
         // 3. Gerar Link
         const linkData = await efiService.createPaymentLink(
             chargeId,
-            `Pedido #${order.display_id} - Ouro Gráfica`,
+            `Pedido #${order.display_id} - Vink`,
             data.total
         );
 

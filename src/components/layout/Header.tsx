@@ -8,29 +8,24 @@ export function Header() {
             <Container className="flex h-16 items-center justify-between">
                 <Link href="/" className="flex items-center gap-2">
                     {/* Logo */}
-                    <span className="text-2xl font-bold tracking-tight text-gray-900">
-                        OURO<span className="text-brand">GRÁFICA</span>
-                    </span>
+                    <img src="https://i.imgur.com/Kizb68g.png" alt="Vink" className="h-8 w-auto object-contain" />
                 </Link>
                 <nav className="hidden md:flex items-center gap-8">
-                    <Link href="/produtos" className="text-sm font-medium text-gray-600 hover:text-brand transition-colors">
+                    <Link href="/produtos" className="text-sm font-medium text-gray-600 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors">
                         Produtos
                     </Link>
-                    <Link href="/servicos" className="text-sm font-medium text-gray-600 hover:text-brand transition-colors">
-                        Serviços
-                    </Link>
-                    <Link href="/sobre" className="text-sm font-medium text-gray-600 hover:text-brand transition-colors">
+                    <Link href="/sobre" className="text-sm font-medium text-gray-600 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors">
                         Sobre Nós
                     </Link>
-                    <Link href="/rastreio" className="text-sm font-medium text-gray-600 hover:text-brand transition-colors">
-                        Rastrear Pedido
+                    <Link href="/rastreio" className="text-sm font-medium text-gray-600 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors">
+                        Rastreio de Pedido
                     </Link>
                 </nav>
                 <div className="flex items-center gap-4">
                     <Button variant="outline" className="hidden sm:flex text-gray-900 border-gray-200 hover:border-brand hover:text-brand">
                         Login
                     </Button>
-                    <Button className="bg-brand text-white hover:bg-brand/90 font-bold">
+                    <Button className="bg-brand text-white hover:bg-brand/90 font-semibold">
                         Orçamento Rápido
                     </Button>
                 </div>

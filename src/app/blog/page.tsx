@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { Calendar, User } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Blog | Ouro Gráfica - Dicas de Impressão e Manutenção',
-    description: 'Confira nossas dicas sobre manutenção de impressoras, escolha de papéis, design gráfico e muito mais. Ouro Gráfica, sua parceira em Ouro Preto.',
+    title: 'Blog | Vink - Dicas de Impressão e Manutenção',
+    description: 'Confira nossas dicas sobre manutenção de impressoras, escolha de papéis, design gráfico e muito mais. Vink, sua parceira em Ouro Preto.',
 };
 
 export default async function BlogPage() {
@@ -18,8 +18,8 @@ export default async function BlogPage() {
 
                 {/* Header */}
                 <div className="text-center max-w-2xl mx-auto mb-16">
-                    <span className="text-[#FF6B07] font-bold text-sm uppercase tracking-wider mb-2 block">Nosso Blog</span>
-                    <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">Dicas & Novidades</h1>
+                    <span className="text-brand font-semibold text-sm uppercase tracking-wider mb-2 block">Nosso Blog</span>
+                    <h1 className="text-3xl md:text-5xl font-semibold text-gray-900 mb-6">Dicas & Novidades</h1>
                     <p className="text-gray-600 text-lg">
                         Conteúdos exclusivos sobre o mundo da impressão, manutenção e design para ajudar você e sua empresa.
                     </p>
@@ -41,7 +41,7 @@ export default async function BlogPage() {
                                     </div>
                                     <div className="p-6 flex-1 flex flex-col">
                                         <div className="flex items-center gap-2 mb-3">
-                                            <span className="px-2 py-0.5 bg-orange-50 text-[#FF6B07] text-[10px] font-bold uppercase tracking-wider rounded">
+                                            <span className="px-2 py-0.5 bg-brand/10 text-brand text-[10px] font-semibold uppercase tracking-wider rounded">
                                                 {post.category || 'Dicas'}
                                             </span>
                                             <span className="flex items-center gap-1 text-xs text-gray-400">
@@ -49,13 +49,13 @@ export default async function BlogPage() {
                                                 {new Date(post.created_at).toLocaleDateString('pt-BR')}
                                             </span>
                                         </div>
-                                        <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-[#FF6B07] transition-colors">
+                                        <h2 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-brand transition-colors">
                                             {post.title}
                                         </h2>
                                         <p className="text-gray-500 text-sm line-clamp-3 mb-6 flex-1">
                                             {post.excerpt}
                                         </p>
-                                        <span className="text-[#FF6B07] font-bold text-sm flex items-center gap-2">
+                                        <span className="text-brand font-semibold text-sm flex items-center gap-2">
                                             Ler Artigo Completo
                                             <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -68,7 +68,7 @@ export default async function BlogPage() {
                     </div>
                 ) : (
                     <div className="text-center py-20 bg-white rounded-3xl border border-gray-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">Nenhum artigo ainda 😢</h3>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">Nenhum artigo ainda 😢</h3>
                         <p className="text-gray-500">Estamos preparando conteúdos incríveis. Volte em breve!</p>
                     </div>
                 )}

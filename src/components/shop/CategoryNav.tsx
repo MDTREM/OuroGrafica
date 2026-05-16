@@ -44,37 +44,42 @@ export function CategoryNav({ categories: propCategories, activeCategory, onSele
         .sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
 
     return (
-        <div className="flex gap-4 overflow-x-auto pb-4 pt-2 px-4 no-scrollbar -mx-4 md:mx-0 md:px-0 scroll-smooth">
-            {categories.map((category) => {
-                const IconComponent = category.icon && ICON_MAP[category.icon] ? ICON_MAP[category.icon] : LayoutGrid;
+        <div className="relative">
+            <div className="flex items-start gap-4 md:gap-12 overflow-x-auto pb-4 pt-2 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 snap-x">
+                {categories.map((category) => {
+                    const IconComponent = category.icon && ICON_MAP[category.icon] ? ICON_MAP[category.icon] : LayoutGrid;
 
-                return (
-                    <button
-                        key={category.id}
-                        onClick={() => onSelect ? onSelect(category.id) : null}
-                        className="flex flex-col items-center gap-2 min-w-[88px] group"
-                    >
-                        <Link href={`/categoria/${category.id}`} className={cn(
-                            "w-20 h-20 rounded-full flex items-center justify-center text-xs font-bold transition-all border-2",
-                            activeCategory === category.id
-                                ? "bg-brand/10 border-brand text-brand shadow-md"
-                                : "bg-surface-secondary border-transparent text-gray-400 group-hover:bg-gray-100 group-hover:text-brand"
-                        )}>
-                            {category.image ? (
-                                <img src={category.image} alt={category.name} className="w-full h-full object-cover rounded-full" />
-                            ) : (
-                                <IconComponent size={32} strokeWidth={1.5} />
-                            )}
+                    return (
+                        <Link
+                            key={category.id}
+                            href={`/categoria/${category.id}`}
+                            className="flex flex-col items-center gap-3 group shrink-0 snap-start"
+                        >
+                            <div className={cn(
+                                "w-[100px] h-[100px] md:w-[130px] md:h-[130px] rounded-full flex items-center justify-center transition-all border-2 bg-gray-100 overflow-hidden",
+                                activeCategory === category.id
+                                    ? "border-brand shadow-lg scale-105"
+                                    : "border-transparent group-hover:border-gray-200 group-hover:bg-white"
+                            )}>
+                                {category.image ? (
+                                    <img src={category.image} alt={category.name} className="w-full h-full object-cover rounded-full" />
+                                ) : (
+                                    <IconComponent size={38} strokeWidth={1.2} className={cn(
+                                        "transition-colors duration-300",
+                                        activeCategory === category.id ? "text-brand" : "text-gray-400 group-hover:text-brand"
+                                    )} />
+                                )}
+                            </div>
+                            <span className={cn(
+                                "text-xs md:text-sm font-medium text-center leading-tight transition-colors max-w-[100px] md:max-w-[130px]",
+                                activeCategory === category.id ? "text-brand font-semibold" : "text-gray-600 group-hover:text-gray-900"
+                            )}>
+                                {category.name}
+                            </span>
                         </Link>
-                        <span className={cn(
-                            "text-xs font-medium text-center truncate w-full transition-colors",
-                            activeCategory === category.id ? "text-brand" : "text-gray-600"
-                        )}>
-                            {category.name}
-                        </span>
-                    </button>
-                )
-            })}
+                    )
+                })}
+            </div>
         </div>
     );
 }

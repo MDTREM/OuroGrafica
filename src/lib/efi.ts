@@ -116,7 +116,7 @@ export class EfiService {
             valor: {
                 original: total, // Ex: "10.50"
             },
-            chave: EFI_PIX_KEY, // Chave PIX da Ouro Gráfica
+            chave: EFI_PIX_KEY, // Chave PIX da Vink
         };
 
         try {

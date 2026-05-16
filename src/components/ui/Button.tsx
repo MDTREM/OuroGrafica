@@ -18,11 +18,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         // Variant styles
         const variants = {
-            default: "bg-brand text-white hover:bg-brand-dark border border-brand",
+            default: "bg-gradient-to-r from-[#15cb98] to-[#45e6be] text-white hover:from-[#10a379] hover:to-[#15cb98] border border-[#15cb98]",
             outline: "border border-border bg-transparent text-foreground hover:bg-gray-50 hover:text-foreground",
             ghost: "hover:bg-gray-100 text-foreground",
-            link: "text-brand underline-offset-4 hover:underline",
-            gold: "bg-yellow-500 text-black font-bold hover:bg-yellow-600 border border-yellow-500"
+            link: "text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark underline-offset-4 hover:underline",
+            gold: "bg-yellow-500 text-black font-semibold hover:bg-yellow-600 border border-yellow-500"
         }
 
         // Size styles

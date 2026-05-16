@@ -46,9 +46,9 @@ export default async function CategoryPage({ params, searchParams }: { params: P
             <div className="bg-white border-b border-gray-100">
                 <Container className="py-8">
                     <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-                        <Link href="/" className="hover:text-brand">Home</Link>
+                        <Link href="/" className="hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">Home</Link>
                         <ChevronRight size={14} />
-                        <Link href={`/categoria/${categoryId}`} className="hover:text-brand">{categoryName}</Link>
+                        <Link href={`/categoria/${categoryId}`} className="hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">{categoryName}</Link>
                         {subcategoryName && (
                             <>
                                 <ChevronRight size={14} />

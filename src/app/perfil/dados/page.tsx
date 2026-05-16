@@ -133,7 +133,7 @@ export default function UserDataPage() {
     if (isAuthLoading || isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 size={32} className="animate-spin text-brand" />
+                <Loader2 size={32} className="animate-spin text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
             </div>
         );
     }
@@ -142,10 +142,10 @@ export default function UserDataPage() {
         <div className="bg-gray-50 min-h-screen pb-20">
             {/* Header */}
             <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30 flex items-center gap-4">
-                <Link href="/perfil" className="text-gray-500 hover:text-brand transition-colors p-1">
+                <Link href="/perfil" className="text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors p-1">
                     <ChevronLeft size={24} />
                 </Link>
-                <h1 className="text-xl font-bold text-gray-900">Meus Dados</h1>
+                <h1 className="text-xl font-semibold text-gray-900">Meus Dados</h1>
             </div>
 
             <Container className="pt-6">
@@ -153,13 +153,13 @@ export default function UserDataPage() {
                     <form onSubmit={handleSave} className="space-y-6">
                         {/* Person Type Toggle */}
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2">Tipo de Pessoa</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">Tipo de Pessoa</label>
                             <div className="flex bg-gray-50 p-1 rounded-lg border border-gray-200">
                                 <button
                                     type="button"
                                     onClick={() => setPersonType("pf")}
-                                    className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${personType === "pf"
-                                        ? "bg-white text-brand shadow-sm"
+                                    className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${personType === "pf"
+                                        ? "bg-white text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark shadow-sm"
                                         : "text-gray-500 hover:text-gray-700"
                                         }`}
                                 >
@@ -168,8 +168,8 @@ export default function UserDataPage() {
                                 <button
                                     type="button"
                                     onClick={() => setPersonType("pj")}
-                                    className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${personType === "pj"
-                                        ? "bg-white text-brand shadow-sm"
+                                    className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${personType === "pj"
+                                        ? "bg-white text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark shadow-sm"
                                         : "text-gray-500 hover:text-gray-700"
                                         }`}
                                 >
@@ -181,7 +181,7 @@ export default function UserDataPage() {
                         {/* Common Fields */}
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">
                                     {personType === "pf" ? "Nome Completo" : "Razão Social"}
                                 </label>
                                 <input
@@ -196,7 +196,7 @@ export default function UserDataPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">E-mail</label>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">E-mail</label>
                                 <input
                                     type="email"
                                     value={formData.email}
@@ -206,7 +206,7 @@ export default function UserDataPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Celular / WhatsApp</label>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">Celular / WhatsApp</label>
                                 <input
                                     type="text"
                                     value={formData.phone}
@@ -221,7 +221,7 @@ export default function UserDataPage() {
                         {personType === "pf" ? (
                             <div className="space-y-4 animate-in slide-in-from-top-2 duration-200">
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">CPF</label>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">CPF</label>
                                     <input
                                         type="text"
                                         value={formData.cpf}
@@ -235,7 +235,7 @@ export default function UserDataPage() {
                         ) : (
                             <div className="space-y-4 animate-in slide-in-from-top-2 duration-200">
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">CNPJ</label>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">CNPJ</label>
                                     <input
                                         type="text"
                                         value={formData.cnpj}
@@ -246,7 +246,7 @@ export default function UserDataPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">Inscrição Estadual</label>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Inscrição Estadual</label>
                                     <input
                                         type="text"
                                         value={formData.ie}
@@ -262,7 +262,7 @@ export default function UserDataPage() {
                             <button
                                 type="submit"
                                 disabled={isSaving}
-                                className="w-full bg-brand text-white font-bold py-3.5 rounded-xl hover:bg-brand/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                                className="w-full bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3.5 rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                             >
                                 {isSaving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
                                 Salvar Alterações

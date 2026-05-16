@@ -59,7 +59,7 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
         return (
             <div className="p-8 text-center">
                 <p className="text-gray-500">Categoria não encontrada.</p>
-                <Link href="/admin/categorias" className="text-brand hover:underline mt-2 inline-block">Voltar</Link>
+                <Link href="/admin/categorias" className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline mt-2 inline-block">Voltar</Link>
             </div>
         );
     }
@@ -127,7 +127,7 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
                                 value={formData.image || ""}
                                 onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
                             />
-                            <p className="text-xs text-gray-500">Cole o link da imagem ou use o botão de upload.</p>
+                            <p className="text-xs text-gray-500 font-medium">Formato Recomendado: <span className="text-brand">3:4</span> (Ex: 600x800px - Vertical). Cole o link ou use o upload.</p>
                         </div>
                         <label className="w-24 h-24 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:bg-gray-100 transition-colors relative">
                             <input
@@ -140,7 +140,7 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
 
                                     const formData = new FormData();
                                     formData.append('file', file);
-                                    const url = await uploadImage(formData);
+                                    const url = await uploadImage(formData, 'categories');
 
                                     if (url) {
                                         setFormData(prev => ({ ...prev, image: url }));
@@ -184,7 +184,7 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex items-center gap-2 bg-brand text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-brand/20 hover:bg-brand-dark transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 bg-gradient-to-r from-brand to-brand-dark text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-brand/20 hover:bg-gradient-to-r from-brand to-brand-dark-dark transition-colors disabled:opacity-50"
                 >
                     {isLoading ? "Salvando..." : (
                         <>

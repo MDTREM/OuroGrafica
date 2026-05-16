@@ -57,7 +57,7 @@ export default function OrdersPage() {
     if (isAuthLoading || isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 size={32} className="animate-spin text-brand" />
+                <Loader2 size={32} className="animate-spin text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
             </div>
         );
     }
@@ -67,10 +67,10 @@ export default function OrdersPage() {
             {/* Header */}
             <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30">
                 <Container className="flex items-center gap-4">
-                    <Link href="/perfil" className="text-gray-500 hover:text-brand transition-colors p-1">
+                    <Link href="/perfil" className="text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors p-1">
                         <ArrowLeft size={24} />
                     </Link>
-                    <h1 className="text-xl font-bold text-gray-900 flex-1 text-center pr-8">Meus Pedidos</h1>
+                    <h1 className="text-xl font-semibold text-gray-900 flex-1 text-center pr-8">Meus Pedidos</h1>
                 </Container>
             </div>
 
@@ -87,15 +87,15 @@ export default function OrdersPage() {
                                 {/* Header: ID, Date, Status */}
                                 <div className="p-4 border-b border-gray-50 flex flex-wrap gap-3 justify-between items-center bg-gray-50/30">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-brand font-bold shadow-sm">
+                                        <div className="w-10 h-10 rounded-full bg-white border border-gray-100 flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-semibold shadow-sm">
                                             <Package size={18} />
                                         </div>
                                         <div>
-                                            <span className="font-bold text-gray-900 block text-sm">Pedido #{orderIdShort}</span>
+                                            <span className="font-semibold text-gray-900 block text-sm">Pedido #{orderIdShort}</span>
                                             <span className="text-xs text-gray-500">{date}</span>
                                         </div>
                                     </div>
-                                    <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${statusConfig.color}`}>
+                                    <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${statusConfig.color}`}>
                                         <StatusIcon size={14} />
                                         {statusConfig.label}
                                     </div>
@@ -118,9 +118,9 @@ export default function OrdersPage() {
                                     <div className="flex items-center justify-between pt-3 border-t border-gray-50">
                                         <div>
                                             <span className="text-xs text-gray-500">Total</span>
-                                            <p className="font-bold text-gray-900">{formatPrice(order.total)}</p>
+                                            <p className="font-semibold text-gray-900">{formatPrice(order.total)}</p>
                                         </div>
-                                        <button className="text-sm font-bold text-brand hover:underline flex items-center gap-1">
+                                        <button className="text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline flex items-center gap-1">
                                             Ver Detalhes
                                             <ChevronRight size={16} />
                                         </button>
@@ -134,9 +134,9 @@ export default function OrdersPage() {
                 {orders.length === 0 && (
                     <div className="text-center py-12">
                         <Package size={48} className="mx-auto text-gray-200 mb-4" />
-                        <h3 className="text-gray-900 font-bold mb-2">Nenhum pedido encontrado</h3>
+                        <h3 className="text-gray-900 font-semibold mb-2">Nenhum pedido encontrado</h3>
                         <p className="text-gray-500 text-sm mb-6">Você ainda não fez nenhuma compra conosco.</p>
-                        <Link href="/" className="bg-brand text-white font-bold py-3 px-6 rounded-full hover:bg-brand/90 transition-colors">
+                        <Link href="/" className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-full hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-colors">
                             Começar a Comprar
                         </Link>
                     </div>

@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: 'Ouro Gráfica | Impressão e Manutenção',
-        short_name: 'Ouro Gráfica',
+        name: 'Vink | Impressão e Manutenção',
+        short_name: 'Vink',
         description: 'Gráfica rápida, manutenção de impressoras e outsourcing em Ouro Preto e região.',
         start_url: '/',
         display: 'standalone',

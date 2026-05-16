@@ -22,31 +22,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ourografica.site'),
+  metadataBase: new URL('https://vink.com.br'),
   title: {
-    template: '%s | Ouro Gráfica Ouro Preto',
-    default: 'Ouro Gráfica | Impressão, Manutenção e Aluguel em Ouro Preto',
+    template: '%s | Vink',
+    default: 'Vink | Especialistas em Branding e Embalagens',
   },
-  description: "Gráfica em Ouro Preto, Mariana e Região. Impressão digital, manutenção de impressoras (Epson, HP, Canon) e aluguel de máquinas para empresas (Outsourcing).",
+  description: "A Vink é sua parceira estratégica para branding, embalagens e impressos de alta qualidade. Soluções completas para potencializar a sua marca.",
   keywords: [
-    "Gráfica Ouro Preto",
-    "Gráfica Mariana",
-    "Manutenção de Impressora Ouro Preto",
-    "Conserto de Impressora Mariana",
-    "Aluguel de Impressoras Ouro Preto",
-    "Locação de Impressoras Ouro Preto",
-    "Locação de Impressoras Mariana",
-    "Impressão Digital",
-    "Cartão de Visita Ouro Preto",
-    "Banners",
-    "Outsourcing de Impressão",
-    "MDTREM"
+    "Vink",
+    "Branding",
+    "Embalagens Personalizadas",
+    "Agência de Design",
+    "Impressão Digital Premium",
+    "Identidade Visual",
+    "Materiais Gráficos"
   ],
   openGraph: {
-    title: "Ouro Gráfica | Soluções em Impressão e Manutenção",
-    description: "Sua parceira em Ouro Preto para impressos, conserto de impressoras e locação de equipamentos.",
-    url: 'https://ourografica.site',
-    siteName: 'Ouro Gráfica',
+    title: "Vink | Especialistas em Branding e Embalagens",
+    description: "Soluções completas de branding e impressos para potencializar a sua marca.",
+    url: 'https://vink.com.br',
+    siteName: 'Vink',
     locale: 'pt_BR',
     type: 'website',
   },
@@ -65,7 +60,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body
-        className={`${outfit.variable} ${geistMono.variable} antialiased bg-background text-foreground flex flex-col min-h-screen pb-16 md:pb-0`}
+        className={`${outfit.variable} ${geistMono.variable} antialiased bg-background text-foreground flex flex-col min-h-screen`}
       >
         <CartProvider>
           <FavoritesProvider>

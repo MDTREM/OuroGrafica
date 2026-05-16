@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Banner } from "@/actions/homepage-actions";
+import { cn } from "@/lib/utils";
 
 interface BannerCarouselProps {
     banners: Banner[];
@@ -33,26 +34,25 @@ export function BannerCarousel({ banners }: BannerCarouselProps) {
     }, []);
 
     return (
-        <div ref={scrollRef} className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory flex rounded-2xl overflow-hidden shadow-sm bg-gray-50">
+        <div ref={scrollRef} className="w-full overflow-x-auto no-scrollbar snap-x snap-mandatory flex overflow-hidden bg-gray-50">
             {banners.map((banner) => (
                 <div key={banner.id} className="min-w-full snap-center flex items-center justify-center bg-gray-50">
                     <Link href={banner.link || '#'} className={`block w-full h-full ${!banner.link ? 'pointer-events-none' : ''}`}>
                         {/* Mobile Image (Visible only on mobile if available) */}
                         {banner.mobileImageUrl && (
-                            <div className="block md:hidden w-full h-auto">
+                            <div className="block md:hidden w-full relative aspect-[3/4]">
                                 <Image
                                     src={banner.mobileImageUrl}
                                     alt="Banner Mobile"
-                                    width={0}
-                                    height={0}
-                                    sizes="100vw"
-                                    className="w-full h-auto"
+                                    fill
+                                    className="object-cover"
+                                    priority
                                 />
                             </div>
                         )}
-
+ 
                         {/* Desktop Image (Hidden on mobile if mobile image exists) */}
-                        <div className={`${banner.mobileImageUrl ? 'hidden md:block' : 'block'} w-full h-auto`}>
+                        <div className={cn(banner.mobileImageUrl ? 'hidden md:block' : 'block', "w-full h-auto")}>
                             <Image
                                 src={banner.imageUrl}
                                 alt="Banner Desktop"

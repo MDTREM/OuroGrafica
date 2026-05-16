@@ -59,7 +59,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     // Load from local storage on mount
     useEffect(() => {
-        const savedCart = localStorage.getItem("@ourografica:cart");
+        const savedCart = localStorage.getItem("@Vink:cart");
         if (savedCart) {
             try {
                 setItems(JSON.parse(savedCart));
@@ -71,7 +71,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     // Save to local storage on change
     useEffect(() => {
-        localStorage.setItem("@ourografica:cart", JSON.stringify(items));
+        localStorage.setItem("@Vink:cart", JSON.stringify(items));
     }, [items]);
 
     const addToCart = (newItem: Omit<CartItem, "id">) => {

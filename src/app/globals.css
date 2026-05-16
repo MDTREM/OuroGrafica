@@ -3,27 +3,21 @@
 
 :root {
   /* Base - Light Mode Default */
-  --background: #F9FAFB;
-  /* Gray-50 */
-  --foreground: #1F2937;
-  /* Gray-800 */
+  --background: #FFFFFF;
+  --foreground: #1F2937; /* Gray-800 */
 
-  /* Brand Colors - Vivid Orange - Solid */
-  --brand: #ff6b07;
-  /* Requested Solid Orange */
-  --brand-light: #ff8533;
-  /* Lighter shade for hover */
-  --brand-dark: #cc5606;
-  /* Darker shade for active */
+  /* Brand Colors - Vivid Green - Solid */
+  --brand: #15cb98;
+  --brand-light: #44d9b0;
+  --brand-dark: #10a379;
+  --brand-gradient: linear-gradient(135deg, #15cb98 0%, #10a379 100%);
 
   /* Surfaces */
   --surface: #FFFFFF;
-  --surface-secondary: #F3F4F6;
-  /* Gray-100 */
+  --surface-secondary: #F3F4F6; /* Gray-100 */
 
   /* Border */
-  --border: #E5E7EB;
-  /* Gray-200 */
+  --border: #E5E7EB; /* Gray-200 */
 }
 
 @theme inline {
@@ -33,6 +27,7 @@
   --color-brand: var(--brand);
   --color-brand-light: var(--brand-light);
   --color-brand-dark: var(--brand-dark);
+  --image-brand-gradient: var(--brand-gradient);
 
   --color-surface: var(--surface);
   --color-surface-secondary: var(--surface-secondary);
@@ -41,6 +36,15 @@
 
   --font-sans: var(--font-outfit);
   --font-mono: var(--font-geist-mono);
+
+  /* Force square borders globally */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-full: 9999px; /* Keep full for icons/avatars, but remove from UI if requested */
 }
 
 body {
@@ -125,4 +129,24 @@ body {
 /* orange-700 */
 .prose .bg-orange-50 a {
   color: white !important;
+}
+
+/* Custom Scrollbar for thumbnails */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #f1f1f1;
 }

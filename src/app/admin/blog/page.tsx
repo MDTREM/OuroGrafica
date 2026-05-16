@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Plus, Edit, Trash2, FileText, Globe } from 'lucide-react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function AdminBlogPage() {
+    const { session } = useAuth();
     const [posts, setPosts] = useState<BlogPost[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -26,14 +27,13 @@ export default function AdminBlogPage() {
     async function handleDelete(id: string) {
         if (!confirm('Tem certeza que deseja excluir este post?')) return;
 
-        const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token;
 
-        const success = await deletePost(id, token);
-        if (success) {
+        const result = await deletePost(id, token);
+        if (result.success) {
             loadPosts();
         } else {
-            alert('Erro ao excluir post.');
+            alert(`Erro ao excluir post: ${result.error}`);
         }
     }
 
@@ -41,7 +41,7 @@ export default function AdminBlogPage() {
         <Container className="py-8">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Gerenciar Blog</h1>
+                    <h1 className="text-3xl font-semibold text-gray-900">Gerenciar Blog</h1>
                     <p className="text-gray-500">Crie e edite artigos para o blog</p>
                 </div>
                 <Link href="/admin/blog/novo">
@@ -79,7 +79,7 @@ export default function AdminBlogPage() {
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
-                                            <h3 className="font-bold text-gray-900">{post.title}</h3>
+                                            <h3 className="font-semibold text-gray-900">{post.title}</h3>
                                             <span className={`text-xs px-2 py-0.5 rounded-full ${post.published ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                                                 {post.published ? 'Publicado' : 'Rascunho'}
                                             </span>
@@ -93,7 +93,7 @@ export default function AdminBlogPage() {
 
                                 <div className="flex items-center gap-2">
                                     {post.published && (
-                                        <a href={`/blog/${post.slug}`} target="_blank" rel="noreferrer" title="Ver no site" className="p-2 text-gray-400 hover:text-[#FF6B07] transition-colors">
+                                        <a href={`/blog/${post.slug}`} target="_blank" rel="noreferrer" title="Ver no site" className="p-2 text-gray-400 hover:text-brand transition-colors">
                                             <Globe size={18} />
                                         </a>
                                     )}

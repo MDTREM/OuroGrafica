@@ -10,14 +10,14 @@ interface Props {
 }
 
 // Fixed base URL
-const BASE_URL = 'https://ourografica.site';
+const BASE_URL = 'https://vink.com.br';
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
     const post = await getPostBySlug(slug);
 
     if (!post) {
-        return { title: 'Post não encontrado | Ouro Gráfica' };
+        return { title: 'Post não encontrado | Vink' };
     }
 
     // Prioritize SEO fields, fallback to content
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             url: `${BASE_URL}/blog/${post.slug}`,
             images: post.cover_image ? [{ url: post.cover_image, alt: post.alt_text || post.title }] : [],
             publishedTime: post.created_at,
-            authors: ['Ouro Gráfica'],
+            authors: ['Vink'],
             section: post.category || 'Dicas',
         },
         twitter: {
@@ -69,12 +69,12 @@ export default async function BlogPostPage({ params }: Props) {
         "dateModified": post.updated_at || post.created_at,
         "author": {
             "@type": "Organization",
-            "name": "Ouro Gráfica",
+            "name": "Vink",
             "url": BASE_URL
         },
         "publisher": {
             "@type": "Organization",
-            "name": "Ouro Gráfica",
+            "name": "Vink",
             "logo": {
                 "@type": "ImageObject",
                 "url": `${BASE_URL}/icon.png`
@@ -110,17 +110,17 @@ export default async function BlogPostPage({ params }: Props) {
                     <Container>
                         <div className="max-w-4xl mx-auto">
                             <div className="flex flex-wrap gap-2 mb-4">
-                                <span className="inline-block px-3 py-1 bg-[#FF6B07] text-white text-xs font-bold uppercase tracking-wider rounded">
-                                    {post.category || 'Dica Ouro Gráfica'}
+                                <span className="inline-block px-3 py-1 bg-brand text-white text-xs font-semibold uppercase tracking-wider rounded">
+                                    {post.category || 'Dica Vink'}
                                 </span>
                                 {post.is_featured && (
-                                    <span className="inline-block px-3 py-1 bg-yellow-400 text-yellow-900 text-xs font-bold uppercase tracking-wider rounded">
+                                    <span className="inline-block px-3 py-1 bg-yellow-400 text-yellow-900 text-xs font-semibold uppercase tracking-wider rounded">
                                         Destaque
                                     </span>
                                 )}
                             </div>
 
-                            <h1 className="text-3xl md:text-5xl md:leading-tight font-bold text-white mb-6 drop-shadow-lg">
+                            <h1 className="text-3xl md:text-5xl md:leading-tight font-semibold text-white mb-6 drop-shadow-lg">
                                 {post.title}
                             </h1>
                             <div className="flex flex-wrap items-center gap-6 text-gray-300 text-sm">
@@ -144,7 +144,7 @@ export default async function BlogPostPage({ params }: Props) {
 
                     {/* Share Sidebar (Desktop) */}
                     <div className="hidden md:block md:col-span-1 space-y-4 sticky top-24 h-fit">
-                        <p className="text-xs text-center font-bold text-gray-400 uppercase tracking-widest mb-2">Share</p>
+                        <p className="text-xs text-center font-semibold text-gray-400 uppercase tracking-widest mb-2">Share</p>
                         <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-[#1877F2] hover:text-white transition-all">
                             <Facebook size={18} />
                         </button>
@@ -157,22 +157,22 @@ export default async function BlogPostPage({ params }: Props) {
                     <div className="md:col-span-10">
                         <div
                             className="prose prose-lg prose-slate max-w-none
-                            prose-headings:font-bold prose-headings:text-gray-900
+                            prose-headings:font-semibold prose-headings:text-gray-900
                             prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:border-b prose-h2:pb-4 prose-h2:border-gray-100
-                            prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-[#FF6B07]
+                            prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-brand
                             prose-p:leading-relaxed prose-p:text-gray-600 prose-p:mb-6
-                            prose-a:text-[#FF6B07] prose-a:font-bold prose-a:no-underline hover:prose-a:text-[#e65a00] hover:prose-a:underline
+                            prose-a:text-brand prose-a:font-semibold prose-a:no-underline hover:prose-a:text-brand-dark hover:prose-a:underline
                             prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8 prose-img:w-full
-                            prose-blockquote:border-l-4 prose-blockquote:border-[#FF6B07] prose-blockquote:bg-orange-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-lg prose-blockquote:italic
+                            prose-blockquote:border-l-4 prose-blockquote:border-brand prose-blockquote:bg-brand/5 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-r-lg prose-blockquote:italic
                             prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-6 prose-ul:space-y-2
-                            prose-li:marker:text-[#FF6B07]"
+                            prose-li:marker:text-brand"
                             dangerouslySetInnerHTML={{ __html: post.content }}
                         />
 
                         {/* Tags */}
                         {post.tags && post.tags.length > 0 && (
                             <div className="mt-12 pt-8 border-t border-gray-200">
-                                <p className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <p className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
                                     <Tag size={16} />
                                     Tags Relacionadas:
                                 </p>
@@ -188,7 +188,7 @@ export default async function BlogPostPage({ params }: Props) {
 
                         {/* Mobile Share */}
                         <div className="mt-8 pt-8 md:hidden flex items-center gap-4 justify-center border-t border-gray-100">
-                            <span className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                            <span className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                                 <Share2 size={16} />
                                 Compartilhar:
                             </span>

@@ -43,17 +43,17 @@ export default function AdminCategoriesPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Categorias</h1>
+                    <h1 className="text-2xl font-semibold text-gray-900">Categorias</h1>
                     <p className="text-gray-500">Organize os produtos da loja.</p>
                 </div>
                 <div className="flex gap-2">
                     {hasChanges && (
-                        <button onClick={saveOrder} className="bg-green-600 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-green-600/20 hover:bg-green-700 transition-colors flex items-center gap-2 animate-in fade-in">
+                        <button onClick={saveOrder} className="bg-green-600 text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg shadow-green-600/20 hover:bg-green-700 transition-colors flex items-center gap-2 animate-in fade-in">
                             <Save size={18} />
                             Salvar Ordem
                         </button>
                     )}
-                    <Link href="/admin/categorias/nova" className="bg-brand text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-brand/20 hover:bg-brand-dark transition-colors flex items-center gap-2">
+                    <Link href="/admin/categorias/nova" className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg shadow-brand/20 hover:bg-gradient-to-r from-brand to-brand-dark-dark transition-colors flex items-center gap-2">
                         <Plus size={18} />
                         Nova Categoria
                     </Link>
@@ -68,14 +68,14 @@ export default function AdminCategoriesPage() {
                                 <button
                                     onClick={() => moveCategory(idx, 'up')}
                                     disabled={idx === 0}
-                                    className="p-1 text-gray-400 hover:text-brand disabled:opacity-30"
+                                    className="p-1 text-gray-400 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark disabled:opacity-30"
                                 >
                                     <ChevronUp size={20} />
                                 </button>
                                 <button
                                     onClick={() => moveCategory(idx, 'down')}
                                     disabled={idx === localCategories.length - 1}
-                                    className="p-1 text-gray-400 hover:text-brand disabled:opacity-30"
+                                    className="p-1 text-gray-400 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark disabled:opacity-30"
                                 >
                                     <ChevronDown size={20} />
                                 </button>
@@ -84,17 +84,17 @@ export default function AdminCategoriesPage() {
                                 {category.image ? (
                                     <img src={category.image} alt="" className="w-full h-full object-cover" />
                                 ) : (
-                                    <span className="text-xs font-bold uppercase">{category.name.substring(0, 2)}</span>
+                                    <span className="text-xs font-semibold uppercase">{category.name.substring(0, 2)}</span>
                                 )}
                             </div>
                             <div>
-                                <h3 className="font-bold text-gray-900">{category.name}</h3>
+                                <h3 className="font-semibold text-gray-900">{category.name}</h3>
                                 <p className="text-xs text-gray-500">ID: {category.id}</p>
                                 {category.parentId && <p className="text-[10px] text-gray-400">Sub de: {categories.find(c => c.id === category.parentId)?.name}</p>}
                             </div>
                         </div>
                         <div className="flex gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                            <Link href={`/admin/categorias/editar/${category.id}`} className="p-2 text-gray-400 hover:text-brand transition-colors">
+                            <Link href={`/admin/categorias/editar/${category.id}`} className="p-2 text-gray-400 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors">
                                 <Edit size={16} />
                             </Link>
                             <button

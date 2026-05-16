@@ -53,10 +53,10 @@ export default function ProfilePage() {
                 <Container>
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900 mb-1">Olá, {user.user_metadata?.full_name || user.user_metadata?.name || 'Cliente'}</h1>
+                            <h1 className="text-2xl font-semibold text-gray-900 mb-1">Olá, {user.user_metadata?.full_name || user.user_metadata?.name || 'Cliente'}</h1>
                             <p className="text-sm text-gray-500">{user.email}</p>
                         </div>
-                        <button className="text-sm font-medium text-brand hover:underline">
+                        <button className="text-sm font-medium text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline">
                             Editar
                         </button>
                     </div>
@@ -73,10 +73,10 @@ export default function ProfilePage() {
                             className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex items-center justify-between group"
                         >
                             <div>
-                                <h3 className="font-bold text-gray-900 group-hover:text-brand transition-colors">{item.label}</h3>
+                                <h3 className="font-semibold text-gray-900 group-hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors">{item.label}</h3>
                                 <p className="text-xs text-gray-500 mt-1">{item.description}</p>
                             </div>
-                            <ChevronRight size={18} className="text-gray-300 group-hover:text-brand flex-shrink-0 ml-4" />
+                            <ChevronRight size={18} className="text-gray-300 group-hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark flex-shrink-0 ml-4" />
                         </Link>
                     ))}
                 </div>
@@ -84,7 +84,7 @@ export default function ProfilePage() {
                 {/* Quit Button */}
                 <button
                     onClick={() => signOut()}
-                    className="w-full md:w-auto flex items-center justify-center gap-2 text-red-600 font-bold bg-white border border-red-100 hover:bg-red-50 px-6 py-3 rounded-xl transition-colors mx-auto md:mx-0">
+                    className="w-full md:w-auto flex items-center justify-center gap-2 text-red-600 font-semibold bg-white border border-red-100 hover:bg-red-50 px-6 py-3 rounded-xl transition-colors mx-auto md:mx-0">
                     <LogOut size={18} />
                     Sair da Conta
                 </button>

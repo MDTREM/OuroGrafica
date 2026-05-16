@@ -9,13 +9,9 @@ export default function ForgotPasswordPage() {
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <Link href="/" className="flex justify-center mb-6">
-                    <img
-                        src="https://i.imgur.com/B9Cg1wQ.png"
-                        alt="Ouro Gráfica"
-                        className="h-8 w-auto object-contain"
-                    />
+                    <img src='https://i.imgur.com/Kizb68g.png' alt='Vink' className='h-8 w-auto object-contain' />
                 </Link>
-                <h2 className="text-center text-3xl font-bold tracking-tight text-gray-900">
+                <h2 className="text-center text-3xl font-semibold tracking-tight text-gray-900">
                     Recuperar Senha
                 </h2>
                 <p className="mt-2 text-center text-sm text-gray-600 px-6">
@@ -35,7 +31,7 @@ export default function ForgotPasswordPage() {
 
                         <button
                             type="submit"
-                            className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-brand/20 text-sm font-bold text-white bg-brand hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-all"
+                            className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-lg shadow-brand/20 text-sm font-semibold text-white bg-gradient-to-r from-brand to-brand-dark hover:bg-gradient-to-r from-brand to-brand-dark-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-all"
                         >
                             <Send size={18} />
                             Enviar Link de Recuperação
@@ -43,7 +39,7 @@ export default function ForgotPasswordPage() {
                     </form>
 
                     <div className="mt-8">
-                        <Link href="/login" className="flex items-center justify-center gap-2 text-sm font-bold text-gray-500 hover:text-brand transition-colors">
+                        <Link href="/login" className="flex items-center justify-center gap-2 text-sm font-semibold text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors">
                             <ArrowLeft size={16} />
                             Voltar para o Login
                         </Link>

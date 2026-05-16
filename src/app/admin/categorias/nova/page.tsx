@@ -62,7 +62,7 @@ export default function NewCategoryPage() {
                         <ArrowLeft size={24} />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Nova Categoria</h1>
+                        <h1 className="text-2xl font-semibold text-gray-900">Nova Categoria</h1>
                         <p className="text-gray-500">Adicione uma nova seção à loja.</p>
                     </div>
                 </div>
@@ -132,7 +132,7 @@ export default function NewCategoryPage() {
 
                                     const formData = new FormData();
                                     formData.append('file', file);
-                                    const url = await uploadImage(formData);
+                                    const url = await uploadImage(formData, 'categories');
 
                                     if (url) {
                                         setFormData(prev => ({ ...prev, image: url }));
@@ -152,7 +152,7 @@ export default function NewCategoryPage() {
 
                 {/* Visibility */}
                 <div className="pt-4 border-t border-gray-50">
-                    <h3 className="text-sm font-bold text-gray-900 mb-3">Visibilidade</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Visibilidade</h3>
                     <div className="divide-y divide-gray-50">
                         <Switch
                             label="Mostrar na Página Inicial"
@@ -176,7 +176,7 @@ export default function NewCategoryPage() {
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex items-center gap-2 bg-brand text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-brand/20 hover:bg-brand-dark transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-8 rounded-xl shadow-lg shadow-brand/20 hover:bg-gradient-to-r from-brand to-brand-dark-dark transition-colors disabled:opacity-50"
                 >
                     {isLoading ? "Salvando..." : (
                         <>

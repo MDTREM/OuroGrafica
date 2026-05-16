@@ -5,6 +5,7 @@ export function mapProduct(p: any): Product {
     return {
         ...p,
         customText: p.custom_text,
+        technicalSpecs: p.technical_specs || {},
         hasDesignOption: p.has_design_option !== undefined ? p.has_design_option : true,
         priceBreakdowns: p.price_breakdowns || {}
     } as Product;

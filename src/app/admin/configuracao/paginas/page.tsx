@@ -115,10 +115,10 @@ export default function AdminPagesConfigPage() {
     return (
         <Container className="py-8 space-y-8">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold flex items-center gap-2">
-                    <ImageIcon className="text-brand" /> Banners das Páginas
+                <h1 className="text-2xl font-semibold flex items-center gap-2">
+                    <ImageIcon className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" /> Banners das Páginas
                 </h1>
-                <Button onClick={handleSave} disabled={saving} className="bg-brand text-brand-foreground hover:bg-brand/90 flex items-center gap-2">
+                <Button onClick={handleSave} disabled={saving} className="bg-gradient-to-r from-brand to-brand-dark text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark-foreground hover:bg-gradient-to-r from-brand to-brand-dark/90 flex items-center gap-2">
                     <Save size={18} />
                     {saving ? 'Salvando...' : 'Salvar Alterações'}
                 </Button>
@@ -127,7 +127,7 @@ export default function AdminPagesConfigPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Manutenção Card */}
                 <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-4">
-                    <h2 className="text-lg font-bold border-b border-gray-100 pb-2">Página de Manutenção (Carrossel)</h2>
+                    <h2 className="text-lg font-semibold border-b border-gray-100 pb-2">Página de Manutenção (Carrossel)</h2>
 
                     <div className="space-y-6">
                         {config.maintenanceBanners?.map((banner, idx) => (
@@ -197,13 +197,13 @@ export default function AdminPagesConfigPage() {
                                 className="cursor-pointer"
                             />
                         </div>
-                        {uploading?.type === 'maintenance' && !uploading.index && <p className="text-xs text-brand">Carregando...</p>}
+                        {uploading?.type === 'maintenance' && !uploading.index && <p className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">Carregando...</p>}
                     </div>
                 </div>
 
                 {/* Outsourcing/Aluguel Card */}
                 <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm space-y-4">
-                    <h2 className="text-lg font-bold border-b border-gray-100 pb-2">Página de Aluguel/Outsourcing (Carrossel)</h2>
+                    <h2 className="text-lg font-semibold border-b border-gray-100 pb-2">Página de Aluguel/Outsourcing (Carrossel)</h2>
 
                     <div className="space-y-6">
                         {config.outsourcingBanners?.map((banner, idx) => (
@@ -273,7 +273,7 @@ export default function AdminPagesConfigPage() {
                                 className="cursor-pointer"
                             />
                         </div>
-                        {uploading?.type === 'outsourcing' && !uploading.index && <p className="text-xs text-brand">Carregando...</p>}
+                        {uploading?.type === 'outsourcing' && !uploading.index && <p className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">Carregando...</p>}
                     </div>
                 </div>
             </div>

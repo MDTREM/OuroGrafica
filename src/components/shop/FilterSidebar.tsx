@@ -36,12 +36,12 @@ export function FilterSidebar() {
         <aside className="w-full md:w-64 flex-shrink-0 mb-6 md:mb-0">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
                 <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                    <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                        <Filter size={18} className="text-brand" />
+                    <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                        <Filter size={18} className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
                         Filtros
                     </h3>
                     {(currentPrice || currentDeadline) && (
-                        <button onClick={() => router.push(window.location.pathname)} className="text-xs text-brand hover:underline font-medium">
+                        <button onClick={() => router.push(window.location.pathname)} className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline font-medium">
                             Limpar
                         </button>
                     )}
@@ -54,35 +54,35 @@ export function FilterSidebar() {
                             onClick={() => toggleSection('price')}
                             className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors text-left"
                         >
-                            <span className="text-sm font-bold text-gray-700 uppercase">Preço</span>
+                            <span className="text-sm font-semibold text-gray-700 uppercase">Preço</span>
                             {openSections['price'] ? <ChevronUp size={16} className="text-gray-400" /> : <ChevronDown size={16} className="text-gray-400" />}
                         </button>
 
                         {openSections['price'] && (
                             <div className="p-4 pt-0 space-y-2 animate-in slide-in-from-top-2 duration-200">
-                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-brand">
+                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">
                                     <input
                                         type="radio"
                                         name="price"
-                                        className="text-brand focus:ring-brand"
+                                        className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark focus:ring-brand"
                                         checked={currentPrice === 'low'}
                                         onChange={() => handleFilterChange('price', 'low')}
                                     /> Até R$ 50
                                 </label>
-                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-brand">
+                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">
                                     <input
                                         type="radio"
                                         name="price"
-                                        className="text-brand focus:ring-brand"
+                                        className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark focus:ring-brand"
                                         checked={currentPrice === 'mid'}
                                         onChange={() => handleFilterChange('price', 'mid')}
                                     /> R$ 50 - R$ 100
                                 </label>
-                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-brand">
+                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">
                                     <input
                                         type="radio"
                                         name="price"
-                                        className="text-brand focus:ring-brand"
+                                        className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark focus:ring-brand"
                                         checked={currentPrice === 'high'}
                                         onChange={() => handleFilterChange('price', 'high')}
                                     /> Acima de R$ 100
@@ -97,24 +97,24 @@ export function FilterSidebar() {
                             onClick={() => toggleSection('deadline')}
                             className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors text-left"
                         >
-                            <span className="text-sm font-bold text-gray-700 uppercase">Prazo</span>
+                            <span className="text-sm font-semibold text-gray-700 uppercase">Prazo</span>
                             {openSections['deadline'] ? <ChevronUp size={16} className="text-gray-400" /> : <ChevronDown size={16} className="text-gray-400" />}
                         </button>
 
                         {openSections['deadline'] && (
                             <div className="p-4 pt-0 space-y-2 animate-in slide-in-from-top-2 duration-200">
-                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-brand">
+                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">
                                     <input
                                         type="checkbox"
-                                        className="rounded text-brand focus:ring-brand"
+                                        className="rounded text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark focus:ring-brand"
                                         checked={currentDeadline === '24h'}
                                         onChange={() => handleFilterChange('deadline', '24h')}
                                     /> Entrega em 24h
                                 </label>
-                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-brand">
+                                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">
                                     <input
                                         type="checkbox"
-                                        className="rounded text-brand focus:ring-brand"
+                                        className="rounded text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark focus:ring-brand"
                                         checked={currentDeadline === 'free'}
                                         onChange={() => handleFilterChange('deadline', 'free')}
                                     /> Frete Grátis

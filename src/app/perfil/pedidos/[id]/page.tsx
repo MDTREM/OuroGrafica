@@ -93,7 +93,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
     if (isAuthLoading || isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Loader2 size={32} className="animate-spin text-brand" />
+                <Loader2 size={32} className="animate-spin text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
             </div>
         );
     }
@@ -102,7 +102,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
                 <h2 className="text-xl font-bold text-gray-900 mb-2">Pedido não encontrado</h2>
-                <Link href="/perfil/pedidos" className="text-brand hover:underline">Voltar para meus pedidos</Link>
+                <Link href="/perfil/pedidos" className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline">Voltar para meus pedidos</Link>
             </div>
         );
     }
@@ -130,7 +130,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
             {/* Header */}
             <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-30">
                 <Container className="flex items-center gap-4">
-                    <Link href="/perfil/pedidos" className="text-gray-500 hover:text-brand transition-colors p-1">
+                    <Link href="/perfil/pedidos" className="text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors p-1">
                         <ArrowLeft size={24} />
                     </Link>
                     <h1 className="text-xl font-bold text-gray-900 flex-1 text-center pr-8">Detalhes do Pedido</h1>
@@ -161,10 +161,10 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
                         {order.timeline.map((step: any, idx: number) => (
                             <div key={idx} className="relative">
                                 {/* Dot */}
-                                <div className={`absolute -left-[21px] top-1 w-3 h-3 rounded-full border-2 ${step.completed || step.current ? "bg-brand border-brand" : "bg-white border-gray-300"}`}></div>
+                                <div className={`absolute -left-[21px] top-1 w-3 h-3 rounded-full border-2 ${step.completed || step.current ? "bg-gradient-to-r from-brand to-brand-dark border-brand" : "bg-white border-gray-300"}`}></div>
 
                                 <div className={`${step.completed || step.current ? "text-gray-900" : "text-gray-400"}`}>
-                                    <h4 className={`text-sm font-bold ${step.current ? "text-brand" : ""}`}>{step.title}</h4>
+                                    <h4 className={`text-sm font-bold ${step.current ? "text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" : ""}`}>{step.title}</h4>
                                     <p className="text-xs">{step.date}</p>
                                 </div>
                             </div>
@@ -247,7 +247,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
                                 <span>Frete ({shippingMethod})</span>
                                 <span>{formatPrice(shippingPrice)}</span>
                             </div>
-                            <div className="flex justify-between text-brand font-bold text-lg pt-4 border-t border-gray-100 mt-2">
+                            <div className="flex justify-between text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-bold text-lg pt-4 border-t border-gray-100 mt-2">
                                 <span>Total</span>
                                 <span>{formatPrice(total)}</span>
                             </div>

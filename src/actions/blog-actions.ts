@@ -154,24 +154,34 @@ export async function savePost(post: Partial<BlogPost>, token?: string) {
 
 export async function deletePost(id: string, token?: string) {
     try {
-        if (!token) return false;
+        if (!token) {
+            console.error('Delete failed: No token provided');
+            return { success: false, error: 'Usuário não autenticado' };
+        }
 
         const supabase = createAuthClient(token);
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return false;
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        if (authError || !user) {
+            console.error('Delete failed: Auth error or no user', authError);
+            return { success: false, error: 'Sessão inválida ou expirada' };
+        }
 
         const { error } = await supabase
             .from('posts')
             .delete()
             .eq('id', id);
 
-        if (error) throw error;
+        if (error) {
+            console.error('Delete failed: Supabase error', error);
+            return { success: false, error: error.message };
+        }
 
         revalidatePath('/blog');
         revalidatePath('/admin/blog');
-        return true;
-    } catch (error) {
-        console.error('Error deleting post:', error);
-        return false;
+        return { success: true };
+    } catch (error: any) {
+        console.error('Error in deletePost action:', error);
+        return { success: false, error: error.message || 'Erro interno ao excluir post' };
     }
 }

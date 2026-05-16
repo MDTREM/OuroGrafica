@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, UploadCloud, Truck } from "lucide-react";
+import { ArrowLeft, Check, UploadCloud, Truck, Download } from "lucide-react";
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { cn, formatPrice } from "@/lib/utils";
@@ -21,8 +21,10 @@ export default function ProductClient({ product }: ProductClientProps) {
     // Removed isLoading state as data comes from server
 
     const [quantity, setQuantity] = useState(100);
-    const [selectedFormat, setSelectedFormat] = useState("");
-    const [selectedFinish, setSelectedFinish] = useState("");
+    const [selectedFormat, setSelectedFormat] = useState<string>("");
+    const [selectedFinish, setSelectedFinish] = useState<string>("");
+    const [selectedPrinting, setSelectedPrinting] = useState<string>("");
+    const [selectedExtra, setSelectedExtra] = useState<string>("");
     const [selectedVariations, setSelectedVariations] = useState<{ [key: string]: string }>({});
     const [activeImage, setActiveImage] = useState(0);
     const [selectedVariationImage, setSelectedVariationImage] = useState<string | null>(null);
@@ -59,8 +61,10 @@ export default function ProductClient({ product }: ProductClientProps) {
     // Initialize defaults when product loads
     useEffect(() => {
         if (product) {
-            if (product.formats && product.formats.length > 0) setSelectedFormat(product.formats[0]);
-            if (product.finishes && product.finishes.length > 0) setSelectedFinish(product.finishes[0]);
+            if (product.formats?.[0]) setSelectedFormat(product.formats[0]);
+            if (product.finishes?.[0]) setSelectedFinish(product.finishes[0]);
+            if (product.printing?.[0]) setSelectedPrinting(product.printing[0]);
+            if (product.extras?.[0]) setSelectedExtra(product.extras[0]);
 
             // Initialize dynamic variations
             if (product.variations) {
@@ -118,206 +122,373 @@ export default function ProductClient({ product }: ProductClientProps) {
         ? product.images
         : (product.image ? [product.image] : []);
 
-    const handleWhatsAppQuote = () => {
+    const handleAddToCart = () => {
         if (!product) return;
 
-        const message = `Olá! Gostaria de solicitar um orçamento para o produto: *${product.title}*%0A%0A*Detalhes:*%0A- Quantidade: ${quantity} un.%0A${selectedFormat ? `- Formato: ${selectedFormat}%0A` : ""}${selectedFinish ? `- Acabamento: ${selectedFinish}%0A` : ""}`;
-        const phone = "5531982190935";
-        window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+        // Custom validations
+        if (designOption === "upload" && !uploadedFile && product.hasDesignOption !== false) {
+            setShowUploadAlert(true);
+            return;
+        }
+
+        if (product.customText?.enabled && !customTextValue) {
+            setShowTextAlert(true);
+            return;
+        }
+
+        addToCart({
+            productId: product.id,
+            title: product.title,
+            subtitle: `${quantity} un.`,
+            price: finalPrice / quantity,
+            quantity: quantity,
+            image: selectedVariationImage || productImages[0] || "",
+            details: {
+                paper: product.technicalSpecs?.paper || selectedVariations['Papel'] || selectedVariations['Material'] || "",
+                format: selectedFormat,
+                printing: selectedPrinting,
+                finish: selectedFinish,
+                extra: selectedExtra,
+                designOption: designOption,
+                dimensions: dimensions.width > 0 ? dimensions : undefined,
+                selectedVariations: selectedVariations,
+                fileUrl: uploadedFile?.url,
+                fileName: uploadedFile?.name,
+                customText: customTextValue
+            }
+        });
+
+        router.push("/carrinho");
     };
 
+    // Componente de Ilustração Visual
+    const VisualIllustration = ({ type, option, manualType }: { type: "format" | "print", option: string, manualType?: string }) => {
+        const finalManualType = manualType || product.optionIllustrations?.[option];
+        
+        const isRounded = finalManualType === 'rounded' || (!finalManualType && option.toLowerCase().includes("arredondado"));
+        const isFrontAndBack = finalManualType === 'front_back' || (!finalManualType && (option.toLowerCase().includes("frente e verso") || option.toLowerCase().includes("f/v")));
+        const isRectangular = finalManualType === 'rectangular' || (!finalManualType && option.toLowerCase().includes("retangular"));
+        const isFrontOnly = finalManualType === 'front' || (!finalManualType && !isFrontAndBack && (option.toLowerCase().includes("frente") || option.toLowerCase().includes("4x0")));
+
+        if (type === "format" || finalManualType === 'rectangular' || finalManualType === 'rounded') {
+            return (
+                <div className="w-full aspect-[16/10] bg-gray-50 flex items-center justify-center p-4">
+                    <div className={cn(
+                        "w-3/4 h-3/4 border-2 border-gray-400 flex items-center justify-center transition-all duration-500",
+                        isRounded ? "rounded-[32px]" : "rounded-sm"
+                    )}>
+                        <div className={cn(
+                            "w-1/2 h-1/2 border border-gray-300 transition-all duration-500",
+                            isRounded ? "rounded-md" : "rounded-xs"
+                        )} />
+                    </div>
+                </div>
+            );
+        }
+
+        if (type === "print" || finalManualType === 'front' || finalManualType === 'front_back') {
+            return (
+                <div className="w-full aspect-[16/10] bg-gray-50 flex items-center justify-center p-4 gap-2">
+                    {/* Frente */}
+                    <div className="w-16 h-20 border-2 border-gray-400 rounded-sm flex items-center justify-center text-gray-500 font-semibold text-lg bg-white">
+                        F
+                    </div>
+                    {/* Verso */}
+                    <div className={cn(
+                        "w-16 h-20 border-2 rounded-sm flex items-center justify-center text-gray-500 font-semibold text-lg",
+                        isFrontAndBack ? "border-gray-400 bg-white" : "border-gray-200 bg-gray-100/50"
+                    )}>
+                        {isFrontAndBack ? "V" : ""}
+                    </div>
+                </div>
+            );
+        }
+
+        return null;
+    };
 
     return (
         <div className="bg-background min-h-screen pb-32 relative">
-            {/* Custom Nav for Product */}
-            <div className="sticky top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-border h-14 flex items-center justify-between px-4 md:hidden">
-                <Link href="/" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <ArrowLeft size={22} className="text-gray-700" />
-                </Link>
-                <h1 className="text-sm font-bold truncate max-w-[200px]">{product.title}</h1>
-                <div className="w-10"></div>{/* Placeholder for symmetry */}
-            </div>
-
-            <Container className="pt-0 md:pt-8 max-w-4xl">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* LEFT COLUMN: IMAGES */}
-                    <div>
-                        <div className="aspect-square bg-white rounded-2xl relative flex items-center justify-center overflow-hidden mb-4 border border-border">
-                            {/* Main Image Display */}
-                            {productImages.length > 0 || selectedVariationImage ? (
-                                <Image
-                                    src={selectedVariationImage || productImages[activeImage] || productImages[0]}
-                                    alt={product.title}
-                                    fill
-                                    className="object-contain p-2 animate-in fade-in zoom-in-50 duration-300"
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                />
-                            ) : (
-                                <div className="flex flex-col items-center justify-center text-gray-400">
-                                    <span className="text-4xl mb-2">📷</span>
-                                    <span className="text-sm">Sem imagem</span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Thumbnails */}
-                        {productImages.length > 1 && (
-                            <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
-                                {productImages.map((img, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => {
-                                            setActiveImage(idx);
-                                            setSelectedVariationImage(null);
-                                        }}
-                                        className={cn(
-                                            "min-w-[70px] w-[70px] h-[70px] rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all overflow-hidden relative bg-gray-50",
-                                            activeImage === idx
-                                                ? "border-brand ring-1 ring-brand"
-                                                : "border-transparent hover:border-gray-300"
-                                        )}
-                                    >
-                                        <Image
-                                            src={img}
-                                            alt=""
-                                            fill
-                                            className="object-cover"
-                                            sizes="70px"
-                                        />
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* RIGHT COLUMN: CONFIG */}
-                    <div className="px-4 md:px-0 mt-6 md:mt-0">
-                        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{product.title}</h1>
-
-                        {/* 1. DESCRIPTION TOGGLE */}
-                        <div className="mb-6">
-                            <p className={`text-sm text-gray-600 leading-relaxed transition-all ${showFullDesc ? "" : "line-clamp-2"}`}>
-                                {product.description}
-                            </p>
-                            {product.description && product.description.length > 100 && (
-                                <button
-                                    onClick={() => setShowFullDesc(!showFullDesc)}
-                                    className="text-brand font-bold text-xs mt-1 hover:underline"
-                                >
-                                    {showFullDesc ? "Ler menos" : "Ler descrição completa"}
-                                </button>
-                            )}
-                        </div>
-
-                        {/* 2. CUSTOM DIMENSIONS (If enabled) */}
-                        {product.allowCustomDimensions && (
-                            <div className="mb-8 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                                <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide flex items-center gap-2">
-                                    Dimensões
-                                    <span className="text-[10px] bg-brand/10 text-brand px-2 py-0.5 rounded-full normal-case">Medidas em cm</span>
-                                </h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500">Largura (cm)</label>
-                                        <input
-                                            type="number"
-                                            className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand font-bold text-lg h-12 text-center"
-                                            placeholder="0"
-                                            value={dimensions.width || ""}
-                                            onChange={(e) => setDimensions(prev => ({ ...prev, width: parseFloat(e.target.value) }))}
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-bold text-gray-500">Altura (cm)</label>
-                                        <input
-                                            type="number"
-                                            className="w-full rounded-xl border-gray-200 focus:border-brand focus:ring-brand font-bold text-lg h-12 text-center"
-                                            placeholder="0"
-                                            value={dimensions.height || ""}
-                                            onChange={(e) => setDimensions(prev => ({ ...prev, height: parseFloat(e.target.value) }))}
-                                        />
-                                    </div>
-                                </div>
-                                {(dimensions.width > 0 && dimensions.height > 0) && (
-                                    <div className="mt-3 text-center">
-                                        <p className="text-xs text-gray-500">
-                                            Área total: <span className="font-bold text-gray-900">{((dimensions.width * dimensions.height) / 10000).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 4 })} m²</span>
-                                        </p>
+            <Container className="pt-4 md:pt-12 max-w-7xl">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+                    
+                    {/* COLUNA ESQUERDA: IMAGENS E CONFIGURAÇÕES (Lg: 8 cols) */}
+                    <div className="lg:col-span-8 space-y-8">
+                        
+                        {/* 1. SEÇÃO DE IMAGENS */}
+                        <div className="space-y-4">
+                            <div className="aspect-[16/9] rounded-lg relative flex items-center justify-center overflow-hidden bg-gray-50 border border-gray-100 shadow-sm">
+                                {productImages.length > 0 || selectedVariationImage ? (
+                                    <Image
+                                        src={selectedVariationImage || productImages[activeImage] || productImages[0]}
+                                        alt={product.title}
+                                        fill
+                                        className="object-cover animate-in fade-in zoom-in-95 duration-500"
+                                        sizes="(max-width: 1024px) 100vw, 800px"
+                                        priority
+                                    />
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center text-gray-300">
+                                        <span className="text-6xl mb-2">📷</span>
+                                        <span className="text-sm font-medium">Sem imagem disponível</span>
                                     </div>
                                 )}
                             </div>
-                        )}
 
-                        {/* 3. QUANTITY SELECTOR - Hidden for Catalog Mode
-                        <div className="mb-8">
-                            ... (código mantido mas oculto se necessário reativar)
-                        </div> 
-                        */}
+                            {/* Thumbnails */}
+                            {productImages.length > 1 && (
+                                <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
+                                    {productImages.map((img, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => {
+                                                setActiveImage(idx);
+                                                setSelectedVariationImage(null);
+                                            }}
+                                            className={cn(
+                                                "min-w-[80px] w-[80px] h-[80px] rounded-md border-2 transition-all overflow-hidden relative bg-white shadow-sm",
+                                                activeImage === idx
+                                                    ? "border-brand ring-2 ring-brand/20"
+                                                    : "border-transparent hover:border-gray-200"
+                                            )}
+                                        >
+                                            <Image src={img} alt="" fill className="object-cover" sizes="80px" />
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
 
-                        {/* 3. FORMAT & FINISHING */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                        {/* 2. TÍTULO E DESCRIÇÃO (MOBILE ONLY - BELOW PHOTOS) */}
+                        <div className="lg:hidden space-y-6 px-1">
+                            <h1 className="text-2xl font-semibold text-gray-900 tracking-tight leading-snug">{product.title}</h1>
+                            <div className="prose prose-sm max-w-none text-gray-500 leading-relaxed text-[13px]">
+                                <p className={cn(!showFullDesc && "line-clamp-3")}>{product.description}</p>
+                                {product.description && product.description.length > 150 && (
+                                    <button
+                                        onClick={() => setShowFullDesc(!showFullDesc)}
+                                        className="text-brand font-medium text-[12px] mt-3 hover:underline inline-flex items-center gap-1 opacity-80"
+                                    >
+                                        {showFullDesc ? "Exibir menos" : "Exibir mais informações"}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* 3. SEÇÃO DE TEMPLATES / MODELOS (NOVO) */}
+                        {product.variations?.filter(v => 
+                            v.name.toLowerCase().includes("modelo") || 
+                            v.name.toLowerCase().includes("template")
+                        ).map((variation, vIdx) => (
+                            <section key={`template-${vIdx}`} className="space-y-6 pt-6 border-t border-gray-100/60 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-3">
+                                        <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Escolha seu {variation.name}</h3>
+                                        <span className="bg-brand/10 text-brand text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Diferencial Vink</span>
+                                    </div>
+                                    <p className="text-xs text-gray-500">Selecione um design pronto para personalizar com sua marca</p>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                    {variation.options.map((option, oIdx) => {
+                                        const isSelected = selectedVariations[variation.name] === option;
+                                        const templateImg = variation.images?.[option];
+                                        
+                                        return (
+                                            <button
+                                                key={oIdx}
+                                                onClick={() => {
+                                                    setSelectedVariations(prev => ({ ...prev, [variation.name]: option }));
+                                                    if (templateImg) {
+                                                        setSelectedVariationImage(templateImg);
+                                                        const imgIndex = productImages.findIndex(img => img === templateImg);
+                                                        if (imgIndex !== -1) setActiveImage(imgIndex);
+                                                    }
+                                                }}
+                                                className={cn(
+                                                    "group relative flex flex-col rounded-xl border-2 transition-all overflow-hidden bg-white hover:shadow-xl hover:-translate-y-1 duration-300",
+                                                    isSelected ? "border-brand ring-4 ring-brand/5 shadow-lg shadow-brand/10" : "border-gray-100"
+                                                )}
+                                            >
+                                                <div className="aspect-[3/4] relative bg-gray-50">
+                                                    {templateImg ? (
+                                                        <Image src={templateImg} alt={option} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-300 italic text-[10px]">Sem prévia</div>
+                                                    )}
+                                                    
+                                                    {isSelected && (
+                                                        <div className="absolute top-2 right-2 w-6 h-6 bg-brand text-white rounded-full flex items-center justify-center shadow-md animate-in zoom-in-50 duration-300">
+                                                            <Check size={14} strokeWidth={3} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="p-3 text-center border-t border-gray-50 bg-gray-50/30">
+                                                    <span className={cn(
+                                                        "text-[11px] font-bold uppercase tracking-wider",
+                                                        isSelected ? "text-brand" : "text-gray-500"
+                                                    )}>
+                                                        {option}
+                                                    </span>
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </section>
+                        ))}
+
+                        {/* 4. OPÇÕES TÉCNICAS (FORMATO, ACABAMENTO, VARIATIONS) */}
+                        <div className="space-y-16 pt-10 border-t border-gray-100/60">
+
+                            {/* Formato */}
                             {product.formats && product.formats.length > 0 && (
-                                <div>
-                                    <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Formato</h3>
-                                    <div className="flex flex-col gap-2">
+                                <section className="space-y-8">
+                                    <div className="flex items-center justify-between">
+                                        <div className="space-y-1">
+                                            <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Formato</h3>
+                                            <p className="text-xs text-gray-500">Escolha aqui o tamanho do seu material</p>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
                                         {product.formats.map((fmt, idx) => (
                                             <button
                                                 key={idx}
                                                 onClick={() => setSelectedFormat(fmt)}
                                                 className={cn(
-                                                    "px-4 py-3 rounded-lg text-sm font-medium border text-left transition-all",
-                                                    selectedFormat === fmt
-                                                        ? "border-brand bg-orange-50 text-brand font-bold ring-1 ring-brand"
-                                                        : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
+                                                    "group flex flex-col rounded-lg border-2 transition-all overflow-hidden bg-white shadow-sm",
+                                                    selectedFormat === fmt ? "border-brand ring-4 ring-brand/5" : "border-gray-100 hover:border-gray-200"
                                                 )}
                                             >
-                                                {fmt}
+                                                <VisualIllustration type="format" option={fmt} manualType={product.optionIllustrations?.[fmt]} />
+                                                <div className="p-5 flex items-center justify-between border-t border-gray-50">
+                                                    <span className={cn("text-[13px] font-semibold leading-tight pr-4", selectedFormat === fmt ? "text-gray-900" : "text-gray-600")}>
+                                                        {fmt}
+                                                    </span>
+                                                    <div className={cn(
+                                                        "w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors",
+                                                        selectedFormat === fmt ? "border-brand bg-brand" : "border-gray-200"
+                                                    )}>
+                                                        {selectedFormat === fmt && <div className="w-2 h-2 bg-white rounded-full" />}
+                                                    </div>
+                                                </div>
                                             </button>
                                         ))}
                                     </div>
-                                </div>
+                                </section>
                             )}
+
+                            {/* Impressão */}
+                            {product.printing && product.printing.length > 0 && (
+                                <section className="space-y-8">
+                                    <div className="space-y-1">
+                                        <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Impressão</h3>
+                                        <p className="text-xs text-gray-500">Defina os lados que serão impressos</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                                        {product.printing.map((prt, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => setSelectedPrinting(prt)}
+                                                className={cn(
+                                                    "group flex flex-col rounded-lg border-2 transition-all overflow-hidden bg-white shadow-sm",
+                                                    selectedPrinting === prt ? "border-brand ring-4 ring-brand/5" : "border-gray-100 hover:border-gray-200"
+                                                )}
+                                            >
+                                                <VisualIllustration type="print" option={prt} />
+                                                <div className="p-5 flex items-center justify-between border-t border-gray-50">
+                                                    <span className={cn("text-[13px] font-semibold leading-tight pr-4", selectedPrinting === prt ? "text-gray-900" : "text-gray-600")}>
+                                                        {prt}
+                                                    </span>
+                                                    <div className={cn(
+                                                        "w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors",
+                                                        selectedPrinting === prt ? "border-brand bg-brand" : "border-gray-200"
+                                                    )}>
+                                                        {selectedPrinting === prt && <div className="w-2 h-2 bg-white rounded-full" />}
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {/* Acabamento */}
                             {product.finishes && product.finishes.length > 0 && (
-                                <div>
-                                    <h3 className="text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Acabamento</h3>
-                                    <div className="flex flex-col gap-2">
+                                <section className="space-y-8">
+                                    <div className="space-y-1">
+                                        <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Acabamento</h3>
+                                        <p className="text-xs text-gray-500">Toque final para o seu material</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                         {product.finishes.map((fin, idx) => (
                                             <button
                                                 key={idx}
                                                 onClick={() => setSelectedFinish(fin)}
                                                 className={cn(
-                                                    "px-4 py-3 rounded-lg text-sm font-medium border text-left transition-all",
+                                                    "flex items-center justify-between p-6 rounded-lg border-2 transition-all text-left bg-white shadow-sm",
                                                     selectedFinish === fin
-                                                        ? "border-brand bg-orange-50 text-brand font-bold ring-1 ring-brand"
-                                                        : "border-gray-200 text-gray-600 hover:border-gray-300 bg-gray-50"
+                                                        ? "border-brand bg-white ring-4 ring-brand/5"
+                                                        : "border-gray-100 hover:border-gray-200"
                                                 )}
                                             >
-                                                {fin}
+                                                <span className={cn("text-[13px] font-semibold", selectedFinish === fin ? "text-gray-900" : "text-gray-600")}>{fin}</span>
+                                                <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors", selectedFinish === fin ? "border-brand bg-brand" : "border-gray-200")}>
+                                                    {selectedFinish === fin && <div className="w-2 h-2 bg-white rounded-full" />}
+                                                </div>
                                             </button>
                                         ))}
                                     </div>
-                                </div>
+                                </section>
                             )}
-                        </div>
 
-                        {/* 4. DYNAMIC VARIATIONS */}
-                        {product.variations && product.variations.length > 0 && (
-                            <div className="mb-8 space-y-6">
-                                {product.variations.map((variation, vIdx) => (
-                                    <div key={vIdx}>
-                                        <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center justify-between">
-                                            {variation.name}
-                                            {selectedVariations[variation.name] && (
-                                                <span className="text-xs font-normal text-brand bg-brand/5 px-2 py-0.5 rounded-full">
-                                                    {selectedVariations[variation.name]}
-                                                </span>
-                                            )}
-                                        </h3>
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {/* Extras */}
+                            {product.extras && product.extras.length > 0 && (
+                                <section className="space-y-8">
+                                    <div className="space-y-1">
+                                        <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Extras</h3>
+                                        <p className="text-xs text-gray-500">Adicionais para o seu material</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                        {product.extras.map((ext, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => setSelectedExtra(ext)}
+                                                className={cn(
+                                                    "flex items-center justify-between p-6 rounded-lg border-2 transition-all text-left bg-white shadow-sm",
+                                                    selectedExtra === ext
+                                                        ? "border-brand bg-white ring-4 ring-brand/5"
+                                                        : "border-gray-100 hover:border-gray-200"
+                                                )}
+                                            >
+                                                <span className={cn("text-[13px] font-semibold", selectedExtra === ext ? "text-gray-900" : "text-gray-600")}>{ext}</span>
+                                                <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors", selectedExtra === ext ? "border-brand bg-brand" : "border-gray-200")}>
+                                                    {selectedExtra === ext && <div className="w-2 h-2 bg-white rounded-full" />}
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {/* Dynamic Variations (Excludes Templates already shown above) */}
+                            {product.variations && product.variations
+                                .filter(v => !v.name.toLowerCase().includes("modelo") && !v.name.toLowerCase().includes("template"))
+                                .map((variation, vIdx) => {
+                                const isPrintVariation = variation.name.toLowerCase().includes("impressão") || variation.name.toLowerCase().includes("cores");
+                                
+                                return (
+                                    <section key={vIdx} className="space-y-8">
+                                        <div className="space-y-1">
+                                            <h3 className="text-lg font-semibold text-gray-900 tracking-tight">{variation.name}</h3>
+                                            <p className="text-xs text-gray-500">Confira como será aplicado</p>
+                                        </div>
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
                                             {variation.options.map((option, oIdx) => {
                                                 const isSelected = selectedVariations[variation.name] === option;
                                                 const varImage = variation.images?.[option];
                                                 const priceAddon = variation.prices?.[option] || 0;
+                                                const manualType = variation.illustrations?.[option];
 
                                                 return (
                                                     <button
@@ -331,314 +502,357 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                             }
                                                         }}
                                                         className={cn(
-                                                            "relative group transition-all rounded-xl border flex items-center justify-center overflow-hidden",
-                                                            varImage
-                                                                ? "w-full h-auto aspect-square p-1 bg-white"
-                                                                : "px-4 py-2 min-h-[40px]",
-                                                            isSelected
-                                                                ? "border-brand ring-1 ring-brand bg-brand/5 text-brand"
-                                                                : "border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50 bg-white"
+                                                            "group flex flex-col rounded-lg border-2 transition-all overflow-hidden bg-white shadow-sm",
+                                                            isSelected ? "border-brand ring-4 ring-brand/5 shadow-md" : "border-gray-100 hover:border-gray-200"
                                                         )}
-                                                        title={option}
                                                     >
-                                                        {varImage ? (
-                                                            <>
-                                                                <Image src={varImage} alt={option} fill className="object-contain" sizes="100px" />
-                                                                {isSelected && (
-                                                                    <div className="absolute inset-0 bg-brand/20 z-10 flex items-center justify-center">
-                                                                        <div className="bg-white rounded-full p-0.5 shadow-sm">
-                                                                            <Check size={12} className="text-brand" />
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-                                                                <span className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[9px] px-1 py-0.5 truncate text-center backdrop-blur-sm">
-                                                                    {option}
-                                                                </span>
-                                                            </>
+                                                        {manualType || isPrintVariation ? (
+                                                            <VisualIllustration 
+                                                                type={isPrintVariation ? "print" : "format"} 
+                                                                option={option} 
+                                                                manualType={manualType} 
+                                                            />
                                                         ) : (
-                                                            <div className="flex flex-col items-center">
-                                                                <span className="text-sm font-medium">{option}</span>
-                                                                {priceAddon > 0 && <span className="text-[10px] text-green-600 font-bold">+{formatPrice(priceAddon)}</span>}
+                                                            <div className="aspect-video relative bg-gray-50 flex items-center justify-center">
+                                                                {varImage ? (
+                                                                    <Image src={varImage} alt={option} fill className="object-contain p-2" sizes="200px" />
+                                                                ) : (
+                                                                    <span className="text-gray-300 font-semibold text-[10px] uppercase tracking-widest">{option}</span>
+                                                                )}
                                                             </div>
                                                         )}
+                                                        <div className="p-4 flex items-center justify-between border-t border-gray-50">
+                                                            <div className="text-left">
+                                                                <p className={cn("text-[13px] font-semibold", isSelected ? "text-gray-900" : "text-gray-600")}>{option}</p>
+                                                                {priceAddon > 0 && <p className="text-[10px] text-green-600 font-semibold">+{formatPrice(priceAddon)}</p>}
+                                                            </div>
+                                                            <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors flex-shrink-0", isSelected ? "border-black bg-black" : "border-gray-200")}>
+                                                                {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
+                                                            </div>
+                                                        </div>
                                                     </button>
-                                                )
+                                                );
                                             })}
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* 5. CUSTOM TEXT INPUT (PERSONALIZATION) */}
-                        {product.customText?.enabled && (
-                            <div className="mb-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                                <label className="text-sm font-bold text-gray-900 mb-2 block flex items-center gap-2">
-                                    {product.customText.label}
-                                </label>
-                                <textarea
-                                    className={cn(
-                                        "w-full rounded-xl border p-3 text-sm focus:ring-2 outline-none transition-all resize-y min-h-[80px]",
-                                        "border-gray-200 focus:border-brand focus:ring-brand/10 bg-white"
-                                    )}
-                                    placeholder={product.customText.placeholder}
-                                    value={customTextValue}
-                                    onChange={(e) => {
-                                        setCustomTextValue(e.target.value);
-                                    }}
-                                />
-                            </div>
-                        )}
-
-                        {/* 6. DESIGN OPTIONS */}
-                        {product.hasDesignOption !== false && (
-                            <div className="mb-8">
-                                <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-wide">Arte Final</h3>
-                                <div className="grid grid-cols-1 gap-3">
-                                    {/* Option 1: Upload */}
-                                    <div
-                                        className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all ${designOption === "upload"
-                                            ? "border-brand bg-orange-50/10"
-                                            : "border-gray-200 hover:border-gray-300"
-                                            }`}
-                                        onClick={() => setDesignOption("upload")}
-                                    >
-                                        <div className="flex items-start gap-3">
-                                            <div className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${designOption === "upload" ? "border-brand" : "border-gray-300"}`}>
-                                                {designOption === "upload" && <div className="w-2.5 h-2.5 bg-brand rounded-full"></div>}
-                                            </div>
-                                            <div className="flex-1">
-                                                <div className="flex justify-between items-center mb-1">
-                                                    <span className={`font-bold ${designOption === "upload" ? "text-gray-900" : "text-gray-600"}`}>Já tenho minha arte</span>
-                                                    <span className="text-xs font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Grátis</span>
-                                                </div>
-                                                <p className="text-xs text-gray-500 mb-3">Envie seu arquivo pronto (PDF, Imagem, CorelDraw).</p>
-
-                                                {/* File Upload Logic */}
-                                                {designOption === "upload" && (
-                                                    <div className="mt-3 animate-in fade-in slide-in-from-top-1">
-                                                        {!uploadedFile ? (
-                                                            <div className="flex gap-2 items-center">
-                                                                <input
-                                                                    type="file"
-                                                                    id="file-upload"
-                                                                    className="hidden"
-                                                                    accept=".pdf,.cdr,.ai,.psd,.jpg,.png,.jpeg"
-                                                                    onChange={async (e) => {
-                                                                        const file = e.target.files?.[0];
-                                                                        if (!file) return;
-
-                                                                        setIsUploading(true);
-                                                                        try {
-                                                                            const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-                                                                            const { data, error } = await supabase.storage
-                                                                                .from('client-uploads')
-                                                                                .upload(fileName, file);
-
-                                                                            if (error) throw error;
-
-                                                                            const { data: publicUrlData } = supabase.storage
-                                                                                .from('client-uploads')
-                                                                                .getPublicUrl(fileName);
-
-                                                                            setUploadedFile({
-                                                                                name: file.name,
-                                                                                url: publicUrlData.publicUrl
-                                                                            });
-
-                                                                        } catch (err) {
-                                                                            console.error(err);
-                                                                            alert("Erro ao enviar arquivo. Tente novamente.");
-                                                                        } finally {
-                                                                            setIsUploading(false);
-                                                                        }
-                                                                    }}
-                                                                />
-                                                                <label
-                                                                    htmlFor="file-upload"
-                                                                    className={`flex-1 flex items-center justify-center gap-2 cursor-pointer bg-white border border-dashed rounded-lg py-3 transition-colors text-sm font-medium ${isUploading ? 'border-brand/50 bg-brand/5 text-brand cursor-wait' : 'border-gray-300 hover:bg-gray-50 text-gray-600'}`}
-                                                                >
-                                                                    {isUploading ? (
-                                                                        <>
-                                                                            <div className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
-                                                                            Enviando...
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            <UploadCloud size={18} className="text-brand" />
-                                                                            Escolher Arquivo (PDF, Imagem, Corel)
-                                                                        </>
-                                                                    )}
-                                                                </label>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
-                                                                <div className="flex items-center gap-2 overflow-hidden">
-                                                                    <div className="bg-green-100 p-1.5 rounded-full text-green-600 flex-shrink-0">
-                                                                        <Check size={14} />
-                                                                    </div>
-                                                                    <span className="text-sm text-green-800 font-medium break-all line-clamp-2 flex-1 min-w-0">{uploadedFile.name}</span>
-                                                                </div>
-                                                                <button
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setUploadedFile(null);
-                                                                    }}
-                                                                    className="text-xs text-brand hover:text-orange-700 font-bold px-2 py-1"
-                                                                >
-                                                                    Remover
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Option 2: Hire Designer */}
-                                    <div
-                                        className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all ${designOption === "hire"
-                                            ? "border-brand bg-orange-50/10"
-                                            : "border-gray-200 hover:border-gray-300"
-                                            }`}
-                                        onClick={() => setDesignOption("hire")}
-                                    >
-                                        <div className="flex items-start gap-3">
-                                            <div className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${designOption === "hire" ? "border-brand" : "border-gray-300"}`}>
-                                                {designOption === "hire" && <div className="w-2.5 h-2.5 bg-brand rounded-full"></div>}
-                                            </div>
-                                            <div>
-                                                <div className="flex justify-between items-center mb-1 w-full gap-2">
-                                                    <span className={`font-bold ${designOption === "hire" ? "text-gray-900" : "text-gray-600"}`}>Contratar Criação</span>
-                                                    <span className="text-xs font-bold text-brand">+ R$ 35,00</span>
-                                                </div>
-                                                <p className="text-xs text-gray-500">Nossa equipe cria a arte profissional para você.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        )}
-
-                        {/* 5. FREIGHT CALCULATOR */}
-                        <div className="border border-gray-200 rounded-xl p-4 mb-8 bg-gray-50">
-                            <h3 className="text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
-                                <Truck size={16} className="text-brand" />
-                                Frete e Prazo
-                            </h3>
-                            <div className="flex items-center gap-3 bg-white border border-green-200 p-3 rounded-lg">
-                                <div className="bg-green-100 p-2 rounded-full text-green-700">
-                                    <Check size={16} />
-                                </div>
-                                <div className="flex-1">
-                                    <p className="text-sm font-bold text-gray-900">Retirada na Loja</p>
-                                    <p className="text-xs text-gray-500">Disponível em até 5 dias úteis</p>
-                                </div>
-                                <span className="text-sm font-bold text-green-600">Grátis</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* INFO SECTIONS */}
-                <div className="mt-12 md:mt-16 grid grid-cols-1 gap-6 max-w-4xl mx-auto pb-8">
-                    {/* Descrição Detalhada */}
-                    {product.fullDescription && (
-                        <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8">
-                            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100 flex items-center gap-2">
-                                <div className="w-1 h-6 bg-brand rounded-full"></div>
-                                Descrição do Produto
-                            </h2>
-                            <div className="prose prose-sm max-w-none text-gray-600 text-justify whitespace-pre-line">
-                                {product.fullDescription}
-                            </div>
-                        </section>
-                    )}
-
-                    {/* Ficha Técnica */}
-                    <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8">
-                        <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                            <div className="w-1 h-6 bg-brand rounded-full"></div>
-                            Ficha Técnica
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 text-sm">
-                            {product.technicalSpecs ? Object.entries(product.technicalSpecs).map(([key, value]) => {
-                                const labels: Record<string, string> = {
-                                    paper: "Papel",
-                                    weight: "Gramatura",
-                                    physicalWeight: "Peso",
-                                    ennoblement: "Enobrecimento",
-                                    colors: "Cores",
-                                    finalSize: "Tamanho Final",
-                                    bleedSize: "Tamanho com Sangria",
-                                    productionTime: "Produção"
-                                };
-                                return (
-                                    <div key={key} className="flex justify-between border-b border-gray-100 py-3">
-                                        <span className="text-gray-500 font-medium capitalize">{labels[key] || key}</span>
-                                        <span className="font-bold text-gray-900">{value}</span>
-                                    </div>
+                                    </section>
                                 );
-                            }) : (
-                                <p className="text-gray-500 italic">Informações técnicas indisponíveis.</p>
+                            })}
+ 
+                            {/* Quantidade (Agora em destaque) */}
+                            {!product.customQuantity && (
+                                <section id="quantidade-section" className="space-y-8">
+                                    <div className="space-y-1">
+                                        <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Quantidade e Preço</h3>
+                                        <p className="text-xs text-gray-500">Escolha a tiragem ideal para o seu projeto</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        {(product.quantities || Object.keys(product.priceBreakdowns || []))
+                                            .sort((a, b) => {
+                                                const aVal = typeof a === 'string' ? parseInt(a.match(/\d+/)?.[0] || "0") : Number(a);
+                                                const bVal = typeof b === 'string' ? parseInt(b.match(/\d+/)?.[0] || "0") : Number(b);
+                                                return aVal - bVal;
+                                            })
+                                            .map((qty, idx) => {
+                                                const qtyValue = typeof qty === 'string' ? parseInt(qty.match(/\d+/)?.[0] || "0") : Number(qty);
+                                                let cardTotalPrice = 0;
+                                                if (product.priceBreakdowns && product.priceBreakdowns[qtyValue]) {
+                                                    cardTotalPrice = product.priceBreakdowns[qtyValue];
+                                                } else {
+                                                    cardTotalPrice = (product.price || 0) * (qtyValue / 100);
+                                                }
+                                                const cardUnitPrice = cardTotalPrice / qtyValue;
+                                                const isSelected = quantity === qtyValue;
+ 
+                                                let discount = 0;
+                                                const firstQtyKey = (product.quantities || Object.keys(product.priceBreakdowns || []))[0];
+                                                const firstQtyVal = typeof firstQtyKey === 'string' ? parseInt(firstQtyKey.match(/\d+/)?.[0] || "1") : Number(firstQtyKey);
+                                                const firstTotalPrice = product.priceBreakdowns?.[firstQtyVal] || (product.price || 0) * (firstQtyVal / 100);
+                                                const firstUnitPrice = firstTotalPrice / firstQtyVal;
+ 
+                                                if (idx > 0 && firstUnitPrice > cardUnitPrice) {
+                                                    discount = Math.round((1 - (cardUnitPrice / firstUnitPrice)) * 100);
+                                                }
+ 
+                                                return (
+                                                    <button
+                                                        key={qty}
+                                                        onClick={() => setQuantity(qtyValue)}
+                                                        className={cn(
+                                                            "flex items-center justify-between p-6 rounded-md border transition-all text-left",
+                                                            isSelected ? "border-brand bg-brand/5 shadow-md ring-4 ring-brand/10" : "border-gray-100 hover:border-gray-200 bg-white shadow-sm"
+                                                        )}
+                                                    >
+                                                        <div className="space-y-1.5">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className={cn("text-[14px] font-semibold", isSelected ? "text-brand" : "text-gray-900")}>{qtyValue.toLocaleString()} unidades</span>
+                                                                {discount > 0 && <span className="bg-green-100 text-green-700 text-[9px] font-semibold px-2 py-0.5 rounded-full">-{discount}%</span>}
+                                                            </div>
+                                                            <div className="flex items-center gap-2 text-[12px] font-medium text-gray-400">
+                                                                <span className={isSelected ? "text-brand" : "text-gray-900"}>{formatPrice(cardTotalPrice)}</span>
+                                                                <span>{formatPrice(cardUnitPrice).replace('R$', '').trim()} / un.</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center", isSelected ? "border-brand bg-brand" : "border-gray-200")}>
+                                                            {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
+                                                        </div>
+                                                    </button>
+                                                );
+                                            })}
+                                    </div>
+                                </section>
                             )}
                         </div>
-                    </section>
-                </div>
-
-                {/* Sticky Action Footer (Mobile) */}
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 md:hidden z-50 shadow-2xl">
-                    <button
-                        onClick={handleWhatsAppQuote}
-                        className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-4 px-8 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-green-200"
-                    >
-                        <svg viewBox="0 0 448 512" className="w-5 h-5 fill-current" aria-hidden="true">
-                            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
-                        </svg>
-                        Orçamento
-                    </button>
-                </div>
-
-                {/* Desktop Sidebar Action (Optional or just keep inline?) */}
-                {/* For this layout, we probably want a sticky summary on desktop too, but currently it's inline in Previous V0. 
-                    Let's Add a Floating Desktop Bar or leave it as standard flow.
-                    Standard flow is fine for now to match exactly previous "page.tsx".
-                 */}
-                <div className="hidden md:flex fixed bottom-8 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur border border-gray-200 rounded-2xl shadow-2xl p-4 items-center gap-6 z-40 animate-in slide-in-from-bottom-4 fade-in duration-700">
-                    <div className="flex flex-col">
-                        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Interessado?</span>
-                        <span className="text-sm font-medium text-gray-700">Orçamento rápido via WhatsApp</span>
                     </div>
-                    <div className="h-10 w-px bg-gray-200"></div>
-                    <button
-                        onClick={handleWhatsAppQuote}
-                        className="bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-3 px-8 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-green-100 hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
-                    >
-                        <svg viewBox="0 0 448 512" className="w-5 h-5 fill-current" aria-hidden="true">
-                            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
-                        </svg>
-                        Solicitar Orçamento
-                    </button>
-                </div>
 
+                    {/* COLUNA DIREITA: RESUMO E COMPRA (Lg: 4 cols - STICKY) */}
+                    <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
+                        {/* 2. TÍTULO E DESCRIÇÃO (DESKTOP ONLY) */}
+                        <div className="hidden lg:block space-y-4 mb-4">
+                            <h1 className="text-3xl font-semibold text-gray-900 tracking-tight leading-tight">{product.title}</h1>
+                            <div className="prose prose-sm max-w-none text-gray-600 leading-relaxed">
+                                <p className={cn(!showFullDesc && "line-clamp-3")}>{product.description}</p>
+                                {product.description && product.description.length > 150 && (
+                                    <button
+                                        onClick={() => setShowFullDesc(!showFullDesc)}
+                                        className="text-brand font-semibold text-sm mt-2 hover:underline inline-flex items-center gap-1"
+                                    >
+                                        {showFullDesc ? "Exibir menos" : "Exibir mais informações"}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-lg border border-gray-100 p-8 shadow-xl shadow-gray-200/50 space-y-8">
+                            <div>
+                                <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                                    Resumo do Pedido
+                                </h2>
+
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-500 font-medium">Quantidade</span>
+                                        <span className="font-semibold text-gray-900 flex items-center gap-2">
+                                            {quantity.toLocaleString()} un.
+                                            <button 
+                                                onClick={() => document.getElementById('quantidade-section')?.scrollIntoView({ behavior: 'smooth' })}
+                                                className="text-brand hover:bg-brand/10 p-1 rounded-full transition-colors"
+                                            >
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-gray-500 font-medium">Preço unitário</span>
+                                        <span className="text-gray-400 font-medium">{formatPrice(finalPrice / (quantity || 1))}</span>
+                                    </div>
+                                    <div className="pt-4 border-t border-gray-50 flex justify-between items-end">
+                                        <span className="text-gray-500 font-medium mb-1">Total à vista</span>
+                                        <div className="text-right">
+                                            <div className="text-3xl font-semibold text-gray-900">{formatPrice(finalPrice)}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Botão Principal */}
+                            <button
+                                onClick={handleAddToCart}
+                                className="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-5 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-brand/20 active:scale-[0.98] group"
+                            >
+                                Comprar Agora
+                            </button>
+
+                            {/* Info List */}
+                            <div className="space-y-6 pt-2">
+                                <div className="space-y-3">
+                                    {!uploadedFile ? (
+                                        <div className="relative group">
+                                            <input
+                                                type="file"
+                                                id="sidebar-upload"
+                                                className="hidden"
+                                                accept=".pdf,.cdr,.ai,.psd,.jpg,.png,.jpeg"
+                                                onChange={async (e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (!file) return;
+                                                    setIsUploading(true);
+                                                    try {
+                                                        const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                                                        const { data, error } = await supabase.storage
+                                                            .from('client-uploads')
+                                                            .upload(fileName, file);
+                                                        if (error) throw error;
+                                                        const { data: publicUrlData } = supabase.storage
+                                                            .from('client-uploads')
+                                                            .getPublicUrl(fileName);
+                                                        setUploadedFile({ name: file.name, url: publicUrlData.publicUrl });
+                                                    } catch (err) {
+                                                        console.error(err);
+                                                        alert("Erro ao enviar arquivo.");
+                                                    } finally {
+                                                        setIsUploading(false);
+                                                    }
+                                                }}
+                                            />
+                                            <label
+                                                htmlFor="sidebar-upload"
+                                                className={cn(
+                                                    "flex flex-col items-center justify-center py-10 px-6 rounded-lg border-2 border-dashed transition-all cursor-pointer text-center space-y-4",
+                                                    isUploading 
+                                                        ? "border-brand bg-brand/5" 
+                                                        : "border-gray-100 bg-white hover:bg-gray-50 hover:border-brand/30"
+                                                )}
+                                            >
+                                                <div className={cn(
+                                                    "w-14 h-14 rounded-full flex items-center justify-center transition-colors",
+                                                    isUploading ? "bg-brand text-white" : "bg-white text-brand"
+                                                )}>
+                                                    <UploadCloud size={32} strokeWidth={1.5} />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-sm text-gray-700">
+                                                        {isUploading ? "Enviando..." : "Envie sua Logomarca"}
+                                                    </p>
+                                                    <p className="text-xs text-gray-400">
+                                                        Preferência por PDF, PNG ou JPG (Máx. 25MB)
+                                                    </p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center justify-between shadow-sm animate-in fade-in zoom-in-95 duration-300">
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 flex-shrink-0">
+                                                    <Check size={16} />
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <p className="text-[11px] font-bold text-green-800 truncate">{uploadedFile.name}</p>
+                                                    <p className="text-[9px] text-green-600">Logo enviada com sucesso!</p>
+                                                </div>
+                                            </div>
+                                            <button 
+                                                onClick={() => setUploadedFile(null)} 
+                                                className="text-[10px] text-red-500 font-bold hover:bg-red-50 px-2 py-1 rounded transition-colors"
+                                            >
+                                                Remover
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-md bg-gray-50 flex items-center justify-center flex-shrink-0">
+                                        <Check size={20} className="text-gray-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold text-gray-900">Garantia de Qualidade</p>
+                                        <p className="text-[11px] text-gray-500 leading-relaxed">Reimpressão grátis em caso de erros.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Tags de Resumo */}
+                            <div className="pt-6 border-t border-gray-50">
+                                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Sua Configuração</p>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{quantity} UNID</span>
+                                    {selectedFormat && <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{selectedFormat}</span>}
+                                    {selectedPrinting && <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{selectedPrinting}</span>}
+                                    {selectedFinish && <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{selectedFinish}</span>}
+                                    {selectedExtra && <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{selectedExtra}</span>}
+                                    {dimensions.width > 0 && <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{dimensions.width}x{dimensions.height}CM</span>}
+                                    {designOption === "hire" && <span className="px-3 py-1 bg-brand/10 rounded-full text-[10px] font-semibold text-brand uppercase tracking-tight">Criação de Arte</span>}
+                                    {customTextValue && <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">Texto Pers.</span>}
+                                    {Object.values(selectedVariations).map((val, idx) => (
+                                        <span key={idx} className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{val}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Baixar Gabarito Section */}
+                        <div className="bg-white rounded-lg border border-gray-100 p-8 shadow-sm space-y-6">
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-widest flex items-center gap-2">
+                                    <div className="w-1 h-4 bg-brand rounded-full"></div>
+                                    Gabarito
+                                </h3>
+                                <span className="text-[10px] font-semibold text-red-500 bg-red-50 px-2 py-0.5 rounded">PDF</span>
+                            </div>
+                            <p className="text-[11px] text-gray-500 leading-relaxed">
+                                Use nosso gabarito para garantir que sua arte esteja nas medidas corretas e com as margens de segurança adequadas.
+                            </p>
+                            <button className="w-full flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-gray-100 hover:border-brand hover:bg-brand/5 hover:text-brand transition-all font-semibold text-gray-700 text-xs group">
+                                <Download size={16} className="text-gray-400 group-hover:text-brand" />
+                                Baixar Gabarito
+                            </button>
+                        </div>
+
+                        {/* Ficha Técnica Card */}
+                        <div className="bg-gray-50 rounded-lg p-8 border border-gray-100 space-y-6">
+                            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-widest flex items-center gap-2">
+                                <div className="w-1 h-4 bg-brand rounded-full"></div>
+                                Detalhes Técnicos
+                            </h3>
+                            <div className="space-y-3">
+                                {product.technicalSpecs && Object.keys(product.technicalSpecs).filter(k => !['printing', 'extras', 'option_illustrations'].includes(k)).length > 0 ? (
+                                    Object.entries(product.technicalSpecs)
+                                        .filter(([key]) => !['printing', 'extras', 'option_illustrations'].includes(key))
+                                        .map(([key, value]) => {
+                                            const labels: Record<string, string> = {
+                                                paper: "Papel / Material",
+                                                weight: "Gramatura",
+                                                mass: "Peso",
+                                                ennoblement: "Enobrecimento",
+                                                colors: "Cores",
+                                                finalSize: "Tamanho Final",
+                                                bleedSize: "Tam. com Sangria",
+                                                productionTime: "Prazo de Produção"
+                                            };
+                                            return (
+                                                <div key={key} className="flex justify-between items-center text-xs border-b border-gray-200/50 pb-3 last:border-0">
+                                                    <span className="text-gray-500 font-medium">{labels[key] || key}</span>
+                                                    <span className="font-semibold text-gray-900 text-right">{value}</span>
+                                                </div>
+                                            );
+                                        })
+                                ) : (
+                                    <p className="text-[11px] text-gray-400 italic">Nenhuma especificação disponível para este produto.</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </Container>
+
+            {/* Mobile Bottom Bar (Refined) */}
+            <div className="fixed bottom-0 left-0 right-0 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 md:hidden z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] flex items-center justify-between gap-6">
+                <div className="flex flex-col">
+                    <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Total do Pedido</span>
+                    <span className="text-xl font-semibold text-gray-900 tracking-tight">{formatPrice(finalPrice)}</span>
+                </div>
+                <button
+                    onClick={handleAddToCart}
+                    className="flex-1 bg-brand text-white font-semibold h-12 rounded text-center active:scale-95 transition-all shadow-lg shadow-brand/20"
+                >
+                    Comprar
+                </button>
+            </div>
 
             {/* Alerts */}
             {showUploadAlert && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
+                    <div className="bg-white rounded-md p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
                         <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4 text-red-600 mx-auto">
                             <UploadCloud size={24} />
                         </div>
-                        <h3 className="text-xl font-bold text-center text-gray-900 mb-2">Arquivo Necessário</h3>
+                        <h3 className="text-xl font-semibold text-center text-gray-900 mb-2">Inclua sua Logo</h3>
                         <p className="text-center text-gray-600 mb-6">
-                            Você selecionou a opção <strong>"Já tenho minha arte"</strong>, mas não enviou nenhum arquivo. Por favor, faça o upload antes de continuar.
+                            Para prosseguir com a compra, você precisa enviar o arquivo da sua logo para personalização.
                         </p>
                         <button
                             onClick={() => setShowUploadAlert(false)}
-                            className="w-full bg-gray-900 text-white font-bold py-3 rounded-xl hover:bg-black transition-colors"
+                            className="w-full bg-brand text-white font-semibold py-3 rounded-xl hover:bg-brand-dark transition-colors shadow-lg shadow-brand/20"
                         >
                             Entendi, vou enviar
                         </button>
@@ -648,17 +862,17 @@ export default function ProductClient({ product }: ProductClientProps) {
 
             {showTextAlert && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
+                    <div className="bg-white rounded-md p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
                         <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4 text-orange-600 mx-auto">
-                            <div className="font-serif text-2xl font-bold">Aa</div>
+                            <div className="font-serif text-2xl font-semibold">Aa</div>
                         </div>
-                        <h3 className="text-xl font-bold text-center text-gray-900 mb-2">Personalização Necessária</h3>
+                        <h3 className="text-xl font-semibold text-center text-gray-900 mb-2">Personalização Necessária</h3>
                         <p className="text-center text-gray-600 mb-6">
-                            Este produto requer personalização. Por favor, preencha o campo <strong>"{product.customText?.label}"</strong> antes de continuar.
+                            Este produto requer personalização. Por favor, preencha o campo <span className="font-semibold">"{product.customText?.label}"</span> antes de continuar.
                         </p>
                         <button
                             onClick={() => setShowTextAlert(false)}
-                            className="w-full bg-brand text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition-colors"
+                            className="w-full bg-brand text-white font-semibold py-3 rounded-xl transition-colors"
                         >
                             Preencher agora
                         </button>

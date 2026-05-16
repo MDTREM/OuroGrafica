@@ -99,8 +99,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    // Admin Check: Metadata 'role' === 'admin' OR hardcoded email fallback
-    const isAdmin = user?.user_metadata?.role === 'admin' || user?.email === 'admin@gmail.com';
+    // Admin Check: Only vinkimpressos@gmail.com can access the admin dashboard
+    const isAdmin = user?.email === "vinkimpressos@gmail.com";
 
     return (
         <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signInWithSocial, signOut, isAdmin }}>

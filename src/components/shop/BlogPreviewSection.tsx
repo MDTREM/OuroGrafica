@@ -18,10 +18,10 @@ export async function BlogPreviewSection({ title, postIds }: { title?: string, p
             <Container>
                 <div className="flex justify-between items-end mb-4">
                     <div>
-                        <span className="text-[#FF6B07] font-bold text-sm uppercase tracking-wider mb-1 block">Nosso Blog</span>
-                        <h2 className="text-xl font-bold text-foreground">{title || "Dicas & Novidades"}</h2>
+                        <span className="text-brand font-semibold text-sm uppercase tracking-wider mb-1 block">Nosso Blog</span>
+                        <h2 className="text-xl font-semibold text-foreground">{title || "Dicas & Novidades"}</h2>
                     </div>
-                    <Link href="/blog" className="hidden md:flex items-center gap-2 text-[#FF6B07] font-medium hover:gap-3 transition-all">
+                    <Link href="/blog" className="hidden md:flex items-center gap-2 text-brand font-medium hover:gap-3 transition-all">
                         Ver todos os artigos
                         <ArrowRight size={20} />
                     </Link>
@@ -43,13 +43,13 @@ export async function BlogPreviewSection({ title, postIds }: { title?: string, p
                                         <Calendar size={12} />
                                         {new Date(post.created_at).toLocaleDateString('pt-BR')}
                                     </div>
-                                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#FF6B07] transition-colors text-base">
+                                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-brand transition-colors text-base">
                                         {post.title}
                                     </h3>
                                     <p className="text-gray-500 text-sm line-clamp-3 mb-3 flex-1 leading-relaxed">
                                         {post.excerpt}
                                     </p>
-                                    <span className="text-[#FF6B07] text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all mt-auto">
+                                    <span className="text-brand text-xs font-semibold flex items-center gap-1 group-hover:gap-2 transition-all mt-auto">
                                         Ler mais <ArrowRight size={14} />
                                     </span>
                                 </div>
@@ -59,7 +59,7 @@ export async function BlogPreviewSection({ title, postIds }: { title?: string, p
                 </div>
 
                 <div className="mt-8 text-center md:hidden">
-                    <Link href="/blog" className="inline-flex items-center gap-2 text-[#FF6B07] font-medium border border-[#FF6B07] px-6 py-3 rounded-full hover:bg-[#FF6B07] hover:text-white transition-all">
+                    <Link href="/blog" className="inline-flex items-center gap-2 text-brand font-medium border border-brand px-6 py-3 rounded-full hover:bg-brand hover:text-white transition-all">
                         Visitar Blog
                         <ArrowRight size={20} />
                     </Link>

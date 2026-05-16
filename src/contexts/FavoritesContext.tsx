@@ -9,6 +9,7 @@ export interface FavoriteItem {
     image?: string;
     category?: string;
     unit?: string;
+    priceBreakdowns?: { [quantity: number]: number };
 }
 
 interface FavoritesContextType {
@@ -25,7 +26,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
 
     useEffect(() => {
-        const savedFavorites = localStorage.getItem("@ourografica:favorites");
+        const savedFavorites = localStorage.getItem("@Vink:favorites");
         if (savedFavorites) {
             try {
                 setFavorites(JSON.parse(savedFavorites));
@@ -36,7 +37,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     }, []);
 
     useEffect(() => {
-        localStorage.setItem("@ourografica:favorites", JSON.stringify(favorites));
+        localStorage.setItem("@Vink:favorites", JSON.stringify(favorites));
     }, [favorites]);
 
     const addToFavorites = (item: FavoriteItem) => {

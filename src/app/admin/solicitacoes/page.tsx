@@ -36,7 +36,7 @@ export default function SolicitacoesPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-gray-900">Solicitações e Orçamentos</h1>
+                <h1 className="text-2xl font-semibold text-gray-900">Solicitações e Orçamentos</h1>
             </div>
 
             {/* Tabs */}
@@ -44,7 +44,7 @@ export default function SolicitacoesPage() {
                 <button
                     onClick={() => setActiveTab('outsourcing')}
                     className={`pb-4 px-2 font-medium text-sm transition-colors ${activeTab === 'outsourcing'
-                        ? 'border-b-2 border-brand text-brand'
+                        ? 'border-b-2 border-brand text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark'
                         : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
@@ -53,7 +53,7 @@ export default function SolicitacoesPage() {
                 <button
                     onClick={() => setActiveTab('maintenance')}
                     className={`pb-4 px-2 font-medium text-sm transition-colors ${activeTab === 'maintenance'
-                        ? 'border-b-2 border-brand text-brand'
+                        ? 'border-b-2 border-brand text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark'
                         : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
@@ -105,7 +105,7 @@ export default function SolicitacoesPage() {
                                                     <td className="px-6 py-4 text-right">
                                                         <button
                                                             onClick={() => setSelectedOutsourcing(req)}
-                                                            className="text-brand hover:bg-brand/10 p-2 rounded-lg transition-colors flex items-center gap-1 ml-auto font-medium"
+                                                            className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:bg-gradient-to-r from-brand to-brand-dark/10 p-2 rounded-lg transition-colors flex items-center gap-1 ml-auto font-medium"
                                                         >
                                                             <Eye size={18} />
                                                             Ver Detalhes
@@ -159,7 +159,7 @@ export default function SolicitacoesPage() {
                                                     <td className="px-6 py-4 text-right">
                                                         <button
                                                             onClick={() => setSelectedMaintenance(req)}
-                                                            className="text-brand hover:bg-brand/10 p-2 rounded-lg transition-colors flex items-center gap-1 ml-auto font-medium"
+                                                            className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:bg-gradient-to-r from-brand to-brand-dark/10 p-2 rounded-lg transition-colors flex items-center gap-1 ml-auto font-medium"
                                                         >
                                                             <Eye size={18} />
                                                             Ver Detalhes
@@ -186,17 +186,17 @@ export default function SolicitacoesPage() {
                     <div className="space-y-6">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-gray-500 uppercase">Data</label>
+                                <label className="text-xs font-semibold text-gray-500 uppercase">Data</label>
                                 <p className="text-gray-900">{format(new Date(selectedOutsourcing.created_at), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}</p>
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-gray-500 uppercase">ID</label>
+                                <label className="text-xs font-semibold text-gray-500 uppercase">ID</label>
                                 <p className="text-gray-500 text-xs font-mono">{selectedOutsourcing.id}</p>
                             </div>
                         </div>
 
                         <div className="border-t border-gray-100 pt-4">
-                            <h3 className="font-bold text-gray-900 mb-3">Informações do Cliente</h3>
+                            <h3 className="font-semibold text-gray-900 mb-3">Informações do Cliente</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="text-xs text-gray-500">Nome Completo</label>
@@ -226,7 +226,7 @@ export default function SolicitacoesPage() {
                         </div>
 
                         <div className="border-t border-gray-100 pt-4">
-                            <h3 className="font-bold text-gray-900 mb-3">Detalhes do Projeto</h3>
+                            <h3 className="font-semibold text-gray-900 mb-3">Detalhes do Projeto</h3>
                             <div className="space-y-3">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
@@ -264,17 +264,17 @@ export default function SolicitacoesPage() {
                     <div className="space-y-6">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-gray-500 uppercase">Data</label>
+                                <label className="text-xs font-semibold text-gray-500 uppercase">Data</label>
                                 <p className="text-gray-900">{format(new Date(selectedMaintenance.created_at), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}</p>
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-gray-500 uppercase">ID</label>
+                                <label className="text-xs font-semibold text-gray-500 uppercase">ID</label>
                                 <p className="text-gray-500 text-xs font-mono">{selectedMaintenance.id}</p>
                             </div>
                         </div>
 
                         <div className="border-t border-gray-100 pt-4">
-                            <h3 className="font-bold text-gray-900 mb-3">Informações do Contato</h3>
+                            <h3 className="font-semibold text-gray-900 mb-3">Informações do Contato</h3>
                             <div className="space-y-3">
                                 <div>
                                     <label className="text-xs text-gray-500">Nome</label>
@@ -288,7 +288,7 @@ export default function SolicitacoesPage() {
                         </div>
 
                         <div className="border-t border-gray-100 pt-4">
-                            <h3 className="font-bold text-gray-900 mb-3">Equipamento</h3>
+                            <h3 className="font-semibold text-gray-900 mb-3">Equipamento</h3>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="text-xs text-gray-500">Marca</label>

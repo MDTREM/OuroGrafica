@@ -19,7 +19,7 @@ export function OutsourcingMap() {
     return (
         <div className="bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-gray-100 flex flex-col items-center gap-6">
             <div className="w-full text-left">
-                <h2 className="text-2xl font-bold text-gray-900">Veja onde atuamos</h2>
+                <h2 className="text-2xl font-semibold text-gray-900">Veja onde atuamos</h2>
                 <p className="text-gray-500 mt-2">Clique nos pinos no mapa para ver as cidades atendidas.</p>
             </div>
 
@@ -46,7 +46,7 @@ export function OutsourcingMap() {
                             />
 
                             {/* Tooltip / Label */}
-                            <div className={`absolute bottom-full mb-3 bg-white text-gray-900 px-4 py-2 rounded-xl shadow-xl font-bold text-sm whitespace-nowrap transition-all duration-300 border border-gray-100 z-20 ${activeCity === idx ? 'opacity-100 transform translate-y-0 scale-100' : 'opacity-0 transform translate-y-2 scale-95 pointer-events-none'}`}>
+                            <div className={`absolute bottom-full mb-3 bg-white text-gray-900 px-4 py-2 rounded-xl shadow-xl font-semibold text-sm whitespace-nowrap transition-all duration-300 border border-gray-100 z-20 ${activeCity === idx ? 'opacity-100 transform translate-y-0 scale-100' : 'opacity-0 transform translate-y-2 scale-95 pointer-events-none'}`}>
                                 {loc.name}
                                 <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] w-3 h-3 bg-white border-r border-b border-gray-100 transform rotate-45"></div>
                             </div>

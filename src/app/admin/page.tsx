@@ -13,32 +13,32 @@ export default function AdminDashboard() {
             label: "Vendas Totais",
             value: formatPrice(stats.totalSales),
             icon: DollarSign,
-            color: "bg-orange-50 text-brand"
+            color: "bg-orange-50 text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark"
         },
         {
             label: "Pedidos Pendentes",
             value: stats.pendingOrders,
             icon: Package,
-            color: "bg-orange-50 text-brand"
+            color: "bg-orange-50 text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark"
         },
         {
             label: "Produtos Ativos",
             value: stats.totalProducts,
             icon: ShoppingBag,
-            color: "bg-orange-50 text-brand"
+            color: "bg-orange-50 text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark"
         },
         {
             label: "Clientes (Ativos)",
             value: stats.totalCustomers,
             icon: Users,
-            color: "bg-orange-50 text-brand"
+            color: "bg-orange-50 text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark"
         }
     ];
 
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+                <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
                 <p className="text-gray-500">Visão geral da sua gráfica.</p>
             </div>
 
@@ -48,7 +48,7 @@ export default function AdminDashboard() {
                     <div key={index} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-start justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-500 mb-1">{card.label}</p>
-                            <h3 className="text-2xl font-bold text-gray-900">{card.value}</h3>
+                            <h3 className="text-2xl font-semibold text-gray-900">{card.value}</h3>
                         </div>
                         <div className={`p-3 rounded-xl ${card.color}`}>
                             <card.icon size={20} />
@@ -60,8 +60,8 @@ export default function AdminDashboard() {
             {/* Recent Orders Table */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                    <h2 className="text-lg font-bold text-gray-900">Pedidos Recentes</h2>
-                    <Link href="/admin/pedidos" className="text-sm font-bold text-brand hover:underline flex items-center gap-1">
+                    <h2 className="text-lg font-semibold text-gray-900">Pedidos Recentes</h2>
+                    <Link href="/admin/pedidos" className="text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline flex items-center gap-1">
                         Ver todos <ArrowUpRight size={16} />
                     </Link>
                 </div>
@@ -82,7 +82,7 @@ export default function AdminDashboard() {
                                     <td className="px-6 py-4 font-medium text-gray-900">{order.id}</td>
                                     <td className="px-6 py-4">{order.customerName}</td>
                                     <td className="px-6 py-4">{order.date}</td>
-                                    <td className="px-6 py-4 font-bold">{formatPrice(order.total)}</td>
+                                    <td className="px-6 py-4 font-semibold">{formatPrice(order.total)}</td>
                                     <td className="px-6 py-4">
                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                             ${order.status === 'Pendente' ? 'bg-yellow-100 text-yellow-800' :

@@ -4,7 +4,7 @@ import { BannerCarousel } from "@/components/shop/BannerCarousel";
 import { InfoBanner } from "@/components/shop/InfoBanner";
 import { StackedBanners } from "@/components/shop/StackedBanners";
 import { ProductRow } from "@/components/shop/ProductRow";
-import { CATEGORIES } from "@/data/mockData";
+import { CATEGORIES, PRODUCTS } from "@/data/mockData";
 import { MaintenanceCTA } from "@/components/shop/MaintenanceCTA";
 import { LocationMap } from "@/components/shop/LocationMap";
 import { BlogPreviewSection } from "@/components/shop/BlogPreviewSection";
@@ -14,12 +14,11 @@ import { Product } from "@/data/mockData";
 import { mapProduct } from "@/lib/product-mapper";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { Metadata } from "next";
-
 export const metadata: Metadata = {
-  title: "Gráfica em Ouro Preto | Impressão Digital e Personalizados",
-  description: "Procurando Gráfica em Ouro Preto? Cartões de visita, banners, adesivos, encadernação e personalizados. Atendemos Ouro Preto, Mariana e toda região.",
+  title: "Vink | Especialistas em Branding e Embalagens",
+  description: "A Vink é sua parceira estratégica para branding, embalagens e impressos de alta qualidade. Soluções completas para potencializar a sua marca.",
   alternates: {
-    canonical: 'https://ourografica.site',
+    canonical: 'https://vink.com.br',
   },
 };
 
@@ -59,65 +58,34 @@ async function getProductsForSection(section: Section): Promise<Product[]> {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "name": "Ouro Gráfica",
-  "image": "https://ourografica.site/icon.png",
-  "@id": "https://ourografica.site",
-  "url": "https://ourografica.site",
-  "telephone": "+5531982190935",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "Rua José Moringa, 9",
-    "addressLocality": "Ouro Preto",
-    "addressRegion": "MG",
-    "postalCode": "35400-000",
-    "addressCountry": "BR"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": -20.3920977,
-    "longitude": -43.5188806
-  },
-  "openingHoursSpecification": {
-    "@type": "OpeningHoursSpecification",
-    "dayOfWeek": [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday"
-    ],
-    "opens": "08:00",
-    "closes": "18:00"
-  },
-  "sameAs": [
-    "https://www.instagram.com/graficaouro/",
-    "https://www.facebook.com/people/Ouro-Gr%C3%A1fica/61583717952045/"
-  ],
+  "name": "Vink",
+  "image": "https://vink.com.br/icon.png",
+  "@id": "https://vink.com.br",
+  "url": "https://vink.com.br",
+  "telephone": "+5531989880161",
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
-    "name": "Serviços Gráficos e de TI",
+    "name": "Serviços Gráficos e de Branding",
     "itemListElement": [
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Manutenção de Impressoras",
-          "url": "https://ourografica.site/servicos/manutencao"
+          "name": "Branding e Design"
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Aluguel de Impressoras (Outsourcing)",
-          "url": "https://ourografica.site/servicos/outsourcing"
+          "name": "Embalagens Personalizadas"
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
           "@type": "Service",
-          "name": "Impressão Digital e Gráfica Rápida"
+          "name": "Impressão Digital Premium"
         }
       }
     ]
@@ -140,46 +108,50 @@ export default async function Home() {
     switch (section.type) {
       case 'banner-carousel':
         return (
-          <Container key={section.id} className="pt-4">
+          <div key={section.id}>
             <BannerCarousel banners={section.banners || []} />
-          </Container>
+          </div>
         );
       case 'info-banner':
         return <InfoBanner key={section.id} items={section.benefits} />;
       case 'categories':
         return (
-          <Container key={section.id}>
-            {section.title && <h2 className="text-xl font-bold mb-4">{section.title}</h2>}
+          <Container key={section.id} className="mt-8">
+            {section.title && <h2 className="text-xl font-semibold mb-4">{section.title}</h2>}
             <CategoryNav activeCategory="todos" />
           </Container>
         );
       case 'product-row':
-        // Use pre-fetched products
         return (
-          <ProductRow
-            key={section.id}
-            title={section.title || section.name}
-            filter={section.settings?.filter || 'best-sellers'}
-            productIds={section.settings?.productIds}
-            preloadedProducts={productsMap[section.id] || []}
-          />
+          <div key={section.id} className="mt-8">
+            <ProductRow
+              title={section.title || section.name}
+              filter={section.settings?.filter || 'best-sellers'}
+              productIds={section.settings?.productIds}
+              preloadedProducts={productsMap[section.id] || []}
+            />
+          </div>
         );
       case 'stacked-banners':
-        return <StackedBanners key={section.id} banners={section.banners || []} />;
-      case 'maintenance-cta':
-        return <MaintenanceCTA key={section.id} />;
+        return <div key={section.id} className="mt-8"><StackedBanners banners={section.banners || []} /></div>;
       case 'blog-preview':
-        return <BlogPreviewSection key={section.id} title={section.title} postIds={section.settings?.postIds} />;
+        return <div key={section.id} className="mt-8"><BlogPreviewSection title={section.title} postIds={section.settings?.postIds} /></div>;
       default:
         return null;
     }
   };
 
   const bannerSection = config.sections.find(s => s.type === 'banner-carousel' && s.enabled);
-  const otherSections = config.sections.filter(s => s.enabled && s.type !== 'banner-carousel');
+  const infoBannerSection = config.sections.find(s => s.type === 'info-banner' && s.enabled);
+
+  const otherSections = config.sections.filter(s =>
+    s.enabled &&
+    s.id !== bannerSection?.id &&
+    s.id !== infoBannerSection?.id
+  );
 
   return (
-    <div className="pb-8 space-y-8">
+    <div className="pb-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -187,11 +159,12 @@ export default async function Home() {
       {/* 1. Main Banner (if exists) */}
       {bannerSection && renderSection(bannerSection)}
 
-      {/* 2. Dynamic Sections */}
+      {/* 2. Info Banner — colada no banner, sem gap */}
+      {infoBannerSection && renderSection(infoBannerSection)}
+
+      {/* 3. Dynamic Sections */}
       {otherSections.map(section => renderSection(section))}
 
-      {/* 4. Location Map */}
-      <LocationMap />
       <WhatsAppButton />
     </div>
   );

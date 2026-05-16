@@ -12,7 +12,7 @@ interface HeroCarouselProps {
     altText?: string;
 }
 
-export function HeroCarousel({ banners, interval = 5000, altText = "Banner Promocional Ouro Gráfica" }: HeroCarouselProps) {
+export function HeroCarousel({ banners, interval = 5000, altText = "Banner Promocional Vink" }: HeroCarouselProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     // Normalize input to Banner[]

@@ -13,16 +13,18 @@ export async function getProductById(id: string): Promise<Product | null> {
             .eq('id', id)
             .single();
 
-        if (error || !data) return null;
+        if (error || !data) {
+            // Fallback to mock data
+            const { PRODUCTS } = await import('@/data/mockData');
+            return PRODUCTS.find(p => p.id === id) || PRODUCTS[0] || null;
+        };
 
-        return {
-            ...data,
-            customText: data.custom_text,
-            hasDesignOption: data.has_design_option !== undefined ? data.has_design_option : true,
-            priceBreakdowns: data.price_breakdowns || {}
-        } as Product;
+        const { mapProduct } = await import('@/lib/product-mapper');
+        return mapProduct(data);
     } catch (error) {
         console.error('Error fetching product:', error);
-        return null;
+        // Fallback to mock data on error
+        const { PRODUCTS } = await import('@/data/mockData');
+        return PRODUCTS.find(p => p.id === id) || PRODUCTS[0] || null;
     }
 }
