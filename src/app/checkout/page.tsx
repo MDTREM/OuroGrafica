@@ -12,7 +12,7 @@ import { AuthForm } from "@/components/auth/AuthForm";
 import { supabase } from "@/lib/supabase";
 
 export default function CheckoutPage() {
-    const { total, shipping, items, clearCart, discount } = useCart();
+    const { total, shipping, items, clearCart, discount, coupon } = useCart();
     const { user, signOut } = useAuth();
 
     const [step, setStep] = useState(1); // 1: Identification, 2: Delivery, 3: Payment
