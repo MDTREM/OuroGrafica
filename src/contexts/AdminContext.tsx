@@ -75,7 +75,7 @@ interface AdminContextType {
 
     // Coupons
     coupons: Coupon[];
-    addCoupon: (coupon: Coupon) => void;
+    addCoupon: (coupon: any) => Promise<{ success: boolean; error?: any; data?: Coupon }>;
     deleteCoupon: (id: string) => void;
 }
 
