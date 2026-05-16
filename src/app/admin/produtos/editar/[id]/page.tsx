@@ -98,7 +98,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         }
     }, [productToEdit]);
 
-    const addArrayItem = (field: "formats" | "finishes" | "quantities" | "printing" | "extras", value: string, setter: (v: string) => void) => {
+    const addArrayItem = (field: "formats" | "finishes" | "quantities" | "printing" | "extras" | "images", value: string, setter: (v: string) => void) => {
         if (!value.trim()) return;
         
         const ill = field === 'formats' ? tempFormatIll : field === 'printing' ? tempPrintingIll : "";
