@@ -541,8 +541,8 @@ export default function NewProductPage() {
                                         type="text"
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none"
                                         placeholder="Ex: Couchê 300g"
-                                        value={formData.technical_specs?.paper || ""}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, technical_specs: { ...prev.technical_specs, paper: e.target.value } }))}
+                                        value={formData.technicalSpecs?.paper || ""}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, paper: e.target.value } }))}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -551,8 +551,8 @@ export default function NewProductPage() {
                                         type="text"
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none"
                                         placeholder="Ex: 300g"
-                                        value={formData.technical_specs?.weight || ""}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, technical_specs: { ...prev.technical_specs, weight: e.target.value } }))}
+                                        value={formData.technicalSpecs?.weight || ""}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, weight: e.target.value } }))}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -561,8 +561,8 @@ export default function NewProductPage() {
                                         type="text"
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none"
                                         placeholder="Ex: 10kg"
-                                        value={formData.technical_specs?.mass || ""}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, technical_specs: { ...prev.technical_specs, mass: e.target.value } }))}
+                                        value={formData.technicalSpecs?.mass || ""}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, mass: e.target.value } }))}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -571,8 +571,8 @@ export default function NewProductPage() {
                                         type="text"
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none"
                                         placeholder="Ex: Laminação Fosca"
-                                        value={formData.technical_specs?.ennoblement || ""}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, technical_specs: { ...prev.technical_specs, ennoblement: e.target.value } }))}
+                                        value={formData.technicalSpecs?.ennoblement || ""}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, ennoblement: e.target.value } }))}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -581,8 +581,8 @@ export default function NewProductPage() {
                                         type="text"
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none"
                                         placeholder="Ex: 4x0"
-                                        value={formData.technical_specs?.colors || ""}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, technical_specs: { ...prev.technical_specs, colors: e.target.value } }))}
+                                        value={formData.technicalSpecs?.colors || ""}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, colors: e.target.value } }))}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -591,8 +591,8 @@ export default function NewProductPage() {
                                         type="text"
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none"
                                         placeholder="Ex: 9x5cm"
-                                        value={formData.technical_specs?.finalSize || ""}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, technical_specs: { ...prev.technical_specs, finalSize: e.target.value } }))}
+                                        value={formData.technicalSpecs?.finalSize || ""}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, finalSize: e.target.value } }))}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -601,8 +601,8 @@ export default function NewProductPage() {
                                         type="text"
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none"
                                         placeholder="Ex: 9.2x5.2cm"
-                                        value={formData.technical_specs?.bleedSize || ""}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, technical_specs: { ...prev.technical_specs, bleedSize: e.target.value } }))}
+                                        value={formData.technicalSpecs?.bleedSize || ""}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, bleedSize: e.target.value } }))}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -611,8 +611,8 @@ export default function NewProductPage() {
                                         type="text"
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none"
                                         placeholder="Ex: 5 dias úteis"
-                                        value={formData.technical_specs?.productionTime || ""}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, technical_specs: { ...prev.technical_specs, productionTime: e.target.value } }))}
+                                        value={formData.technicalSpecs?.productionTime || ""}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, technicalSpecs: { ...prev.technicalSpecs, productionTime: e.target.value } }))}
                                     />
                                 </div>
                     </div>
