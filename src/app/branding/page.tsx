@@ -19,7 +19,7 @@ export default async function BrandingPage() {
     return (
         <div className="bg-white min-h-screen text-gray-900 selection:bg-brand selection:text-white">
             {/* Hero Section */}
-            <section className="pt-32 pb-24 md:pt-40 md:pb-32 relative">
+            <section className="pt-12 pb-24 md:pt-20 md:pb-32 relative">
                 <Container>
                     <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
                         <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 border border-gray-200">
@@ -48,7 +48,7 @@ export default async function BrandingPage() {
                     </div>
 
                     {/* Stats */}
-                    <div className="mt-32 pt-12 border-t border-gray-100 grid grid-cols-2 md:grid-cols-3 gap-8 max-w-4xl mx-auto text-center">
+                    <div className="mt-32 pt-12 border-t border-gray-100 grid grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto text-center">
                         <div>
                             <p className="text-4xl font-light text-black mb-2">
                                 <CountUp end={200} prefix="+" />
@@ -61,7 +61,7 @@ export default async function BrandingPage() {
                             </p>
                             <p className="text-xs font-medium tracking-widest uppercase text-gray-400">de Satisfação</p>
                         </div>
-                        <div className="hidden md:block">
+                        <div>
                             <p className="text-4xl font-light text-black mb-2">
                                 <CountUp end={100} suffix="%" />
                             </p>
@@ -102,7 +102,9 @@ export default async function BrandingPage() {
                 <Container>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-16">
                         <div className="md:col-span-4">
-                            <h2 className="text-3xl md:text-4xl font-medium text-black leading-tight mb-4">O que fazemos<br />pela sua marca.</h2>
+                            <h2 className="text-4xl font-medium tracking-tight text-black leading-tight mb-4">
+                                O que fazemos <br className="hidden md:block" /> pela <span className="text-brand font-bold italic pr-2">sua marca.</span>
+                            </h2>
                             <p className="text-gray-500 font-light leading-relaxed">
                                 Abordagem estratégica completa para destacar o seu negócio no mercado gastronômico.
                             </p>
@@ -138,11 +140,11 @@ export default async function BrandingPage() {
             {/* Viral Packing Concept */}
             <section className="py-32 bg-[#fcfcfc] border-y border-gray-100">
                 <Container>
-                    <div className="max-w-4xl mx-auto text-center mb-24">
+                    <div className="max-w-4xl mb-24 text-left">
                         <h2 className="text-4xl font-medium tracking-tight text-black mb-8">
-                            O conceito de <span className="text-brand font-bold italic pr-2">Viral Packing</span>
+                            O conceito de <br className="md:hidden" /> <span className="text-brand font-bold italic pr-2">Viral Packing</span>
                         </h2>
-                        <p className="text-xl md:text-2xl font-light text-gray-500 leading-relaxed italic">
+                        <p className="text-base md:text-lg font-light text-gray-500 leading-relaxed italic">
                             "Na era do Tiktok e do Instagram, a experiência não termina quando a comida chega. Uma embalagem extraordinária transforma cada cliente em um micro-influenciador da sua marca."
                         </p>
                     </div>
@@ -213,23 +215,23 @@ export default async function BrandingPage() {
             </section>
 
             {/* Pricing Section */}
-            <section id="planos" className="py-32 bg-black text-white">
+            <section id="planos" className="py-32 bg-white text-gray-900 border-t border-gray-100">
                 <Container>
-                    <div className="text-center max-w-2xl mx-auto mb-20">
-                        <h2 className="text-4xl font-medium tracking-tight mb-4">
+                    <div className="max-w-2xl mb-20 text-left">
+                        <h2 className="text-4xl font-medium tracking-tight mb-4 text-black">
                             Planos <span className="text-brand font-bold italic pr-2">sob medida.</span>
                         </h2>
-                        <p className="text-gray-400 font-light">Escolha a solução ideal para o apetite do seu negócio.</p>
+                        <p className="text-gray-500 font-light">Escolha a solução ideal para o apetite do seu negócio.</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-0 max-w-5xl mx-auto border border-white/10">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                         
                         {/* Plan 1 */}
-                        <div className="p-10 border-b md:border-b-0 md:border-r border-white/10 flex flex-col hover:bg-white/5 transition-colors">
-                            <h3 className="text-xl font-medium mb-2">Basic Taste</h3>
-                            <p className="text-gray-400 text-sm font-light mb-10 h-10">O essencial para começar com o pé direito.</p>
+                        <div className="p-10 border border-gray-200 flex flex-col hover:border-black transition-all duration-300 bg-white">
+                            <h3 className="text-xl font-medium mb-2 text-black">Basic Taste</h3>
+                            <p className="text-gray-500 text-sm font-light mb-10 h-10">O essencial para começar com o pé direito.</p>
                             
-                            <ul className="space-y-5 mb-12 flex-1 text-sm font-light text-gray-300">
+                            <ul className="space-y-5 mb-12 flex-1 text-sm font-light text-gray-500">
                                 <li className="flex items-start gap-3">
                                     <span className="text-brand text-xs mt-1">✦</span>
                                     <span>Naming (Criação do Nome)</span>
@@ -248,23 +250,23 @@ export default async function BrandingPage() {
                                 </li>
                             </ul>
 
-                            <a href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20plano%20Basic%20Taste!" target="_blank" rel="noopener noreferrer" className="block w-full py-4 border border-white/20 hover:border-white text-white text-sm tracking-wide uppercase font-medium text-center transition-colors">
+                            <a href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20plano%20Basic%20Taste!" target="_blank" rel="noopener noreferrer" className="block w-full py-4 border border-gray-200 hover:border-black text-black text-sm tracking-wide uppercase font-medium text-center transition-colors">
                                 Solicitar Orçamento
                             </a>
                         </div>
 
                         {/* Plan 2 */}
-                        <div className="p-10 border-b md:border-b-0 md:border-r border-white/10 flex flex-col bg-white/5 relative">
-                            <div className="absolute top-0 right-0 bg-brand text-black text-[10px] font-bold px-3 py-1 uppercase tracking-widest">
+                        <div className="p-10 border border-brand flex flex-col relative bg-white shadow-sm">
+                            <div className="absolute -top-3 right-6 bg-brand text-black text-[10px] font-bold px-3 py-1 uppercase tracking-widest">
                                 Mais Escolhido
                             </div>
-                            <h3 className="text-xl font-medium mb-2">Combo Perfeito</h3>
-                            <p className="text-gray-400 text-sm font-light mb-10 h-10">Branding completo mais os impressos vitais.</p>
+                            <h3 className="text-xl font-medium mb-2 text-black">Combo Perfeito</h3>
+                            <p className="text-gray-500 text-sm font-light mb-10 h-10">Branding completo mais os impressos vitais.</p>
                             
-                            <ul className="space-y-5 mb-12 flex-1 text-sm font-light text-gray-300">
+                            <ul className="space-y-5 mb-12 flex-1 text-sm font-light text-gray-500">
                                 <li className="flex items-start gap-3">
                                     <span className="text-brand text-xs mt-1">✦</span>
-                                    <span className="text-white font-medium">Tudo do Basic Taste</span>
+                                    <span className="text-black font-semibold">Tudo do Basic Taste</span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <span className="text-brand text-xs mt-1">✦</span>
@@ -286,14 +288,14 @@ export default async function BrandingPage() {
                         </div>
 
                         {/* Plan 3 */}
-                        <div className="p-10 flex flex-col hover:bg-white/5 transition-colors">
-                            <h3 className="text-xl font-medium mb-2">Banquete Viral</h3>
-                            <p className="text-gray-400 text-sm font-light mb-10 h-10">O pacote definitivo para dominar sua região.</p>
+                        <div className="p-10 border border-gray-200 flex flex-col hover:border-black transition-all duration-300 bg-white">
+                            <h3 className="text-xl font-medium mb-2 text-black">Banquete Viral</h3>
+                            <p className="text-gray-500 text-sm font-light mb-10 h-10">O pacote definitivo para dominar sua região.</p>
                             
-                            <ul className="space-y-5 mb-12 flex-1 text-sm font-light text-gray-300">
+                            <ul className="space-y-5 mb-12 flex-1 text-sm font-light text-gray-500">
                                 <li className="flex items-start gap-3">
                                     <span className="text-brand text-xs mt-1">✦</span>
-                                    <span className="text-white font-medium">Tudo do Combo Perfeito</span>
+                                    <span className="text-black font-semibold">Tudo do Combo Perfeito</span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <span className="text-brand text-xs mt-1">✦</span>
@@ -309,7 +311,7 @@ export default async function BrandingPage() {
                                 </li>
                             </ul>
 
-                            <a href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20plano%20Banquete%20Viral!" target="_blank" rel="noopener noreferrer" className="block w-full py-4 border border-white/20 hover:border-white text-white text-sm tracking-wide uppercase font-medium text-center transition-colors">
+                            <a href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20plano%20Banquete%20Viral!" target="_blank" rel="noopener noreferrer" className="block w-full py-4 border border-gray-200 hover:border-black text-black text-sm tracking-wide uppercase font-medium text-center transition-colors">
                                 Solicitar Orçamento
                             </a>
                         </div>
