@@ -19,7 +19,7 @@ export default async function BrandingPage() {
     return (
         <div className="bg-white min-h-screen text-gray-900 selection:bg-brand selection:text-white">
             {/* Hero Section */}
-            <section className="pt-12 pb-16 md:pt-20 md:pb-20 relative overflow-hidden">
+            <section className="pt-12 pb-4 md:pt-20 md:pb-8 relative overflow-hidden">
                 <Container>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
                         <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
@@ -63,7 +63,7 @@ export default async function BrandingPage() {
             </section>
 
             {/* Stats */}
-            <div className="mt-8 mb-16 pt-8 border-t border-gray-100 grid grid-cols-3 gap-2 max-w-4xl mx-auto text-center divide-x divide-gray-100">
+            <div className="mt-2 mb-6 pt-4 border-t border-gray-100 grid grid-cols-3 gap-2 max-w-4xl mx-auto text-center divide-x divide-gray-100">
                 <div className="px-2">
                     <p className="text-4xl font-light text-black mb-2">
                         <CountUp end={200} prefix="+" />
@@ -85,11 +85,7 @@ export default async function BrandingPage() {
             </div>
 
             {/* Brands Carousel */}
-            <div className="border-y border-gray-100 py-12 overflow-hidden bg-gray-50/50">
-                <Container>
-                    <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-10">Marcas que confiam na Vink</p>
-                </Container>
-
+            <div className="border-y border-gray-100 py-6 overflow-hidden bg-gray-50/50">
                 <div 
                     className="relative flex overflow-hidden w-full group" 
                     style={{ 
@@ -111,7 +107,7 @@ export default async function BrandingPage() {
             </div>
 
             {/* Por que marcas precisam de branding? */}
-            <section className="py-24 bg-gray-50/50">
+            <section className="pt-12 pb-12 md:pt-16 md:pb-16 bg-gray-50/50">
                 <Container>
                     <div className="max-w-4xl mx-auto text-center">
                         <h2 className="text-3xl md:text-4xl font-medium tracking-tight text-black mb-6">
@@ -125,7 +121,7 @@ export default async function BrandingPage() {
             </section>
 
             {/* Ingredientes do Sucesso */}
-            <section className="py-32">
+            <section className="py-12 md:py-24">
                 <Container>
                     <div className="text-center mb-24 max-w-2xl mx-auto">
                         <h2 className="text-4xl font-medium tracking-tight text-black mb-4">
@@ -136,7 +132,7 @@ export default async function BrandingPage() {
                         </p>
                     </div>
 
-                    <div className="space-y-32">
+                    <div className="space-y-16 md:space-y-28">
                         {/* 1 */}
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
                             <div className="md:col-span-5 aspect-[4/3] bg-[#c39b74] rounded-xl overflow-hidden shadow-sm w-full max-w-sm mx-auto">
@@ -193,7 +189,7 @@ export default async function BrandingPage() {
             </section>
 
             {/* Portfolio Section */}
-            <section className="py-32">
+            <section className="py-12 md:py-24">
                 <Container>
                     <div className="flex flex-col items-center text-center mb-16 gap-4">
                         <div>
@@ -230,7 +226,7 @@ export default async function BrandingPage() {
             </section>
 
             {/* A Diferença é Visível */}
-            <section className="py-24 bg-gray-50/50 border-t border-gray-100">
+            <section className="py-12 md:py-20 bg-gray-50/50 border-t border-gray-100">
                 <Container>
                     <div className="text-center mb-16 max-w-2xl mx-auto">
                         <h2 className="text-4xl font-medium tracking-tight text-black mb-3">
@@ -282,7 +278,7 @@ export default async function BrandingPage() {
             </section>
 
             {/* Pricing Section */}
-            <section id="planos" className="py-32 bg-white text-gray-900 border-t border-gray-100">
+            <section id="planos" className="py-12 md:py-24 bg-white text-gray-900 border-t border-gray-100">
                 <Container>
                     <div className="max-w-2xl mb-20 text-center mx-auto">
                         <h2 className="text-4xl font-medium tracking-tight mb-4 text-black">
@@ -448,7 +444,7 @@ export default async function BrandingPage() {
             </section>
 
             {/* FAQ */}
-            <section className="py-24 bg-gray-50/50 border-t border-gray-100">
+            <section className="py-12 md:py-20 bg-gray-50/50 border-t border-gray-100">
                 <Container>
                     <div className="max-w-3xl mx-auto">
                         <h2 className="text-4xl font-medium tracking-tight text-black mb-12 text-center">
