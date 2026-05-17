@@ -5,7 +5,7 @@ import { InfoBanner } from "@/components/shop/InfoBanner";
 import { StackedBanners } from "@/components/shop/StackedBanners";
 import { ProductRow } from "@/components/shop/ProductRow";
 import { CATEGORIES, PRODUCTS } from "@/data/mockData";
-import { MaintenanceCTA } from "@/components/shop/MaintenanceCTA";
+
 import { LocationMap } from "@/components/shop/LocationMap";
 import { BlogPreviewSection } from "@/components/shop/BlogPreviewSection";
 import { getHomepageConfig, Section } from "@/actions/homepage-actions";
@@ -14,6 +14,7 @@ import { Product } from "@/data/mockData";
 import { mapProduct } from "@/lib/product-mapper";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { Metadata } from "next";
+import { ViralSection } from "@/components/viral/ViralSection";
 export const metadata: Metadata = {
   title: "Vink | Especialistas em Branding e Embalagens",
   description: "A Vink é sua parceira estratégica para branding, embalagens e impressos de alta qualidade. Soluções completas para potencializar a sua marca.",
@@ -96,8 +97,8 @@ const jsonLd = {
 export default async function Home() {
   const config = await getHomepageConfig();
 
-  // Pre-fetch products for all product-row sections
-  const productSectionsToCheck = config.sections.filter(s => s.type === 'product-row' && s.enabled);
+  // Pre-fetch products for all product-row and viral-row sections
+  const productSectionsToCheck = config.sections.filter(s => (s.type === 'product-row' || s.type === 'viral-row') && s.enabled);
   const productsMap: Record<string, Product[]> = {};
 
   for (const section of productSectionsToCheck) {
@@ -132,10 +133,21 @@ export default async function Home() {
             />
           </div>
         );
+      case 'viral-row':
+        return (
+          <div key={section.id} className="mt-12">
+            <ViralSection
+              title={section.title || section.name}
+              preloadedProducts={productsMap[section.id] || []}
+              productViews={section.settings?.productViews}
+            />
+          </div>
+        );
       case 'stacked-banners':
         return <div key={section.id} className="mt-8"><StackedBanners banners={section.banners || []} /></div>;
       case 'blog-preview':
         return <div key={section.id} className="mt-8"><BlogPreviewSection title={section.title} postIds={section.settings?.postIds} /></div>;
+
       default:
         return null;
     }
@@ -164,6 +176,7 @@ export default async function Home() {
 
       {/* 3. Dynamic Sections */}
       {otherSections.map(section => renderSection(section))}
+
 
       <WhatsAppButton />
     </div>

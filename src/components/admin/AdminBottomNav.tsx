@@ -14,6 +14,7 @@ export function AdminBottomNav() {
         { label: "Categorias", href: "/admin/categorias", icon: FolderOpen },
         { label: "Cupons", href: "/admin/cupons", icon: Tag },
         { label: "Blog", href: "/admin/blog", icon: Image },
+        { label: "Portfólio", href: "/admin/portfolio", icon: Image },
         { label: "Config", href: "/admin/configuracao/home", icon: Image },
     ];
 

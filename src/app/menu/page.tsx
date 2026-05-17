@@ -4,7 +4,7 @@
 
 import { Container } from "@/components/ui/Container";
 import Link from "next/link";
-import { ChevronRight, User, Package, Heart, Headphones, FileText, LogOut, Menu as MenuIcon, Printer, Wrench, Search } from "lucide-react";
+import { ChevronRight, User, Package, Heart, Headphones, FileText, LogOut, Menu as MenuIcon, Printer, Wrench, Search, Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -111,23 +111,16 @@ export default function MenuPage() {
                     </div>
                 </div>
 
-                {/* 4. Services (Internal Links) */}
+                {/* 4. Branding Services */}
                 <div className="mb-6">
-                    <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 pl-2">Serviços Técnicos</h2>
+                    <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 pl-2">Agência Vink</h2>
                     <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
                         <Link
-                            href="/servicos/outsourcing"
-                            className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors border-b border-gray-50"
-                        >
-                            <Printer size={18} className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
-                            <span className="text-gray-700 font-medium text-sm">Aluguel de impressoras</span>
-                        </Link>
-                        <Link
-                            href="/servicos/manutencao"
+                            href="/branding"
                             className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors"
                         >
-                            <Wrench size={18} className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
-                            <span className="text-gray-700 font-medium text-sm">Conserto de impressoras</span>
+                            <Star size={18} className="text-brand" />
+                            <span className="text-gray-700 font-medium text-sm">Serviços de Branding</span>
                         </Link>
                     </div>
                 </div>

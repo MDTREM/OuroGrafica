@@ -4,16 +4,16 @@ import { Instagram, Facebook } from "lucide-react";
 
 export function Footer() {
     return (
-        <footer className="bg-black text-white mt-auto pb-8">
+        <footer className="bg-[#191919] text-white mt-auto pb-8">
             <Container className="py-12 md:py-16">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Column 1: Social */}
                     <div className="space-y-4">
                         <div className="flex gap-4">
-                            <a href="https://www.instagram.com/graficaouro/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-brand transition-colors p-2 bg-white/5 rounded-full border border-white/10 hover:border-brand">
+                            <a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-brand transition-colors p-2 bg-white/5 rounded-full border border-white/10 hover:border-brand">
                                 <Instagram size={20} />
                             </a>
-                            <a href="https://www.facebook.com/people/Ouro-Gr%C3%A1fica/61583717952045/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-brand transition-colors p-2 bg-white/5 rounded-full border border-white/10 hover:border-brand">
+                            <a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-brand transition-colors p-2 bg-white/5 rounded-full border border-white/10 hover:border-brand">
                                 <Facebook size={20} />
                             </a>
                         </div>
@@ -46,8 +46,11 @@ export function Footer() {
                     </div>
 
                 </div>
-                <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
                     <p>&copy; {new Date().getFullYear()} Vink. Todos os direitos reservados.</p>
+                    <p>
+                        Feito por <a href="https://matheusdinizdesign.site/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-brand transition-colors font-medium">Matheus Diniz Designer</a>
+                    </p>
                 </div>
             </Container>
         </footer>

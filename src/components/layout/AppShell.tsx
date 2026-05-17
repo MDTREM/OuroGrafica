@@ -20,9 +20,9 @@ export function AppShell({ children }: AppShellProps) {
 
     // Hide nav elements on specific pages to reduce distraction
     const isProductPage = pathname?.startsWith("/produto/");
-    const isOutsourcingPage = pathname?.startsWith("/servicos/outsourcing/") && pathname !== "/servicos/outsourcing";
+    const isImmersivePage = isProductPage;
 
-    const isImmersivePage = isProductPage || isOutsourcingPage;
+    const isLandingPage = pathname === "/branding";
 
     if (isAuthPage) {
         return <main className="flex-1">{children}</main>;
@@ -32,8 +32,7 @@ export function AppShell({ children }: AppShellProps) {
         <>
             <TopBar />
 
-
-            <DesktopNav />
+            {!isLandingPage && <DesktopNav />}
 
             <main className="flex-1">
                 {children}

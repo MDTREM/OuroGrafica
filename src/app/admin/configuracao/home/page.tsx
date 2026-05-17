@@ -270,11 +270,12 @@ export default function AdminHomeConfigPage() {
                         {isAddingSection && (
                             <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-border rounded-lg shadow-lg py-2 z-10 transition-all">
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('product-row', 'Nova Lista de Produtos', 'Nova Lista', 'best-sellers')}>+ Lista de Produtos (Padrão)</button>
+                                <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('viral-row', 'Seção Viral', 'Produtos em Alta')}>+ Seção Viral</button>
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('banner-carousel', 'Novo Carrossel')}>+ Carrossel de Banners</button>
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('stacked-banners', 'Banners Promocionais')}>+ Banners Promocionais</button>
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('info-banner', 'Faixa Informativa')}>+ Faixa Informativa</button>
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('categories', 'Categorias')}>+ Categorias</button>
-                                <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('maintenance-cta', 'Card de Manutenção')}>+ Card de Manutenção</button>
+
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('blog-preview', 'Preview do Blog', 'Dicas & Novidades')}>+ Preview do Blog</button>
                             </div>
                         )}
@@ -356,7 +357,7 @@ export default function AdminHomeConfigPage() {
                         </div>
 
                         {/* Settings for Product Rows */}
-                        {editingSection.type === 'product-row' && (
+                        {['product-row', 'viral-row'].includes(editingSection.type) && (
                             <div className="space-y-4 pt-2 border-t border-gray-100">
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">Selecionar Produtos</label>
@@ -429,8 +430,28 @@ export default function AdminHomeConfigPage() {
                                                             {product.image && <img src={product.image} className="w-8 h-8 rounded object-cover border border-gray-100" />}
                                                             <span className="text-sm font-medium text-gray-700">{product.title}</span>
                                                         </div>
-                                                        <div className="flex items-center gap-1">
-                                                            <button
+                                                        <div className="flex items-center gap-2">
+                                                            {editingSection.type === 'viral-row' && (
+                                                                <Input
+                                                                    className="w-24 h-8 text-xs px-2"
+                                                                    placeholder="Views (ex: 12K)"
+                                                                    value={editingSection.settings?.productViews?.[id] || ''}
+                                                                    onChange={(e) => {
+                                                                        setEditingSection({
+                                                                            ...editingSection,
+                                                                            settings: {
+                                                                                ...editingSection.settings,
+                                                                                productViews: {
+                                                                                    ...editingSection.settings?.productViews,
+                                                                                    [id]: e.target.value
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                    }}
+                                                                />
+                                                            )}
+                                                            <div className="flex items-center gap-1">
+                                                                <button
                                                                 onClick={() => {
                                                                     const ids = [...(editingSection.settings?.productIds || [])];
                                                                     if (index > 0) {
@@ -464,6 +485,7 @@ export default function AdminHomeConfigPage() {
                                                             </button>
                                                         </div>
                                                     </div>
+                                                </div>
                                                 );
                                             })}
                                         </div>

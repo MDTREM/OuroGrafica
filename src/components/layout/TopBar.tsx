@@ -42,9 +42,10 @@ export function TopBar() {
     return (
         <>
             {/* Top Black Bar - Hide on Mobile */}
-            <div className="hidden md:block bg-[#111111] text-white text-sm py-2">
+            <div className="hidden md:block bg-[#191919] text-white text-sm py-2">
                 <Container className="flex justify-between items-center">
                     <div className="flex gap-6">
+                        <Link href="/branding" className="hover:text-[#15cb98] transition-colors font-medium text-brand">Branding</Link>
                         <Link href="/cupons" className="hover:text-[#15cb98] transition-colors font-medium">Cupons</Link>
                         <Link href="/blog" className="hover:text-[#15cb98] transition-colors font-medium">Blog</Link>
                     </div>

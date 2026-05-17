@@ -14,7 +14,7 @@ export interface Banner {
     mobileImageUrl?: string;
 }
 
-export type SectionType = 'banner-carousel' | 'info-banner' | 'categories' | 'product-row' | 'stacked-banners' | 'maintenance-cta' | 'blog-preview';
+export type SectionType = 'banner-carousel' | 'info-banner' | 'categories' | 'product-row' | 'stacked-banners' | 'blog-preview' | 'viral-row';
 
 export interface Section {
     id: string;
@@ -28,6 +28,7 @@ export interface Section {
         count?: number;
         productIds?: string[];
         postIds?: string[];
+        productViews?: { [productId: string]: string };
     };
     benefits?: {
         id: string;
@@ -56,7 +57,6 @@ export async function getHomepageConfig(): Promise<HomepageConfig> {
             return {
                 sections: [
                     { id: 'def-1', type: 'banner-carousel', name: 'Carrossel Principal', enabled: true, banners: [] },
-                    { id: 'def-2', type: 'maintenance-cta', name: 'Card de Manutenção', enabled: true },
                     { id: 'def-3', type: 'categories', name: 'Categorias', enabled: true, title: 'Departamentos' },
                     { id: 'def-4', type: 'product-row', name: 'Destaques', enabled: true, title: 'Produtos em Destaque', settings: { filter: 'best-sellers' } }
                 ]
