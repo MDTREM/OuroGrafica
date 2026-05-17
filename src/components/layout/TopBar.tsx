@@ -65,7 +65,7 @@ export function TopBar() {
                             <Menu size={24} />
                         </Link>
                         <Link href="/" className="shrink-0 flex items-center h-full">
-                            <img src='https://i.imgur.com/Kizb68g.png' alt='Vink' className='h-6 md:h-7 w-auto object-contain' />
+                            <img src='https://i.imgur.com/aS2efN8.png' alt='Vink' className='h-6 md:h-7 w-auto object-contain' />
                         </Link>
                     </div>
  

@@ -53,7 +53,7 @@ export default function LoginPage() {
 
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <Link href="/" className="flex justify-center mb-6">
-                    <img src="https://i.imgur.com/Kizb68g.png" alt="Vink" className="h-10 w-auto object-contain" />
+                    <img src="https://i.imgur.com/aS2efN8.png" alt="Vink" className="h-10 w-auto object-contain" />
                 </Link>
                 <h2 className="text-center text-3xl font-semibold tracking-tight text-gray-900">
                     Bem-vindo de volta

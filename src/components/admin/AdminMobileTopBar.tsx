@@ -8,7 +8,7 @@ export function AdminMobileTopBar() {
         <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 lg:hidden px-4 h-16 flex items-center justify-between shadow-sm">
             {/* Logo */}
             <Link href="/admin" className="flex items-center gap-2">
-                <img src='https://i.imgur.com/Kizb68g.png' alt='Vink' className='h-8 w-auto object-contain' />
+                <img src='https://i.imgur.com/aS2efN8.png' alt='Vink' className='h-8 w-auto object-contain' />
                 <span className="text-[10px] font-bold bg-gray-900 text-white px-1.5 py-0.5 rounded-full">ADMIN</span>
             </Link>
 

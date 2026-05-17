@@ -8,7 +8,7 @@ export function Header() {
             <Container className="flex h-16 items-center justify-between">
                 <Link href="/" className="flex items-center gap-2">
                     {/* Logo */}
-                    <img src="https://i.imgur.com/Kizb68g.png" alt="Vink" className="h-8 w-auto object-contain" />
+                    <img src="https://i.imgur.com/aS2efN8.png" alt="Vink" className="h-8 w-auto object-contain" />
                 </Link>
                 <nav className="hidden md:flex items-center gap-8">
                     <Link href="/produtos" className="text-sm font-medium text-gray-600 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors">
