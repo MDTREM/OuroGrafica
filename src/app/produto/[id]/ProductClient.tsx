@@ -175,11 +175,11 @@ export default function ProductClient({ product }: ProductClientProps) {
                 <div className="w-full aspect-[16/10] bg-gray-50 flex items-center justify-center p-4">
                     <div className={cn(
                         "w-3/4 h-3/4 border-2 border-gray-400 flex items-center justify-center transition-all duration-500",
-                        isRounded ? "rounded-[32px]" : "rounded-sm"
+                        isRounded ? "rounded-xl" : "rounded-xl"
                     )}>
                         <div className={cn(
                             "w-1/2 h-1/2 border border-gray-300 transition-all duration-500",
-                            isRounded ? "rounded-md" : "rounded-xs"
+                            isRounded ? "rounded-xl" : "rounded-xs"
                         )} />
                     </div>
                 </div>
@@ -190,12 +190,12 @@ export default function ProductClient({ product }: ProductClientProps) {
             return (
                 <div className="w-full aspect-[16/10] bg-gray-50 flex items-center justify-center p-4 gap-2">
                     {/* Frente */}
-                    <div className="w-16 h-20 border-2 border-gray-400 rounded-sm flex items-center justify-center text-gray-500 font-semibold text-lg bg-white">
+                    <div className="w-16 h-20 border-2 border-gray-400 rounded-xl flex items-center justify-center text-gray-500 font-semibold text-lg bg-white">
                         F
                     </div>
                     {/* Verso */}
                     <div className={cn(
-                        "w-16 h-20 border-2 rounded-sm flex items-center justify-center text-gray-500 font-semibold text-lg",
+                        "w-16 h-20 border-2 rounded-xl flex items-center justify-center text-gray-500 font-semibold text-lg",
                         isFrontAndBack ? "border-gray-400 bg-white" : "border-gray-200 bg-gray-100/50"
                     )}>
                         {isFrontAndBack ? "V" : ""}
@@ -217,7 +217,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                         
                         {/* 1. SEÇÃO DE IMAGENS */}
                         <div className="space-y-4">
-                            <div className="aspect-[16/9] rounded-lg relative flex items-center justify-center overflow-hidden bg-gray-50 border border-gray-100 shadow-sm">
+                            <div className="aspect-[16/9] rounded-xl relative flex items-center justify-center overflow-hidden bg-gray-50 border border-gray-100 shadow-sm">
                                 {productImages.length > 0 || selectedVariationImage ? (
                                     <Image
                                         src={selectedVariationImage || productImages[activeImage] || productImages[0]}
@@ -246,7 +246,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                 setSelectedVariationImage(null);
                                             }}
                                             className={cn(
-                                                "min-w-[80px] w-[80px] h-[80px] rounded-md border-2 transition-all overflow-hidden relative bg-white shadow-sm",
+                                                "min-w-[80px] w-[80px] h-[80px] rounded-xl border-2 transition-all overflow-hidden relative bg-white shadow-sm",
                                                 activeImage === idx
                                                     ? "border-brand ring-2 ring-brand/20"
                                                     : "border-transparent hover:border-gray-200"
@@ -356,7 +356,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                 key={idx}
                                                 onClick={() => setSelectedFormat(fmt)}
                                                 className={cn(
-                                                    "group flex flex-col rounded-lg border-2 transition-all overflow-hidden bg-white shadow-sm",
+                                                    "group flex flex-col rounded-xl border-2 transition-all overflow-hidden bg-white shadow-sm",
                                                     selectedFormat === fmt ? "border-brand ring-4 ring-brand/5" : "border-gray-100 hover:border-gray-200"
                                                 )}
                                             >
@@ -391,7 +391,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                 key={idx}
                                                 onClick={() => setSelectedPrinting(prt)}
                                                 className={cn(
-                                                    "group flex flex-col rounded-lg border-2 transition-all overflow-hidden bg-white shadow-sm",
+                                                    "group flex flex-col rounded-xl border-2 transition-all overflow-hidden bg-white shadow-sm",
                                                     selectedPrinting === prt ? "border-brand ring-4 ring-brand/5" : "border-gray-100 hover:border-gray-200"
                                                 )}
                                             >
@@ -426,7 +426,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                 key={idx}
                                                 onClick={() => setSelectedFinish(fin)}
                                                 className={cn(
-                                                    "flex items-center justify-between p-6 rounded-lg border-2 transition-all text-left bg-white shadow-sm",
+                                                    "flex items-center justify-between p-6 rounded-xl border-2 transition-all text-left bg-white shadow-sm",
                                                     selectedFinish === fin
                                                         ? "border-brand bg-white ring-4 ring-brand/5"
                                                         : "border-gray-100 hover:border-gray-200"
@@ -455,7 +455,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                 key={idx}
                                                 onClick={() => setSelectedExtra(ext)}
                                                 className={cn(
-                                                    "flex items-center justify-between p-6 rounded-lg border-2 transition-all text-left bg-white shadow-sm",
+                                                    "flex items-center justify-between p-6 rounded-xl border-2 transition-all text-left bg-white shadow-sm",
                                                     selectedExtra === ext
                                                         ? "border-brand bg-white ring-4 ring-brand/5"
                                                         : "border-gray-100 hover:border-gray-200"
@@ -502,7 +502,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                             }
                                                         }}
                                                         className={cn(
-                                                            "group flex flex-col rounded-lg border-2 transition-all overflow-hidden bg-white shadow-sm",
+                                                            "group flex flex-col rounded-xl border-2 transition-all overflow-hidden bg-white shadow-sm",
                                                             isSelected ? "border-brand ring-4 ring-brand/5 shadow-md" : "border-gray-100 hover:border-gray-200"
                                                         )}
                                                     >
@@ -578,7 +578,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                         key={qty}
                                                         onClick={() => setQuantity(qtyValue)}
                                                         className={cn(
-                                                            "flex items-center justify-between p-6 rounded-md border transition-all text-left",
+                                                            "flex items-center justify-between p-6 rounded-xl border transition-all text-left",
                                                             isSelected ? "border-brand bg-brand/5 shadow-md ring-4 ring-brand/10" : "border-gray-100 hover:border-gray-200 bg-white shadow-sm"
                                                         )}
                                                     >
@@ -622,7 +622,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-lg border border-gray-100 p-8 shadow-xl shadow-gray-200/50 space-y-8">
+                        <div className="bg-white rounded-xl border border-gray-100 p-8 shadow-xl shadow-gray-200/50 space-y-8">
                             <div>
                                 <h2 className="text-xl font-semibold text-gray-900 mb-6">
                                     Resumo do Pedido
@@ -697,7 +697,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                             <label
                                                 htmlFor="sidebar-upload"
                                                 className={cn(
-                                                    "flex flex-col items-center justify-center py-10 px-6 rounded-lg border-2 border-dashed transition-all cursor-pointer text-center space-y-4",
+                                                    "flex flex-col items-center justify-center py-10 px-6 rounded-xl border-2 border-dashed transition-all cursor-pointer text-center space-y-4",
                                                     isUploading 
                                                         ? "border-brand bg-brand/5" 
                                                         : "border-gray-100 bg-white hover:bg-gray-50 hover:border-brand/30"
@@ -741,7 +741,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                 </div>
                                 
                                 <div className="flex gap-4">
-                                    <div className="w-10 h-10 rounded-md bg-gray-50 flex items-center justify-center flex-shrink-0">
+                                    <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0">
                                         <Check size={20} className="text-gray-600" />
                                     </div>
                                     <div>
@@ -771,7 +771,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                         </div>
 
                         {/* Baixar Gabarito Section */}
-                        <div className="bg-white rounded-lg border border-gray-100 p-8 shadow-sm space-y-6">
+                        <div className="bg-white rounded-xl border border-gray-100 p-8 shadow-sm space-y-6">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-widest flex items-center gap-2">
                                     <div className="w-1 h-4 bg-brand rounded-full"></div>
@@ -789,7 +789,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                         </div>
 
                         {/* Ficha Técnica Card */}
-                        <div className="bg-gray-50 rounded-lg p-8 border border-gray-100 space-y-6">
+                        <div className="bg-gray-50 rounded-xl p-8 border border-gray-100 space-y-6">
                             <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-widest flex items-center gap-2">
                                 <div className="w-1 h-4 bg-brand rounded-full"></div>
                                 Detalhes Técnicos
@@ -842,7 +842,7 @@ export default function ProductClient({ product }: ProductClientProps) {
             {/* Alerts */}
             {showUploadAlert && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-md p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
+                    <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
                         <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4 text-red-600 mx-auto">
                             <UploadCloud size={24} />
                         </div>
@@ -862,7 +862,7 @@ export default function ProductClient({ product }: ProductClientProps) {
 
             {showTextAlert && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-md p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
+                    <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
                         <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4 text-orange-600 mx-auto">
                             <div className="font-serif text-2xl font-semibold">Aa</div>
                         </div>

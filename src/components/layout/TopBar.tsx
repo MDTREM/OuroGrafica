@@ -50,7 +50,7 @@ export function TopBar() {
                         <Link href="/blog" className="hover:text-[#15cb98] transition-colors font-medium">Blog</Link>
                     </div>
                     <div className="font-medium text-xs md:text-sm">
-                        Vink: Impressões que marcam presença
+                        Cliente come primeiro com os olhos.
                     </div>
                 </Container>
             </div>
@@ -114,7 +114,7 @@ export function TopBar() {
                                             onChange={(e) => setQuery(e.target.value)}
                                             className="w-full h-[48px] pl-5 pr-12 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-brand/20 text-sm text-gray-800 focus:outline-none"
                                         />
-                                        <button type="submit" className="absolute right-2 top-2 bottom-2 w-10 bg-brand text-white rounded-lg flex items-center justify-center shadow-lg shadow-brand/20">
+                                        <button type="submit" className="absolute right-2 top-2 bottom-2 w-10 bg-brand text-white rounded-xl flex items-center justify-center shadow-lg shadow-brand/20">
                                             <Search size={18} />
                                         </button>
                                     </form>

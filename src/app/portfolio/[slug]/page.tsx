@@ -56,7 +56,7 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
             </Container>
 
             <Container className="max-w-6xl mb-16">
-                <div className="aspect-video w-full bg-gray-100 rounded-3xl overflow-hidden shadow-sm">
+                <div className="aspect-video w-full bg-gray-100 rounded-xl overflow-hidden shadow-sm">
                     {caseData.cover_image && (
                         <img src={caseData.cover_image} alt={`Capa ${caseData.title}`} className="w-full h-full object-cover" />
                     )}
@@ -75,7 +75,7 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
                         <h2 className="text-2xl font-medium mb-10 text-center text-black">Galeria do Projeto</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {caseData.images.map((img, idx) => (
-                                <div key={idx} className="aspect-square bg-gray-100 rounded-2xl overflow-hidden shadow-sm">
+                                <div key={idx} className="aspect-square bg-gray-100 rounded-xl overflow-hidden shadow-sm">
                                     <img src={img} alt={`Imagem ${idx + 1}`} className="w-full h-full object-cover" />
                                 </div>
                             ))}

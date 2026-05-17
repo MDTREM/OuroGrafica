@@ -45,7 +45,7 @@ export default function AdminDashboard() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {statCards.map((card, index) => (
-                    <div key={index} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-start justify-between">
+                    <div key={index} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-start justify-between">
                         <div>
                             <p className="text-sm font-medium text-gray-500 mb-1">{card.label}</p>
                             <h3 className="text-2xl font-semibold text-gray-900">{card.value}</h3>
@@ -58,7 +58,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Recent Orders Table */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-gray-900">Pedidos Recentes</h2>
                     <Link href="/admin/pedidos" className="text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline flex items-center gap-1">

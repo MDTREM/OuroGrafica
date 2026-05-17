@@ -25,7 +25,7 @@ export default function AtendimentoPage() {
                         href="https://wa.me/5531989880161"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-brand/30 transition-all group text-center"
+                        className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-brand/30 transition-all group text-center"
                     >
                         <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                             <MessageCircle size={32} className="text-green-600" />
@@ -38,7 +38,7 @@ export default function AtendimentoPage() {
                     {/* Email */}
                     <a
                         href="mailto:vinkimpressos@gmail.com"
-                        className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-brand/30 transition-all group text-center"
+                        className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:border-brand/30 transition-all group text-center"
                     >
                         <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                             <Mail size={32} className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />

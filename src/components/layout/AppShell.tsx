@@ -37,7 +37,7 @@ export function AppShell({ children }: AppShellProps) {
             <main className="flex-1">
                 {children}
             </main>
-            <div className={pathname === "/" ? "block" : "hidden md:block"}>
+            <div className={(pathname === "/" || pathname === "/branding") ? "block" : "hidden md:block"}>
                 <Footer />
             </div>
 

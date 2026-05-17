@@ -80,7 +80,7 @@ export default function AdminCategoriesPage() {
                                     <ChevronDown size={20} />
                                 </button>
                             </div>
-                            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 overflow-hidden">
+                            <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 overflow-hidden">
                                 {category.image ? (
                                     <img src={category.image} alt="" className="w-full h-full object-cover" />
                                 ) : (

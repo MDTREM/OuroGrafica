@@ -254,7 +254,7 @@ export default function AdminHomeConfigPage() {
             </div>
 
             {/* Sections Management */}
-            <div className="bg-surface p-6 rounded-lg border border-border">
+            <div className="bg-surface p-6 rounded-xl border border-border">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">Estrutura da Página</h2>
                     <div className="relative">
@@ -268,7 +268,7 @@ export default function AdminHomeConfigPage() {
                         </Button>
 
                         {isAddingSection && (
-                            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-border rounded-lg shadow-lg py-2 z-10 transition-all">
+                            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-border rounded-xl shadow-lg py-2 z-10 transition-all">
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('product-row', 'Nova Lista de Produtos', 'Nova Lista', 'best-sellers')}>+ Lista de Produtos (Padrão)</button>
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('viral-row', 'Seção Viral', 'Produtos em Alta')}>+ Seção Viral</button>
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('banner-carousel', 'Novo Carrossel')}>+ Carrossel de Banners</button>
@@ -338,7 +338,7 @@ export default function AdminHomeConfigPage() {
             {/* Editing Logic Modal (Section Content) */}
             {editingSection && !editingBanner && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-40">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto space-y-4">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto space-y-4">
                         <div className="flex justify-between items-center">
                             <h3 className="text-xl font-semibold">Editar: {editingSection.name}</h3>
                             <button onClick={() => setEditingSection(null)} className="p-1 hover:bg-gray-100 rounded">
@@ -362,7 +362,7 @@ export default function AdminHomeConfigPage() {
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">Selecionar Produtos</label>
                                     <p className="text-xs text-gray-500 mb-2">Escolha os produtos que devem aparecer nesta lista.</p>
-                                    <div className="border border-border rounded-md max-h-60 overflow-y-auto bg-gray-50 p-2 space-y-1">
+                                    <div className="border border-border rounded-xl max-h-60 overflow-y-auto bg-gray-50 p-2 space-y-1">
                                         {products.length === 0 ? (
                                             <p className="text-xs text-gray-400 text-center py-2">Nenhum produto cadastrado.</p>
                                         ) : (
@@ -386,10 +386,10 @@ export default function AdminHomeConfigPage() {
                                                                 }
                                                             });
                                                         }}
-                                                        className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all border ${isSelected ? 'bg-gradient-to-r from-brand to-brand-dark/5 border-brand' : 'hover:bg-gray-50 border-transparent'}`}
+                                                        className={`flex items-center gap-3 p-2 rounded-xl cursor-pointer transition-all border ${isSelected ? 'bg-gradient-to-r from-brand to-brand-dark/5 border-brand' : 'hover:bg-gray-50 border-transparent'}`}
                                                     >
                                                         <div className={`w-5 h-5 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${isSelected ? 'bg-gradient-to-r from-brand to-brand-dark border-brand' : 'border-gray-300 bg-white'}`}>
-                                                            {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-[1px]" />}
+                                                            {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-xl" />}
                                                         </div>
 
                                                         <div className="relative w-10 h-10 rounded overflow-hidden flex-shrink-0 border border-gray-100">
@@ -424,7 +424,7 @@ export default function AdminHomeConfigPage() {
                                                 const product = products.find(p => p.id === id);
                                                 if (!product) return null;
                                                 return (
-                                                    <div key={id} className="flex items-center justify-between p-2 bg-white border border-gray-200 rounded-lg">
+                                                    <div key={id} className="flex items-center justify-between p-2 bg-white border border-gray-200 rounded-xl">
                                                         <div className="flex items-center gap-3">
                                                             <span className="text-xs font-semibold text-gray-400 w-4">{index + 1}</span>
                                                             {product.image && <img src={product.image} className="w-8 h-8 rounded object-cover border border-gray-100" />}
@@ -576,7 +576,7 @@ export default function AdminHomeConfigPage() {
                                     <label className="text-sm font-medium mb-2 block">Selecionar Artigos</label>
                                     <p className="text-xs text-gray-500 mb-2">Marque os artigos que deseja exibir na home (máximo 3 recomendados).</p>
 
-                                    <div className="border border-border rounded-md max-h-60 overflow-y-auto bg-gray-50 p-2 space-y-1">
+                                    <div className="border border-border rounded-xl max-h-60 overflow-y-auto bg-gray-50 p-2 space-y-1">
                                         {blogPosts.length === 0 ? (
                                             <p className="text-xs text-gray-400 text-center py-2">Carregando artigos...</p>
                                         ) : (
@@ -599,10 +599,10 @@ export default function AdminHomeConfigPage() {
                                                                 }
                                                             });
                                                         }}
-                                                        className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all border ${isSelected ? 'bg-gradient-to-r from-brand to-brand-dark/5 border-brand' : 'hover:bg-gray-50 border-transparent'}`}
+                                                        className={`flex items-center gap-3 p-2 rounded-xl cursor-pointer transition-all border ${isSelected ? 'bg-gradient-to-r from-brand to-brand-dark/5 border-brand' : 'hover:bg-gray-50 border-transparent'}`}
                                                     >
                                                         <div className={`w-5 h-5 rounded border flex-shrink-0 flex items-center justify-center transition-colors ${isSelected ? 'bg-gradient-to-r from-brand to-brand-dark border-brand' : 'border-gray-300 bg-white'}`}>
-                                                            {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-[1px]" />}
+                                                            {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-xl" />}
                                                         </div>
 
                                                         <div className="relative w-10 h-10 rounded overflow-hidden flex-shrink-0 border border-gray-100 bg-gray-200">
@@ -645,7 +645,7 @@ export default function AdminHomeConfigPage() {
             {
                 editingBenefit && (
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-                        <div className="bg-white rounded-lg p-6 w-full max-w-md space-y-4">
+                        <div className="bg-white rounded-xl p-6 w-full max-w-md space-y-4">
                             <div className="flex justify-between items-center">
                                 <h3 className="text-xl font-semibold">Editar Item</h3>
                                 <button onClick={() => setEditingBenefit(null)}><X size={20} /></button>
@@ -654,7 +654,7 @@ export default function AdminHomeConfigPage() {
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Ícone</label>
                                 <select
-                                    className="w-full p-2 border border-border rounded-md bg-white"
+                                    className="w-full p-2 border border-border rounded-xl bg-white"
                                     value={editingBenefit.icon}
                                     onChange={e => setEditingBenefit({ ...editingBenefit, icon: e.target.value })}
                                 >
@@ -724,7 +724,7 @@ export default function AdminHomeConfigPage() {
             {
                 editingBanner && (
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-                        <div className="bg-white rounded-lg p-6 w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
+                        <div className="bg-white rounded-xl p-6 w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
                             <h3 className="text-xl font-semibold">Banner</h3>
 
                             <div className="space-y-4">
@@ -735,7 +735,7 @@ export default function AdminHomeConfigPage() {
                                     {uploading && <p className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">Carregando...</p>}
 
                                     {editingBanner.imageUrl && (
-                                        <div className="mt-2 rounded-lg overflow-hidden border border-gray-200 bg-gray-100 max-h-40">
+                                        <div className="mt-2 rounded-xl overflow-hidden border border-gray-200 bg-gray-100 max-h-40">
                                             <img src={editingBanner.imageUrl} alt="Preview Desktop" className="w-full h-full object-contain" />
                                         </div>
                                     )}
@@ -758,7 +758,7 @@ export default function AdminHomeConfigPage() {
                                     {uploadingMobile && <p className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">Carregando...</p>}
 
                                     {editingBanner.mobileImageUrl && (
-                                        <div className="mt-2 rounded-lg overflow-hidden border border-gray-200 bg-gray-100 max-h-40">
+                                        <div className="mt-2 rounded-xl overflow-hidden border border-gray-200 bg-gray-100 max-h-40">
                                             <img src={editingBanner.mobileImageUrl} alt="Preview Mobile" className="w-full h-full object-contain" />
                                         </div>
                                     )}

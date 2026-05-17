@@ -131,7 +131,7 @@ export default function AdminProductsPage() {
                     />
                 </div>
                 <select
-                    className="h-11 px-4 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                    className="h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                 >
@@ -141,7 +141,7 @@ export default function AdminProductsPage() {
                     ))}
                 </select>
                 <select
-                    className="h-11 px-4 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                    className="h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value)}
                 >
@@ -154,7 +154,7 @@ export default function AdminProductsPage() {
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm text-gray-600">
                         <thead className="bg-gray-50 text-gray-900 font-medium">
@@ -172,7 +172,7 @@ export default function AdminProductsPage() {
                                 <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex-shrink-0">
+                                            <div className="w-12 h-12 rounded-xl bg-gray-100 border border-gray-200 overflow-hidden flex-shrink-0">
                                                 {product.image ? (
                                                     <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
                                                 ) : (
@@ -183,7 +183,7 @@ export default function AdminProductsPage() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700">
+                                        <span className="inline-flex items-center px-2 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-700">
                                             {product.category}
                                         </span>
                                     </td>
@@ -225,11 +225,11 @@ export default function AdminProductsPage() {
                                             <button
                                                 onClick={() => duplicateProduct(product)}
                                                 title="Duplicar"
-                                                className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                                                className="p-2 text-blue-500 hover:bg-blue-50 rounded-xl transition-colors"
                                             >
                                                 <Copy size={18} />
                                             </button>
-                                            <Link href={`/admin/produtos/editar/${product.id}`} className="p-2 text-gray-500 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <Link href={`/admin/produtos/editar/${product.id}`} className="p-2 text-gray-500 hover:bg-gray-50 rounded-xl transition-colors">
                                                 <Edit size={18} />
                                             </Link>
                                             <button
@@ -238,7 +238,7 @@ export default function AdminProductsPage() {
                                                         deleteProduct(product.id);
                                                     }
                                                 }}
-                                                className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                className="p-2 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
                                             >
                                                 <Trash2 size={18} />
                                             </button>

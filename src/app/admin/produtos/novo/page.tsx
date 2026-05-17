@@ -221,7 +221,7 @@ export default function NewProductPage() {
                 {/* Main Info */}
                 <div className="lg:col-span-2 space-y-8">
                     {/* Basic Details */}
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+                    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-6">
                         <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-100 pb-4">Informações Básicas</h3>
 
                         <Input
@@ -351,7 +351,7 @@ export default function NewProductPage() {
                                         Object.entries(formData.priceBreakdowns)
                                             .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
                                             .map(([qty, price]) => (
-                                                <div key={qty} className="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-gray-200">
+                                                <div key={qty} className="flex justify-between items-center bg-white p-2 px-3 rounded-xl border border-gray-200">
                                                     <span className="text-sm font-medium">{qty} un.</span>
                                                     <div className="flex items-center gap-3">
                                                         <span className="text-sm text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-semibold">R$ {price.toFixed(2)}</span>
@@ -427,7 +427,7 @@ export default function NewProductPage() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.quantities?.map((item, idx) => (
-                                            <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-2 border border-gray-100 group">
+                                            <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-xl flex items-center gap-2 border border-gray-100 group">
                                                 {item}
                                                 <button type="button" onClick={() => removeArrayItem("quantities", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
                                             </span>
@@ -529,7 +529,7 @@ export default function NewProductPage() {
                 </div>
 
                 {/* Ficha Técnica */}
-                <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm space-y-6">
+                <div className="bg-white rounded-xl border border-gray-100 p-8 shadow-sm space-y-6">
                     <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
                         <div className="w-1.5 h-6 bg-brand rounded-full"></div>
                         Detalhes Técnicos (Ficha Técnica)
@@ -619,7 +619,7 @@ export default function NewProductPage() {
                 </div>
 
                 {/* Images Section */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-8">
+                <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-8">
                     <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-100 pb-4">Imagens do Produto</h3>
 
                     {/* 1. Imagem de Capa (4:3) */}
@@ -696,7 +696,7 @@ export default function NewProductPage() {
                                             <button type="button" onClick={() => removeArrayItem("images", idx)} className="bg-white text-red-500 p-2 rounded-full hover:bg-red-50"><Trash2 size={16} /></button>
                                             <button type="button" onClick={() => moveArrayItem("images", idx, "right")} disabled={idx === (formData.images?.length || 0) - 1} className="bg-white/90 p-1.5 rounded-full hover:bg-white disabled:opacity-50"><ChevronRight size={16} /></button>
                                         </div>
-                                        <span className="absolute bottom-1 right-1 bg-black/50 text-white text-[10px] px-1.5 rounded-md">{idx + 1}</span>
+                                        <span className="absolute bottom-1 right-1 bg-black/50 text-white text-[10px] px-1.5 rounded-xl">{idx + 1}</span>
                                     </div>
                                 ))}
                                 {(formData.images?.length || 0) < 10 && (
@@ -730,7 +730,7 @@ export default function NewProductPage() {
                     {/* Display Options */}
 
                     {/* Variations */}
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+                    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-6">
                         <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                             <h3 className="text-lg font-semibold text-gray-900">Variações do Produto</h3>
                             <div className="flex items-center gap-3">
@@ -769,7 +769,7 @@ export default function NewProductPage() {
                                                     type="button"
                                                     onClick={() => setTempFormatIll(ill.id)}
                                                     className={cn(
-                                                        "px-2 py-1 rounded-md text-[10px] font-semibold border transition-all whitespace-nowrap",
+                                                        "px-2 py-1 rounded-xl text-[10px] font-semibold border transition-all whitespace-nowrap",
                                                         tempFormatIll === ill.id
                                                             ? "bg-brand/10 border-brand text-brand"
                                                             : "bg-white border-gray-200 text-gray-500 hover:border-gray-300"
@@ -782,13 +782,13 @@ export default function NewProductPage() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.formats?.map((item, idx) => (
-                                            <span key={idx} className="bg-white text-xs px-2 py-1.5 rounded-lg flex items-center gap-2 border border-gray-200 group relative">
+                                            <span key={idx} className="bg-white text-xs px-2 py-1.5 rounded-xl flex items-center gap-2 border border-gray-200 group relative">
                                                 {formData.optionIllustrations?.[item] && (
                                                     <div className="w-4 h-4 rounded bg-gray-100 flex items-center justify-center border border-gray-200">
                                                         <div className={cn(
                                                             "border border-gray-400",
                                                             formData.optionIllustrations[item] === 'rectangular' ? "w-2 h-1" :
-                                                            formData.optionIllustrations[item] === 'rounded' ? "w-2 h-1 rounded-[1px]" : ""
+                                                            formData.optionIllustrations[item] === 'rounded' ? "w-2 h-1 rounded-xl" : ""
                                                         )} />
                                                     </div>
                                                 )}
@@ -817,7 +817,7 @@ export default function NewProductPage() {
                                                     type="button"
                                                     onClick={() => setTempPrintingIll(ill.id)}
                                                     className={cn(
-                                                        "px-2 py-1 rounded-md text-[10px] font-semibold border transition-all whitespace-nowrap",
+                                                        "px-2 py-1 rounded-xl text-[10px] font-semibold border transition-all whitespace-nowrap",
                                                         tempPrintingIll === ill.id
                                                             ? "bg-brand/10 border-brand text-brand"
                                                             : "bg-white border-gray-200 text-gray-500 hover:border-gray-300"
@@ -830,7 +830,7 @@ export default function NewProductPage() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.printing?.map((item, idx) => (
-                                            <span key={idx} className="bg-white text-xs px-2 py-1.5 rounded-lg flex items-center gap-2 border border-gray-200 group relative">
+                                            <span key={idx} className="bg-white text-xs px-2 py-1.5 rounded-xl flex items-center gap-2 border border-gray-200 group relative">
                                                 {formData.optionIllustrations?.[item] && (
                                                     <div className="w-4 h-4 rounded bg-gray-100 flex items-center justify-center border border-gray-200">
                                                         <div className={cn(
@@ -856,7 +856,7 @@ export default function NewProductPage() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.finishes?.map((item, idx) => (
-                                            <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-2 border border-gray-100 group">
+                                            <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-xl flex items-center gap-2 border border-gray-100 group">
                                                 {item}
                                                 <button type="button" onClick={() => removeArrayItem("finishes", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
                                             </span>
@@ -873,7 +873,7 @@ export default function NewProductPage() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.extras?.map((item, idx) => (
-                                            <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center gap-2 border border-gray-100 group">
+                                            <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-xl flex items-center gap-2 border border-gray-100 group">
                                                 {item}
                                                 <button type="button" onClick={() => removeArrayItem("extras", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
                                             </span>
@@ -940,7 +940,7 @@ export default function NewProductPage() {
                                                                     <div className={cn(
                                                                         "border border-gray-400",
                                                                         formData.optionIllustrations[opt] === 'rectangular' ? "w-2.5 h-1.5" :
-                                                                        formData.optionIllustrations[opt] === 'rounded' ? "w-2.5 h-1.5 rounded-[2px]" :
+                                                                        formData.optionIllustrations[opt] === 'rounded' ? "w-2.5 h-1.5 rounded-xl" :
                                                                         formData.optionIllustrations[opt] === 'front' ? "w-1.5 h-2" :
                                                                         formData.optionIllustrations[opt] === 'front_back' ? "w-2 h-2 border-r-0 border-l-gray-400" : ""
                                                                     )} />
@@ -959,19 +959,19 @@ export default function NewProductPage() {
                                             <div className="space-y-2">
                                                 <div className="flex gap-2">
                                                     <input
-                                                        className="flex-1 rounded-lg border-gray-200 text-xs h-8"
+                                                        className="flex-1 rounded-xl border-gray-200 text-xs h-8"
                                                         placeholder="Nova opção (ex: GG)"
                                                         value={tempOptions[vIdx] || ""}
                                                         onChange={(e) => setTempOptions(prev => ({ ...prev, [vIdx]: e.target.value }))}
                                                     />
                                                     <input
-                                                        className="w-24 rounded-lg border-gray-200 text-xs h-8"
+                                                        className="w-24 rounded-xl border-gray-200 text-xs h-8"
                                                         placeholder="+ R$ 0,00"
                                                         type="number"
                                                         value={tempOptionPrices[vIdx] || ""}
                                                         onChange={(e) => setTempOptionPrices(prev => ({ ...prev, [vIdx]: e.target.value }))}
                                                     />
-                                                    <button type="button" onClick={() => addOptionToVariation(vIdx)} className="bg-gray-200 text-gray-600 px-2 rounded-lg hover:bg-gray-300 h-8">
+                                                    <button type="button" onClick={() => addOptionToVariation(vIdx)} className="bg-gray-200 text-gray-600 px-2 rounded-xl hover:bg-gray-300 h-8">
                                                         <Plus size={14} />
                                                     </button>
                                                 </div>
@@ -991,7 +991,7 @@ export default function NewProductPage() {
                                                             type="button"
                                                             onClick={() => setTempIllustrations(prev => ({ ...prev, [vIdx]: ill.id }))}
                                                             className={cn(
-                                                                "px-2 py-1 rounded-md text-[10px] font-semibold border transition-all whitespace-nowrap",
+                                                                "px-2 py-1 rounded-xl text-[10px] font-semibold border transition-all whitespace-nowrap",
                                                                 (tempIllustrations[vIdx] || "") === ill.id
                                                                     ? "bg-brand/10 border-brand text-brand"
                                                                     : "bg-white border-gray-200 text-gray-500 hover:border-gray-300"

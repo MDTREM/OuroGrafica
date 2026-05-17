@@ -85,26 +85,36 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
 
     return (
         <Container>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-end mb-4">
                 <h2 className="text-xl font-semibold text-foreground">{title}</h2>
-                {link && (
-                    <Link href={link} className="text-sm font-medium text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:underline flex items-center gap-1">
-                        Ver tudo <ArrowRight size={14} />
-                    </Link>
-                )}
+                <div className="flex items-center gap-6">
+                    {link && (
+                        <Link href={link} className="text-sm font-medium text-brand hover:text-brand-dark hover:underline flex items-center gap-1">
+                            Ver tudo <ArrowRight size={14} />
+                        </Link>
+                    )}
+                    {/* Desktop Navigation Buttons */}
+                    <div className="hidden md:flex items-center gap-2">
+                        <button 
+                            onClick={() => scrollBy(-300)}
+                            className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-black hover:text-black transition-colors"
+                            aria-label="Anterior"
+                        >
+                            <ChevronLeft size={20} strokeWidth={1.5} />
+                        </button>
+                        <button 
+                            onClick={() => scrollBy(300)}
+                            className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-black hover:text-black transition-colors"
+                            aria-label="Próximo"
+                        >
+                            <ChevronRight size={20} strokeWidth={1.5} />
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            {/* Scroll Container Wrapper to add buttons */}
-            <div className="relative group/slider">
-                {/* Desktop Left Button */}
-                <button 
-                  onClick={() => scrollBy(-300)}
-                  className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -ml-5 z-10 bg-white shadow-lg border border-gray-100 w-10 h-10 rounded-full items-center justify-center text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:scale-110 transition-all opacity-0 group-hover/slider:opacity-100 disabled:opacity-0"
-                  aria-label="Anterior"
-                >
-                    <ChevronLeft size={24} />
-                </button>
-
+            {/* Scroll Container Wrapper */}
+            <div className="relative">
                 <div
                     ref={scrollRef}
                     onScroll={handleScroll}
@@ -116,15 +126,6 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
                         </div>
                     ))}
                 </div>
- 
-                {/* Desktop Right Button */}
-                <button 
-                  onClick={() => scrollBy(300)}
-                  className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 -mr-5 z-10 bg-white shadow-lg border border-gray-100 w-10 h-10 rounded-full items-center justify-center text-gray-500 hover:text-brand hover:scale-110 transition-all opacity-0 group-hover/slider:opacity-100 disabled:opacity-0"
-                  aria-label="Próximo"
-                >
-                    <ChevronRight size={24} />
-                </button>
             </div>
         </Container>
     );

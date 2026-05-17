@@ -64,7 +64,7 @@ export default function TrackingPage() {
                 </div>
 
                 {/* Search Form */}
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
                     <form onSubmit={handleSearch} className="space-y-4">
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Número do Pedido (ID)</label>
@@ -98,7 +98,7 @@ export default function TrackingPage() {
                     </form>
 
                     {error && (
-                        <div className="mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm text-center font-medium animate-in fade-in">
+                        <div className="mt-4 p-3 bg-red-50 text-red-600 rounded-xl text-sm text-center font-medium animate-in fade-in">
                             {error}
                         </div>
                     )}
@@ -106,7 +106,7 @@ export default function TrackingPage() {
 
                 {/* Result */}
                 {order && (
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
+                    <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
                         <div className="bg-gray-900 text-white p-6 flex justify-between items-center">
                             <div>
                                 <p className="text-sm text-gray-400">Pedido</p>
@@ -156,7 +156,7 @@ export default function TrackingPage() {
                                     {Array.isArray(order.items) ? order.items.map((item: any, idx: number) => (
                                         <div key={idx} className="flex justify-between items-center text-sm">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-gray-100 rounded-md overflow-hidden">
+                                                <div className="w-10 h-10 bg-gray-100 rounded-xl overflow-hidden">
                                                     {item.image && <img src={item.image} className="w-full h-full object-cover" />}
                                                 </div>
                                                 <div>

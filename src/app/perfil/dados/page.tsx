@@ -154,11 +154,11 @@ export default function UserDataPage() {
                         {/* Person Type Toggle */}
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">Tipo de Pessoa</label>
-                            <div className="flex bg-gray-50 p-1 rounded-lg border border-gray-200">
+                            <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-200">
                                 <button
                                     type="button"
                                     onClick={() => setPersonType("pf")}
-                                    className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${personType === "pf"
+                                    className={`flex-1 py-2 text-sm font-semibold rounded-xl transition-all ${personType === "pf"
                                         ? "bg-white text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark shadow-sm"
                                         : "text-gray-500 hover:text-gray-700"
                                         }`}
@@ -168,7 +168,7 @@ export default function UserDataPage() {
                                 <button
                                     type="button"
                                     onClick={() => setPersonType("pj")}
-                                    className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${personType === "pj"
+                                    className={`flex-1 py-2 text-sm font-semibold rounded-xl transition-all ${personType === "pj"
                                         ? "bg-white text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark shadow-sm"
                                         : "text-gray-500 hover:text-gray-700"
                                         }`}
@@ -191,7 +191,7 @@ export default function UserDataPage() {
                                         ? setFormData({ ...formData, name: e.target.value })
                                         : setFormData({ ...formData, companyName: e.target.value })
                                     }
-                                    className="w-full h-11 px-4 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                    className="w-full h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                 />
                             </div>
 
@@ -201,7 +201,7 @@ export default function UserDataPage() {
                                     type="email"
                                     value={formData.email}
                                     disabled
-                                    className="w-full h-11 px-4 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed"
+                                    className="w-full h-11 px-4 rounded-xl bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed"
                                 />
                             </div>
 
@@ -212,7 +212,7 @@ export default function UserDataPage() {
                                     value={formData.phone}
                                     onChange={handlePhoneChange}
                                     maxLength={15}
-                                    className="w-full h-11 px-4 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                    className="w-full h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                 />
                             </div>
                         </div>
@@ -228,7 +228,7 @@ export default function UserDataPage() {
                                         onChange={handleCpfChange}
                                         maxLength={14}
                                         placeholder="000.000.000-00"
-                                        className="w-full h-11 px-4 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                        className="w-full h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                     />
                                 </div>
                             </div>
@@ -242,7 +242,7 @@ export default function UserDataPage() {
                                         onChange={handleCnpjChange}
                                         maxLength={18}
                                         placeholder="00.000.000/0000-00"
-                                        className="w-full h-11 px-4 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                        className="w-full h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                     />
                                 </div>
                                 <div>
@@ -252,7 +252,7 @@ export default function UserDataPage() {
                                         value={formData.ie}
                                         onChange={(e) => setFormData({ ...formData, ie: e.target.value })}
                                         placeholder="Isento ou número"
-                                        className="w-full h-11 px-4 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                        className="w-full h-11 px-4 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                     />
                                 </div>
                             </div>

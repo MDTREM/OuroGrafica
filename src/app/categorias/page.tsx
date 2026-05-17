@@ -26,8 +26,8 @@ export default async function CategoriesPage() {
                                 href={`/categoria/${cat.id}`}
                                 className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:shadow-md hover:border-brand/30 transition-all group"
                             >
-                                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
-                                    {cat.image ? <img src={cat.image} className="w-full h-full object-cover rounded-lg" /> : <ImageIcon size={20} />}
+                                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400">
+                                    {cat.image ? <img src={cat.image} className="w-full h-full object-cover rounded-xl" /> : <ImageIcon size={20} />}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-base font-semibold text-gray-900 group-hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors">{cat.name}</h3>

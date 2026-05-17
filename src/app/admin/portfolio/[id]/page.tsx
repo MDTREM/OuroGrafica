@@ -166,7 +166,7 @@ export default function PortfolioFormPage({ params }: { params: Promise<{ id: st
                                 value={formData.title || ''}
                                 onChange={handleChange}
                                 required
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none"
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none"
                                 placeholder="Ex: Burger House Rebranding"
                             />
                         </div>
@@ -177,7 +177,7 @@ export default function PortfolioFormPage({ params }: { params: Promise<{ id: st
                                 name="slug"
                                 value={formData.slug || ''}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none"
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none"
                                 placeholder="Deixe em branco para gerar automático"
                             />
                         </div>
@@ -189,7 +189,7 @@ export default function PortfolioFormPage({ params }: { params: Promise<{ id: st
                                 value={formData.category || ''}
                                 onChange={handleChange}
                                 required
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none"
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none"
                                 placeholder="Ex: Hamburgueria, Pizzaria..."
                             />
                         </div>
@@ -202,10 +202,10 @@ export default function PortfolioFormPage({ params }: { params: Promise<{ id: st
                                     value={formData.cover_image || ''}
                                     onChange={handleChange}
                                     required
-                                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none"
+                                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none"
                                     placeholder="https://..."
                                 />
-                                <label className="flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-3 rounded-lg cursor-pointer transition-colors whitespace-nowrap">
+                                <label className="flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-3 rounded-xl cursor-pointer transition-colors whitespace-nowrap">
                                     {uploadingCover ? <Loader2 size={20} className="animate-spin" /> : <Upload size={20} />}
                                     <span className="ml-2 hidden sm:inline">{uploadingCover ? 'Enviando...' : 'Upload'}</span>
                                     <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} disabled={uploadingCover} />
@@ -222,7 +222,7 @@ export default function PortfolioFormPage({ params }: { params: Promise<{ id: st
                             onChange={handleChange}
                             required
                             rows={3}
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none"
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none"
                         />
                     </div>
 
@@ -233,7 +233,7 @@ export default function PortfolioFormPage({ params }: { params: Promise<{ id: st
                             value={formData.content || ''}
                             onChange={handleChange}
                             rows={8}
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none"
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none"
                         />
                     </div>
 
@@ -247,18 +247,18 @@ export default function PortfolioFormPage({ params }: { params: Promise<{ id: st
                         
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {formData.images?.map((img, idx) => (
-                                <div key={idx} className="relative aspect-square rounded-lg border border-gray-200 overflow-hidden group">
+                                <div key={idx} className="relative aspect-square rounded-xl border border-gray-200 overflow-hidden group">
                                     <img src={img} alt="" className="w-full h-full object-cover" />
                                     <button 
                                         type="button" 
                                         onClick={() => handleRemoveImage(idx)}
-                                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
                                         <Trash2 size={14} />
                                     </button>
                                 </div>
                             ))}
-                            <label className="aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-500 hover:border-brand hover:text-brand transition-colors cursor-pointer relative">
+                            <label className="aspect-square rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-500 hover:border-brand hover:text-brand transition-colors cursor-pointer relative">
                                 {uploadingGallery ? (
                                     <Loader2 size={24} className="animate-spin mb-2" />
                                 ) : (

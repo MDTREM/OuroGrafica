@@ -46,7 +46,7 @@ const PROBLEM_SOLUTION_TEMPLATE = `
 <div class="my-8 p-6 bg-blue-50 rounded-xl border border-blue-200 text-center">
     <h3 class="text-xl font-bold text-blue-900 mb-2">Precisa de ajuda profissional?</h3>
     <p class="text-blue-700 mb-4">Nossa equipe técnica resolve isso rápido para você.</p>
-    <a href="https://wa.me/5531989880161" class="inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">Falar com Técnico</a>
+    <a href="https://wa.me/5531989880161" class="inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition-colors">Falar com Técnico</a>
 </div>
 
 <h2>Como resolver (Passo a Passo)</h2>
@@ -62,7 +62,7 @@ const PROBLEM_SOLUTION_TEMPLATE = `
 <div class="my-8 p-6 bg-[#FF6B07] rounded-xl text-center text-white">
    <h3 class="text-xl font-bold mb-2">Evite parar sua produção!</h3>
    <p class="mb-4">Temos planos de manutenção e aluguel ideais para sua empresa.</p>
-   <a href="/servicos/manutencao" class="inline-block bg-white text-[#FF6B07] font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition-colors">Ver Planos</a>
+   <a href="/servicos/manutencao" class="inline-block bg-white text-[#FF6B07] font-bold py-3 px-6 rounded-xl hover:bg-gray-100 transition-colors">Ver Planos</a>
 </div>
 `;
 
@@ -150,13 +150,13 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
             html = `\n<div class="not-prose my-8 p-6 bg-blue-50 rounded-xl border border-blue-200 text-center">
     <h3 class="text-xl font-bold text-blue-900 mb-2">Reduza custos com Outsourcing</h3>
     <p class="text-blue-700 mb-4">Alugue impressoras profissionais e economize até 40%.</p>
-    <a href="/servicos/outsourcing" class="inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">Ver Planos de Aluguel</a>
+    <a href="/servicos/outsourcing" class="inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition-colors">Ver Planos de Aluguel</a>
 </div>\n`;
         } else if (type === 'maintenance') {
             html = `\n<div class="not-prose my-8 p-6 bg-orange-50 rounded-xl border border-orange-200 text-center">
    <h3 class="text-xl font-bold text-orange-900 mb-2">Impressora parada?</h3>
    <p class="text-orange-700 mb-4">Temos técnicos especializados prontos para resolver.</p>
-   <a href="/servicos/manutencao" class="inline-block bg-[#FF6B07] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#e65a00] transition-colors">Agendar Manutenção</a>
+   <a href="/servicos/manutencao" class="inline-block bg-[#FF6B07] text-white font-bold py-3 px-6 rounded-xl hover:bg-[#e65a00] transition-colors">Agendar Manutenção</a>
 </div>\n`;
         }
         insertTag(html);
@@ -213,16 +213,16 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                     </div>
                 </div>
                 <div className="flex gap-3">
-                    <div className="bg-gray-100 p-1 rounded-lg flex text-sm font-medium">
+                    <div className="bg-gray-100 p-1 rounded-xl flex text-sm font-medium">
                         <button
                             onClick={() => setActiveTab('content')}
-                            className={`px-4 py-2 rounded-md transition-all ${activeTab === 'content' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`px-4 py-2 rounded-xl transition-all ${activeTab === 'content' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
                         >
                             Conteúdo
                         </button>
                         <button
                             onClick={() => setActiveTab('seo')}
-                            className={`px-4 py-2 rounded-md transition-all flex items-center gap-2 ${activeTab === 'seo' ? 'bg-white shadow text-[#FF6B07]' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${activeTab === 'seo' ? 'bg-white shadow text-[#FF6B07]' : 'text-gray-500 hover:text-gray-700'}`}
                         >
                             <Search size={14} />
                             SEO & Google
@@ -256,7 +256,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                         name="title"
                                         value={formData.title || ''}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 text-lg font-semibold rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] focus:border-transparent outline-none"
+                                        className="w-full px-4 py-3 text-lg font-semibold rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] focus:border-transparent outline-none"
                                         placeholder="Ex: Como escolher a melhor impressora para seu escritório"
                                     />
                                 </div>
@@ -267,7 +267,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                             name="category"
                                             value={formData.category}
                                             onChange={handleChange}
-                                            className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white"
+                                            className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white"
                                         >
                                             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                                         </select>
@@ -279,7 +279,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                             name="slug"
                                             value={formData.slug || ''}
                                             onChange={handleChange}
-                                            className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-500 text-sm"
+                                            className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-gray-50 text-gray-500 text-sm"
                                             placeholder="gerado-automaticamente"
                                         />
                                     </div>
@@ -341,7 +341,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                     Simulação no Google
                                 </h3>
 
-                                <div className="bg-white p-4 rounded-lg border border-gray-100 max-w-2xl">
+                                <div className="bg-white p-4 rounded-xl border border-gray-100 max-w-2xl">
                                     <div className="flex items-center gap-2 mb-1">
                                         <div className="w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center text-[10px] text-gray-500 p-1">
                                             <img src="/icon.png" className="opacity-50" onError={(e) => e.currentTarget.style.display = 'none'} />
@@ -371,7 +371,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                             value={formData.meta_title || ''}
                                             onChange={handleChange}
                                             maxLength={60}
-                                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] outline-none"
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] outline-none"
                                             placeholder="Título otimizado para clique"
                                         />
                                         <span className={`absolute right-3 top-2.5 text-xs ${(formData.meta_title?.length || 0) > 60 ? 'text-red-500' : 'text-gray-400'}`}>
@@ -390,7 +390,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                             maxLength={160}
                                             value={formData.meta_description || ''}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] outline-none resize-none"
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] outline-none resize-none"
                                             placeholder="Resumo que aparece no Google..."
                                         />
                                         <span className={`absolute right-3 bottom-2.5 text-xs ${(formData.meta_description?.length || 0) > 160 ? 'text-red-500' : 'text-gray-400'}`}>
@@ -407,7 +407,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                             name="focus_keyword"
                                             value={formData.focus_keyword || ''}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] outline-none"
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] outline-none"
                                             placeholder="Ex: aluguel de impressora"
                                         />
                                     </div>
@@ -418,7 +418,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                             // Handle array conversion visually
                                             value={formData.tags?.join(', ') || ''}
                                             onChange={(e) => setFormData({ ...formData, tags: e.target.value.split(',').map(t => t.trim()) })}
-                                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] outline-none"
+                                            className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] outline-none"
                                             placeholder="hp, epson, manutenção"
                                         />
                                     </div>
@@ -433,7 +433,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                     {/* Status */}
                     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                         <h3 className="font-bold text-gray-900 mb-4">Publicação</h3>
-                        <label className="flex items-center gap-3 cursor-pointer p-2 hover:bg-gray-50 rounded-lg">
+                        <label className="flex items-center gap-3 cursor-pointer p-2 hover:bg-gray-50 rounded-xl">
                             <input
                                 type="checkbox"
                                 checked={formData.published || false}
@@ -487,7 +487,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                         <h3 className="font-bold text-gray-900 mb-4">Imagem de Capa</h3>
 
-                        <div className="mb-4 aspect-video bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center border-2 border-dashed border-gray-300 relative group">
+                        <div className="mb-4 aspect-video bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center border-2 border-dashed border-gray-300 relative group">
                             {formData.cover_image ? (
                                 <img src={formData.cover_image} alt="Capa" className="w-full h-full object-cover" />
                             ) : (
@@ -511,7 +511,7 @@ export function AdminPostEditor({ initialData, isNew }: EditorProps) {
                                 name="alt_text"
                                 value={formData.alt_text || ''}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] outline-none"
+                                className="w-full px-3 py-2 text-sm rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#FF6B07] outline-none"
                                 placeholder="Descreva a imagem para deficientes visuais e Google"
                             />
                             <p className="text-[10px] text-gray-400 mt-1">Essencial para SEO. Descreva o que tem na imagem.</p>

@@ -109,7 +109,7 @@ export default function SuccessPage() {
             <Container className="pt-8 max-w-2xl mx-auto px-4">
 
                 {/* Main Status Card */}
-                <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 text-center mb-6 relative overflow-hidden">
+                <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-center mb-6 relative overflow-hidden">
                     {isPaid ? (
                         <div className="animate-in zoom-in duration-500">
                             <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner ring-4 ring-green-50">
@@ -127,7 +127,7 @@ export default function SuccessPage() {
                             <p className="text-gray-500 mb-6 max-w-md mx-auto">Utilize o QR Code abaixo para finalizar sua compra. A confirmação é automática.</p>
 
                             {order.payment_method === 'pix' && order.qr_code && (
-                                <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 mb-6 inline-block w-full max-w-sm">
+                                <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 mb-6 inline-block w-full max-w-sm">
                                     {order.qr_code_image && (
                                         <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 mb-4 inline-block">
                                             <img src={order.qr_code_image} alt="QR Code Pix" className="w-48 h-48 sm:w-56 sm:h-56 object-contain" />
@@ -164,7 +164,7 @@ export default function SuccessPage() {
 
                 {/* Info Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 rounded-full bg-orange-50 text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark flex items-center justify-center">
                                 <Package size={20} />
@@ -182,7 +182,7 @@ export default function SuccessPage() {
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 rounded-full bg-orange-50 text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark flex items-center justify-center">
                                 <Truck size={20} />

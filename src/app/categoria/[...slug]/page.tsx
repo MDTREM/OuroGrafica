@@ -69,7 +69,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
                     {/* Grade de Produtos */}
                     <div className="flex-1">
                         {products.length === 0 ? (
-                            <div className="bg-white p-12 rounded-2xl text-center border border-gray-100">
+                            <div className="bg-white p-12 rounded-xl text-center border border-gray-100">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">Nenhum produto encontrado</h3>
                                 <p className="text-gray-500">Não encontramos produtos nesta categoria no momento.</p>
                             </div>

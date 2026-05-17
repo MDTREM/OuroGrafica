@@ -57,7 +57,7 @@ export function ProductCard({ id, title, price, unit, description, image, priceB
     };
 
     return (
-        <div className="group relative bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col">
+        <div className="group relative bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col">
             {/* Favorites Button */}
             <button
                 onClick={handleToggleFavorite}

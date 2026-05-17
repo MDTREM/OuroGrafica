@@ -60,7 +60,7 @@ export default function AdminCouponsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Form */}
                 <div className="md:col-span-1">
-                    <div className="bg-white p-6 rounded-lg border border-border shadow-sm sticky top-24">
+                    <div className="bg-white p-6 rounded-xl border border-border shadow-sm sticky top-24">
                         <h2 className="font-semibold mb-4 flex items-center gap-2">
                             <Plus size={18} /> Novo Cupom
                         </h2>
@@ -140,14 +140,14 @@ export default function AdminCouponsPage() {
                 {/* List */}
                 <div className="md:col-span-2 space-y-4">
                     {coupons.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center p-12 bg-gray-50 border border-dashed border-gray-200 rounded-lg text-center">
+                        <div className="flex flex-col items-center justify-center p-12 bg-gray-50 border border-dashed border-gray-200 rounded-xl text-center">
                             <Tag size={48} className="text-gray-200 mb-4" />
                             <p className="font-semibold text-gray-500">Nenhum cupom ativo</p>
                             <p className="text-sm text-gray-400">Crie códigos promocionais para seus clientes.</p>
                         </div>
                     ) : (
                         coupons.map(coupon => (
-                            <div key={coupon.id} className="bg-white p-4 rounded-lg border border-border flex items-center justify-between shadow-sm group">
+                            <div key={coupon.id} className="bg-white p-4 rounded-xl border border-border flex items-center justify-between shadow-sm group">
                                 <div className="flex items-center gap-4">
                                     <div className="bg-gradient-to-r from-brand to-brand-dark/10 w-12 h-12 rounded-full flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">
                                         <Tag size={20} />

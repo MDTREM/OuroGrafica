@@ -257,7 +257,7 @@ export default function CheckoutPage() {
                                                     value={formData.phone}
                                                     onChange={handlePhoneChange}
                                                     placeholder="(00) 00000-0000"
-                                                    className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                    className="w-full h-11 px-4 rounded-xl bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
                                                 />
                                             </div>
 
@@ -294,7 +294,7 @@ export default function CheckoutPage() {
                                                             type="text"
                                                             value={formData.name}
                                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                            className="w-full h-11 px-4 rounded-xl bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
                                                         />
                                                     </div>
                                                     <div className="md:col-span-1">
@@ -304,7 +304,7 @@ export default function CheckoutPage() {
                                                             value={formData.cpf}
                                                             onChange={handleCpfChange}
                                                             placeholder="000.000.000-00"
-                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                            className="w-full h-11 px-4 rounded-xl bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
                                                         />
                                                     </div>
                                                 </>
@@ -316,7 +316,7 @@ export default function CheckoutPage() {
                                                             type="text"
                                                             value={formData.companyName}
                                                             onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                            className="w-full h-11 px-4 rounded-xl bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
                                                         />
                                                     </div>
                                                     <div className="md:col-span-1">
@@ -326,7 +326,7 @@ export default function CheckoutPage() {
                                                             value={formData.cnpj}
                                                             onChange={handleCnpjChange}
                                                             placeholder="00.000.000/0000-00"
-                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                            className="w-full h-11 px-4 rounded-xl bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
                                                         />
                                                     </div>
                                                     <div className="md:col-span-1">
@@ -335,7 +335,7 @@ export default function CheckoutPage() {
                                                             type="text"
                                                             value={formData.ie}
                                                             onChange={(e) => setFormData({ ...formData, ie: e.target.value })}
-                                                            className="w-full h-11 px-4 rounded-lg bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
+                                                            className="w-full h-11 px-4 rounded-xl bg-white border border-gray-200 focus:border-brand focus:ring-1 focus:ring-brand"
                                                         />
                                                     </div>
                                                 </>
@@ -346,7 +346,7 @@ export default function CheckoutPage() {
                                             <button
                                                 onClick={() => setStep(2)}
                                                 disabled={!isStep1Valid()}
-                                                className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-lg hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 Ir para Entrega
                                                 <ArrowRight size={18} />
@@ -391,7 +391,7 @@ export default function CheckoutPage() {
                                                 onChange={handleCepChange}
                                                 maxLength={9}
                                                 placeholder="00000-000"
-                                                className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                                className="w-full h-10 px-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                             />
                                             {loadingCep && <Loader2 size={16} className="absolute right-3 top-3 animate-spin text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />}
                                         </div>
@@ -402,7 +402,7 @@ export default function CheckoutPage() {
                                             type="text"
                                             value={formData.address}
                                             onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                            className="w-full h-10 px-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                         />
                                     </div>
                                     <div>
@@ -412,7 +412,7 @@ export default function CheckoutPage() {
                                             type="text"
                                             value={formData.number}
                                             onChange={(e) => setFormData({ ...formData, number: e.target.value })}
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                            className="w-full h-10 px-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                         />
                                     </div>
                                     <div>
@@ -421,7 +421,7 @@ export default function CheckoutPage() {
                                             type="text"
                                             value={formData.complement}
                                             onChange={(e) => setFormData({ ...formData, complement: e.target.value })}
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                            className="w-full h-10 px-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                         />
                                     </div>
                                     <div>
@@ -430,7 +430,7 @@ export default function CheckoutPage() {
                                             type="text"
                                             value={formData.district}
                                             onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                                            className="w-full h-10 px-3 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                                            className="w-full h-10 px-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                                         />
                                     </div>
                                     <div>
@@ -440,13 +440,13 @@ export default function CheckoutPage() {
                                                 type="text"
                                                 value={formData.city}
                                                 readOnly
-                                                className="flex-1 h-10 px-3 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed"
+                                                className="flex-1 h-10 px-3 rounded-xl bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed"
                                             />
                                             <input
                                                 type="text"
                                                 value={formData.state}
                                                 readOnly
-                                                className="w-16 h-10 px-3 rounded-lg bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed text-center"
+                                                className="w-16 h-10 px-3 rounded-xl bg-gray-100 border border-gray-200 text-gray-500 cursor-not-allowed text-center"
                                             />
                                         </div>
                                     </div>
@@ -487,7 +487,7 @@ export default function CheckoutPage() {
                                     <button
                                         onClick={nextStep}
                                         disabled={!isStep2Valid()}
-                                        className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-lg hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                        className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                     >
                                         Ir para Pagamento
                                         <ArrowRight size={18} />

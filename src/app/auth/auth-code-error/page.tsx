@@ -11,7 +11,7 @@ export default async function AuthCodeError(props: {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-            <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full text-center">
+            <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6 text-red-600">
                     <AlertCircle size={32} />
                 </div>
@@ -21,7 +21,7 @@ export default async function AuthCodeError(props: {
                 </p>
 
                 {errorMessage && (
-                    <div className="bg-red-50 border border-red-100 rounded-lg p-3 mb-6 text-sm text-red-800 break-words font-mono">
+                    <div className="bg-red-50 border border-red-100 rounded-xl p-3 mb-6 text-sm text-red-800 break-words font-mono">
                         {errorMessage}
                     </div>
                 )}

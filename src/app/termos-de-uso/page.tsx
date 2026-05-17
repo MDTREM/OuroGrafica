@@ -3,7 +3,7 @@ import { Container } from "@/components/ui/Container";
 export default function TermosPage() {
     return (
         <Container className="py-12 md:py-20">
-            <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+            <div className="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-sm border border-gray-100">
                 <h1 className="text-3xl font-semibold text-gray-900 mb-6">Termos de Uso</h1>
                 <div className="prose prose-gray max-w-none text-gray-600">
                     <p>Última atualização: {new Date().toLocaleDateString('pt-BR')}</p>

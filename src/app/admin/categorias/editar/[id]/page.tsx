@@ -79,7 +79,7 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
                 </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+            <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-6">
                 <Input
                     label="Nome da Categoria"
                     value={formData.name || ""}
@@ -129,7 +129,7 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
                             />
                             <p className="text-xs text-gray-500 font-medium">Formato Recomendado: <span className="text-brand">3:4</span> (Ex: 600x800px - Vertical). Cole o link ou use o upload.</p>
                         </div>
-                        <label className="w-24 h-24 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:bg-gray-100 transition-colors relative">
+                        <label className="w-24 h-24 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:bg-gray-100 transition-colors relative">
                             <input
                                 type="file"
                                 accept="image/*"

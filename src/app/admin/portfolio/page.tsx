@@ -68,7 +68,7 @@ export default function AdminPortfolioPage() {
                         {cases.map(item => (
                             <div key={item.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-16 h-16 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                                    <div className="w-16 h-16 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
                                         {item.cover_image ? (
                                             <img src={item.cover_image} alt="" className="w-full h-full object-cover" />
                                         ) : (

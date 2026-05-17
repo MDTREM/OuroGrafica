@@ -16,7 +16,7 @@ function OrderDetailsModal({ isOpen, onClose, items }: { isOpen: boolean, onClos
 
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
+            <div className="bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-gray-900">Detalhes do Pedido</h2>
                     <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
@@ -27,7 +27,7 @@ function OrderDetailsModal({ isOpen, onClose, items }: { isOpen: boolean, onClos
                     {items.map((item, idx) => (
                         <div key={idx} className="space-y-4 border-b border-gray-50 pb-8 last:border-0 last:pb-0">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                <div className="w-12 h-12 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                                     <img src={item.image} alt="" className="w-full h-full object-cover" />
                                 </div>
                                 <div className="min-w-0">
@@ -179,7 +179,7 @@ export default function CartPage() {
     if (items.length === 0) {
         return (
             <div className="bg-gray-50 min-h-screen pb-24 flex flex-col items-center justify-center">
-                <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100 max-w-md w-full">
+                <div className="text-center p-8 bg-white rounded-xl shadow-sm border border-gray-100 max-w-md w-full">
                     <ShoppingBag size={64} className="mx-auto text-gray-200 mb-6" />
                     <h2 className="text-lg font-semibold text-gray-900 mb-2">Seu carrinho está vazio</h2>
                     <p className="text-gray-500 mb-8">Parece que você ainda não adicionou nenhum produto.</p>
@@ -212,11 +212,11 @@ export default function CartPage() {
 
                             return (
                                 <div key={item.id} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex gap-4">
-                                    <div className="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0 relative overflow-hidden">
+                                    <div className="w-20 h-20 bg-gray-100 rounded-xl flex-shrink-0 relative overflow-hidden">
                                         {item.image ? (
                                             <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-xs text-gray-400 font-medium bg-gray-200 rounded-lg">IMG</div>
+                                            <div className="w-full h-full flex items-center justify-center text-xs text-gray-400 font-medium bg-gray-200 rounded-xl">IMG</div>
                                         )}
                                     </div>
 
@@ -226,7 +226,7 @@ export default function CartPage() {
                                             <p className="text-xs text-gray-500">{item.subtitle}</p>
 
                                             {hasDesigner && (
-                                                <div className="flex items-center gap-1 mt-1 text-xs text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-medium bg-gradient-to-r from-brand to-brand-dark/5 px-2 py-0.5 rounded-md w-fit">
+                                                <div className="flex items-center gap-1 mt-1 text-xs text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark font-medium bg-gradient-to-r from-brand to-brand-dark/5 px-2 py-0.5 rounded-xl w-fit">
                                                     <Tag size={10} />
                                                     Criação de Arte Inclusa (+R$ 35,00 un.)
                                                 </div>
@@ -289,7 +289,7 @@ export default function CartPage() {
                                     />
                                     <button
                                         onClick={handleApplyCoupon}
-                                        className="bg-gray-900 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 min-w-[100px]"
+                                        className="bg-gray-900 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-50 min-w-[100px]"
                                         disabled={!couponCode || isApplying}
                                     >
                                         {isApplying ? "Validando..." : "Aplicar"}
@@ -352,7 +352,7 @@ export default function CartPage() {
                             </div>
 
                             <Link href="/checkout" className="w-full">
-                                <button className="w-full bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3.5 rounded hover:opacity-90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2">
+                                <button className="w-full bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2">
                                     Finalizar Compra
                                     <ArrowRight size={18} />
                                 </button>

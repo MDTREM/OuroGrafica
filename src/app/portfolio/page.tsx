@@ -27,13 +27,13 @@ export default async function PortfolioPage() {
                 </div>
 
                 {cases.length === 0 ? (
-                    <div className="py-20 text-center text-gray-500 font-light border border-dashed border-gray-200 rounded-2xl">
+                    <div className="py-20 text-center text-gray-500 font-light border border-dashed border-gray-200 rounded-xl">
                         Nenhum case publicado no momento. Volte em breve!
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {cases.map((item) => (
-                            <Link href={`/portfolio/${item.slug}`} key={item.id} className="group flex flex-col h-full bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                            <Link href={`/portfolio/${item.slug}`} key={item.id} className="group flex flex-col h-full bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                                 <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative">
                                     {item.cover_image ? (
                                         <img src={item.cover_image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />

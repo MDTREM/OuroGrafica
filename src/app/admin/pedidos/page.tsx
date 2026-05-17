@@ -36,7 +36,7 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm text-gray-600">
                         <thead className="bg-gray-50 text-gray-900 font-medium">
@@ -107,7 +107,7 @@ export default function AdminOrdersPage() {
             {/* ORDER DETAILS MODAL */}
             {selectedOrder && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in-95">
+                    <div className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in-95">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
                             <div>
                                 <h2 className="text-xl font-semibold text-gray-900">Pedido #{selectedOrder.display_id || selectedOrder.id.slice(0, 8).toUpperCase()}</h2>
@@ -179,7 +179,7 @@ export default function AdminOrdersPage() {
                                     {Array.isArray(selectedOrder.items) && selectedOrder.items.map((item, idx) => (
                                         <div key={idx} className="flex gap-4 border border-gray-100 rounded-xl p-4 items-start">
                                             {/* Image */}
-                                            <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                            <div className="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                                                 {item.image ? (
                                                     <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                                                 ) : (
@@ -199,20 +199,20 @@ export default function AdminOrdersPage() {
                                                 {item.details && (
                                                     <div className="mt-2 flex flex-wrap gap-2">
                                                         {item.details.dimensions && (
-                                                            <span className="text-xs font-semibold bg-blue-50 text-blue-700 px-2 py-1 rounded-md border border-blue-100">
+                                                            <span className="text-xs font-semibold bg-blue-50 text-blue-700 px-2 py-1 rounded-xl border border-blue-100">
                                                                 Dimensões: {item.details.dimensions.width}x{item.details.dimensions.height} cm
                                                             </span>
                                                         )}
-                                                        {item.details.format && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Formato: {item.details.format}</span>}
-                                                        {item.details.paper && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Papel: {item.details.paper}</span>}
-                                                        {item.details.finish && <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">Acab: {item.details.finish}</span>}
+                                                        {item.details.format && <span className="text-xs bg-gray-100 px-2 py-1 rounded-xl text-gray-600">Formato: {item.details.format}</span>}
+                                                        {item.details.paper && <span className="text-xs bg-gray-100 px-2 py-1 rounded-xl text-gray-600">Papel: {item.details.paper}</span>}
+                                                        {item.details.finish && <span className="text-xs bg-gray-100 px-2 py-1 rounded-xl text-gray-600">Acab: {item.details.finish}</span>}
                                                         {item.details.selectedVariations && Object.entries(item.details.selectedVariations).map(([key, value]) => (
-                                                            <span key={key} className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 border border-gray-200">
+                                                            <span key={key} className="text-xs bg-gray-100 px-2 py-1 rounded-xl text-gray-600 border border-gray-200">
                                                                 <span className="font-semibold">{key}:</span> {String(value)}
                                                             </span>
                                                         ))}
                                                         {item.details.customText && (
-                                                            <div className="w-full mt-1 p-2 bg-blue-50 border border-blue-100 rounded-lg text-blue-900 text-xs">
+                                                            <div className="w-full mt-1 p-2 bg-blue-50 border border-blue-100 rounded-xl text-blue-900 text-xs">
                                                                 <span className="font-semibold block mb-0.5">Personalização (Texto):</span>
                                                                 {item.details.customText}
                                                             </div>

@@ -183,7 +183,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
                     <div>
                         {items.map((item: any, idx: number) => (
                             <div key={item.id} className="p-4 flex gap-4 border-b border-gray-50 last:border-0">
-                                <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden bg-cover bg-center" style={{ backgroundImage: `url(${item.image || ''})` }}>
+                                <div className="w-16 h-16 bg-gray-100 rounded-xl flex-shrink-0 overflow-hidden bg-cover bg-center" style={{ backgroundImage: `url(${item.image || ''})` }}>
                                     {!item.image && <div className="w-full h-full bg-gray-200 flex items-center justify-center text-xs text-gray-400">Sem foto</div>}
                                 </div>
                                 <div className="flex-1">

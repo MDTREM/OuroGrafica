@@ -200,7 +200,7 @@ export default function AddressesPage() {
                             <div className="mt-4 pt-4 border-t border-gray-50 flex justify-end gap-2">
                                 <button
                                     onClick={() => handleOpenModal(addr)}
-                                    className="flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                                    className="flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors"
                                 >
                                     <Edit2 size={14} /> Editar
                                 </button>
@@ -208,14 +208,14 @@ export default function AddressesPage() {
                                     <>
                                         <button
                                             onClick={() => handleSetDefault(addr.id)}
-                                            className="flex items-center gap-1 text-xs font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark-dark px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors mr-auto"
+                                            className="flex items-center gap-1 text-xs font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark-dark px-3 py-2 rounded-xl hover:bg-orange-50 transition-colors mr-auto"
                                         >
                                             <Star size={14} /> Tornar Padrão
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => handleDelete(addr.id)}
-                                            className="flex items-center gap-1 text-xs font-semibold text-red-500 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
+                                            className="flex items-center gap-1 text-xs font-semibold text-red-500 hover:text-red-700 px-3 py-2 rounded-xl hover:bg-red-50 transition-colors"
                                         >
                                             <Trash2 size={14} /> Excluir
                                         </button>
@@ -245,7 +245,7 @@ export default function AddressesPage() {
             {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl animate-in zoom-in-95 duration-200">
+                    <div className="bg-white rounded-xl w-full max-w-md p-6 shadow-xl animate-in zoom-in-95 duration-200">
                         <h2 className="text-lg font-semibold text-gray-900 mb-6">
                             {editingAddress ? "Editar Endereço" : "Novo Endereço"}
                         </h2>
@@ -258,7 +258,7 @@ export default function AddressesPage() {
                                     placeholder="Ex: Minha Casa"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full h-10 px-3 rounded-lg border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
+                                    className="w-full h-10 px-3 rounded-xl border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
@@ -271,7 +271,7 @@ export default function AddressesPage() {
                                         onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
                                         onBlur={handleCepBlur}
                                         maxLength={9}
-                                        className={`w-full h-10 px-3 rounded-lg border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm ${isLoadingCep ? 'bg-gray-50' : ''}`}
+                                        className={`w-full h-10 px-3 rounded-xl border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm ${isLoadingCep ? 'bg-gray-50' : ''}`}
                                     />
                                 </div>
                                 <div>
@@ -281,7 +281,7 @@ export default function AddressesPage() {
                                         placeholder="MG"
                                         value={formData.state}
                                         onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                                        className="w-full h-10 px-3 rounded-lg border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
+                                        className="w-full h-10 px-3 rounded-xl border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
                                     />
                                 </div>
                             </div>
@@ -292,7 +292,7 @@ export default function AddressesPage() {
                                     placeholder="Nome da Cidade"
                                     value={formData.city}
                                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                                    className="w-full h-10 px-3 rounded-lg border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
+                                    className="w-full h-10 px-3 rounded-xl border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
                                 />
                             </div>
                             <div>
@@ -302,7 +302,7 @@ export default function AddressesPage() {
                                     placeholder="Rua, Avenida..."
                                     value={formData.street}
                                     onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                                    className="w-full h-10 px-3 rounded-lg border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
+                                    className="w-full h-10 px-3 rounded-xl border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
@@ -313,7 +313,7 @@ export default function AddressesPage() {
                                         placeholder="Bairro"
                                         value={formData.neighborhood}
                                         onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
-                                        className="w-full h-10 px-3 rounded-lg border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
+                                        className="w-full h-10 px-3 rounded-xl border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
                                     />
                                 </div>
                                 <div>
@@ -323,7 +323,7 @@ export default function AddressesPage() {
                                         placeholder="Apto, Sala..."
                                         value={formData.complement}
                                         onChange={(e) => setFormData({ ...formData, complement: e.target.value })}
-                                        className="w-full h-10 px-3 rounded-lg border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
+                                        className="w-full h-10 px-3 rounded-xl border border-gray-300 focus:border-brand focus:ring-1 focus:ring-brand outline-none text-sm"
                                     />
                                 </div>
                             </div>

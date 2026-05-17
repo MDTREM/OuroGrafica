@@ -30,7 +30,7 @@ export default async function BlogPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {posts.map(post => (
                             <Link key={post.id} href={`/blog/${post.slug}`} className="group">
-                                <article className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-gray-100">
+                                <article className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-gray-100">
                                     <div className="aspect-[16/10] overflow-hidden relative">
                                         <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors z-10" />
                                         <img
@@ -67,7 +67,7 @@ export default async function BlogPage() {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-20 bg-white rounded-3xl border border-gray-100">
+                    <div className="text-center py-20 bg-white rounded-xl border border-gray-100">
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">Nenhum artigo ainda 😢</h3>
                         <p className="text-gray-500">Estamos preparando conteúdos incríveis. Volte em breve!</p>
                     </div>
