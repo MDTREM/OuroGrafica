@@ -52,6 +52,16 @@ export default function ProductClient({ product }: ProductClientProps) {
     const [customTextValue, setCustomTextValue] = useState("");
     const [customTextSecondaryValue, setCustomTextSecondaryValue] = useState("");
 
+    const hasTemplates = product.variations?.some(v => 
+        v.name.toLowerCase().includes("modelo") || 
+        v.name.toLowerCase().includes("template")
+    ) || false;
+
+    const isCustomArtworkSelected = product.variations?.some(v => 
+        (v.name.toLowerCase().includes("modelo") || v.name.toLowerCase().includes("template")) &&
+        selectedVariations[v.name] === "Arte própria"
+    ) || false;
+
     // Initial Quantity State Management
     useEffect(() => {
         if (product) {
@@ -171,17 +181,6 @@ export default function ProductClient({ product }: ProductClientProps) {
     const handleAddToCart = () => {
         if (!product) return;
 
-        // Check if "Arte própria" is selected in any variation
-        let isCustomArtworkSelected = false;
-        if (product.variations) {
-            product.variations.forEach(v => {
-                if (v.name.toLowerCase().includes("modelo") || v.name.toLowerCase().includes("template")) {
-                    if (selectedVariations[v.name] === "Arte própria") {
-                        isCustomArtworkSelected = true;
-                    }
-                }
-            });
-        }
 
         if (isCustomArtworkSelected && !artworkFile) {
             setShowArtworkAlert(true);
@@ -786,78 +785,80 @@ export default function ProductClient({ product }: ProductClientProps) {
                             {/* Info List */}
                             <div className="space-y-6 pt-2">
                                 <div className="space-y-3">
-                                    {!uploadedFile ? (
-                                        <div className="relative group">
-                                            <input
-                                                type="file"
-                                                id="sidebar-upload"
-                                                className="hidden"
-                                                accept=".pdf,.cdr,.ai,.psd,.jpg,.png,.jpeg"
-                                                onChange={async (e) => {
-                                                    const file = e.target.files?.[0];
-                                                    if (!file) return;
-                                                    setIsUploading(true);
-                                                    try {
-                                                        const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-                                                        const { data, error } = await supabase.storage
-                                                            .from('client-uploads')
-                                                            .upload(fileName, file);
-                                                        if (error) throw error;
-                                                        const { data: publicUrlData } = supabase.storage
-                                                            .from('client-uploads')
-                                                            .getPublicUrl(fileName);
-                                                        setUploadedFile({ name: file.name, url: publicUrlData.publicUrl });
-                                                    } catch (err) {
-                                                        console.error(err);
-                                                        alert("Erro ao enviar arquivo.");
-                                                    } finally {
-                                                        setIsUploading(false);
-                                                    }
-                                                }}
-                                            />
-                                            <label
-                                                htmlFor="sidebar-upload"
-                                                className={cn(
-                                                    "flex flex-col items-center justify-center py-3.5 px-4 rounded-xl border-2 border-dashed transition-all cursor-pointer text-center space-y-1.5",
-                                                    isUploading 
-                                                        ? "border-brand bg-brand/5" 
-                                                        : "border-gray-100 bg-white hover:bg-gray-50 hover:border-brand/30"
-                                                )}
-                                            >
-                                                <div className={cn(
-                                                    "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
-                                                    isUploading ? "bg-brand text-white" : "bg-white text-brand"
-                                                )}>
-                                                    <UploadCloud size={16} strokeWidth={1.5} />
-                                                </div>
-                                                <div className="space-y-0.5">
-                                                    <p className="text-xs font-semibold text-gray-700">
-                                                        {isUploading ? "Enviando..." : "Arte própria"}
-                                                    </p>
-                                                    <p className="text-[9px] text-gray-400">
-                                                        Preferência por PDF, PNG ou JPG (Máx. 25MB)
-                                                    </p>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    ) : (
-                                        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center justify-between shadow-sm animate-in fade-in zoom-in-95 duration-300">
-                                            <div className="flex items-center gap-3 min-w-0">
-                                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 flex-shrink-0">
-                                                    <Check size={16} />
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="text-[11px] font-bold text-green-800 truncate">{uploadedFile.name}</p>
-                                                    <p className="text-[9px] text-green-600">Logo enviada com sucesso!</p>
-                                                </div>
+                                    {!isCustomArtworkSelected && (
+                                        !uploadedFile ? (
+                                            <div className="relative group">
+                                                <input
+                                                    type="file"
+                                                    id="sidebar-upload"
+                                                    className="hidden"
+                                                    accept=".pdf,.cdr,.ai,.psd,.jpg,.png,.jpeg"
+                                                    onChange={async (e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (!file) return;
+                                                        setIsUploading(true);
+                                                        try {
+                                                            const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                                                            const { data, error } = await supabase.storage
+                                                                .from('client-uploads')
+                                                                .upload(fileName, file);
+                                                            if (error) throw error;
+                                                            const { data: publicUrlData } = supabase.storage
+                                                                .from('client-uploads')
+                                                                .getPublicUrl(fileName);
+                                                            setUploadedFile({ name: file.name, url: publicUrlData.publicUrl });
+                                                        } catch (err) {
+                                                            console.error(err);
+                                                            alert("Erro ao enviar arquivo.");
+                                                        } finally {
+                                                            setIsUploading(false);
+                                                        }
+                                                    }}
+                                                />
+                                                <label
+                                                    htmlFor="sidebar-upload"
+                                                    className={cn(
+                                                        "flex flex-col items-center justify-center py-3.5 px-4 rounded-xl border-2 border-dashed transition-all cursor-pointer text-center space-y-1.5",
+                                                        isUploading 
+                                                            ? "border-brand bg-brand/5" 
+                                                            : "border-gray-100 bg-white hover:bg-gray-50 hover:border-brand/30"
+                                                    )}
+                                                >
+                                                    <div className={cn(
+                                                        "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                                                        isUploading ? "bg-brand text-white" : "bg-white text-brand"
+                                                    )}>
+                                                        <UploadCloud size={16} strokeWidth={1.5} />
+                                                    </div>
+                                                    <div className="space-y-0.5">
+                                                        <p className="text-xs font-semibold text-gray-700">
+                                                            {isUploading ? "Enviando..." : (hasTemplates ? "Sua Logo" : "Arte própria")}
+                                                        </p>
+                                                        <p className="text-[9px] text-gray-400">
+                                                            {hasTemplates ? "Envie sua logomarca para personalizar" : "Preferência por PDF, PNG ou JPG (Máx. 25MB)"}
+                                                        </p>
+                                                    </div>
+                                                </label>
                                             </div>
-                                            <button 
-                                                onClick={() => setUploadedFile(null)} 
-                                                className="text-[10px] text-red-500 font-bold hover:bg-red-50 px-2 py-1 rounded transition-colors"
-                                            >
-                                                Remover
-                                            </button>
-                                        </div>
+                                        ) : (
+                                            <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center justify-between shadow-sm animate-in fade-in zoom-in-95 duration-300">
+                                                <div className="flex items-center gap-3 min-w-0">
+                                                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 flex-shrink-0">
+                                                        <Check size={16} />
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className="text-[11px] font-bold text-green-800 truncate">{uploadedFile.name}</p>
+                                                        <p className="text-[9px] text-green-600">{hasTemplates ? "Logo enviada com sucesso!" : "Arte própria enviada com sucesso!"}</p>
+                                                    </div>
+                                                </div>
+                                                <button 
+                                                    onClick={() => setUploadedFile(null)} 
+                                                    className="text-[10px] text-red-500 font-bold hover:bg-red-50 px-2 py-1 rounded transition-colors"
+                                                >
+                                                    Remover
+                                                </button>
+                                            </div>
+                                        )
                                     )}
                                     {product.customText?.menuItemsEnabled && (
                                         <div className="space-y-4 pt-3 border-t border-gray-100/50 animate-in fade-in duration-300">
