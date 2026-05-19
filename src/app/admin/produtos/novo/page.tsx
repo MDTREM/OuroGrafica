@@ -889,7 +889,7 @@ export default function NewProductPage() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.formats?.map((item, idx) => (
-                                            <span key={idx} className="bg-white text-xs px-2 py-1.5 rounded-xl flex items-center gap-2 border border-gray-200 group relative">
+                                            <span key={idx} className="bg-white text-xs px-3 py-2 rounded-xl flex items-center gap-3 border border-gray-200 group relative shadow-sm">
                                                 {formData.optionIllustrations?.[item] && (
                                                     <div className="w-4 h-4 rounded bg-gray-100 flex items-center justify-center border border-gray-200">
                                                         <div className={cn(
@@ -899,8 +899,28 @@ export default function NewProductPage() {
                                                         )} />
                                                     </div>
                                                 )}
-                                                <span className="font-medium">{item}</span>
-                                                <button type="button" onClick={() => removeArrayItem("formats", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
+                                                <span className="font-medium text-gray-800">{item}</span>
+                                                <div className="flex items-center gap-1 border-l border-gray-100 pl-2">
+                                                    <span className="text-[10px] text-gray-400 font-semibold">+ R$</span>
+                                                    <input 
+                                                        type="number" 
+                                                        step="0.01" 
+                                                        placeholder="0,00" 
+                                                        value={formData.formatPrices?.[item] !== undefined ? formData.formatPrices[item] : ""} 
+                                                        onChange={(e) => {
+                                                            const val = e.target.value === "" ? 0 : parseFloat(e.target.value) || 0;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                formatPrices: {
+                                                                    ...(prev.formatPrices || {}),
+                                                                    [item]: val
+                                                                }
+                                                            }));
+                                                        }} 
+                                                        className="w-16 h-7 px-1.5 py-0.5 text-[11px] rounded-lg border-gray-200 focus:border-brand focus:ring-brand text-green-600 font-bold bg-gray-50/50"
+                                                    />
+                                                </div>
+                                                <button type="button" onClick={() => removeArrayItem("formats", idx)} className="text-gray-400 hover:text-red-500 transition-colors"><X size={14} /></button>
                                             </span>
                                         ))}
                                     </div>
@@ -937,7 +957,7 @@ export default function NewProductPage() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.printing?.map((item, idx) => (
-                                            <span key={idx} className="bg-white text-xs px-2 py-1.5 rounded-xl flex items-center gap-2 border border-gray-200 group relative">
+                                            <span key={idx} className="bg-white text-xs px-3 py-2 rounded-xl flex items-center gap-3 border border-gray-200 group relative shadow-sm">
                                                 {formData.optionIllustrations?.[item] && (
                                                     <div className="w-4 h-4 rounded bg-gray-100 flex items-center justify-center border border-gray-200">
                                                         <div className={cn(
@@ -947,8 +967,28 @@ export default function NewProductPage() {
                                                         )} />
                                                     </div>
                                                 )}
-                                                <span className="font-medium">{item}</span>
-                                                <button type="button" onClick={() => removeArrayItem("printing", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
+                                                <span className="font-medium text-gray-800">{item}</span>
+                                                <div className="flex items-center gap-1 border-l border-gray-100 pl-2">
+                                                    <span className="text-[10px] text-gray-400 font-semibold">+ R$</span>
+                                                    <input 
+                                                        type="number" 
+                                                        step="0.01" 
+                                                        placeholder="0,00" 
+                                                        value={formData.printingPrices?.[item] !== undefined ? formData.printingPrices[item] : ""} 
+                                                        onChange={(e) => {
+                                                            const val = e.target.value === "" ? 0 : parseFloat(e.target.value) || 0;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                printingPrices: {
+                                                                    ...(prev.printingPrices || {}),
+                                                                    [item]: val
+                                                                }
+                                                            }));
+                                                        }} 
+                                                        className="w-16 h-7 px-1.5 py-0.5 text-[11px] rounded-lg border-gray-200 focus:border-brand focus:ring-brand text-green-600 font-bold bg-gray-50/50"
+                                                    />
+                                                </div>
+                                                <button type="button" onClick={() => removeArrayItem("printing", idx)} className="text-gray-400 hover:text-red-500 transition-colors"><X size={14} /></button>
                                             </span>
                                         ))}
                                     </div>
@@ -963,9 +1003,29 @@ export default function NewProductPage() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.finishes?.map((item, idx) => (
-                                            <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-xl flex items-center gap-2 border border-gray-100 group">
-                                                {item}
-                                                <button type="button" onClick={() => removeArrayItem("finishes", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
+                                            <span key={idx} className="bg-white text-xs px-3 py-2 rounded-xl flex items-center gap-3 border border-gray-200 group relative shadow-sm">
+                                                <span className="font-medium text-gray-800">{item}</span>
+                                                <div className="flex items-center gap-1 border-l border-gray-100 pl-2">
+                                                    <span className="text-[10px] text-gray-400 font-semibold">+ R$</span>
+                                                    <input 
+                                                        type="number" 
+                                                        step="0.01" 
+                                                        placeholder="0,00" 
+                                                        value={formData.finishPrices?.[item] !== undefined ? formData.finishPrices[item] : ""} 
+                                                        onChange={(e) => {
+                                                            const val = e.target.value === "" ? 0 : parseFloat(e.target.value) || 0;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                finishPrices: {
+                                                                    ...(prev.finishPrices || {}),
+                                                                    [item]: val
+                                                                }
+                                                            }));
+                                                        }} 
+                                                        className="w-16 h-7 px-1.5 py-0.5 text-[11px] rounded-lg border-gray-200 focus:border-brand focus:ring-brand text-green-600 font-bold bg-gray-50/50"
+                                                    />
+                                                </div>
+                                                <button type="button" onClick={() => removeArrayItem("finishes", idx)} className="text-gray-400 hover:text-red-500 transition-colors"><X size={14} /></button>
                                             </span>
                                         ))}
                                     </div>
@@ -980,9 +1040,29 @@ export default function NewProductPage() {
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.extras?.map((item, idx) => (
-                                            <span key={idx} className="bg-gray-50 text-xs font-medium px-3 py-1.5 rounded-xl flex items-center gap-2 border border-gray-100 group">
-                                                {item}
-                                                <button type="button" onClick={() => removeArrayItem("extras", idx)} className="text-gray-400 hover:text-red-500"><X size={14} /></button>
+                                            <span key={idx} className="bg-white text-xs px-3 py-2 rounded-xl flex items-center gap-3 border border-gray-200 group relative shadow-sm">
+                                                <span className="font-medium text-gray-800">{item}</span>
+                                                <div className="flex items-center gap-1 border-l border-gray-100 pl-2">
+                                                    <span className="text-[10px] text-gray-400 font-semibold">+ R$</span>
+                                                    <input 
+                                                        type="number" 
+                                                        step="0.01" 
+                                                        placeholder="0,00" 
+                                                        value={formData.extraPrices?.[item] !== undefined ? formData.extraPrices[item] : ""} 
+                                                        onChange={(e) => {
+                                                            const val = e.target.value === "" ? 0 : parseFloat(e.target.value) || 0;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                extraPrices: {
+                                                                    ...(prev.extraPrices || {}),
+                                                                    [item]: val
+                                                                }
+                                                            }));
+                                                        }} 
+                                                        className="w-16 h-7 px-1.5 py-0.5 text-[11px] rounded-lg border-gray-200 focus:border-brand focus:ring-brand text-green-600 font-bold bg-gray-50/50"
+                                                    />
+                                                </div>
+                                                <button type="button" onClick={() => removeArrayItem("extras", idx)} className="text-gray-400 hover:text-red-500 transition-colors"><X size={14} /></button>
                                             </span>
                                         ))}
                                     </div>

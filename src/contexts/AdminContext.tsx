@@ -114,7 +114,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 priceBreakdowns: p.price_breakdowns || p.priceBreakdowns || {},
                 printing: p.technical_specs?.printing || p.printing || [],
                 extras: p.technical_specs?.extras || p.extras || [],
-                optionIllustrations: p.technical_specs?.option_illustrations || p.option_illustrations || p.optionIllustrations || {}
+                optionIllustrations: p.technical_specs?.option_illustrations || p.option_illustrations || p.optionIllustrations || {},
+                formatPrices: p.technical_specs?.formatPrices || p.formatPrices || {},
+                finishPrices: p.technical_specs?.finishPrices || p.finishPrices || {},
+                printingPrices: p.technical_specs?.printingPrices || p.printingPrices || {},
+                extraPrices: p.technical_specs?.extraPrices || p.extraPrices || {}
             }));
             setProducts(mappedProducts);
         }
@@ -182,7 +186,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         priceBreakdowns: p.price_breakdowns || p.priceBreakdowns || {},
         printing: p.printing || [],
         extras: p.extras || [],
-        optionIllustrations: p.option_illustrations || p.optionIllustrations || {}
+        optionIllustrations: p.option_illustrations || p.optionIllustrations || {},
+        formatPrices: p.technical_specs?.formatPrices || p.formatPrices || {},
+        finishPrices: p.technical_specs?.finishPrices || p.finishPrices || {},
+        printingPrices: p.technical_specs?.printingPrices || p.printingPrices || {},
+        extraPrices: p.technical_specs?.extraPrices || p.extraPrices || {}
     });
 
     const addProduct = async (product: Product) => {
@@ -196,7 +204,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             image: product.image,
             images: product.images,
             variations: product.variations,
-            technical_specs: product.technicalSpecs,
+            technical_specs: {
+                ...(product.technicalSpecs || {}),
+                formatPrices: product.formatPrices || {},
+                finishPrices: product.finishPrices || {},
+                printingPrices: product.printingPrices || {},
+                extraPrices: product.extraPrices || {},
+            },
             quantities: product.quantities,
             formats: product.formats,
             finishes: product.finishes,
@@ -239,7 +253,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             image: updatedProduct.image,
             images: updatedProduct.images,
             variations: updatedProduct.variations,
-            technical_specs: updatedProduct.technicalSpecs,
+            technical_specs: {
+                ...(updatedProduct.technicalSpecs || {}),
+                formatPrices: updatedProduct.formatPrices || {},
+                finishPrices: updatedProduct.finishPrices || {},
+                printingPrices: updatedProduct.printingPrices || {},
+                extraPrices: updatedProduct.extraPrices || {},
+            },
             quantities: updatedProduct.quantities,
             formats: updatedProduct.formats,
             finishes: updatedProduct.finishes,
@@ -291,7 +311,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             image: product.image,
             images: product.images,
             variations: product.variations,
-            technical_specs: product.technicalSpecs,
+            technical_specs: {
+                ...(product.technicalSpecs || {}),
+                formatPrices: product.formatPrices || {},
+                finishPrices: product.finishPrices || {},
+                printingPrices: product.printingPrices || {},
+                extraPrices: product.extraPrices || {},
+            },
             quantities: product.quantities,
             formats: product.formats,
             finishes: product.finishes,

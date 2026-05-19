@@ -33,6 +33,10 @@ export interface Product {
     finishes?: string[]; // ["Verniz Local", "Laminação Fosca"]
     printing?: string[]; // NEW: ["4x0", "4x4"]
     extras?: string[]; // NEW: ["Furo", "Dobra"]
+    formatPrices?: { [key: string]: number };
+    finishPrices?: { [key: string]: number };
+    printingPrices?: { [key: string]: number };
+    extraPrices?: { [key: string]: number };
 
     // Dynamic Variations (New)
     variations?: {

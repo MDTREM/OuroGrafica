@@ -133,7 +133,14 @@ export default function ProductClient({ product }: ProductClientProps) {
     const quantityMultiplierForAddon = (quantity / 100) > 0 ? (quantity / 100) : 1;
     const finalVariationsPrice = variationsAddon * quantityMultiplierForAddon;
 
-    const finalPrice = calculatedBasePrice + finalVariationsPrice + designPrice;
+    const formatPriceAddon = selectedFormat && product.formatPrices?.[selectedFormat] ? Number(product.formatPrices[selectedFormat]) : 0;
+    const printingPriceAddon = selectedPrinting && product.printingPrices?.[selectedPrinting] ? Number(product.printingPrices[selectedPrinting]) : 0;
+    const finishPriceAddon = selectedFinish && product.finishPrices?.[selectedFinish] ? Number(product.finishPrices[selectedFinish]) : 0;
+    const extraPriceAddon = selectedExtra && product.extraPrices?.[selectedExtra] ? Number(product.extraPrices[selectedExtra]) : 0;
+
+    const totalSpecAddons = (formatPriceAddon + printingPriceAddon + finishPriceAddon + extraPriceAddon) * quantity;
+
+    const finalPrice = calculatedBasePrice + finalVariationsPrice + designPrice + totalSpecAddons;
 
     const productImages = product.images && product.images.length > 0
         ? product.images
@@ -519,9 +526,16 @@ export default function ProductClient({ product }: ProductClientProps) {
                                             >
                                                 <VisualIllustration type="format" option={fmt} manualType={product.optionIllustrations?.[fmt]} />
                                                 <div className="p-5 flex items-center justify-between border-t border-gray-50">
-                                                    <span className={cn("text-[13px] font-semibold leading-tight pr-4", selectedFormat === fmt ? "text-gray-900" : "text-gray-600")}>
-                                                        {fmt}
-                                                    </span>
+                                                    <div className="text-left">
+                                                        <p className={cn("text-[13px] font-semibold leading-tight pr-4", selectedFormat === fmt ? "text-gray-900" : "text-gray-600")}>
+                                                            {fmt}
+                                                        </p>
+                                                        {product.formatPrices?.[fmt] !== undefined && Number(product.formatPrices[fmt]) > 0 && (
+                                                            <p className="text-[10px] text-green-600 font-semibold mt-0.5">
+                                                                +{formatPrice(Number(product.formatPrices[fmt]))}
+                                                            </p>
+                                                        )}
+                                                    </div>
                                                     <div className={cn(
                                                         "w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors",
                                                         selectedFormat === fmt ? "border-brand bg-brand" : "border-gray-200"
@@ -554,9 +568,16 @@ export default function ProductClient({ product }: ProductClientProps) {
                                             >
                                                 <VisualIllustration type="print" option={prt} />
                                                 <div className="p-5 flex items-center justify-between border-t border-gray-50">
-                                                    <span className={cn("text-[13px] font-semibold leading-tight pr-4", selectedPrinting === prt ? "text-gray-900" : "text-gray-600")}>
-                                                        {prt}
-                                                    </span>
+                                                    <div className="text-left">
+                                                        <p className={cn("text-[13px] font-semibold leading-tight pr-4", selectedPrinting === prt ? "text-gray-900" : "text-gray-600")}>
+                                                            {prt}
+                                                        </p>
+                                                        {product.printingPrices?.[prt] !== undefined && Number(product.printingPrices[prt]) > 0 && (
+                                                            <p className="text-[10px] text-green-600 font-semibold mt-0.5">
+                                                                +{formatPrice(Number(product.printingPrices[prt]))}
+                                                            </p>
+                                                        )}
+                                                    </div>
                                                     <div className={cn(
                                                         "w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors",
                                                         selectedPrinting === prt ? "border-brand bg-brand" : "border-gray-200"
@@ -589,8 +610,17 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                         : "border-gray-100 hover:border-gray-200"
                                                 )}
                                             >
-                                                <span className={cn("text-[13px] font-semibold", selectedFinish === fin ? "text-gray-900" : "text-gray-600")}>{fin}</span>
-                                                <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors", selectedFinish === fin ? "border-brand bg-brand" : "border-gray-200")}>
+                                                <div className="text-left">
+                                                    <p className={cn("text-[13px] font-semibold", selectedFinish === fin ? "text-gray-900" : "text-gray-600")}>
+                                                        {fin}
+                                                    </p>
+                                                    {product.finishPrices?.[fin] !== undefined && Number(product.finishPrices[fin]) > 0 && (
+                                                        <p className="text-[10px] text-green-600 font-semibold mt-0.5">
+                                                            +{formatPrice(Number(product.finishPrices[fin]))}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors flex-shrink-0", selectedFinish === fin ? "border-brand bg-brand" : "border-gray-200")}>
                                                     {selectedFinish === fin && <div className="w-2 h-2 bg-white rounded-full" />}
                                                 </div>
                                             </button>
@@ -618,8 +648,17 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                         : "border-gray-100 hover:border-gray-200"
                                                 )}
                                             >
-                                                <span className={cn("text-[13px] font-semibold", selectedExtra === ext ? "text-gray-900" : "text-gray-600")}>{ext}</span>
-                                                <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors", selectedExtra === ext ? "border-brand bg-brand" : "border-gray-200")}>
+                                                <div className="text-left">
+                                                    <p className={cn("text-[13px] font-semibold", selectedExtra === ext ? "text-gray-900" : "text-gray-600")}>
+                                                        {ext}
+                                                    </p>
+                                                    {product.extraPrices?.[ext] !== undefined && Number(product.extraPrices[ext]) > 0 && (
+                                                        <p className="text-[10px] text-green-600 font-semibold mt-0.5">
+                                                            +{formatPrice(Number(product.extraPrices[ext]))}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors flex-shrink-0", selectedExtra === ext ? "border-brand bg-brand" : "border-gray-200")}>
                                                     {selectedExtra === ext && <div className="w-2 h-2 bg-white rounded-full" />}
                                                 </div>
                                             </button>
@@ -832,10 +871,10 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                     </div>
                                                     <div className="space-y-0.5">
                                                         <p className="text-xs font-semibold text-gray-700">
-                                                            {isUploading ? "Enviando..." : (hasTemplates ? "Sua Logo" : "Arte própria")}
+                                                            {isUploading ? "Enviando..." : "Envie sua logo"}
                                                         </p>
                                                         <p className="text-[9px] text-gray-400">
-                                                            {hasTemplates ? "Envie sua logomarca para personalizar" : "Preferência por PDF, PNG ou JPG (Máx. 25MB)"}
+                                                            Preferência por PDF, PNG ou JPG (Máx. 25MB)
                                                         </p>
                                                     </div>
                                                 </label>

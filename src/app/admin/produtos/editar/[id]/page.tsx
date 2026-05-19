@@ -87,7 +87,11 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 customQuantity: productToEdit.customQuantity || false,
                 minQuantity: productToEdit.minQuantity || 1,
                 maxQuantity: productToEdit.maxQuantity || 1000,
-                allowCustomDimensions: productToEdit.allowCustomDimensions || false
+                allowCustomDimensions: productToEdit.allowCustomDimensions || false,
+                formatPrices: productToEdit.formatPrices || {},
+                finishPrices: productToEdit.finishPrices || {},
+                printingPrices: productToEdit.printingPrices || {},
+                extraPrices: productToEdit.extraPrices || {}
             });
 
             // Init hasVariations based on data
@@ -327,18 +331,38 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.formats?.map((item, idx) => (
-                                            <span key={idx} className="bg-gray-50 text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-3 border border-gray-100 group hover:border-brand/30 transition-all">
+                                            <span key={idx} className="bg-white text-xs px-3 py-2 rounded-xl flex items-center gap-3 border border-gray-200 group relative shadow-sm">
                                                 {formData.optionIllustrations?.[item] && (
-                                                    <div className="w-5 h-5 rounded bg-white flex items-center justify-center border border-gray-100 shadow-sm">
+                                                    <div className="w-4 h-4 rounded bg-gray-100 flex items-center justify-center border border-gray-200">
                                                         <div className={cn(
                                                             "border border-gray-400",
-                                                            formData.optionIllustrations[item] === 'rectangular' ? "w-2.5 h-1.5" :
-                                                            formData.optionIllustrations[item] === 'rounded' ? "w-2.5 h-1.5 rounded-xl" : ""
+                                                            formData.optionIllustrations[item] === 'rectangular' ? "w-2 h-1" :
+                                                            formData.optionIllustrations[item] === 'rounded' ? "w-2 h-1 rounded-xl" : ""
                                                         )} />
                                                     </div>
                                                 )}
-                                                <span className="text-gray-700">{item}</span>
-                                                <button type="button" onClick={() => removeArrayItem("formats", idx)} className="text-gray-300 hover:text-red-500 transition-colors"><X size={16} /></button>
+                                                <span className="font-medium text-gray-800">{item}</span>
+                                                <div className="flex items-center gap-1 border-l border-gray-100 pl-2">
+                                                    <span className="text-[10px] text-gray-400 font-semibold">+ R$</span>
+                                                    <input 
+                                                        type="number" 
+                                                        step="0.01" 
+                                                        placeholder="0,00" 
+                                                        value={formData.formatPrices?.[item] !== undefined ? formData.formatPrices[item] : ""} 
+                                                        onChange={(e) => {
+                                                            const val = e.target.value === "" ? 0 : parseFloat(e.target.value) || 0;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                formatPrices: {
+                                                                    ...(prev.formatPrices || {}),
+                                                                    [item]: val
+                                                                }
+                                                            }));
+                                                        }} 
+                                                        className="w-16 h-7 px-1.5 py-0.5 text-[11px] rounded-lg border-gray-200 focus:border-brand focus:ring-brand text-green-600 font-bold bg-gray-50/50"
+                                                    />
+                                                </div>
+                                                <button type="button" onClick={() => removeArrayItem("formats", idx)} className="text-gray-400 hover:text-red-500 transition-colors"><X size={14} /></button>
                                             </span>
                                         ))}
                                     </div>
@@ -380,9 +404,9 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {formData.printing?.map((item, idx) => (
-                                            <span key={idx} className="bg-gray-50 text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-3 border border-gray-100 group hover:border-brand/30 transition-all">
+                                            <span key={idx} className="bg-white text-xs px-3 py-2 rounded-xl flex items-center gap-3 border border-gray-200 group relative shadow-sm">
                                                 {formData.optionIllustrations?.[item] && (
-                                                    <div className="w-5 h-5 rounded bg-white flex items-center justify-center border border-gray-100 shadow-sm">
+                                                    <div className="w-4 h-4 rounded bg-gray-100 flex items-center justify-center border border-gray-200">
                                                         <div className={cn(
                                                             "border border-gray-400",
                                                             formData.optionIllustrations[item] === 'front' ? "w-1.5 h-2" :
@@ -390,8 +414,108 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                                                         )} />
                                                     </div>
                                                 )}
-                                                <span className="text-gray-700">{item}</span>
-                                                <button type="button" onClick={() => removeArrayItem("printing", idx)} className="text-gray-300 hover:text-red-500 transition-colors"><X size={16} /></button>
+                                                <span className="font-medium text-gray-800">{item}</span>
+                                                <div className="flex items-center gap-1 border-l border-gray-100 pl-2">
+                                                    <span className="text-[10px] text-gray-400 font-semibold">+ R$</span>
+                                                    <input 
+                                                        type="number" 
+                                                        step="0.01" 
+                                                        placeholder="0,00" 
+                                                        value={formData.printingPrices?.[item] !== undefined ? formData.printingPrices[item] : ""} 
+                                                        onChange={(e) => {
+                                                            const val = e.target.value === "" ? 0 : parseFloat(e.target.value) || 0;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                printingPrices: {
+                                                                    ...(prev.printingPrices || {}),
+                                                                    [item]: val
+                                                                }
+                                                            }));
+                                                        }} 
+                                                        className="w-16 h-7 px-1.5 py-0.5 text-[11px] rounded-lg border-gray-200 focus:border-brand focus:ring-brand text-green-600 font-bold bg-gray-50/50"
+                                                    />
+                                                </div>
+                                                <button type="button" onClick={() => removeArrayItem("printing", idx)} className="text-gray-400 hover:text-red-500 transition-colors"><X size={14} /></button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Acabamentos */}
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-1.5 h-4 bg-brand rounded-full"></div>
+                                        <label className="text-sm font-bold text-gray-900 uppercase tracking-wider">Acabamentos</label>
+                                    </div>
+                                    <div className="flex gap-2 mb-3">
+                                        <input className="flex-1 rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand h-12 px-4" value={tempFinish} onChange={e => setTempFinish(e.target.value)} placeholder="Ex: Verniz Local" />
+                                        <button type="button" onClick={() => addArrayItem("finishes", tempFinish, setTempFinish)} className="bg-brand text-white px-6 rounded-xl hover:bg-brand-dark transition-all font-bold shadow-lg shadow-brand/20">Adicionar</button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {formData.finishes?.map((item, idx) => (
+                                            <span key={idx} className="bg-white text-xs px-3 py-2 rounded-xl flex items-center gap-3 border border-gray-200 group relative shadow-sm">
+                                                <span className="font-medium text-gray-800">{item}</span>
+                                                <div className="flex items-center gap-1 border-l border-gray-100 pl-2">
+                                                    <span className="text-[10px] text-gray-400 font-semibold">+ R$</span>
+                                                    <input 
+                                                        type="number" 
+                                                        step="0.01" 
+                                                        placeholder="0,00" 
+                                                        value={formData.finishPrices?.[item] !== undefined ? formData.finishPrices[item] : ""} 
+                                                        onChange={(e) => {
+                                                            const val = e.target.value === "" ? 0 : parseFloat(e.target.value) || 0;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                finishPrices: {
+                                                                    ...(prev.finishPrices || {}),
+                                                                    [item]: val
+                                                                }
+                                                            }));
+                                                        }} 
+                                                        className="w-16 h-7 px-1.5 py-0.5 text-[11px] rounded-lg border-gray-200 focus:border-brand focus:ring-brand text-green-600 font-bold bg-gray-50/50"
+                                                    />
+                                                </div>
+                                                <button type="button" onClick={() => removeArrayItem("finishes", idx)} className="text-gray-400 hover:text-red-500 transition-colors"><X size={14} /></button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Extras */}
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-1.5 h-4 bg-brand rounded-full"></div>
+                                        <label className="text-sm font-bold text-gray-900 uppercase tracking-wider">Extras</label>
+                                    </div>
+                                    <div className="flex gap-2 mb-3">
+                                        <input className="flex-1 rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand h-12 px-4" value={tempExtra} onChange={e => setTempExtra(e.target.value)} placeholder="Ex: Furo de 4mm" />
+                                        <button type="button" onClick={() => addArrayItem("extras", tempExtra, setTempExtra)} className="bg-brand text-white px-6 rounded-xl hover:bg-brand-dark transition-all font-bold shadow-lg shadow-brand/20">Adicionar</button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {formData.extras?.map((item, idx) => (
+                                            <span key={idx} className="bg-white text-xs px-3 py-2 rounded-xl flex items-center gap-3 border border-gray-200 group relative shadow-sm">
+                                                <span className="font-medium text-gray-800">{item}</span>
+                                                <div className="flex items-center gap-1 border-l border-gray-100 pl-2">
+                                                    <span className="text-[10px] text-gray-400 font-semibold">+ R$</span>
+                                                    <input 
+                                                        type="number" 
+                                                        step="0.01" 
+                                                        placeholder="0,00" 
+                                                        value={formData.extraPrices?.[item] !== undefined ? formData.extraPrices[item] : ""} 
+                                                        onChange={(e) => {
+                                                            const val = e.target.value === "" ? 0 : parseFloat(e.target.value) || 0;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                extraPrices: {
+                                                                    ...(prev.extraPrices || {}),
+                                                                    [item]: val
+                                                                }
+                                                            }));
+                                                        }} 
+                                                        className="w-16 h-7 px-1.5 py-0.5 text-[11px] rounded-lg border-gray-200 focus:border-brand focus:ring-brand text-green-600 font-bold bg-gray-50/50"
+                                                    />
+                                                </div>
+                                                <button type="button" onClick={() => removeArrayItem("extras", idx)} className="text-gray-400 hover:text-red-500 transition-colors"><X size={14} /></button>
                                             </span>
                                         ))}
                                     </div>
