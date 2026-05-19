@@ -262,7 +262,7 @@ export default function NewProductPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Input
-                                label={formData.allowCustomDimensions ? "Preço por m² (R$)" : "Preço Base (R$)"}
+                                label="Preço Base (R$)"
                                 type="number"
                                 placeholder="0.00"
                                 value={formData.price}
@@ -278,20 +278,6 @@ export default function NewProductPage() {
                                     * O preço base é ignorado quando a Tabela de Preços está ativa.
                                 </p>
                             )}
-                        </div>
-
-                        {/* Custom Dimensions Toggle (m²) */}
-                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <label className="text-sm font-semibold text-gray-900">Venda por Metro Quadrado (m²)</label>
-                                    <p className="text-xs text-gray-500">Permite que o cliente digite largura e altura. O preço cadastrado acima será cobrado por m².</p>
-                                </div>
-                                <Switch
-                                    checked={formData.allowCustomDimensions || false}
-                                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, allowCustomDimensions: checked }))}
-                                />
-                            </div>
                         </div>
 
 
@@ -439,32 +425,186 @@ export default function NewProductPage() {
                     </div>
 
                     {/* Custom Text Input (Personalization) */}
-                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                        <div className="flex items-center justify-between mb-4">
-                            <div>
-                                <label className="text-sm font-semibold text-gray-900">Personalização de Texto</label>
-                                <p className="text-xs text-gray-500">Adicione um campo para o cliente digitar algo (Ex: Nome, Turma).</p>
+                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 space-y-6">
+                        <div>
+                            <label className="text-sm font-semibold text-gray-900">Campos de Texto Personalizados</label>
+                            <p className="text-xs text-gray-500">Adicione campos para o cliente digitar informações na página do produto (Ex: Itens do Cardápio, Informações de Contato, Nome, etc).</p>
+                        </div>
+
+                        {/* Campo 1 */}
+                        <div className="bg-white p-4 rounded-xl border border-gray-200 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h4 className="font-semibold text-gray-950 text-sm">Campo de Texto 1 (Principal)</h4>
+                                    <p className="text-xs text-gray-500">Habilita o primeiro campo personalizado</p>
+                                </div>
+                                <Switch
+                                    checked={formData.customText?.enabled || false}
+                                    onCheckedChange={(checked) => setFormData(prev => ({
+                                        ...prev,
+                                        customText: {
+                                            ...prev.customText,
+                                            enabled: checked,
+                                            label: prev.customText?.label || "Personalização 1",
+                                            placeholder: prev.customText?.placeholder || "Digite aqui...",
+                                            required: prev.customText?.required || false
+                                        } as any
+                                    }))}
+                                />
                             </div>
-                            <Switch
-                                checked={formData.customText?.enabled || false}
-                                onCheckedChange={(checked) => setFormData(prev => ({
-                                    ...prev,
-                                    customText: {
-                                        enabled: checked,
-                                        label: prev.customText?.label || "Personalização",
-                                        placeholder: prev.customText?.placeholder || "Digite aqui...",
-                                        required: prev.customText?.required || false
-                                    }
-                                }))}
-                            />
+
+                            {formData.customText?.enabled && (
+                                <div className="grid grid-cols-1 gap-4 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-2">
+                                    <Input
+                                        label="Título do Campo (Label)"
+                                        placeholder="Ex: Itens do Cardápio"
+                                        value={formData.customText?.label || ""}
+                                        onChange={(e) => setFormData(prev => ({
+                                            ...prev,
+                                            customText: { ...prev.customText!, label: e.target.value } as any
+                                        }))}
+                                    />
+                                    <Input
+                                        label="Dica (Placeholder)"
+                                        placeholder="Ex: 2x Pizza de Calabresa..."
+                                        value={formData.customText?.placeholder || ""}
+                                        onChange={(e) => setFormData(prev => ({
+                                            ...prev,
+                                            customText: { ...prev.customText!, placeholder: e.target.value } as any
+                                        }))}
+                                    />
+                                    <div className="flex items-center gap-2">
+                                        <Switch
+                                            checked={formData.customText?.required || false}
+                                            onCheckedChange={(c) => setFormData(prev => ({
+                                                ...prev,
+                                                customText: { ...prev.customText!, required: c } as any
+                                            }))}
+                                        />
+                                        <span className="text-sm text-gray-700">Preenchimento Obrigatório?</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Campo 2 */}
+                        <div className="bg-white p-4 rounded-xl border border-gray-200 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h4 className="font-semibold text-gray-950 text-sm">Campo de Texto 2 (Secundário)</h4>
+                                    <p className="text-xs text-gray-500">Habilita o segundo campo personalizado</p>
+                                </div>
+                                <Switch
+                                    checked={formData.customText?.secondaryEnabled || false}
+                                    onCheckedChange={(checked) => setFormData(prev => ({
+                                        ...prev,
+                                        customText: {
+                                            ...prev.customText,
+                                            secondaryEnabled: checked,
+                                            secondaryLabel: prev.customText?.secondaryLabel || "Personalização 2",
+                                            secondaryPlaceholder: prev.customText?.secondaryPlaceholder || "Digite aqui...",
+                                            secondaryRequired: prev.customText?.secondaryRequired || false
+                                        } as any
+                                    }))}
+                                />
+                            </div>
+
+                            {formData.customText?.secondaryEnabled && (
+                                <div className="grid grid-cols-1 gap-4 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-2">
+                                    <Input
+                                        label="Título do Campo (Label)"
+                                        placeholder="Ex: Informações de Contato"
+                                        value={formData.customText?.secondaryLabel || ""}
+                                        onChange={(e) => setFormData(prev => ({
+                                            ...prev,
+                                            customText: { ...prev.customText!, secondaryLabel: e.target.value } as any
+                                        }))}
+                                    />
+                                    <Input
+                                        label="Dica (Placeholder)"
+                                        placeholder="Ex: WhatsApp: (11) 99999-9999..."
+                                        value={formData.customText?.secondaryPlaceholder || ""}
+                                        onChange={(e) => setFormData(prev => ({
+                                            ...prev,
+                                            customText: { ...prev.customText!, secondaryPlaceholder: e.target.value } as any
+                                        }))}
+                                    />
+                                    <div className="flex items-center gap-2">
+                                        <Switch
+                                            checked={formData.customText?.secondaryRequired || false}
+                                            onCheckedChange={(c) => setFormData(prev => ({
+                                                ...prev,
+                                                customText: { ...prev.customText!, secondaryRequired: c } as any
+                                            }))}
+                                        />
+                                        <span className="text-sm text-gray-700">Preenchimento Obrigatório?</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Lista de Ítens Interativa */}
+                        <div className="bg-white p-4 rounded-xl border border-gray-200 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h4 className="font-semibold text-gray-950 text-sm">Lista de Itens com Valor (Ex: Cardápio)</h4>
+                                    <p className="text-xs text-gray-500">Habilita uma seção interativa para o cliente listar itens e definir preços</p>
+                                </div>
+                                <Switch
+                                    checked={formData.customText?.menuItemsEnabled || false}
+                                    onCheckedChange={(checked) => setFormData(prev => ({
+                                        ...prev,
+                                        customText: {
+                                            ...prev.customText,
+                                            menuItemsEnabled: checked,
+                                            menuItemsLabel: prev.customText?.menuItemsLabel || "Itens do Cardápio",
+                                            menuItemsPlaceholder: prev.customText?.menuItemsPlaceholder || "Ex: Pizza de Calabresa...",
+                                            menuItemsRequired: prev.customText?.menuItemsRequired || false
+                                        } as any
+                                    }))}
+                                />
+                            </div>
+
+                            {formData.customText?.menuItemsEnabled && (
+                                <div className="grid grid-cols-1 gap-4 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-2">
+                                    <Input
+                                        label="Título da Lista (Label)"
+                                        placeholder="Ex: Itens do Cardápio"
+                                        value={formData.customText?.menuItemsLabel || ""}
+                                        onChange={(e) => setFormData(prev => ({
+                                            ...prev,
+                                            customText: { ...prev.customText!, menuItemsLabel: e.target.value } as any
+                                        }))}
+                                    />
+                                    <Input
+                                        label="Dica para o Input (Placeholder)"
+                                        placeholder="Ex: Pizza de Calabresa..."
+                                        value={formData.customText?.menuItemsPlaceholder || ""}
+                                        onChange={(e) => setFormData(prev => ({
+                                            ...prev,
+                                            customText: { ...prev.customText!, menuItemsPlaceholder: e.target.value } as any
+                                        }))}
+                                    />
+                                    <div className="flex items-center gap-2">
+                                        <Switch
+                                            checked={formData.customText?.menuItemsRequired || false}
+                                            onCheckedChange={(c) => setFormData(prev => ({
+                                                ...prev,
+                                                customText: { ...prev.customText!, menuItemsRequired: c } as any
+                                            }))}
+                                        />
+                                        <span className="text-sm text-gray-700">Preenchimento Obrigatório? (Mín. 1 item)</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Design Option Config */}
-                        <div className="bg-white p-4 rounded-xl border border-gray-200 mb-4">
+                        <div className="bg-white p-4 rounded-xl border border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h4 className="font-medium text-gray-900">Opção de Arte Final?</h4>
-                                    <p className="text-xs text-gray-500">Exibe a seção para cliente enviar ou contratar arte.</p>
+                                    <h4 className="font-semibold text-gray-950 text-sm">Opção de Arte Final?</h4>
+                                    <p className="text-xs text-gray-500">Exibe a seção para o cliente enviar ou contratar arte.</p>
                                 </div>
                                 <Switch
                                     checked={formData.hasDesignOption !== false} // Default true
@@ -472,39 +612,6 @@ export default function NewProductPage() {
                                 />
                             </div>
                         </div>
-
-                        {formData.customText?.enabled && (
-                            <div className="grid grid-cols-1 gap-4 animate-in fade-in slide-in-from-top-2 border-t border-gray-200 pt-4">
-                                <Input
-                                    label="Título do Campo (Label)"
-                                    placeholder="Ex: Qual o nome da criança?"
-                                    value={formData.customText.label}
-                                    onChange={(e) => setFormData(prev => ({
-                                        ...prev,
-                                        customText: { ...prev.customText!, label: e.target.value }
-                                    }))}
-                                />
-                                <Input
-                                    label="Dica (Placeholder)"
-                                    placeholder="Ex: Maria - 1º Ano B"
-                                    value={formData.customText.placeholder}
-                                    onChange={(e) => setFormData(prev => ({
-                                        ...prev,
-                                        customText: { ...prev.customText!, placeholder: e.target.value }
-                                    }))}
-                                />
-                                <div className="flex items-center gap-2">
-                                    <Switch
-                                        checked={formData.customText.required || false}
-                                        onCheckedChange={(c) => setFormData(prev => ({
-                                            ...prev,
-                                            customText: { ...prev.customText!, required: c }
-                                        }))}
-                                    />
-                                    <span className="text-sm text-gray-700">Preenchimento Obrigatório?</span>
-                                </div>
-                            </div>
-                        )}
                     </div>
 
                     <div className="space-y-1">

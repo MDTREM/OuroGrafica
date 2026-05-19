@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, UploadCloud, Truck, Download } from "lucide-react";
+import { ArrowLeft, Check, UploadCloud, Truck, Download, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { cn, formatPrice } from "@/lib/utils";
@@ -34,16 +34,23 @@ export default function ProductClient({ product }: ProductClientProps) {
     // Alert Modal State
     const [showUploadAlert, setShowUploadAlert] = useState(false);
     const [showTextAlert, setShowTextAlert] = useState(false);
+    const [showTextSecondaryAlert, setShowTextSecondaryAlert] = useState(false);
 
     // Upload State
     const [isUploading, setIsUploading] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<{ name: string; url: string } | null>(null);
+
+    // Artwork Upload State
+    const [isUploadingArtwork, setIsUploadingArtwork] = useState(false);
+    const [artworkFile, setArtworkFile] = useState<{ name: string; url: string } | null>(null);
+    const [showArtworkAlert, setShowArtworkAlert] = useState(false);
 
     // Custom Dimensions State
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 }); // in cm
 
     // Custom Text State
     const [customTextValue, setCustomTextValue] = useState("");
+    const [customTextSecondaryValue, setCustomTextSecondaryValue] = useState("");
 
     // Initial Quantity State Management
     useEffect(() => {
@@ -122,17 +129,83 @@ export default function ProductClient({ product }: ProductClientProps) {
         ? product.images
         : (product.image ? [product.image] : []);
 
+    // Menu Items State
+    const [menuItems, setMenuItems] = useState<{ id: string; name: string; price: string }[]>([]);
+    const [newItemName, setNewItemName] = useState("");
+
+    // Helper functions for Menu Items
+    const handleAddMenuItem = () => {
+        if (!newItemName.trim()) return;
+        setMenuItems(prev => [
+            ...prev,
+            { id: Date.now().toString(), name: newItemName.trim(), price: "" }
+        ]);
+        setNewItemName("");
+    };
+
+    const handleRemoveMenuItem = (id: string) => {
+        setMenuItems(prev => prev.filter(item => item.id !== id));
+    };
+
+    const handleUpdateMenuItemPrice = (id: string, price: string) => {
+        setMenuItems(prev => prev.map(item => item.id === id ? { ...item, price } : item));
+    };
+
+    // Serialize Menu Items to customTextValue
+    useEffect(() => {
+        if (product.customText?.menuItemsEnabled) {
+            if (menuItems.length === 0) {
+                setCustomTextValue("");
+            } else {
+                const serialized = menuItems
+                    .map((item, idx) => {
+                        const priceStr = item.price.trim() ? ` - R$ ${item.price.trim()}` : "";
+                        return `${idx + 1}. ${item.name}${priceStr}`;
+                    })
+                    .join("\n");
+                setCustomTextValue(serialized);
+            }
+        }
+    }, [menuItems, product.customText?.menuItemsEnabled]);
+
     const handleAddToCart = () => {
         if (!product) return;
 
+        // Check if "Arte própria" is selected in any variation
+        let isCustomArtworkSelected = false;
+        if (product.variations) {
+            product.variations.forEach(v => {
+                if (v.name.toLowerCase().includes("modelo") || v.name.toLowerCase().includes("template")) {
+                    if (selectedVariations[v.name] === "Arte própria") {
+                        isCustomArtworkSelected = true;
+                    }
+                }
+            });
+        }
+
+        if (isCustomArtworkSelected && !artworkFile) {
+            setShowArtworkAlert(true);
+            return;
+        }
+
         // Custom validations
-        if (designOption === "upload" && !uploadedFile && product.hasDesignOption !== false) {
+        if (designOption === "upload" && !uploadedFile && product.hasDesignOption !== false && !isCustomArtworkSelected) {
             setShowUploadAlert(true);
             return;
         }
 
-        if (product.customText?.enabled && !customTextValue) {
+        if (product.customText?.menuItemsEnabled && product.customText.menuItemsRequired && menuItems.length === 0) {
             setShowTextAlert(true);
+            return;
+        }
+
+        if (product.customText?.enabled && product.customText.required && !customTextValue) {
+            setShowTextAlert(true);
+            return;
+        }
+
+        if (product.customText?.secondaryEnabled && product.customText.secondaryRequired && !customTextSecondaryValue) {
+            setShowTextSecondaryAlert(true);
             return;
         }
 
@@ -154,7 +227,12 @@ export default function ProductClient({ product }: ProductClientProps) {
                 selectedVariations: selectedVariations,
                 fileUrl: uploadedFile?.url,
                 fileName: uploadedFile?.name,
-                customText: customTextValue
+                customArtworkUrl: artworkFile?.url || undefined,
+                customArtworkName: artworkFile?.name || undefined,
+                customText: customTextValue || undefined,
+                customTextSecondary: customTextSecondaryValue || undefined,
+                customTextLabel: product.customText?.menuItemsEnabled ? (product.customText?.menuItemsLabel || "Itens do Cardápio") : product.customText?.label,
+                customTextSecondaryLabel: product.customText?.secondaryLabel
             }
         });
 
@@ -290,16 +368,22 @@ export default function ProductClient({ product }: ProductClientProps) {
                                 </div>
                                 
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                    {variation.options.map((option, oIdx) => {
+                                    {[...variation.options, "Arte própria"].map((option, oIdx) => {
                                         const isSelected = selectedVariations[variation.name] === option;
                                         const templateImg = variation.images?.[option];
                                         
                                         return (
                                             <button
                                                 key={oIdx}
-                                                onClick={() => {
+                                                onClick={(e) => {
+                                                    if ((e.target as HTMLElement).closest('.remove-artwork-btn')) {
+                                                        return;
+                                                    }
                                                     setSelectedVariations(prev => ({ ...prev, [variation.name]: option }));
-                                                    if (templateImg) {
+                                                    if (option === "Arte própria") {
+                                                        setSelectedVariationImage(null);
+                                                        document.getElementById(`template-artwork-input-${vIdx}`)?.click();
+                                                    } else if (templateImg) {
                                                         setSelectedVariationImage(templateImg);
                                                         const imgIndex = productImages.findIndex(img => img === templateImg);
                                                         if (imgIndex !== -1) setActiveImage(imgIndex);
@@ -310,14 +394,88 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                     isSelected ? "border-brand ring-4 ring-brand/5 shadow-lg shadow-brand/10" : "border-gray-100"
                                                 )}
                                             >
+                                                {option === "Arte própria" && (
+                                                    <input
+                                                        type="file"
+                                                        id={`template-artwork-input-${vIdx}`}
+                                                        className="hidden"
+                                                        accept=".pdf,.cdr,.ai,.psd,.jpg,.png,.jpeg"
+                                                        onChange={async (e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (!file) return;
+                                                            setIsUploadingArtwork(true);
+                                                            try {
+                                                                const fileName = `${Date.now()}_artwork_${file.name.replace(/\s+/g, '_')}`;
+                                                                const { data, error } = await supabase.storage
+                                                                    .from('client-uploads')
+                                                                    .upload(fileName, file);
+                                                                if (error) throw error;
+                                                                const { data: publicUrlData } = supabase.storage
+                                                                    .from('client-uploads')
+                                                                    .getPublicUrl(fileName);
+                                                                setArtworkFile({ name: file.name, url: publicUrlData.publicUrl });
+                                                            } catch (err) {
+                                                                console.error(err);
+                                                                alert("Erro ao enviar arquivo.");
+                                                            } finally {
+                                                                setIsUploadingArtwork(false);
+                                                            }
+                                                        }}
+                                                    />
+                                                )}
                                                 <div className="aspect-[3/4] relative bg-gray-50">
-                                                    {templateImg ? (
+                                                    {option === "Arte própria" ? (
+                                                        isUploadingArtwork ? (
+                                                            <div className="w-full h-full flex flex-col items-center justify-center p-4 bg-brand/5 text-brand animate-pulse">
+                                                                <div className="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center mb-2 animate-bounce">
+                                                                    <UploadCloud size={22} />
+                                                                </div>
+                                                                <span className="text-[10px] font-bold text-center">
+                                                                    Enviando...
+                                                                </span>
+                                                            </div>
+                                                        ) : artworkFile ? (
+                                                            <div className="w-full h-full flex flex-col items-center justify-center p-3 bg-green-50/50 text-green-700 hover:text-green-800 transition-colors duration-300">
+                                                                <div className="w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center mb-2 shadow-md shadow-green-500/10">
+                                                                    <Check size={22} strokeWidth={3} />
+                                                                </div>
+                                                                <span className="text-[10px] font-bold text-center leading-tight max-w-[90px] truncate mb-1">
+                                                                    {artworkFile.name}
+                                                                </span>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setArtworkFile(null);
+                                                                    }}
+                                                                    className="remove-artwork-btn text-[9px] text-red-500 font-bold hover:bg-red-50 px-2 py-0.5 rounded transition-colors animate-all"
+                                                                >
+                                                                    Remover
+                                                                </button>
+                                                            </div>
+                                                        ) : (
+                                                            <div className={cn(
+                                                                "w-full h-full flex flex-col items-center justify-center p-4 bg-gray-50/50 text-gray-500 hover:text-brand transition-colors duration-300",
+                                                                isSelected ? "bg-brand/5" : ""
+                                                            )}>
+                                                                <div className={cn(
+                                                                    "w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-colors duration-300",
+                                                                    isSelected ? "bg-brand text-white shadow-md shadow-brand/10" : "bg-gray-100 text-gray-400 group-hover:text-brand group-hover:bg-brand/10"
+                                                                )}>
+                                                                    <UploadCloud size={22} />
+                                                                </div>
+                                                                <span className="text-[10px] font-semibold text-center leading-normal max-w-[80px]">
+                                                                    Upload de arte
+                                                                </span>
+                                                            </div>
+                                                        )
+                                                    ) : templateImg ? (
                                                         <Image src={templateImg} alt={option} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-gray-300 italic text-[10px]">Sem prévia</div>
                                                     )}
                                                     
-                                                    {isSelected && (
+                                                    {isSelected && !artworkFile && !isUploadingArtwork && (
                                                         <div className="absolute top-2 right-2 w-6 h-6 bg-brand text-white rounded-full flex items-center justify-center shadow-md animate-in zoom-in-50 duration-300">
                                                             <Check size={14} strokeWidth={3} />
                                                         </div>
@@ -325,7 +483,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                 </div>
                                                 <div className="p-3 text-center border-t border-gray-50 bg-gray-50/30">
                                                     <span className={cn(
-                                                        "text-[11px] font-bold uppercase tracking-wider",
+                                                        "text-[11px] font-bold tracking-wider",
                                                         isSelected ? "text-brand" : "text-gray-500"
                                                     )}>
                                                         {option}
@@ -623,44 +781,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                         </div>
 
                         <div className="bg-white rounded-xl border border-gray-100 p-8 shadow-xl shadow-gray-200/50 space-y-8">
-                            <div>
-                                <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                                    Resumo do Pedido
-                                </h2>
 
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-gray-500 font-medium">Quantidade</span>
-                                        <span className="font-semibold text-gray-900 flex items-center gap-2">
-                                            {quantity.toLocaleString()} un.
-                                            <button 
-                                                onClick={() => document.getElementById('quantidade-section')?.scrollIntoView({ behavior: 'smooth' })}
-                                                className="text-brand hover:bg-brand/10 p-1 rounded-full transition-colors"
-                                            >
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                        </span>
-                                    </div>
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-gray-500 font-medium">Preço unitário</span>
-                                        <span className="text-gray-400 font-medium">{formatPrice(finalPrice / (quantity || 1))}</span>
-                                    </div>
-                                    <div className="pt-4 border-t border-gray-50 flex justify-between items-end">
-                                        <span className="text-gray-500 font-medium mb-1">Total à vista</span>
-                                        <div className="text-right">
-                                            <div className="text-3xl font-semibold text-gray-900">{formatPrice(finalPrice)}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Botão Principal */}
-                            <button
-                                onClick={handleAddToCart}
-                                className="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-5 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-brand/20 active:scale-[0.98] group"
-                            >
-                                Comprar Agora
-                            </button>
 
                             {/* Info List */}
                             <div className="space-y-6 pt-2">
@@ -697,23 +818,23 @@ export default function ProductClient({ product }: ProductClientProps) {
                                             <label
                                                 htmlFor="sidebar-upload"
                                                 className={cn(
-                                                    "flex flex-col items-center justify-center py-10 px-6 rounded-xl border-2 border-dashed transition-all cursor-pointer text-center space-y-4",
+                                                    "flex flex-col items-center justify-center py-3.5 px-4 rounded-xl border-2 border-dashed transition-all cursor-pointer text-center space-y-1.5",
                                                     isUploading 
                                                         ? "border-brand bg-brand/5" 
                                                         : "border-gray-100 bg-white hover:bg-gray-50 hover:border-brand/30"
                                                 )}
                                             >
                                                 <div className={cn(
-                                                    "w-14 h-14 rounded-full flex items-center justify-center transition-colors",
+                                                    "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
                                                     isUploading ? "bg-brand text-white" : "bg-white text-brand"
                                                 )}>
-                                                    <UploadCloud size={32} strokeWidth={1.5} />
+                                                    <UploadCloud size={16} strokeWidth={1.5} />
                                                 </div>
-                                                <div className="space-y-1">
-                                                    <p className="text-sm text-gray-700">
-                                                        {isUploading ? "Enviando..." : "Envie sua Logomarca"}
+                                                <div className="space-y-0.5">
+                                                    <p className="text-xs font-semibold text-gray-700">
+                                                        {isUploading ? "Enviando..." : "Arte própria"}
                                                     </p>
-                                                    <p className="text-xs text-gray-400">
+                                                    <p className="text-[9px] text-gray-400">
                                                         Preferência por PDF, PNG ou JPG (Máx. 25MB)
                                                     </p>
                                                 </div>
@@ -738,6 +859,152 @@ export default function ProductClient({ product }: ProductClientProps) {
                                             </button>
                                         </div>
                                     )}
+                                    {product.customText?.menuItemsEnabled && (
+                                        <div className="space-y-4 pt-3 border-t border-gray-100/50 animate-in fade-in duration-300">
+                                            <div>
+                                                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                                                    {product.customText.menuItemsLabel || "Itens do Cardápio"} {product.customText.menuItemsRequired && <span className="text-red-500">*</span>}
+                                                </label>
+                                                <p className="text-[11px] text-gray-400">
+                                                    Adicione os itens e seus respectivos valores abaixo.
+                                                </p>
+                                            </div>
+                                            
+                                            {/* Add Item Form */}
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    placeholder={product.customText.menuItemsPlaceholder || "Ex: Pizza de Calabresa..."}
+                                                    value={newItemName}
+                                                    onChange={(e) => setNewItemName(e.target.value)}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            handleAddMenuItem();
+                                                        }
+                                                    }}
+                                                    className="flex-1 rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand shadow-xs placeholder:text-gray-400 px-3 py-2.5 bg-white"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={handleAddMenuItem}
+                                                    className="bg-brand hover:bg-brand-dark text-white font-semibold px-3 py-2.5 md:px-4 md:py-2.5 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-1.5 shrink-0"
+                                                    title="Adicionar item"
+                                                >
+                                                    <Plus size={16} />
+                                                    <span className="hidden md:inline">Adicionar</span>
+                                                </button>
+                                            </div>
+
+                                            {/* Items List */}
+                                            {menuItems.length > 0 && (
+                                                <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                                                    {menuItems.map((item, idx) => (
+                                                        <div 
+                                                            key={item.id} 
+                                                            className="flex items-center gap-3 bg-gray-50 border border-gray-200/60 rounded-xl p-3 animate-in fade-in slide-in-from-top-1 duration-200"
+                                                        >
+                                                            <span className="text-xs font-semibold text-gray-400 shrink-0">
+                                                                #{idx + 1}
+                                                            </span>
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="text-sm font-medium text-gray-900 truncate">
+                                                                    {item.name}
+                                                                </p>
+                                                            </div>
+                                                            <div className="flex items-center gap-2 shrink-0">
+                                                                <span className="text-xs font-medium text-gray-500">R$</span>
+                                                                <input
+                                                                    type="text"
+                                                                    placeholder="0,00"
+                                                                    value={item.price}
+                                                                    onChange={(e) => handleUpdateMenuItemPrice(item.id, e.target.value)}
+                                                                    className="w-20 rounded-lg border-gray-200 text-xs text-right focus:border-brand focus:ring-brand p-1.5 shrink-0 bg-white"
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleRemoveMenuItem(item.id)}
+                                                                    className="text-gray-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-50 transition-colors shrink-0"
+                                                                >
+                                                                    <Trash2 size={15} />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                    {product.customText?.enabled && !product.customText?.menuItemsEnabled && (
+                                        <div className="space-y-2 pt-3 border-t border-gray-100/50 animate-in fade-in duration-300">
+                                            <label htmlFor="custom-text-input" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                                                {product.customText.label} {product.customText.required && <span className="text-red-500">*</span>}
+                                            </label>
+                                            <textarea
+                                                id="custom-text-input"
+                                                rows={4}
+                                                className="w-full rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand shadow-xs placeholder:text-gray-400 p-3"
+                                                placeholder={product.customText.placeholder || "Digite as informações de personalização aqui..."}
+                                                value={customTextValue}
+                                                onChange={(e) => setCustomTextValue(e.target.value)}
+                                            />
+                                        </div>
+                                    )}
+                                    {product.customText?.secondaryEnabled && (
+                                        <div className="space-y-2 pt-3 border-t border-gray-100/50 animate-in fade-in duration-300">
+                                            <label htmlFor="custom-text-secondary-input" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                                                {product.customText.secondaryLabel} {product.customText.secondaryRequired && <span className="text-red-500">*</span>}
+                                            </label>
+                                            <textarea
+                                                id="custom-text-secondary-input"
+                                                rows={4}
+                                                className="w-full rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand shadow-xs placeholder:text-gray-400 p-3"
+                                                placeholder={product.customText.secondaryPlaceholder || "Digite as informações secundárias aqui..."}
+                                                value={customTextSecondaryValue}
+                                                onChange={(e) => setCustomTextSecondaryValue(e.target.value)}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Resumo do Pedido, Preço Final e Botão de Comprar */}
+                                <div className="pt-6 border-t border-gray-100 space-y-4">
+                                    <h2 className="text-base font-semibold text-gray-900">
+                                        Resumo do Pedido
+                                    </h2>
+                                    
+                                    <div className="space-y-3 bg-gray-50/60 p-4 rounded-xl border border-gray-100/80">
+                                        <div className="flex justify-between items-center text-xs">
+                                            <span className="text-gray-500 font-medium">Quantidade</span>
+                                            <span className="font-semibold text-gray-900 flex items-center gap-2">
+                                                {quantity.toLocaleString()} un.
+                                                <button 
+                                                    onClick={() => document.getElementById('quantidade-section')?.scrollIntoView({ behavior: 'smooth' })}
+                                                    className="text-brand hover:bg-brand/10 p-1 rounded-full transition-colors"
+                                                    title="Editar quantidade"
+                                                >
+                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between items-center text-xs">
+                                            <span className="text-gray-500 font-medium">Preço unitário</span>
+                                            <span className="text-gray-400 font-medium">{formatPrice(finalPrice / (quantity || 1))}</span>
+                                        </div>
+                                        <div className="pt-3 border-t border-gray-200/60 flex justify-between items-end">
+                                            <span className="text-gray-500 font-medium mb-0.5 text-xs">Total à vista</span>
+                                            <div className="text-right">
+                                                <div className="text-2xl font-bold text-gray-900 leading-none">{formatPrice(finalPrice)}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <button
+                                        onClick={handleAddToCart}
+                                        className="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-5 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-brand/20 active:scale-[0.98] group"
+                                    >
+                                        Comprar Agora
+                                    </button>
                                 </div>
                                 
                                 <div className="flex gap-4">
@@ -753,7 +1020,7 @@ export default function ProductClient({ product }: ProductClientProps) {
 
                             {/* Tags de Resumo */}
                             <div className="pt-6 border-t border-gray-50">
-                                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Sua Configuração</p>
+                                <p className="text-xs font-semibold text-gray-500 mb-4">Sua Configuração</p>
                                 <div className="flex flex-wrap gap-2">
                                     <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{quantity} UNID</span>
                                     {selectedFormat && <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{selectedFormat}</span>}
@@ -763,6 +1030,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                     {dimensions.width > 0 && <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{dimensions.width}x{dimensions.height}CM</span>}
                                     {designOption === "hire" && <span className="px-3 py-1 bg-brand/10 rounded-full text-[10px] font-semibold text-brand uppercase tracking-tight">Criação de Arte</span>}
                                     {customTextValue && <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">Texto Pers.</span>}
+                                    {customTextSecondaryValue && <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">Texto Sec.</span>}
                                     {Object.values(selectedVariations).map((val, idx) => (
                                         <span key={idx} className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-semibold text-gray-600 uppercase tracking-tight">{val}</span>
                                     ))}
@@ -773,7 +1041,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                         {/* Baixar Gabarito Section */}
                         <div className="bg-white rounded-xl border border-gray-100 p-8 shadow-sm space-y-6">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-widest flex items-center gap-2">
+                                <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                                     <div className="w-1 h-4 bg-brand rounded-full"></div>
                                     Gabarito
                                 </h3>
@@ -790,7 +1058,7 @@ export default function ProductClient({ product }: ProductClientProps) {
 
                         {/* Ficha Técnica Card */}
                         <div className="bg-gray-50 rounded-xl p-8 border border-gray-100 space-y-6">
-                            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-widest flex items-center gap-2">
+                            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                                 <div className="w-1 h-4 bg-brand rounded-full"></div>
                                 Detalhes Técnicos
                             </h3>
@@ -860,6 +1128,26 @@ export default function ProductClient({ product }: ProductClientProps) {
                 </div>
             )}
 
+            {showArtworkAlert && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
+                        <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4 text-red-600 mx-auto">
+                            <UploadCloud size={24} />
+                        </div>
+                        <h3 className="text-xl font-semibold text-center text-gray-900 mb-2">Envie sua Arte</h3>
+                        <p className="text-center text-gray-600 mb-6">
+                            Você selecionou a opção de usar arte própria. Por favor, faça o upload do arquivo da sua arte para continuar.
+                        </p>
+                        <button
+                            onClick={() => setShowArtworkAlert(false)}
+                            className="w-full bg-brand text-white font-semibold py-3 rounded-xl hover:bg-brand-dark transition-colors shadow-lg shadow-brand/20"
+                        >
+                            Entendi, vou enviar
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {showTextAlert && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
                     <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
@@ -873,6 +1161,26 @@ export default function ProductClient({ product }: ProductClientProps) {
                         <button
                             onClick={() => setShowTextAlert(false)}
                             className="w-full bg-brand text-white font-semibold py-3 rounded-xl transition-colors"
+                        >
+                            Preencher agora
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {showTextSecondaryAlert && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
+                        <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4 text-orange-600 mx-auto">
+                            <div className="font-serif text-2xl font-semibold">Aa</div>
+                        </div>
+                        <h3 className="text-xl font-semibold text-center text-gray-900 mb-2">Personalização Necessária</h3>
+                        <p className="text-center text-gray-600 mb-6">
+                            Este produto requer preenchimento do campo <span className="font-semibold">"{product.customText?.secondaryLabel}"</span> antes de continuar.
+                        </p>
+                        <button
+                            onClick={() => setShowTextSecondaryAlert(false)}
+                            className="w-full bg-brand text-white font-semibold py-3 rounded-xl transition-colors animate-all"
                         >
                             Preencher agora
                         </button>

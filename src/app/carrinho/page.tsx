@@ -59,10 +59,40 @@ function OrderDetailsModal({ isOpen, onClose, items }: { isOpen: boolean, onClos
                                         <p className="text-xs font-semibold text-gray-700">{String(val)}</p>
                                     </div>
                                 ))}
+                                {item.details?.fileUrl && (
+                                    <div className="col-span-2 space-y-1 pt-2">
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Logo / Arquivo</p>
+                                        <a href={item.details.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-brand hover:underline flex items-center gap-1">
+                                            Visualizar Logo ({item.details.fileName || "Download"})
+                                        </a>
+                                    </div>
+                                )}
+                                {item.details?.customArtworkUrl && (
+                                    <div className="col-span-2 space-y-1 pt-2">
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Arte Própria Enviada</p>
+                                        <a href={item.details.customArtworkUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-brand hover:underline flex items-center gap-1">
+                                            Visualizar Arte ({item.details.customArtworkName || "Download"})
+                                        </a>
+                                    </div>
+                                )}
                                 {item.details?.customText && (
                                     <div className="col-span-2 space-y-1 pt-2">
-                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Texto Personalizado</p>
-                                        <p className="text-xs font-medium text-gray-700 bg-gray-50 p-2 rounded border border-gray-100">{item.details.customText}</p>
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">
+                                            {item.details.customTextLabel || "Texto Personalizado"}
+                                        </p>
+                                        <p className="text-xs font-medium text-gray-700 bg-gray-50 p-2 rounded border border-gray-100 whitespace-pre-line leading-relaxed">
+                                            {item.details.customText}
+                                        </p>
+                                    </div>
+                                )}
+                                {item.details?.customTextSecondary && (
+                                    <div className="col-span-2 space-y-1 pt-2">
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">
+                                            {item.details.customTextSecondaryLabel || "Informações de Contato"}
+                                        </p>
+                                        <p className="text-xs font-medium text-gray-700 bg-gray-50 p-2 rounded border border-gray-100 whitespace-pre-line leading-relaxed">
+                                            {item.details.customTextSecondary}
+                                        </p>
                                     </div>
                                 )}
                             </div>
@@ -246,6 +276,46 @@ export default function CartPage() {
                                                     </span>
                                                 </div>
                                             ))}
+                                            {item.details?.fileUrl && (
+                                                <div className="mt-1.5 flex items-center gap-1.5">
+                                                    <span className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded border border-gray-200 font-medium">
+                                                        Logo:
+                                                    </span>
+                                                    <a href={item.details.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-brand font-semibold hover:underline truncate max-w-[200px]">
+                                                        {item.details.fileName || "Baixar Logo"}
+                                                    </a>
+                                                </div>
+                                            )}
+                                            {item.details?.customArtworkUrl && (
+                                                <div className="mt-1.5 flex items-center gap-1.5">
+                                                    <span className="text-[10px] bg-green-50 text-green-700 px-2 py-0.5 rounded border border-green-200 font-semibold">
+                                                        Arte:
+                                                    </span>
+                                                    <a href={item.details.customArtworkUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-brand font-semibold hover:underline truncate max-w-[200px]">
+                                                        {item.details.customArtworkName || "Baixar Arte"}
+                                                    </a>
+                                                </div>
+                                            )}
+                                            {item.details?.customText && (
+                                                <div className="mt-2 bg-gray-50 p-2.5 rounded-lg border border-gray-200/60 max-w-sm">
+                                                    <p className="text-[10px] font-bold text-gray-500 mb-0.5">
+                                                        {item.details.customTextLabel || "Texto / Informações de Personalização"}
+                                                    </p>
+                                                    <p className="text-xs font-medium text-gray-800 whitespace-pre-line leading-relaxed">
+                                                        {item.details.customText}
+                                                    </p>
+                                                </div>
+                                            )}
+                                            {item.details?.customTextSecondary && (
+                                                <div className="mt-2 bg-gray-50 p-2.5 rounded-lg border border-gray-200/60 max-w-sm">
+                                                    <p className="text-[10px] font-bold text-gray-500 mb-0.5">
+                                                        {item.details.customTextSecondaryLabel || "Informações de Contato"}
+                                                    </p>
+                                                    <p className="text-xs font-medium text-gray-800 whitespace-pre-line leading-relaxed">
+                                                        {item.details.customTextSecondary}
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="flex items-center justify-between mt-2">
                                             <div className="flex flex-col">

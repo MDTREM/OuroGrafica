@@ -62,6 +62,14 @@ export interface Product {
         label: string;
         placeholder?: string;
         required?: boolean;
+        secondaryEnabled?: boolean;
+        secondaryLabel?: string;
+        secondaryPlaceholder?: string;
+        secondaryRequired?: boolean;
+        menuItemsEnabled?: boolean;
+        menuItemsLabel?: string;
+        menuItemsPlaceholder?: string;
+        menuItemsRequired?: boolean;
     };
 
     // Design Option (Upload/Hire)

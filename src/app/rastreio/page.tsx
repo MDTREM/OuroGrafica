@@ -47,7 +47,7 @@ export default function TrackingPage() {
             case 'Produção':
                 return <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2"><Package size={14} /> Em Produção</span>;
             case 'Enviado':
-                return <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2"><Package size={14} /> Enviado</span>;
+                return <span className="bg-sky-100 text-sky-700 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2"><Package size={14} /> Enviado</span>;
             case 'Entregue':
                 return <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-2"><CheckCircle size={14} /> Entregue</span>;
             default:

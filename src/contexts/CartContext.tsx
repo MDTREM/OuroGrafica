@@ -28,6 +28,11 @@ export interface CartItem {
         fileUrl?: string;
         fileName?: string;
         customText?: string; // User input for custom text field
+        customTextSecondary?: string; // User input for secondary custom text field
+        customTextLabel?: string; // Label for primary custom text
+        customTextSecondaryLabel?: string; // Label for secondary custom text
+        customArtworkUrl?: string;
+        customArtworkName?: string;
     };
 }
 

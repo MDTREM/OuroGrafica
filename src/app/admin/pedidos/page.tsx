@@ -67,7 +67,7 @@ export default function AdminOrdersPage() {
                                                 text-xs font-medium rounded-full px-2 py-1 border-0 focus:ring-2 focus:ring-brand cursor-pointer
                                                 ${order.status === 'Pendente' ? 'bg-yellow-100 text-yellow-800' :
                                                     order.status === 'Produção' ? 'bg-blue-100 text-blue-800' :
-                                                        order.status === 'Enviado' ? 'bg-purple-100 text-purple-800' :
+                                                        order.status === 'Enviado' ? 'bg-sky-100 text-sky-800' :
                                                             'bg-green-100 text-green-800'
                                                 }
                                             `}
@@ -212,30 +212,47 @@ export default function AdminOrdersPage() {
                                                             </span>
                                                         ))}
                                                         {item.details.customText && (
-                                                            <div className="w-full mt-1 p-2 bg-blue-50 border border-blue-100 rounded-xl text-blue-900 text-xs">
-                                                                <span className="font-semibold block mb-0.5">Personalização (Texto):</span>
+                                                            <div className="w-full mt-1 p-2 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-xs whitespace-pre-line leading-relaxed">
+                                                                <span className="font-semibold block mb-0.5 text-gray-700">{item.details.customTextLabel || "Personalização (Texto)"}:</span>
                                                                 {item.details.customText}
+                                                            </div>
+                                                        )}
+                                                        {item.details.customTextSecondary && (
+                                                            <div className="w-full mt-1 p-2 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-xs whitespace-pre-line leading-relaxed">
+                                                                <span className="font-semibold block mb-0.5 text-gray-700">{item.details.customTextSecondaryLabel || "Informações de Contato"}:</span>
+                                                                {item.details.customTextSecondary}
                                                             </div>
                                                         )}
                                                     </div>
                                                 )}
 
                                                 {/* Artwork Status */}
-                                                <div className="mt-3 pt-3 border-t border-gray-50 flex items-center gap-2">
-                                                    {(item.details?.designOption === 'upload' || item.designOption === 'upload') ? (
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded-full">Arte Enviada</span>
-                                                            {(item.details?.fileUrl || item.details?.uploadedFile || item.uploadedFile) && (
-                                                                <a href={item.details?.fileUrl || item.details?.uploadedFile || item.uploadedFile} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
-                                                                    Baixar Arquivo
-                                                                </a>
-                                                            )}
-                                                        </div>
+                                                <div className="mt-3 pt-3 border-t border-gray-50 flex flex-col gap-2">
+                                                    <div className="flex items-center gap-2">
+                                                        {(item.details?.designOption === 'upload' || item.designOption === 'upload') ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-xs font-semibold text-green-700 bg-green-100 px-2 py-1 rounded-full">Arte Enviada</span>
+                                                                {(item.details?.fileUrl || item.details?.uploadedFile || item.uploadedFile) && (
+                                                                    <a href={item.details?.fileUrl || item.details?.uploadedFile || item.uploadedFile} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
+                                                                        Baixar Arquivo
+                                                                    </a>
+                                                                )}
+                                                            </div>
 
-                                                    ) : (item.details?.designOption === 'hire' || item.designOption === 'hire') ? (
-                                                        <span className="text-xs font-semibold text-orange-700 bg-orange-100 px-2 py-1 rounded-full">Solicitou Criação (+ Designer)</span>
-                                                    ) : (
-                                                        <span className="text-xs text-gray-400">Sem opção de arte selecionada</span>
+                                                        ) : (item.details?.designOption === 'hire' || item.designOption === 'hire') ? (
+                                                            <span className="text-xs font-semibold text-orange-700 bg-orange-100 px-2 py-1 rounded-full">Solicitou Criação (+ Designer)</span>
+                                                        ) : (
+                                                            <span className="text-xs text-gray-400">Sem opção de arte selecionada</span>
+                                                        )}
+                                                    </div>
+                                                    
+                                                    {item.details?.customArtworkUrl && (
+                                                        <div className="flex items-center gap-2 mt-1">
+                                                            <span className="text-xs font-semibold text-brand bg-brand/10 px-2 py-1 rounded-full">Arte Própria</span>
+                                                            <a href={item.details.customArtworkUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline font-semibold">
+                                                                Baixar Arte ({item.details.customArtworkName || "Arquivo"})
+                                                            </a>
+                                                        </div>
                                                     )}
                                                 </div>
                                             </div>
