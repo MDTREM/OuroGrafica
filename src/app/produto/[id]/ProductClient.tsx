@@ -138,7 +138,7 @@ export default function ProductClient({ product }: ProductClientProps) {
     const finishPriceAddon = selectedFinish && product.finishPrices?.[selectedFinish] ? Number(product.finishPrices[selectedFinish]) : 0;
     const extraPriceAddon = selectedExtra && product.extraPrices?.[selectedExtra] ? Number(product.extraPrices[selectedExtra]) : 0;
 
-    const totalSpecAddons = (formatPriceAddon + printingPriceAddon + finishPriceAddon + extraPriceAddon) * quantity;
+    const totalSpecAddons = formatPriceAddon + printingPriceAddon + finishPriceAddon + extraPriceAddon;
 
     const finalPrice = calculatedBasePrice + finalVariationsPrice + designPrice + totalSpecAddons;
 
@@ -1028,9 +1028,15 @@ export default function ProductClient({ product }: ProductClientProps) {
                                             </span>
                                         </div>
                                         <div className="flex justify-between items-center text-xs">
-                                            <span className="text-gray-500 font-medium">Preço unitário</span>
-                                            <span className="text-gray-400 font-medium">{formatPrice(finalPrice / (quantity || 1))}</span>
+                                            <span className="text-gray-500 font-medium">Preço unitário (base)</span>
+                                            <span className="text-gray-400 font-medium">{formatPrice((calculatedBasePrice + finalVariationsPrice) / (quantity || 1))}</span>
                                         </div>
+                                        {totalSpecAddons + designPrice > 0 && (
+                                            <div className="flex justify-between items-center text-xs">
+                                                <span className="text-gray-500 font-medium">Opções adicionais</span>
+                                                <span className="text-green-600 font-semibold">+{formatPrice(totalSpecAddons + designPrice)}</span>
+                                            </div>
+                                        )}
                                         <div className="pt-3 border-t border-gray-200/60 flex justify-between items-end">
                                             <span className="text-gray-500 font-medium mb-0.5 text-xs">Total à vista</span>
                                             <div className="text-right">
@@ -1103,30 +1109,42 @@ export default function ProductClient({ product }: ProductClientProps) {
                                 Detalhes Técnicos
                             </h3>
                             <div className="space-y-3">
-                                {product.technicalSpecs && Object.keys(product.technicalSpecs).filter(k => !['printing', 'extras', 'option_illustrations'].includes(k)).length > 0 ? (
-                                    Object.entries(product.technicalSpecs)
-                                        .filter(([key]) => !['printing', 'extras', 'option_illustrations'].includes(key))
-                                        .map(([key, value]) => {
-                                            const labels: Record<string, string> = {
-                                                paper: "Papel / Material",
-                                                weight: "Gramatura",
-                                                mass: "Peso",
-                                                ennoblement: "Enobrecimento",
-                                                colors: "Cores",
-                                                finalSize: "Tamanho Final",
-                                                bleedSize: "Tam. com Sangria",
-                                                productionTime: "Prazo de Produção"
-                                            };
-                                            return (
-                                                <div key={key} className="flex justify-between items-center text-xs border-b border-gray-200/50 pb-3 last:border-0">
-                                                    <span className="text-gray-500 font-medium">{labels[key] || key}</span>
-                                                    <span className="font-semibold text-gray-900 text-right">{value}</span>
-                                                </div>
-                                            );
-                                        })
-                                ) : (
-                                    <p className="text-[11px] text-gray-400 italic">Nenhuma especificação disponível para este produto.</p>
-                                )}
+                                {(() => {
+                                    const specs = product.technicalSpecs;
+                                    if (!specs) {
+                                        return <p className="text-[11px] text-gray-400 italic">Nenhuma especificação disponível para este produto.</p>;
+                                    }
+                                    
+                                    const filteredEntries = Object.entries(specs).filter(([key, value]) => 
+                                        !['printing', 'extras', 'option_illustrations', 'formatPrices', 'finishPrices', 'printingPrices', 'extraPrices'].includes(key) && 
+                                        typeof value !== 'object' &&
+                                        value !== null &&
+                                        value !== undefined
+                                    );
+
+                                    if (filteredEntries.length === 0) {
+                                        return <p className="text-[11px] text-gray-400 italic">Nenhuma especificação disponível para este produto.</p>;
+                                    }
+
+                                    return filteredEntries.map(([key, value]) => {
+                                        const labels: Record<string, string> = {
+                                            paper: "Papel / Material",
+                                            weight: "Gramatura",
+                                            mass: "Peso",
+                                            ennoblement: "Enobrecimento",
+                                            colors: "Cores",
+                                            finalSize: "Tamanho Final",
+                                            bleedSize: "Tam. com Sangria",
+                                            productionTime: "Prazo de Produção"
+                                        };
+                                        return (
+                                            <div key={key} className="flex justify-between items-center text-xs border-b border-gray-200/50 pb-3 last:border-0">
+                                                <span className="text-gray-500 font-medium">{labels[key] || key}</span>
+                                                <span className="font-semibold text-gray-900 text-right">{String(value)}</span>
+                                            </div>
+                                        );
+                                    });
+                                })()}
                             </div>
                         </div>
                     </div>

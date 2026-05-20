@@ -12,13 +12,13 @@ import { AuthForm } from "@/components/auth/AuthForm";
 import { supabase } from "@/lib/supabase";
 
 export default function CheckoutPage() {
-    const { total, shipping, items, clearCart, discount, coupon } = useCart();
+    const { total, shipping, setShipping, items, clearCart, discount, coupon, productTotal, designFees } = useCart();
     const { user, signOut } = useAuth();
 
     const [step, setStep] = useState(1); // 1: Identification, 2: Delivery, 3: Payment
     const [personType, setPersonType] = useState<"pf" | "pj">("pf");
     const [loadingCep, setLoadingCep] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState<"pix">("pix");
+    const [paymentMethod, setPaymentMethod] = useState<"pix" | "credit_card">("pix");
 
     const [formData, setFormData] = useState({
         name: "",
@@ -139,6 +139,7 @@ export default function CheckoutPage() {
     const nextStep = () => {
         if (step === 1 && isStep1Valid()) setStep(2);
         if (step === 2 && isStep2Valid()) setStep(3);
+        if (step === 3) setStep(4);
     };
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -146,7 +147,7 @@ export default function CheckoutPage() {
 
     const handleFinishOrder = async () => {
         setErrorMessage(null);
-        if (step === 3) {
+        if (step === 4) {
             setIsSubmitting(true);
             setErrorMessage('');
 
@@ -217,8 +218,10 @@ export default function CheckoutPage() {
                 </Container>
             </div>
 
-            <Container className="pt-6 max-w-2xl mx-auto">
-                <div className="space-y-6">
+            <Container className="pt-6 pb-24 max-w-6xl mx-auto">
+                <div className="flex flex-col lg:flex-row gap-8 items-start">
+                    {/* Main Flow */}
+                    <div className="flex-1 space-y-6 w-full max-w-2xl lg:max-w-none mx-auto">
                     {/* 1. Identification */}
                     <div className={`bg-white p-6 rounded-xl border transition-all ${step === 1 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
                         <div className="flex items-center justify-between mb-4">
@@ -269,7 +272,7 @@ export default function CheckoutPage() {
                                                             name="personType"
                                                             checked={personType === "pf"}
                                                             onChange={() => setPersonType("pf")}
-                                                            className="accent-brand"
+                                                            className="appearance-none w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 rounded-full checked:border-brand checked:border-[5px] sm:checked:border-[6px] transition-all bg-white flex-shrink-0 cursor-pointer shadow-sm"
                                                         />
                                                         <span className="text-sm font-medium">Pessoa Física</span>
                                                     </label>
@@ -279,7 +282,7 @@ export default function CheckoutPage() {
                                                             name="personType"
                                                             checked={personType === "pj"}
                                                             onChange={() => setPersonType("pj")}
-                                                            className="accent-brand"
+                                                            className="appearance-none w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 rounded-full checked:border-brand checked:border-[5px] sm:checked:border-[6px] transition-all bg-white flex-shrink-0 cursor-pointer shadow-sm"
                                                         />
                                                         <span className="text-sm font-medium">Pessoa Jurídica</span>
                                                     </label>
@@ -454,32 +457,32 @@ export default function CheckoutPage() {
 
                                 <h3 className="font-semibold text-gray-900 mb-3 text-sm">Opção de Entrega</h3>
                                 <div className="space-y-3 mb-6">
-                                    <label className="flex items-center gap-4 bg-orange-50 p-4 rounded-xl border border-brand cursor-pointer relative">
-                                        <div className="w-10 h-10 rounded-full bg-white text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark flex items-center justify-center flex-shrink-0">
-                                            <MapPin size={20} />
+                                    <label className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border cursor-pointer relative transition-all ${shipping === 15.00 ? 'bg-orange-50 border-brand' : 'bg-gray-50 border-gray-200'}`}>
+                                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 ${shipping === 15.00 ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark' : 'text-gray-500'}`}>
+                                            <Truck size={18} className="sm:w-5 sm:h-5" />
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-center mb-0.5">
-                                                <h3 className="font-semibold text-gray-900 text-sm">Retirada na Loja (Ouro Preto)</h3>
-                                                <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark">Grátis</span>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex justify-between items-start sm:items-center mb-0.5 gap-2">
+                                                <h3 className="font-semibold text-gray-900 text-sm leading-tight">Entrega Padrão (Jadlog)</h3>
+                                                <span className={`font-semibold whitespace-nowrap ${shipping === 15.00 ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark' : 'text-gray-900'}`}>R$ 15,00</span>
                                             </div>
-                                            <p className="text-xs text-gray-500">Rua José Moringa, 9 - Bauxita</p>
+                                            <p className="text-xs text-gray-500">3 a 5 dias úteis</p>
                                         </div>
-                                        <input type="radio" name="shipping" className="accent-brand w-5 h-5 ml-2" defaultChecked />
+                                        <input type="radio" name="shipping" checked={shipping === 15.00} onChange={() => setShipping(15.00)} className="appearance-none w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 rounded-full checked:border-brand checked:border-[5px] sm:checked:border-[6px] transition-all bg-white ml-2 flex-shrink-0 cursor-pointer shadow-sm" />
                                     </label>
 
-                                    <label className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200 cursor-pointer relative opacity-60">
-                                        <div className="w-10 h-10 rounded-full bg-white text-gray-500 flex items-center justify-center flex-shrink-0">
-                                            <Truck size={20} />
+                                    <label className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border cursor-pointer relative transition-all ${shipping === 32.90 ? 'bg-orange-50 border-brand' : 'bg-gray-50 border-gray-200'}`}>
+                                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 ${shipping === 32.90 ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark' : 'text-gray-500'}`}>
+                                            <Truck size={18} className="sm:w-5 sm:h-5" />
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-center mb-0.5">
-                                                <h3 className="font-semibold text-gray-900 text-sm">Entrega Local (Motoboy)</h3>
-                                                <span className="font-semibold text-gray-500">Em breve</span>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex justify-between items-start sm:items-center mb-0.5 gap-2">
+                                                <h3 className="font-semibold text-gray-900 text-sm leading-tight">Sedex Express</h3>
+                                                <span className={`font-semibold whitespace-nowrap ${shipping === 32.90 ? 'text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark' : 'text-gray-900'}`}>R$ 32,90</span>
                                             </div>
-                                            <p className="text-xs text-gray-500">Disponível apenas para Ouro Preto</p>
+                                            <p className="text-xs text-gray-500">1 a 2 dias úteis</p>
                                         </div>
-                                        <input type="radio" name="shipping" className="accent-brand w-5 h-5 ml-2" disabled />
+                                        <input type="radio" name="shipping" checked={shipping === 32.90} onChange={() => setShipping(32.90)} className="appearance-none w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-300 rounded-full checked:border-brand checked:border-[5px] sm:checked:border-[6px] transition-all bg-white ml-2 flex-shrink-0 cursor-pointer shadow-sm" />
                                     </label>
                                 </div>
 
@@ -513,22 +516,110 @@ export default function CheckoutPage() {
                         </div>
 
                         {step === 3 && (
-                            <div className="bg-white p-6 rounded-xl border border-brand shadow-md ring-1 ring-brand/10 animate-in fade-in slide-in-from-bottom-2">
-                                <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-gradient-to-r from-brand to-brand-dark text-white flex items-center justify-center text-xs">3</div>
-                                    Pagamento
-                                </h2>
+                            <div className="bg-white pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                {/* Payment Method Selection */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                    <label className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'pix' ? 'bg-green-50 border-brand' : 'bg-white border-gray-200 hover:border-brand/50'}`}>
+                                        <div className={`w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm ${paymentMethod === 'pix' ? 'text-brand' : 'text-gray-400'}`}>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex justify-between items-center mb-0.5">
+                                                <h3 className={`font-semibold text-sm ${paymentMethod === 'pix' ? 'text-gray-900' : 'text-gray-700'}`}>Pix</h3>
+                                            </div>
+                                            <p className="text-xs text-gray-500">Aprovação imediata</p>
+                                        </div>
+                                        <input type="radio" name="payment" checked={paymentMethod === 'pix'} onChange={() => setPaymentMethod('pix')} className="accent-brand w-5 h-5 ml-2" />
+                                    </label>
 
-                                <div className="text-center p-6 bg-gray-50 rounded-xl border border-gray-100 mb-6">
-                                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Pagamento via Pix</h3>
-                                    <p className="text-sm text-gray-600 mt-2">O código QR (Copia e Cola) será gerado na próxima tela após finalizar o pedido.</p>
+                                    <label className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'credit_card' ? 'bg-green-50 border-brand' : 'bg-white border-gray-200 hover:border-brand/50'}`}>
+                                        <div className={`w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm ${paymentMethod === 'credit_card' ? 'text-brand' : 'text-gray-400'}`}>
+                                            <CreditCard size={20} />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex justify-between items-center mb-0.5">
+                                                <h3 className={`font-semibold text-sm ${paymentMethod === 'credit_card' ? 'text-gray-900' : 'text-gray-700'}`}>Cartão de Crédito</h3>
+                                            </div>
+                                            <p className="text-xs text-gray-500">Até 3x sem juros</p>
+                                        </div>
+                                        <input type="radio" name="payment" checked={paymentMethod === 'credit_card'} onChange={() => setPaymentMethod('credit_card')} className="accent-brand w-5 h-5 ml-2" />
+                                    </label>
                                 </div>
 
-                                <div className="flex justify-center">
+                                {/* Payment Details Block */}
+                                {paymentMethod === 'pix' ? (
+                                    <div className="text-center p-6 bg-gray-50 rounded-xl border border-gray-100 mb-6 animate-in fade-in">
+                                        <h3 className="text-lg font-semibold text-gray-800 mb-2">Pagamento via Pix</h3>
+                                        <p className="text-sm text-gray-600 mt-2">O código QR (Copia e Cola) será gerado na próxima tela após finalizar o pedido.</p>
+                                    </div>
+                                ) : (
+                                    <div className="text-center p-6 bg-gray-50 rounded-xl border border-gray-100 mb-6 animate-in fade-in">
+                                        <h3 className="text-lg font-semibold text-gray-800 mb-2">Cartão de Crédito</h3>
+                                        <p className="text-sm text-gray-600 mt-2">O pagamento será processado de forma segura na próxima etapa.</p>
+                                    </div>
+                                )}
+
+                                <div className="flex justify-end mt-6">
+                                    <button
+                                        onClick={nextStep}
+                                        className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all flex items-center gap-2"
+                                    >
+                                        Revisar Pedido
+                                        <ArrowRight size={18} />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        {step > 3 && (
+                            <div className="text-sm text-gray-600 pl-8">
+                                <p className="font-medium">{paymentMethod === 'pix' ? 'Pix (Aprovação Imediata)' : 'Cartão de Crédito'}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* 4. Review */}
+                    <div className={`bg-white p-6 rounded-xl border transition-all ${step === 4 ? "border-brand shadow-md ring-1 ring-brand/10" : "border-gray-100 shadow-sm"}`}>
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${step >= 4 ? "bg-gradient-to-r from-brand to-brand-dark text-white" : "bg-gray-200 text-gray-500"}`}>4</div>
+                                Revisão e Confirmação
+                            </h2>
+                        </div>
+
+                        {step === 4 && (
+                            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                                <div className="p-5 bg-gray-50 rounded-xl border border-gray-100 mb-6 space-y-4">
+                                    {/* Revisão de Entrega */}
+                                    <div>
+                                        <h3 className="text-sm font-semibold text-gray-800 mb-1">Entrega</h3>
+                                        <p className="text-sm text-gray-600">{formData.address}, {formData.number} {formData.complement && `- ${formData.complement}`}</p>
+                                        <p className="text-sm text-gray-600">{formData.district}, {formData.city} - {formData.state}</p>
+                                        <p className="text-sm text-gray-600 font-medium mt-1">Frete: {shipping === 15.00 ? "Entrega Padrão" : "Sedex Express"} - R$ {shipping.toFixed(2).replace('.', ',')}</p>
+                                    </div>
+                                    <div className="h-px bg-gray-200 w-full" />
+                                    {/* Revisão de Pagamento */}
+                                    <div>
+                                        <h3 className="text-sm font-semibold text-gray-800 mb-1">Pagamento</h3>
+                                        <p className="text-sm text-gray-600">{paymentMethod === 'pix' ? 'Pix (Aprovação imediata)' : 'Cartão de Crédito'}</p>
+                                    </div>
+                                </div>
+                                
+                                <p className="text-xs text-gray-500 text-center mb-6 px-4">
+                                    Ao clicar em finalizar, você concorda com nossos termos de serviço e políticas de privacidade. Seu pedido será processado imediatamente.
+                                </p>
+
+                                {errorMessage && (
+                                    <div className="mb-6 p-4 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100 flex items-start gap-2 animate-in slide-in-from-bottom-2">
+                                        <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
+                                        {errorMessage}
+                                    </div>
+                                )}
+
+                                <div className="flex justify-end">
                                     <button
                                         onClick={handleFinishOrder}
                                         disabled={isSubmitting}
-                                        className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-4 px-12 rounded hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed w-full md:w-auto"
+                                        className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-4 px-12 rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed w-full md:w-auto"
                                     >
                                         {isSubmitting ? (
                                             <>
@@ -545,12 +636,87 @@ export default function CheckoutPage() {
                     </div>
                 </div>
 
-                {errorMessage && (
-                    <div className="mt-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 flex items-center gap-2 animate-in slide-in-from-bottom-2">
-                        <AlertCircle size={20} />
-                        {errorMessage}
+                {/* Right Sidebar: Order Summary */}
+                <div className="lg:w-[400px] w-full sticky top-24 space-y-6">
+                    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                        <h2 className="text-lg font-semibold text-gray-900 mb-6 border-b border-gray-100 pb-4">Resumo do Pedido</h2>
+                        
+                        {/* Items List */}
+                        <div className="space-y-4 mb-6 max-h-[340px] overflow-y-auto pr-2 custom-scrollbar">
+                            {items.map((item) => {
+                                return (
+                                    <div key={item.id} className="flex gap-4">
+                                        <div className="w-[72px] h-[72px] bg-gray-100 rounded-lg flex-shrink-0 relative overflow-hidden">
+                                            {item.image ? (
+                                                <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400 font-medium bg-gray-200">IMG</div>
+                                            )}
+                                        </div>
+                                        <div className="flex-1 flex flex-col justify-center">
+                                            <h3 className="font-semibold text-gray-900 text-sm line-clamp-2">{item.title}</h3>
+                                            <p className="text-[11px] text-gray-500 mt-0.5">Qtd: {item.quantity}</p>
+                                            <div className="font-bold text-sm text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark mt-1">
+                                                R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Summary Totals */}
+                        <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 mb-6 space-y-3">
+                            <h3 className="font-semibold text-gray-900 mb-3 text-sm">Resumo do Valor Final</h3>
+                            
+                            <div className="flex justify-between text-sm text-gray-600">
+                                <span>Valor dos Produtos</span>
+                                <span>R$ {productTotal.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            
+                            {designFees > 0 && (
+                                <div className="flex justify-between text-sm text-gray-600">
+                                    <span>Adicionais (Criação de Arte)</span>
+                                    <span>R$ {designFees.toFixed(2).replace('.', ',')}</span>
+                                </div>
+                            )}
+
+                            {discount > 0 && (
+                                <div className="flex justify-between text-sm text-green-600 font-medium">
+                                    <span>Desconto Aplicado</span>
+                                    <span>- R$ {discount.toFixed(2).replace('.', ',')}</span>
+                                </div>
+                            )}
+                            
+                            <div className="flex justify-between text-sm text-gray-600">
+                                <span>Frete</span>
+                                <span>R$ {shipping.toFixed(2).replace('.', ',')}</span>
+                            </div>
+
+                            <div className="border-t border-gray-200 pt-3 mt-3 flex justify-between items-center">
+                                <span className="font-bold text-gray-900">Valor Final</span>
+                                <span className="font-bold text-xl text-brand">R$ {total.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                        </div>
+
+                        {/* Security Badges */}
+                        <div className="mt-8 flex flex-col gap-3">
+                            <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <ShieldCheck size={18} className="text-gray-400 flex-shrink-0" />
+                                <span>Compra Segura</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <Lock size={18} className="text-gray-400 flex-shrink-0" />
+                                <span>Criptografado</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <CheckCircle size={18} className="text-gray-400 flex-shrink-0" />
+                                <span>Garantia Vink</span>
+                            </div>
+                        </div>
                     </div>
-                )}
+                </div>
+            </div>
             </Container>
         </div>
     );

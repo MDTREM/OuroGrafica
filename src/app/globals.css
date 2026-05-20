@@ -10,7 +10,7 @@
   --brand: #15cb98;
   --brand-light: #44d9b0;
   --brand-dark: #10a379;
-  --brand-gradient: linear-gradient(135deg, #15cb98 0%, #10a379 100%);
+  --brand-gradient: #15cb98;
 
   /* Surfaces */
   --surface: #FFFFFF;
@@ -158,4 +158,48 @@ body {
 
 .animate-scroll {
   animation: scroll 30s linear infinite;
+}
+
+/* ==========================================
+   GLOBAL SOLID GREEN THEME (NO GRADIENTS)
+   ========================================== */
+
+/* Force override on all background gradient utility classes, EXCEPT when they are used for text clipping */
+.bg-gradient-to-r:not(.bg-clip-text),
+.bg-gradient-to-tr:not(.bg-clip-text),
+.bg-gradient-to-br:not(.bg-clip-text),
+.bg-gradient-to-l:not(.bg-clip-text),
+.bg-gradient-to-t:not(.bg-clip-text),
+.bg-gradient-to-b:not(.bg-clip-text),
+.bg-gradient-to-bl:not(.bg-clip-text),
+.bg-gradient-to-tl:not(.bg-clip-text),
+[class*="bg-gradient-"]:not(.bg-clip-text) {
+  background-image: none !important;
+  background-color: var(--brand, #15cb98) !important;
+}
+
+/* Ensure hover/focus on gradient elements are solid dark brand green */
+.bg-gradient-to-r:not(.bg-clip-text):hover,
+.bg-gradient-to-tr:not(.bg-clip-text):hover,
+.bg-gradient-to-br:not(.bg-clip-text):hover,
+[class*="bg-gradient-"]:not(.bg-clip-text):hover {
+  background-image: none !important;
+  background-color: var(--brand-dark, #10a379) !important;
+}
+
+/* Force override on text gradient clipping to be solid green without any box container */
+.text-transparent.bg-clip-text,
+.bg-clip-text.text-transparent {
+  background-image: none !important;
+  background-color: transparent !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: var(--brand, #15cb98) !important;
+  -webkit-text-fill-color: var(--brand, #15cb98) !important;
+}
+
+.text-transparent.bg-clip-text:hover,
+.bg-clip-text.text-transparent:hover {
+  color: var(--brand-dark, #10a379) !important;
+  -webkit-text-fill-color: var(--brand-dark, #10a379) !important;
 }

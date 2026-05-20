@@ -48,6 +48,7 @@ interface CartContextType {
     productTotal: number; // subtotal - designFees
     designFees: number;
     shipping: number;
+    setShipping: (val: number) => void;
     discount: number;
     total: number;
 
@@ -62,7 +63,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [coupon, setCoupon] = useState<Coupon | null>(null);
-    const shipping = 0.00; // Free (Pickup in Store)
+    const [shipping, setShipping] = useState<number>(0.00);
 
     // Load from local storage on mount
     useEffect(() => {
@@ -145,7 +146,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return (
         <CartContext.Provider value={{
             items, addToCart, removeFromCart, updateQuantity, clearCart,
-            subtotal, productTotal, designFees, shipping, discount, total,
+            subtotal, productTotal, designFees, shipping, setShipping, discount, total,
             coupon, applyCoupon, removeCoupon
         }}>
             {children}
