@@ -6,6 +6,7 @@ import { formatPrice } from "@/lib/utils";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 
 // Add support for variations inside custom ComboItem types in frontend
 interface ExtendedComboItem extends ComboItem {
@@ -112,7 +113,7 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                                 >
                                     <div className="group relative bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 border border-gray-100 h-full flex flex-col">
                                         {/* Image Area - Aspect ratio 1:1, matching product cover */}
-                                        <div className="relative w-full overflow-hidden bg-gray-50 rounded-t-xl" style={{ paddingBottom: '100%' }}>
+                                        <Link href={`/combo/${combo.id}`} className="relative w-full overflow-hidden bg-gray-50 rounded-t-xl block" style={{ paddingBottom: '100%' }}>
                                             <div className="absolute inset-0 flex items-center justify-center">
                                                 {hasImage ? (
                                                     <Image
@@ -132,14 +133,16 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                                                     </div>
                                                 )}
                                             </div>
-                                        </div>
+                                        </Link>
 
                                         {/* Content - Left Aligned, No Bold */}
                                         <div className="p-4 flex flex-col flex-1">
                                             {/* Combo Title - smaller, not bold, left-aligned, no subtitle */}
-                                            <h3 className="font-medium text-gray-900 leading-tight mb-3 group-hover:text-brand transition-colors text-sm text-left">
-                                                {combo.title}
-                                            </h3>
+                                            <Link href={`/combo/${combo.id}`} className="block">
+                                                <h3 className="font-medium text-gray-900 leading-tight mb-3 group-hover:text-brand transition-colors text-sm text-left">
+                                                    {combo.title}
+                                                </h3>
+                                            </Link>
 
                                             {/* Items List - No Bold */}
                                             <div className="mb-3">
@@ -197,13 +200,13 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                                                 </span>
                                             </div>
 
-                                            {/* Button - "Saber mais" */}
-                                            <button
-                                                onClick={() => handleWhatsAppClick(combo)}
-                                                className="mt-4 w-full bg-brand hover:bg-brand-dark text-white font-medium text-xs h-9 rounded-lg flex items-center justify-center gap-1.5 transition-all"
+                                            {/* Link - "Saber mais" */}
+                                            <Link
+                                                href={`/combo/${combo.id}`}
+                                                className="mt-4 w-full bg-brand hover:bg-brand-dark text-white font-medium text-xs h-9 rounded-lg flex items-center justify-center gap-1.5 transition-all text-center leading-[2.25rem]"
                                             >
-                                                <span>Saber mais</span>
-                                            </button>
+                                                Saber mais
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>
