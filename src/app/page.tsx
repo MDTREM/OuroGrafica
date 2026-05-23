@@ -15,6 +15,7 @@ import { mapProduct } from "@/lib/product-mapper";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { Metadata } from "next";
 import { ViralSection } from "@/components/viral/ViralSection";
+import { CombosSection } from "@/components/shop/CombosSection";
 export const metadata: Metadata = {
   title: "Vink | Especialistas em Branding e Embalagens",
   description: "A Vink é sua parceira estratégica para branding, embalagens e impressos de alta qualidade. Soluções completas para potencializar a sua marca.",
@@ -147,6 +148,8 @@ export default async function Home() {
         return <div key={section.id} className="mt-8"><StackedBanners banners={section.banners || []} /></div>;
       case 'blog-preview':
         return <div key={section.id} className="mt-8"><BlogPreviewSection title={section.title} postIds={section.settings?.postIds} /></div>;
+      case 'combos':
+        return <div key={section.id} className="mt-8"><CombosSection title={section.title || section.name} combos={section.combos || []} /></div>;
 
       default:
         return null;

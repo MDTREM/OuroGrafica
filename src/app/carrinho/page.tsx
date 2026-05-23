@@ -547,6 +547,13 @@ export default function CartPage() {
                                 </button>
                             </Link>
 
+                            <div className="bg-brand/5 border border-brand/20 rounded-xl p-3 flex items-start gap-2.5 mt-4">
+                                <Info size={16} className="text-brand shrink-0 mt-0.5" />
+                                <p className="text-[10px] font-semibold text-gray-700 leading-snug">
+                                    O prazo de produção começa a contar somente após aprovação da arte e confirmação do pagamento.
+                                </p>
+                            </div>
+
                             <p className="text-[10px] text-center text-gray-400 mt-4 leading-tight">
                                 Ao finalizar, você será redirecionado para o checkout seguro.
                             </p>

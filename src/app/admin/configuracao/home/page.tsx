@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { getHomepageConfig, saveHomepageConfig, uploadImage, HomepageConfig, Banner, Section, SectionType } from '@/actions/homepage-actions';
+import { getHomepageConfig, saveHomepageConfig, uploadImage, HomepageConfig, Banner, Section, SectionType, ComboItem } from '@/actions/homepage-actions';
 import { getAllPostsAdmin, BlogPost } from '@/actions/blog-actions';
 import { Trash2, Plus, ArrowUp, ArrowDown, Eye, EyeOff, Layout, Edit, X, Calendar } from 'lucide-react';
 import { useAdmin } from '@/contexts/AdminContext';
@@ -90,6 +90,46 @@ export default function AdminHomeConfigPage() {
 
     function addSection(type: SectionType, name: string, title?: string, filter?: string) {
         if (!config) return;
+
+        const defaultCombos = type === 'combos' ? [
+            {
+                id: 'delivery-inicial-' + Date.now(),
+                title: 'Delivery Inicial',
+                subtitle: 'O essencial para começar com o pé direito',
+                price: 199.90,
+                originalPrice: 269.90,
+                image: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop',
+                items: [
+                    '1000 Cartões de Visita',
+                    '500 Panfletos 10x14cm',
+                    '100 Adesivos Redondos'
+                ],
+                variations: [
+                    { name: 'Papel', options: ['Reciclato 240g', 'Couchê 300g'] },
+                    { name: 'Acabamento', options: ['Corte Reto', 'Bordas Arredondadas'] }
+                ]
+            },
+            {
+                id: 'combo-perfeito-' + Date.now(),
+                title: 'Combo Perfeito',
+                subtitle: 'A identidade completa para o seu negócio bombar',
+                price: 399.90,
+                originalPrice: 549.90,
+                image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=2070&auto=format&fit=crop',
+                items: [
+                    '1000 Cartões de Visita',
+                    '1000 Panfletos 10x14cm',
+                    '500 Adesivos Redondos',
+                    '1 Banner 90x120cm',
+                    'Logotipo Vetorial'
+                ],
+                variations: [
+                    { name: 'Papel', options: ['Reciclato 240g', 'Couchê 300g'] },
+                    { name: 'Enobrecimento', options: ['Verniz Local', 'Brilho Total', 'Laminação Fosca'] }
+                ]
+            }
+        ] : undefined;
+
         const newSection: Section = {
             id: `${type}-${Date.now()}`,
             type,
@@ -97,7 +137,8 @@ export default function AdminHomeConfigPage() {
             title,
             enabled: true,
             settings: filter ? { filter: filter as any } : undefined,
-            banners: type === 'banner-carousel' ? [] : undefined
+            banners: type === 'banner-carousel' ? [] : undefined,
+            combos: defaultCombos
         };
         setConfig({
             ...config,
@@ -197,6 +238,78 @@ export default function AdminHomeConfigPage() {
         setEditingBanner(null);
     }
 
+    // --- Combos Specifics ---
+    const [editingCombo, setEditingCombo] = useState<any | null>(null);
+    const [newComboItemText, setNewComboItemText] = useState("");
+    const [uploadingComboImage, setUploadingComboImage] = useState(false);
+    const [newVarName, setNewVarName] = useState("");
+    const [newVarOptions, setNewVarOptions] = useState("");
+
+    function addComboToSection() {
+        if (!editingSection) return;
+        setEditingCombo({
+            id: 'combo-' + Date.now(),
+            title: '',
+            subtitle: '',
+            price: 0,
+            originalPrice: undefined,
+            image: '',
+            items: [],
+            variations: []
+        });
+        setNewVarName("");
+        setNewVarOptions("");
+    }
+
+    function removeComboFromSection(comboId: string) {
+        if (!editingSection || !editingSection.combos) return;
+        setEditingSection({
+            ...editingSection,
+            combos: editingSection.combos.filter(c => c.id !== comboId)
+        });
+    }
+
+    async function handleComboImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploadingComboImage(true);
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const path = await uploadImage(formData);
+        setUploadingComboImage(false);
+
+        if (path) {
+            setEditingCombo((prev: any) => prev ? { ...prev, image: path } : null);
+        } else {
+            alert('Erro ao fazer upload da imagem.');
+        }
+    }
+
+    function saveCombo() {
+        if (!editingSection || !editingCombo || !editingCombo.title) return;
+
+        const combos = editingSection.combos || [];
+        const existingIndex = combos.findIndex(c => c.id === editingCombo.id);
+
+        let newCombos;
+        if (existingIndex >= 0) {
+            newCombos = [...combos];
+            newCombos[existingIndex] = editingCombo;
+        } else {
+            const newCombo = { ...editingCombo };
+            if (!newCombo.id) newCombo.id = 'combo-' + Date.now();
+            newCombos = [...combos, newCombo];
+        }
+
+        setEditingSection({
+            ...editingSection,
+            combos: newCombos
+        });
+        setEditingCombo(null);
+    }
+
     // --- Benefit Specifics ---
     function addBenefitToSection() {
         if (!editingSection) return;
@@ -275,6 +388,7 @@ export default function AdminHomeConfigPage() {
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('stacked-banners', 'Banners Promocionais')}>+ Banners Promocionais</button>
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('info-banner', 'Faixa Informativa')}>+ Faixa Informativa</button>
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('categories', 'Categorias')}>+ Categorias</button>
+                                <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('combos', 'Seção de Combos', 'Combos Especiais')}>+ Seção de Combos</button>
 
                                 <button className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm" onClick={() => addSection('blog-preview', 'Preview do Blog', 'Dicas & Novidades')}>+ Preview do Blog</button>
                             </div>
@@ -633,6 +747,52 @@ export default function AdminHomeConfigPage() {
                             </div>
                         )}
 
+                        {/* Combos Management */}
+                        {editingSection.type === 'combos' && (
+                            <div className="space-y-4 border-t border-gray-100 pt-4">
+                                <div className="flex justify-between items-center">
+                                    <h4 className="font-semibold">Combos desta seção</h4>
+                                    <Button size="sm" onClick={addComboToSection}>
+                                        <Plus size={16} className="mr-1" /> Adicionar Combo
+                                    </Button>
+                                </div>
+
+                                <div className="space-y-2">
+                                    {editingSection.combos?.map(combo => (
+                                        <div key={combo.id} className="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-12 h-12 bg-white rounded border border-gray-200 overflow-hidden flex-shrink-0 relative">
+                                                    {combo.image ? (
+                                                        <img src={combo.image} className="w-full h-full object-cover" alt={combo.title} />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-xs text-gray-300 font-bold bg-gray-50">V</div>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold text-sm text-gray-800">{combo.title}</p>
+                                                    {combo.subtitle && <p className="text-xs text-gray-400 italic leading-none">{combo.subtitle}</p>}
+                                                    <p className="text-xs text-brand font-semibold mt-1">R$ {combo.price.toFixed(2).replace('.', ',')} • {combo.items?.length || 0} itens</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-1">
+                                                <Button size="sm" variant="ghost" onClick={() => setEditingCombo(combo)}>
+                                                    <Edit size={14} />
+                                                </Button>
+                                                <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-600" onClick={() => removeComboFromSection(combo.id)}>
+                                                    <Trash2 size={14} />
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {(!editingSection.combos || editingSection.combos.length === 0) && (
+                                        <div className="text-center py-4 text-gray-500 text-sm">
+                                            Nenhum combo adicionado.
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                         <div className="flex justify-end pt-4 border-t border-gray-100">
                             <Button onClick={handleEditSave}>Concluir Edição</Button>
                         </div>
@@ -786,6 +946,221 @@ export default function AdminHomeConfigPage() {
                             <div className="flex justify-end gap-2 mt-4">
                                 <Button variant="outline" onClick={() => setEditingBanner(null)}>Cancelar</Button>
                                 <Button onClick={saveBanner} disabled={!editingBanner.imageUrl}>Salvar Banner</Button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
+            {/* Combo Add/Edit Modal (Nested) */}
+            {
+                editingCombo && (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+                        <div className="bg-white rounded-xl p-6 w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
+                            <h3 className="text-xl font-semibold">Editar Combo</h3>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Nome do Combo</label>
+                                <Input
+                                    value={editingCombo.title}
+                                    onChange={e => setEditingCombo({ ...editingCombo, title: e.target.value })}
+                                    placeholder="Ex: Delivery Inicial"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Subtítulo / Descrição Curta</label>
+                                <Input
+                                    value={editingCombo.subtitle || ''}
+                                    onChange={e => setEditingCombo({ ...editingCombo, subtitle: e.target.value })}
+                                    placeholder="Ex: O essencial para começar com o pé direito"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Valor do Combo (Por) (R$)</label>
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    value={editingCombo.price}
+                                    onChange={e => setEditingCombo({ ...editingCombo, price: parseFloat(e.target.value) || 0 })}
+                                    placeholder="Ex: 199.90"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Valor Riscado (De) (R$ - Opcional)</label>
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    value={editingCombo.originalPrice || ''}
+                                    onChange={e => setEditingCombo({ ...editingCombo, originalPrice: parseFloat(e.target.value) || undefined })}
+                                    placeholder="Ex: 269.90"
+                                />
+                            </div>
+
+                            <div className="space-y-2 pt-2 border-t border-gray-100">
+                                <label className="text-sm font-medium">Imagem do Combo</label>
+                                <Input type="file" accept="image/*" onChange={handleComboImageUpload} disabled={uploadingComboImage} />
+                                {uploadingComboImage && <p className="text-xs text-brand">Carregando imagem...</p>}
+
+                                {editingCombo.image && (
+                                    <div className="mt-2 rounded-xl overflow-hidden border border-gray-200 bg-gray-50 h-32 flex items-center justify-center relative">
+                                        <img src={editingCombo.image} alt="Preview Combo" className="w-full h-full object-contain" />
+                                    </div>
+                                )}
+
+                                <div className="mt-1">
+                                    <p className="text-xs text-gray-400 mb-1">Ou URL externa:</p>
+                                    <Input
+                                        value={editingCombo.image || ''}
+                                        onChange={e => setEditingCombo({ ...editingCombo, image: e.target.value })}
+                                        placeholder="https://..."
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2 pt-2 border-t border-gray-100">
+                                <label className="text-sm font-medium block">Itens do Combo</label>
+                                <div className="flex gap-2">
+                                    <Input
+                                        value={newComboItemText}
+                                        onChange={e => setNewComboItemText(e.target.value)}
+                                        placeholder="Ex: 1000 Cartões de Visita"
+                                        onKeyDown={e => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                if (newComboItemText.trim()) {
+                                                    setEditingCombo({
+                                                        ...editingCombo,
+                                                        items: [...(editingCombo.items || []), newComboItemText.trim()]
+                                                    });
+                                                    setNewComboItemText("");
+                                                }
+                                            }
+                                        }}
+                                    />
+                                    <Button
+                                        type="button"
+                                        onClick={() => {
+                                            if (newComboItemText.trim()) {
+                                                setEditingCombo({
+                                                    ...editingCombo,
+                                                    items: [...(editingCombo.items || []), newComboItemText.trim()]
+                                                });
+                                                setNewComboItemText("");
+                                            }
+                                        }}
+                                    >
+                                        +
+                                    </Button>
+                                </div>
+                                
+                                <div className="space-y-1 max-h-40 overflow-y-auto pt-2">
+                                    {editingCombo.items?.map((item: string, idx: number) => (
+                                        <div key={idx} className="flex justify-between items-center bg-gray-50 px-3 py-1.5 rounded border border-gray-200 text-xs">
+                                            <span className="text-gray-700 font-medium truncate flex-1 pr-2">{item}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => setEditingCombo({
+                                                    ...editingCombo,
+                                                    items: editingCombo.items.filter((_: any, i: number) => i !== idx)
+                                                })}
+                                                className="text-red-500 hover:text-red-600 font-semibold shrink-0"
+                                            >
+                                                Remover
+                                            </button>
+                                        </div>
+                                    ))}
+                                    {(!editingCombo.items || editingCombo.items.length === 0) && (
+                                        <p className="text-xs text-gray-400 italic text-center py-2">Sem itens adicionados.</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="space-y-2 pt-2 border-t border-gray-100">
+                                <label className="text-sm font-medium block">Variações do Combo (ex: Papel, Acabamento)</label>
+                                
+                                <div className="space-y-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] font-semibold text-gray-400 uppercase">Nome da Variação</label>
+                                        <Input
+                                            value={newVarName}
+                                            onChange={e => setNewVarName(e.target.value)}
+                                            placeholder="Ex: Papel"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] font-semibold text-gray-400 uppercase">Opções (Separadas por vírgula)</label>
+                                        <Input
+                                            value={newVarOptions}
+                                            onChange={e => setNewVarOptions(e.target.value)}
+                                            placeholder="Ex: Couchê 300g, Reciclato 240g"
+                                        />
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        className="w-full mt-1 bg-brand text-white hover:bg-brand-dark"
+                                        onClick={() => {
+                                            if (newVarName.trim() && newVarOptions.trim()) {
+                                                const optionsArray = newVarOptions
+                                                    .split(",")
+                                                    .map(opt => opt.trim())
+                                                    .filter(Boolean);
+                                                
+                                                if (optionsArray.length > 0) {
+                                                    setEditingCombo({
+                                                        ...editingCombo,
+                                                        variations: [
+                                                            ...(editingCombo.variations || []),
+                                                            { name: newVarName.trim(), options: optionsArray }
+                                                        ]
+                                                    });
+                                                    setNewVarName("");
+                                                    setNewVarOptions("");
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        + Adicionar Variação
+                                    </Button>
+                                </div>
+
+                                <div className="space-y-2 max-h-48 overflow-y-auto pt-2">
+                                    {editingCombo.variations?.map((v: any, idx: number) => (
+                                        <div key={idx} className="bg-white p-2.5 rounded border border-gray-200 text-xs space-y-1.5 shadow-sm">
+                                            <div className="flex justify-between items-center">
+                                                <span className="font-semibold text-gray-800">{v.name}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setEditingCombo({
+                                                        ...editingCombo,
+                                                        variations: editingCombo.variations.filter((_: any, i: number) => i !== idx)
+                                                    })}
+                                                    className="text-red-500 hover:text-red-600 font-semibold text-[11px]"
+                                                >
+                                                    Remover
+                                                </button>
+                                            </div>
+                                            <div className="flex flex-wrap gap-1">
+                                                {v.options.map((opt: string, optIdx: number) => (
+                                                    <span key={optIdx} className="bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded text-[10px] font-medium border border-gray-200">
+                                                        {opt}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {(!editingCombo.variations || editingCombo.variations.length === 0) && (
+                                        <p className="text-xs text-gray-400 italic text-center py-2">Sem variações adicionadas.</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
+                                <Button variant="outline" onClick={() => setEditingCombo(null)}>Cancelar</Button>
+                                <Button onClick={saveCombo} disabled={!editingCombo.title}>Salvar Combo</Button>
                             </div>
                         </div>
                     </div>

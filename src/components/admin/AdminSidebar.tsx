@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, Settings, LogOut, Image, FileText, ShoppingBag, FolderOpen, Tag, Home } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Settings, LogOut, Image, FileText, ShoppingBag, FolderOpen, Tag, Home, Layers } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export function AdminSidebar() {
@@ -12,6 +12,7 @@ export function AdminSidebar() {
     const menuItems = [
         { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
         { label: "Produtos", href: "/admin/produtos", icon: ShoppingBag },
+        { label: "Combos", href: "/admin/combos", icon: Layers },
         { label: "Categorias", href: "/admin/categorias", icon: FolderOpen },
         { label: "Pedidos", href: "/admin/pedidos", icon: Package },
         { label: "Cupons", href: "/admin/cupons", icon: Tag },

@@ -24,7 +24,7 @@ export interface Product {
         finalSize?: string; // Tamanho Final
         productionTime?: string; // Prazo de Produção
         // Others can be added dynamically or map
-        [key: string]: string | undefined;
+        [key: string]: any;
     };
 
     // Variations/Options
@@ -74,6 +74,11 @@ export interface Product {
         menuItemsLabel?: string;
         menuItemsPlaceholder?: string;
         menuItemsRequired?: boolean;
+        fields?: {
+            label: string;
+            placeholder?: string;
+            required?: boolean;
+        }[];
     };
 
     // Design Option (Upload/Hire)

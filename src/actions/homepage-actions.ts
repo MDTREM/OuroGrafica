@@ -14,7 +14,21 @@ export interface Banner {
     mobileImageUrl?: string;
 }
 
-export type SectionType = 'banner-carousel' | 'info-banner' | 'categories' | 'product-row' | 'stacked-banners' | 'blog-preview' | 'viral-row';
+export interface ComboItem {
+    id: string;
+    title: string;
+    subtitle?: string;
+    image?: string;
+    price: number;
+    originalPrice?: number;
+    items: string[];
+    variations?: {
+        name: string;
+        options: string[];
+    }[];
+}
+
+export type SectionType = 'banner-carousel' | 'info-banner' | 'categories' | 'product-row' | 'stacked-banners' | 'blog-preview' | 'viral-row' | 'combos';
 
 export interface Section {
     id: string;
@@ -38,6 +52,7 @@ export interface Section {
         link?: string;
         linkText?: string;
     }[];
+    combos?: ComboItem[];
 }
 
 export interface HomepageConfig {
@@ -63,7 +78,59 @@ export async function getHomepageConfig(): Promise<HomepageConfig> {
             };
         }
 
-        return data.value as HomepageConfig;
+        const config = data.value as HomepageConfig;
+        
+        // Auto-migrate: check if combos section exists, if not, append it!
+        const hasCombos = config.sections.some(s => s.type === 'combos');
+        if (!hasCombos) {
+            config.sections.push({
+                id: 'combos-default',
+                type: 'combos',
+                name: 'Combos Especiais',
+                title: 'Combos Especiais',
+                enabled: true,
+                combos: [
+                    {
+                        id: 'delivery-inicial-default',
+                        title: 'Delivery Inicial',
+                        subtitle: 'O essencial para começar com o pé direito',
+                        price: 199.90,
+                        originalPrice: 269.90,
+                        image: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop',
+                        items: [
+                            '1000 Cartões de Visita',
+                            '500 Panfletos 10x14cm',
+                            '100 Adesivos Redondos'
+                        ],
+                        variations: [
+                            { name: 'Papel', options: ['Reciclato 240g', 'Couchê 300g'] },
+                            { name: 'Acabamento', options: ['Corte Reto', 'Bordas Arredondadas'] }
+                        ]
+                    },
+                    {
+                        id: 'combo-perfeito-default',
+                        title: 'Combo Perfeito',
+                        subtitle: 'A identidade completa para o seu negócio bombar',
+                        price: 399.90,
+                        originalPrice: 549.90,
+                        image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=2070&auto=format&fit=crop',
+                        items: [
+                            '1000 Cartões de Visita',
+                            '1000 Panfletos 10x14cm',
+                            '500 Adesivos Redondos',
+                            '1 Banner 90x120cm',
+                            'Logotipo Vetorial'
+                        ],
+                        variations: [
+                            { name: 'Papel', options: ['Reciclato 240g', 'Couchê 300g'] },
+                            { name: 'Enobrecimento', options: ['Verniz Local', 'Brilho Total', 'Laminação Fosca'] }
+                        ]
+                    }
+                ]
+            });
+        }
+
+        return config;
     } catch (error) {
         console.error('Error reading homepage config:', error);
         return { sections: [] };

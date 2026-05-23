@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ShoppingBag, FolderOpen, Package, Image, Tag } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, FolderOpen, Package, Image, Tag, Layers } from "lucide-react";
 
 export function AdminBottomNav() {
     const pathname = usePathname();
@@ -10,6 +10,7 @@ export function AdminBottomNav() {
     const menuItems = [
         { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
         { label: "Produtos", href: "/admin/produtos", icon: ShoppingBag },
+        { label: "Combos", href: "/admin/combos", icon: Layers },
         { label: "Pedidos", href: "/admin/pedidos", icon: Package },
         { label: "Categorias", href: "/admin/categorias", icon: FolderOpen },
         { label: "Cupons", href: "/admin/cupons", icon: Tag },

@@ -38,8 +38,8 @@ export function ViralSection({ title, preloadedProducts, productViews }: ViralSe
                         </p>
                     </div>
 
-                    {/* Desktop Navigation Buttons */}
-                    <div className="hidden md:flex items-center gap-2">
+                    {/* Carousel Navigation Buttons */}
+                    <div className="flex items-center gap-2">
                         <button 
                             onClick={() => scrollBy(-300)}
                             className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-gray-400 hover:border-white hover:text-white transition-colors"

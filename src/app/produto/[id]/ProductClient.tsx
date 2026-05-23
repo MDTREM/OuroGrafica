@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Check, UploadCloud, Truck, Download, Plus, Trash2 } from "lucide-react";
@@ -31,6 +31,22 @@ export default function ProductClient({ product }: ProductClientProps) {
     const [designOption, setDesignOption] = useState<"upload" | "hire">("upload");
     const [showFullDesc, setShowFullDesc] = useState(false);
 
+    // Color Selector State
+    const [selectedColor, setSelectedColor] = useState<string>("Branco");
+    const [customHex, setCustomHex] = useState<string>("#7C3AED");
+    const [showAllColors, setShowAllColors] = useState<boolean>(false);
+    const colorPickerRef = useRef<HTMLInputElement>(null);
+
+    const handleColorSelect = (colorName: string, hexCode: string) => {
+        setSelectedColor(colorName);
+        if (colorName === "Personalizada") {
+            setCustomHex(hexCode);
+            setSelectedVariations(prev => ({ ...prev, "Cor Base": `Personalizado (${hexCode})` }));
+        } else {
+            setSelectedVariations(prev => ({ ...prev, "Cor Base": colorName }));
+        }
+    };
+
     // Alert Modal State
     const [showUploadAlert, setShowUploadAlert] = useState(false);
     const [showTextAlert, setShowTextAlert] = useState(false);
@@ -51,6 +67,7 @@ export default function ProductClient({ product }: ProductClientProps) {
     // Custom Text State
     const [customTextValue, setCustomTextValue] = useState("");
     const [customTextSecondaryValue, setCustomTextSecondaryValue] = useState("");
+    const [dynamicTextValues, setDynamicTextValues] = useState<{ [key: number]: string }>({});
 
     const hasTemplates = product.variations?.some(v => 
         v.name.toLowerCase().includes("modelo") || 
@@ -84,15 +101,17 @@ export default function ProductClient({ product }: ProductClientProps) {
             if (product.extras?.[0]) setSelectedExtra(product.extras[0]);
 
             // Initialize dynamic variations
+            const initialVariations: { [key: string]: string } = {
+                "Cor Base": "Branco"
+            };
             if (product.variations) {
-                const initialVariations: { [key: string]: string } = {};
                 product.variations.forEach(v => {
                     if (v.options.length > 0) {
                         initialVariations[v.name] = v.options[0];
                     }
                 });
-                setSelectedVariations(initialVariations);
             }
+            setSelectedVariations(initialVariations);
         }
     }, [product]);
 
@@ -194,25 +213,48 @@ export default function ProductClient({ product }: ProductClientProps) {
             return;
         }
 
-        // Custom validations
         if (designOption === "upload" && !uploadedFile && product.hasDesignOption !== false && !isCustomArtworkSelected) {
             setShowUploadAlert(true);
             return;
         }
 
-        if (product.customText?.menuItemsEnabled && product.customText.menuItemsRequired && menuItems.length === 0) {
-            setShowTextAlert(true);
-            return;
-        }
+        // Dynamic fields validation & serialization
+        let compiledCustomText = customTextValue;
+        let compiledCustomTextLabel = product.customText?.menuItemsEnabled 
+            ? (product.customText?.menuItemsLabel || "Itens do Cardápio") 
+            : product.customText?.label;
 
-        if (product.customText?.enabled && product.customText.required && !customTextValue) {
-            setShowTextAlert(true);
-            return;
-        }
+        if (product.customText?.fields && product.customText.fields.length > 0) {
+            for (let fIdx = 0; fIdx < product.customText.fields.length; fIdx++) {
+                const field = product.customText.fields[fIdx];
+                if (field.required && !dynamicTextValues[fIdx]?.trim()) {
+                    setShowTextAlert(true);
+                    return;
+                }
+            }
+            compiledCustomText = product.customText.fields
+                .map((field, fIdx) => {
+                    const val = dynamicTextValues[fIdx]?.trim() || "Não preenchido";
+                    return `${field.label}: ${val}`;
+                })
+                .join("\n");
+            compiledCustomTextLabel = "Especificações de Personalização";
+        } else {
+            // Legacy validations
+            if (product.customText?.menuItemsEnabled && product.customText.menuItemsRequired && menuItems.length === 0) {
+                setShowTextAlert(true);
+                return;
+            }
 
-        if (product.customText?.secondaryEnabled && product.customText.secondaryRequired && !customTextSecondaryValue) {
-            setShowTextSecondaryAlert(true);
-            return;
+            if (product.customText?.enabled && product.customText.required && !customTextValue) {
+                setShowTextAlert(true);
+                return;
+            }
+
+            if (product.customText?.secondaryEnabled && product.customText.secondaryRequired && !customTextSecondaryValue) {
+                setShowTextSecondaryAlert(true);
+                return;
+            }
         }
 
         addToCart({
@@ -235,9 +277,9 @@ export default function ProductClient({ product }: ProductClientProps) {
                 fileName: uploadedFile?.name,
                 customArtworkUrl: artworkFile?.url || undefined,
                 customArtworkName: artworkFile?.name || undefined,
-                customText: customTextValue || undefined,
+                customText: compiledCustomText || undefined,
                 customTextSecondary: customTextSecondaryValue || undefined,
-                customTextLabel: product.customText?.menuItemsEnabled ? (product.customText?.menuItemsLabel || "Itens do Cardápio") : product.customText?.label,
+                customTextLabel: compiledCustomTextLabel,
                 customTextSecondaryLabel: product.customText?.secondaryLabel
             }
         });
@@ -667,6 +709,159 @@ export default function ProductClient({ product }: ProductClientProps) {
                                 </section>
                             )}
 
+                            {/* Cor Base */}
+                            {product.technicalSpecs?.enableColorSelector !== false && (
+                                <section className="space-y-8 animate-in fade-in duration-500">
+                                    <div className="space-y-1">
+                                        <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Cor Base</h3>
+                                        <p className="text-xs text-gray-500">Selecione a cor principal do seu material</p>
+                                    </div>
+                                    
+                                    <div className="flex flex-wrap items-center gap-3">
+                                        {!showAllColors ? (
+                                            <>
+                                                {/* Render 5 Base Colors */}
+                                                {[
+                                                    { name: "Branco", hex: "#FFFFFF" },
+                                                    { name: "Bege / Kraft", hex: "#C2A37A" },
+                                                    { name: "Preto", hex: "#111827" },
+                                                    { name: "Azul Claro", hex: "#BAE6FD" },
+                                                    { name: "Cinza", hex: "#6B7280" }
+                                                ].map((color) => {
+                                                    const isSelected = selectedColor === color.name;
+                                                    return (
+                                                        <button
+                                                            key={color.name}
+                                                            type="button"
+                                                            onClick={() => handleColorSelect(color.name, color.hex)}
+                                                            className={cn(
+                                                                "w-11 h-11 rounded-full border border-gray-200 relative flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105 duration-200",
+                                                                isSelected ? "ring-2 ring-brand ring-offset-2 scale-105 border-white border-2" : ""
+                                                            )}
+                                                            style={{ backgroundColor: color.hex }}
+                                                            title={color.name}
+                                                            aria-label={`Selecionar cor ${color.name}`}
+                                                        >
+                                                            {isSelected && (
+                                                                <Check 
+                                                                    size={16} 
+                                                                    strokeWidth={3} 
+                                                                    className={color.name === "Branco" ? "text-gray-900" : "text-white"} 
+                                                                />
+                                                            )}
+                                                        </button>
+                                                    );
+                                                })}
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowAllColors(true)}
+                                                    className="w-11 h-11 rounded-full border border-dashed border-gray-300 bg-gray-50/50 hover:bg-gray-50 hover:border-gray-400 relative flex items-center justify-center transition-all cursor-pointer hover:scale-105 duration-200"
+                                                    title="Ver outras opções de cores"
+                                                    aria-label="Ver outras opções de cores"
+                                                >
+                                                    <Plus size={16} className="text-gray-500" />
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {/* Render All 13 Colors */}
+                                                {[
+                                                    { name: "Branco", hex: "#FFFFFF" },
+                                                    { name: "Bege / Kraft", hex: "#C2A37A" },
+                                                    { name: "Preto", hex: "#111827" },
+                                                    { name: "Azul Claro", hex: "#BAE6FD" },
+                                                    { name: "Cinza", hex: "#6B7280" },
+                                                    { name: "Azul Escuro", hex: "#1E3A8A" },
+                                                    { name: "Vermelho", hex: "#DC2626" },
+                                                    { name: "Verde", hex: "#15803D" },
+                                                    { name: "Amarelo", hex: "#EAB308" },
+                                                    { name: "Rosa", hex: "#EC4899" },
+                                                    { name: "Laranja", hex: "#F97316" },
+                                                    { name: "Roxo", hex: "#8B5CF6" },
+                                                    { name: "Personalizada", hex: "", isRainbow: true }
+                                                ].map((color) => {
+                                                    const isSelected = selectedColor === color.name;
+                                                    return (
+                                                        <button
+                                                            key={color.name}
+                                                            type="button"
+                                                            onClick={() => handleColorSelect(color.name, color.isRainbow ? customHex : color.hex)}
+                                                            className={cn(
+                                                                "w-10 h-10 rounded-full border border-gray-200 relative flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105 duration-200",
+                                                                isSelected ? "ring-2 ring-brand ring-offset-2 scale-105 border-white border-2" : ""
+                                                            )}
+                                                            style={{ 
+                                                                background: color.isRainbow 
+                                                                    ? "conic-gradient(from 180deg, red, yellow, green, cyan, blue, magenta, red)" 
+                                                                    : color.hex 
+                                                            }}
+                                                            title={color.name}
+                                                            aria-label={`Selecionar cor ${color.name}`}
+                                                        >
+                                                            {isSelected && (
+                                                                <Check 
+                                                                    size={14} 
+                                                                    strokeWidth={3} 
+                                                                    className="text-white drop-shadow" 
+                                                                />
+                                                            )}
+                                                        </button>
+                                                    );
+                                                })}
+
+                                                {/* Collapse Trigger Button */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowAllColors(false)}
+                                                    className="w-10 h-10 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center text-gray-500 hover:text-brand hover:border-brand/40 transition-all cursor-pointer hover:scale-105 duration-200"
+                                                    title="Recolher opções adicionais"
+                                                    aria-label="Recolher opções adicionais"
+                                                >
+                                                    <span className="text-xs font-bold font-sans">✕</span>
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+
+                                    {/* Redesigned Premium Custom Color Configurator */}
+                                    {selectedColor === "Personalizada" && (
+                                        <div className="flex items-center gap-3.5 mt-4 p-3 bg-gray-50/60 border border-gray-100 rounded-xl max-w-[240px] animate-in fade-in duration-300 shadow-inner">
+                                            <div 
+                                                className="w-10 h-10 rounded-lg border border-gray-200 shadow-sm cursor-pointer shrink-0 transition-transform hover:scale-105"
+                                                style={{ backgroundColor: customHex }}
+                                                onClick={() => colorPickerRef.current?.click()}
+                                                title="Clique para escolher uma cor personalizada"
+                                            />
+                                            <div className="flex-1 min-w-0">
+                                                <span className="text-[9px] uppercase font-bold tracking-wider text-gray-400 block mb-0.5 select-none">Cor Personalizada</span>
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="text-gray-400 font-mono text-sm font-semibold select-none">#</span>
+                                                    <input 
+                                                        type="text" 
+                                                        maxLength={6}
+                                                        className="block w-full bg-transparent text-sm font-bold font-mono text-gray-800 focus:outline-none uppercase"
+                                                        value={customHex.replace('#', '')}
+                                                        onChange={(e) => {
+                                                            let val = e.target.value;
+                                                            handleColorSelect("Personalizada", `#${val}`);
+                                                        }}
+                                                        placeholder="7C3AED"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <input 
+                                                type="color" 
+                                                ref={colorPickerRef}
+                                                className="sr-only" 
+                                                value={customHex} 
+                                                onChange={(e) => handleColorSelect("Personalizada", e.target.value)}
+                                            />
+                                        </div>
+                                    )}
+                                </section>
+                            )}
+
                             {/* Dynamic Variations (Excludes Templates already shown above) */}
                             {product.variations && product.variations
                                 .filter(v => !v.name.toLowerCase().includes("modelo") && !v.name.toLowerCase().includes("template"))
@@ -975,35 +1170,55 @@ export default function ProductClient({ product }: ProductClientProps) {
                                             )}
                                         </div>
                                     )}
-                                    {product.customText?.enabled && !product.customText?.menuItemsEnabled && (
-                                        <div className="space-y-2 pt-3 border-t border-gray-100/50 animate-in fade-in duration-300">
-                                            <label htmlFor="custom-text-input" className="block text-sm font-semibold text-gray-700 mb-1.5">
-                                                {product.customText.label} {product.customText.required && <span className="text-red-500">*</span>}
-                                            </label>
-                                            <textarea
-                                                id="custom-text-input"
-                                                rows={4}
-                                                className="w-full rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand shadow-xs placeholder:text-gray-400 p-3"
-                                                placeholder={product.customText.placeholder || "Digite as informações de personalização aqui..."}
-                                                value={customTextValue}
-                                                onChange={(e) => setCustomTextValue(e.target.value)}
-                                            />
-                                        </div>
-                                    )}
-                                    {product.customText?.secondaryEnabled && (
-                                        <div className="space-y-2 pt-3 border-t border-gray-100/50 animate-in fade-in duration-300">
-                                            <label htmlFor="custom-text-secondary-input" className="block text-sm font-semibold text-gray-700 mb-1.5">
-                                                {product.customText.secondaryLabel} {product.customText.secondaryRequired && <span className="text-red-500">*</span>}
-                                            </label>
-                                            <textarea
-                                                id="custom-text-secondary-input"
-                                                rows={4}
-                                                className="w-full rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand shadow-xs placeholder:text-gray-400 p-3"
-                                                placeholder={product.customText.secondaryPlaceholder || "Digite as informações secundárias aqui..."}
-                                                value={customTextSecondaryValue}
-                                                onChange={(e) => setCustomTextSecondaryValue(e.target.value)}
-                                            />
-                                        </div>
+                                    {product.customText?.fields && product.customText.fields.length > 0 ? (
+                                        product.customText.fields.map((field, fIdx) => (
+                                            <div key={fIdx} className="space-y-2 pt-3 border-t border-gray-100/50 animate-in fade-in duration-300">
+                                                <label htmlFor={`dynamic-field-${fIdx}`} className="block text-sm font-semibold text-gray-700 mb-1.5">
+                                                    {field.label} {field.required && <span className="text-red-500">*</span>}
+                                                </label>
+                                                <textarea
+                                                    id={`dynamic-field-${fIdx}`}
+                                                    rows={3}
+                                                    className="w-full rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand shadow-xs placeholder:text-gray-400 p-3 bg-white"
+                                                    placeholder={field.placeholder || "Digite as informações aqui..."}
+                                                    value={dynamicTextValues[fIdx] || ""}
+                                                    onChange={(e) => setDynamicTextValues(prev => ({ ...prev, [fIdx]: e.target.value }))}
+                                                />
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <>
+                                            {product.customText?.enabled && !product.customText?.menuItemsEnabled && (
+                                                <div className="space-y-2 pt-3 border-t border-gray-100/50 animate-in fade-in duration-300">
+                                                    <label htmlFor="custom-text-input" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                                                        {product.customText.label} {product.customText.required && <span className="text-red-500">*</span>}
+                                                    </label>
+                                                    <textarea
+                                                        id="custom-text-input"
+                                                        rows={4}
+                                                        className="w-full rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand shadow-xs placeholder:text-gray-400 p-3"
+                                                        placeholder={product.customText.placeholder || "Digite as informações de personalização aqui..."}
+                                                        value={customTextValue}
+                                                        onChange={(e) => setCustomTextValue(e.target.value)}
+                                                    />
+                                                </div>
+                                            )}
+                                            {product.customText?.secondaryEnabled && (
+                                                <div className="space-y-2 pt-3 border-t border-gray-100/50 animate-in fade-in duration-300">
+                                                    <label htmlFor="custom-text-secondary-input" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                                                        {product.customText.secondaryLabel} {product.customText.secondaryRequired && <span className="text-red-500">*</span>}
+                                                    </label>
+                                                    <textarea
+                                                        id="custom-text-secondary-input"
+                                                        rows={4}
+                                                        className="w-full rounded-xl border-gray-200 text-sm focus:border-brand focus:ring-brand shadow-xs placeholder:text-gray-400 p-3"
+                                                        placeholder={product.customText.secondaryPlaceholder || "Digite as informações secundárias aqui..."}
+                                                        value={customTextSecondaryValue}
+                                                        onChange={(e) => setCustomTextSecondaryValue(e.target.value)}
+                                                    />
+                                                </div>
+                                            )}
+                                        </>
                                     )}
                                 </div>
 

@@ -93,8 +93,8 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
                             Ver tudo <ArrowRight size={14} />
                         </Link>
                     )}
-                    {/* Desktop Navigation Buttons */}
-                    <div className="hidden md:flex items-center gap-2">
+                    {/* Carousel Navigation Buttons */}
+                    <div className="flex items-center gap-2">
                         <button 
                             onClick={() => scrollBy(-300)}
                             className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-black hover:text-black transition-colors"

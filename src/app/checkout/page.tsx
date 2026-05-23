@@ -604,9 +604,16 @@ export default function CheckoutPage() {
                                     </div>
                                 </div>
                                 
-                                <p className="text-xs text-gray-500 text-center mb-6 px-4">
-                                    Ao clicar em finalizar, você concorda com nossos termos de serviço e políticas de privacidade. Seu pedido será processado imediatamente.
-                                </p>
+                                 <div className="mb-6 p-4 bg-brand/5 border border-brand/20 rounded-xl flex items-center justify-center gap-2">
+                                     <AlertCircle size={16} className="text-brand flex-shrink-0" />
+                                     <span className="text-xs font-semibold text-gray-700">
+                                         O prazo começa a contar após aprovação da arte e confirmação do pagamento.
+                                     </span>
+                                 </div>
+
+                                 <p className="text-xs text-gray-500 text-center mb-6 px-4">
+                                     Ao clicar em finalizar, você concorda com nossos termos de serviço e políticas de privacidade. Seu pedido será processado imediatamente.
+                                 </p>
 
                                 {errorMessage && (
                                     <div className="mb-6 p-4 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100 flex items-start gap-2 animate-in slide-in-from-bottom-2">
@@ -656,6 +663,21 @@ export default function CheckoutPage() {
                                         <div className="flex-1 flex flex-col justify-center">
                                             <h3 className="font-semibold text-gray-900 text-sm line-clamp-2">{item.title}</h3>
                                             <p className="text-[11px] text-gray-500 mt-0.5">Qtd: {item.quantity}</p>
+                                            
+                                            {/* Details list */}
+                                            <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-1 text-[10px] text-gray-400">
+                                                {item.details?.format && <span>Formato: {item.details.format}</span>}
+                                                {item.details?.printing && <span>Impressão: {item.details.printing}</span>}
+                                                {item.details?.finish && <span>Acabamento: {item.details.finish}</span>}
+                                                {item.details?.extra && <span>Extra: {item.details.extra}</span>}
+                                                {item.details?.paper && <span>Material: {item.details.paper}</span>}
+                                                {item.details?.selectedVariations && Object.entries(item.details.selectedVariations)
+                                                    .filter(([k, v]) => v && v !== "-" && k !== "Papel" && k !== "Material")
+                                                    .map(([key, value]) => (
+                                                        <span key={key}>{key}: {String(value)}</span>
+                                                    ))}
+                                            </div>
+
                                             <div className="font-bold text-sm text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark mt-1">
                                                 R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}
                                             </div>
