@@ -300,7 +300,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                 <div className="w-full aspect-[16/10] bg-gray-50 flex items-center justify-center p-4">
                     <div className={cn(
                         "w-3/4 h-3/4 border-2 border-gray-400 flex items-center justify-center transition-all duration-500",
-                        isRounded ? "rounded-xl" : "rounded-xl"
+                        isRounded ? "rounded-xl" : "rounded-xs"
                     )}>
                         <div className={cn(
                             "w-1/2 h-1/2 border border-gray-300 transition-all duration-500",
@@ -1003,9 +1003,9 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                                 <span className={cn("text-[14px] font-semibold", isSelected ? "text-brand" : "text-gray-900")}>{qtyValue.toLocaleString()} unidades</span>
                                                                 {discount > 0 && <span className="bg-green-100 text-green-700 text-[9px] font-semibold px-2 py-0.5 rounded-full">-{discount}%</span>}
                                                             </div>
-                                                            <div className="flex items-center gap-2 text-[12px] font-medium text-gray-400">
-                                                                <span className={isSelected ? "text-brand" : "text-gray-900"}>{formatPrice(cardTotalPrice)}</span>
-                                                                <span>{formatPrice(cardUnitPrice).replace('R$', '').trim()} / un.</span>
+                                                            <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 mt-1 text-[12px] font-medium text-gray-400">
+                                                                <span className={isSelected ? "text-brand font-semibold" : "text-gray-900 font-semibold"}>{formatPrice(cardTotalPrice)}</span>
+                                                                <span className="text-[10px] text-gray-400">{formatPrice(cardUnitPrice)} / un.</span>
                                                             </div>
                                                         </div>
                                                         <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center", isSelected ? "border-brand bg-brand" : "border-gray-200")}>
