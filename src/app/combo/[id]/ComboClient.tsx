@@ -411,6 +411,28 @@ export default function ComboClient({ combo }: ComboClientProps) {
                                         </button>
                                     </div>
                                 </div>
+                                
+                                <div className="space-y-4 pt-6 border-t border-gray-100">
+                                    <div className="flex gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0">
+                                            <Check size={20} className="text-gray-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900">Garantia de Qualidade</p>
+                                            <p className="text-[11px] text-gray-500 leading-relaxed">Reimpressão grátis em caso de erros.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0">
+                                            <Truck size={20} className="text-gray-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900">Prazo de Produção</p>
+                                            <p className="text-[11px] text-gray-500 leading-relaxed">O prazo começa a contar após aprovação da arte e confirmação do pagamento.</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

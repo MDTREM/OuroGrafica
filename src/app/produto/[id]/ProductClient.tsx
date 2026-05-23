@@ -35,7 +35,6 @@ export default function ProductClient({ product }: ProductClientProps) {
     const [selectedColor, setSelectedColor] = useState<string>("Branco");
     const [customHex, setCustomHex] = useState<string>("#7C3AED");
     const [showAllColors, setShowAllColors] = useState<boolean>(false);
-    const colorPickerRef = useRef<HTMLInputElement>(null);
 
     const handleColorSelect = (colorName: string, hexCode: string) => {
         setSelectedColor(colorName);
@@ -556,7 +555,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                             <p className="text-xs text-gray-500">Escolha aqui o tamanho do seu material</p>
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
                                         {product.formats.map((fmt, idx) => (
                                             <button
                                                 key={idx}
@@ -598,7 +597,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                         <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Impressão</h3>
                                         <p className="text-xs text-gray-500">Defina os lados que serão impressos</p>
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
                                         {product.printing.map((prt, idx) => (
                                             <button
                                                 key={idx}
@@ -640,13 +639,13 @@ export default function ProductClient({ product }: ProductClientProps) {
                                         <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Acabamento</h3>
                                         <p className="text-xs text-gray-500">Toque final para o seu material</p>
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div className="grid grid-cols-2 gap-3 md:gap-5">
                                         {product.finishes.map((fin, idx) => (
                                             <button
                                                 key={idx}
                                                 onClick={() => setSelectedFinish(fin)}
                                                 className={cn(
-                                                    "flex items-center justify-between p-6 rounded-xl border-2 transition-all text-left bg-white shadow-sm",
+                                                    "flex items-center justify-between p-4 md:p-6 rounded-xl border-2 transition-all text-left bg-white shadow-sm",
                                                     selectedFinish === fin
                                                         ? "border-brand bg-white ring-4 ring-brand/5"
                                                         : "border-gray-100 hover:border-gray-200"
@@ -678,13 +677,13 @@ export default function ProductClient({ product }: ProductClientProps) {
                                         <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Extras</h3>
                                         <p className="text-xs text-gray-500">Adicionais para o seu material</p>
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div className="grid grid-cols-2 gap-3 md:gap-5">
                                         {product.extras.map((ext, idx) => (
                                             <button
                                                 key={idx}
                                                 onClick={() => setSelectedExtra(ext)}
                                                 className={cn(
-                                                    "flex items-center justify-between p-6 rounded-xl border-2 transition-all text-left bg-white shadow-sm",
+                                                    "flex items-center justify-between p-4 md:p-6 rounded-xl border-2 transition-all text-left bg-white shadow-sm",
                                                     selectedExtra === ext
                                                         ? "border-brand bg-white ring-4 ring-brand/5"
                                                         : "border-gray-100 hover:border-gray-200"
@@ -782,19 +781,46 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                     { name: "Personalizada", hex: "", isRainbow: true }
                                                 ].map((color) => {
                                                     const isSelected = selectedColor === color.name;
+                                                    if (color.isRainbow) {
+                                                        return (
+                                                            <div
+                                                                key={color.name}
+                                                                className={cn(
+                                                                    "w-10 h-10 rounded-full border border-gray-200 relative flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105 duration-200",
+                                                                    isSelected ? "ring-2 ring-brand ring-offset-2 scale-105 border-white border-2" : ""
+                                                                )}
+                                                                style={{ 
+                                                                    background: "conic-gradient(from 180deg, red, yellow, green, cyan, blue, magenta, red)" 
+                                                                }}
+                                                                title={color.name}
+                                                            >
+                                                                <input 
+                                                                    type="color" 
+                                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-full" 
+                                                                    value={customHex} 
+                                                                    onChange={(e) => handleColorSelect("Personalizada", e.target.value)}
+                                                                />
+                                                                {isSelected && (
+                                                                    <Check 
+                                                                        size={14} 
+                                                                        strokeWidth={3} 
+                                                                        className="text-white drop-shadow pointer-events-none" 
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    }
                                                     return (
                                                         <button
                                                             key={color.name}
                                                             type="button"
-                                                            onClick={() => handleColorSelect(color.name, color.isRainbow ? customHex : color.hex)}
+                                                            onClick={() => handleColorSelect(color.name, color.hex)}
                                                             className={cn(
                                                                 "w-10 h-10 rounded-full border border-gray-200 relative flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105 duration-200",
                                                                 isSelected ? "ring-2 ring-brand ring-offset-2 scale-105 border-white border-2" : ""
                                                             )}
                                                             style={{ 
-                                                                background: color.isRainbow 
-                                                                    ? "conic-gradient(from 180deg, red, yellow, green, cyan, blue, magenta, red)" 
-                                                                    : color.hex 
+                                                                background: color.hex 
                                                             }}
                                                             title={color.name}
                                                             aria-label={`Selecionar cor ${color.name}`}
@@ -828,11 +854,17 @@ export default function ProductClient({ product }: ProductClientProps) {
                                     {selectedColor === "Personalizada" && (
                                         <div className="flex items-center gap-3.5 mt-4 p-3 bg-gray-50/60 border border-gray-100 rounded-xl max-w-[240px] animate-in fade-in duration-300 shadow-inner">
                                             <div 
-                                                className="w-10 h-10 rounded-lg border border-gray-200 shadow-sm cursor-pointer shrink-0 transition-transform hover:scale-105"
+                                                className="w-10 h-10 rounded-lg border border-gray-200 shadow-sm cursor-pointer shrink-0 transition-transform hover:scale-105 relative"
                                                 style={{ backgroundColor: customHex }}
-                                                onClick={() => colorPickerRef.current?.click()}
                                                 title="Clique para escolher uma cor personalizada"
-                                            />
+                                            >
+                                                <input 
+                                                    type="color" 
+                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-lg" 
+                                                    value={customHex} 
+                                                    onChange={(e) => handleColorSelect("Personalizada", e.target.value)}
+                                                />
+                                            </div>
                                             <div className="flex-1 min-w-0">
                                                 <span className="text-[9px] uppercase font-bold tracking-wider text-gray-400 block mb-0.5 select-none">Cor Personalizada</span>
                                                 <div className="flex items-center gap-1.5">
@@ -850,13 +882,6 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                     />
                                                 </div>
                                             </div>
-                                            <input 
-                                                type="color" 
-                                                ref={colorPickerRef}
-                                                className="sr-only" 
-                                                value={customHex} 
-                                                onChange={(e) => handleColorSelect("Personalizada", e.target.value)}
-                                            />
                                         </div>
                                     )}
                                 </section>
@@ -936,7 +961,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                         <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Quantidade e Preço</h3>
                                         <p className="text-xs text-gray-500">Escolha a tiragem ideal para o seu projeto</p>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div className="grid grid-cols-2 gap-3 md:gap-5">
                                         {(product.quantities || Object.keys(product.priceBreakdowns || []))
                                             .sort((a, b) => {
                                                 const aVal = typeof a === 'string' ? parseInt(a.match(/\d+/)?.[0] || "0") : Number(a);
@@ -953,23 +978,23 @@ export default function ProductClient({ product }: ProductClientProps) {
                                                 }
                                                 const cardUnitPrice = cardTotalPrice / qtyValue;
                                                 const isSelected = quantity === qtyValue;
- 
+
                                                 let discount = 0;
                                                 const firstQtyKey = (product.quantities || Object.keys(product.priceBreakdowns || []))[0];
                                                 const firstQtyVal = typeof firstQtyKey === 'string' ? parseInt(firstQtyKey.match(/\d+/)?.[0] || "1") : Number(firstQtyKey);
                                                 const firstTotalPrice = product.priceBreakdowns?.[firstQtyVal] || (product.price || 0) * (firstQtyVal / 100);
                                                 const firstUnitPrice = firstTotalPrice / firstQtyVal;
- 
+
                                                 if (idx > 0 && firstUnitPrice > cardUnitPrice) {
                                                     discount = Math.round((1 - (cardUnitPrice / firstUnitPrice)) * 100);
                                                 }
- 
+
                                                 return (
                                                     <button
                                                         key={qty}
                                                         onClick={() => setQuantity(qtyValue)}
                                                         className={cn(
-                                                            "flex items-center justify-between p-6 rounded-xl border transition-all text-left",
+                                                            "flex items-center justify-between p-4 md:p-6 rounded-xl border transition-all text-left",
                                                             isSelected ? "border-brand bg-brand/5 shadow-md ring-4 ring-brand/10" : "border-gray-100 hover:border-gray-200 bg-white shadow-sm"
                                                         )}
                                                     >
@@ -1268,13 +1293,25 @@ export default function ProductClient({ product }: ProductClientProps) {
                                     </button>
                                 </div>
                                 
-                                <div className="flex gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0">
-                                        <Check size={20} className="text-gray-600" />
+                                <div className="space-y-4 pt-4 border-t border-gray-100">
+                                    <div className="flex gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0">
+                                            <Check size={20} className="text-gray-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900">Garantia de Qualidade</p>
+                                            <p className="text-[11px] text-gray-500 leading-relaxed">Reimpressão grátis em caso de erros.</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-sm font-semibold text-gray-900">Garantia de Qualidade</p>
-                                        <p className="text-[11px] text-gray-500 leading-relaxed">Reimpressão grátis em caso de erros.</p>
+
+                                    <div className="flex gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center flex-shrink-0">
+                                            <Truck size={20} className="text-gray-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900">Prazo de Produção</p>
+                                            <p className="text-[11px] text-gray-500 leading-relaxed">O prazo começa a contar após aprovação da arte e confirmação do pagamento.</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
