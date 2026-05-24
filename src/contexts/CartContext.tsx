@@ -33,6 +33,7 @@ export interface CartItem {
         customTextSecondaryLabel?: string; // Label for secondary custom text
         customArtworkUrl?: string;
         customArtworkName?: string;
+        customizations?: any;
     };
 }
 

@@ -282,7 +282,7 @@ export default async function BrandingPage() {
                 <Container>
                     <div className="max-w-2xl mb-20 text-center mx-auto">
                         <h2 className="text-4xl font-medium tracking-tight mb-4 text-black">
-                            Planos <span className="text-brand font-bold italic pr-2">sob medida.</span>
+                            Planos <span className="text-brand font-bold italic pr-2">sob medida</span>
                         </h2>
                         <p className="text-gray-500 font-light">Escolha o tamanho do seu apetite por crescimento.</p>
                     </div>

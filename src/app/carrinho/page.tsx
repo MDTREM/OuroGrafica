@@ -35,67 +35,147 @@ function OrderDetailsModal({ isOpen, onClose, items }: { isOpen: boolean, onClos
                                     <p className="text-xs text-brand font-semibold">{item.quantity} un. • R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-                                <div className="space-y-1">
-                                    <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Formato</p>
-                                    <p className="text-xs font-semibold text-gray-700">{item.details?.format || "Padrão"}</p>
+                            {item.details?.customizations ? (
+                                <div className="col-span-2 space-y-4 pt-2">
+                                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-1">
+                                        Itens Customizados do Combo:
+                                    </p>
+                                    <div className="space-y-3">
+                                        {Object.entries(item.details.customizations).map(([prodTitle, custom]: [string, any]) => (
+                                            <div key={prodTitle} className="text-xs bg-gray-50 p-3 rounded-lg border border-gray-100 space-y-1.5 text-left">
+                                                <div className="flex justify-between items-center font-bold text-gray-900 border-b border-gray-200 pb-1">
+                                                    <span>{prodTitle}</span>
+                                                    <span className="text-[10px] bg-brand/10 text-brand px-2 py-0.5 rounded-full font-mono font-bold">
+                                                        {custom.qty} un.
+                                                    </span>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-gray-600 text-[11px] leading-relaxed">
+                                                    {custom.selectedTemplate && (
+                                                        <div>
+                                                            <span className="font-semibold text-gray-500 block uppercase text-[9px] tracking-wider">Template/Design</span>
+                                                            {custom.selectedTemplate}
+                                                        </div>
+                                                    )}
+                                                    {custom.logoUrl && (
+                                                        <div className="col-span-2">
+                                                            <span className="font-semibold text-gray-500 block uppercase text-[9px] tracking-wider">Logotipo</span>
+                                                            <a href={custom.logoUrl} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline font-medium">
+                                                                {custom.logoName || 'Visualizar arquivo'}
+                                                            </a>
+                                                        </div>
+                                                    )}
+                                                    {custom.artworkUrl && (
+                                                        <div className="col-span-2">
+                                                            <span className="font-semibold text-gray-500 block uppercase text-[9px] tracking-wider">Arte Própria</span>
+                                                            <a href={custom.artworkUrl} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline font-medium">
+                                                                {custom.artworkName || 'Visualizar arquivo'}
+                                                            </a>
+                                                        </div>
+                                                    )}
+                                                    {custom.customText && (
+                                                        <div className="col-span-2 bg-white p-2 rounded border border-gray-100 whitespace-pre-line text-[10px] font-medium leading-relaxed">
+                                                            <span className="font-bold text-gray-500 block uppercase text-[8px] tracking-wider mb-0.5">Informações do Design</span>
+                                                            {custom.customText}
+                                                        </div>
+                                                    )}
+                                                    {custom.format && (
+                                                        <div>
+                                                            <span className="font-semibold text-gray-500 block uppercase text-[9px] tracking-wider">Formato</span>
+                                                            {custom.format}
+                                                        </div>
+                                                    )}
+                                                    {custom.finish && (
+                                                        <div>
+                                                            <span className="font-semibold text-gray-500 block uppercase text-[9px] tracking-wider">Acabamento</span>
+                                                            {custom.finish}
+                                                        </div>
+                                                    )}
+                                                    {custom.printing && (
+                                                        <div>
+                                                            <span className="font-semibold text-gray-500 block uppercase text-[9px] tracking-wider">Impressão</span>
+                                                            {custom.printing}
+                                                        </div>
+                                                    )}
+                                                    {custom.extra && (
+                                                        <div>
+                                                            <span className="font-semibold text-gray-500 block uppercase text-[9px] tracking-wider">Extras</span>
+                                                            {custom.extra}
+                                                        </div>
+                                                    )}
+                                                    {custom.color && (
+                                                        <div>
+                                                            <span className="font-semibold text-gray-500 block uppercase text-[9px] tracking-wider">Cor Base</span>
+                                                            {custom.color}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
+                            ) : (
+                                <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Formato</p>
+                                        <p className="text-xs font-semibold text-gray-700">{item.details?.format || "Padrão"}</p>
+                                    </div>
 
-                                <div className="space-y-1">
-                                    <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Impressão</p>
-                                    <p className="text-xs font-semibold text-gray-700">{item.details?.printing || "-"}</p>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Impressão</p>
+                                        <p className="text-xs font-semibold text-gray-700">{item.details?.printing || "-"}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Acabamento</p>
+                                        <p className="text-xs font-semibold text-gray-700">{item.details?.finish || "-"}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Extras</p>
+                                        <p className="text-xs font-semibold text-gray-700">{item.details?.extra || "-"}</p>
+                                    </div>
+                                    {item.details?.selectedVariations && Object.entries(item.details.selectedVariations).filter(([k, v]) => v && v !== "-" && k !== "Papel" && k !== "Material").map(([key, val]) => (
+                                        <div key={key} className="space-y-1">
+                                            <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">{key}</p>
+                                            <p className="text-xs font-semibold text-gray-700">{String(val)}</p>
+                                        </div>
+                                    ))}
+                                    {item.details?.fileUrl && (
+                                        <div className="col-span-2 space-y-1 pt-2">
+                                            <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Logo / Arquivo</p>
+                                            <a href={item.details.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-brand hover:underline flex items-center gap-1">
+                                                Visualizar Logo ({item.details.fileName || "Download"})
+                                            </a>
+                                        </div>
+                                    )}
+                                    {item.details?.customArtworkUrl && (
+                                        <div className="col-span-2 space-y-1 pt-2">
+                                            <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Arte Própria Enviada</p>
+                                            <a href={item.details.customArtworkUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-brand hover:underline flex items-center gap-1">
+                                                Visualizar Arte ({item.details.customArtworkName || "Download"})
+                                            </a>
+                                        </div>
+                                    )}
+                                    {item.details?.customText && (
+                                        <div className="col-span-2 space-y-1 pt-2">
+                                            <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">
+                                                {item.details.customTextLabel || "Texto Personalizado"}
+                                            </p>
+                                            <p className="text-xs font-medium text-gray-700 bg-gray-50 p-2 rounded border border-gray-100 whitespace-pre-line leading-relaxed">
+                                                {item.details.customText}
+                                            </p>
+                                        </div>
+                                    )}
+                                    {item.details?.customTextSecondary && (
+                                        <div className="col-span-2 space-y-1 pt-2">
+                                            <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">
+                                                {item.details.customTextSecondaryLabel || "Informações de Contato"}
+                                            </p>
+                                            <p className="text-xs font-medium text-gray-700 bg-gray-50 p-2 rounded border border-gray-100 whitespace-pre-line leading-relaxed">
+                                                {item.details.customTextSecondary}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="space-y-1">
-                                    <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Acabamento</p>
-                                    <p className="text-xs font-semibold text-gray-700">{item.details?.finish || "-"}</p>
-                                </div>
-                                <div className="space-y-1">
-                                    <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Extras</p>
-                                    <p className="text-xs font-semibold text-gray-700">{item.details?.extra || "-"}</p>
-                                </div>
-                                {item.details?.selectedVariations && Object.entries(item.details.selectedVariations).filter(([k, v]) => v && v !== "-" && k !== "Papel" && k !== "Material").map(([key, val]) => (
-                                    <div key={key} className="space-y-1">
-                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">{key}</p>
-                                        <p className="text-xs font-semibold text-gray-700">{String(val)}</p>
-                                    </div>
-                                ))}
-                                {item.details?.fileUrl && (
-                                    <div className="col-span-2 space-y-1 pt-2">
-                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Logo / Arquivo</p>
-                                        <a href={item.details.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-brand hover:underline flex items-center gap-1">
-                                            Visualizar Logo ({item.details.fileName || "Download"})
-                                        </a>
-                                    </div>
-                                )}
-                                {item.details?.customArtworkUrl && (
-                                    <div className="col-span-2 space-y-1 pt-2">
-                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">Arte Própria Enviada</p>
-                                        <a href={item.details.customArtworkUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-brand hover:underline flex items-center gap-1">
-                                            Visualizar Arte ({item.details.customArtworkName || "Download"})
-                                        </a>
-                                    </div>
-                                )}
-                                {item.details?.customText && (
-                                    <div className="col-span-2 space-y-1 pt-2">
-                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">
-                                            {item.details.customTextLabel || "Texto Personalizado"}
-                                        </p>
-                                        <p className="text-xs font-medium text-gray-700 bg-gray-50 p-2 rounded border border-gray-100 whitespace-pre-line leading-relaxed">
-                                            {item.details.customText}
-                                        </p>
-                                    </div>
-                                )}
-                                {item.details?.customTextSecondary && (
-                                    <div className="col-span-2 space-y-1 pt-2">
-                                        <p className="text-[10px] text-gray-400 uppercase font-semibold tracking-widest">
-                                            {item.details.customTextSecondaryLabel || "Informações de Contato"}
-                                        </p>
-                                        <p className="text-xs font-medium text-gray-700 bg-gray-50 p-2 rounded border border-gray-100 whitespace-pre-line leading-relaxed">
-                                            {item.details.customTextSecondary}
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
+                            )}
                         </div>
                     ))}
                 </div>
@@ -318,49 +398,105 @@ export default function CartPage() {
 
                                         {/* Middle Row: Details Box */}
                                         <div className={`mt-3 sm:mt-4 bg-gray-50/80 p-3 rounded-lg border border-gray-100 ${isExpanded ? 'grid' : 'hidden'} sm:grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4`}>
-                                            {item.subtitle && !item.details?.format && (
-                                                <div className="flex justify-between sm:block items-center">
-                                                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Modelo</span>
-                                                    <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.subtitle}</span>
-                                                </div>
-                                            )}
-                                            {item.details?.format && (
-                                                <div className="flex justify-between sm:block items-center">
-                                                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Formato</span>
-                                                    <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.details.format}</span>
-                                                </div>
-                                            )}
-                                            {item.details?.finish && (
-                                                <div className="flex justify-between sm:block items-center">
-                                                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Acabamento</span>
-                                                    <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.details.finish}</span>
-                                                </div>
-                                            )}
-                                            {item.details?.paper && (
-                                                <div className="flex justify-between sm:block items-center">
-                                                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Papel</span>
-                                                    <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.details.paper}</span>
-                                                </div>
-                                            )}
-                                            {item.details?.printing && (
-                                                <div className="flex justify-between sm:block items-center">
-                                                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Impressão</span>
-                                                    <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.details.printing}</span>
-                                                </div>
-                                            )}
-                                            {item.details?.extra && (
-                                                <div className="flex justify-between sm:block items-center">
-                                                    <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Extras</span>
-                                                    <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.details.extra}</span>
-                                                </div>
-                                            )}
-                                            {hasDesigner && (
-                                                <div className="sm:col-span-2 mt-1">
-                                                    <div className="flex items-center gap-1 text-[10px] sm:text-xs text-brand font-semibold bg-brand/5 px-2 py-1 rounded-md w-fit border border-brand/10">
-                                                        <Tag size={12} />
-                                                        Criação de Arte Inclusa (+R$ 35,00 un.)
+                                            {item.details?.customizations ? (
+                                                <div className="col-span-2 space-y-3">
+                                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-200 pb-1 text-left">
+                                                        Itens Customizados do Combo:
+                                                    </p>
+                                                    <div className="space-y-2.5">
+                                                        {Object.entries(item.details.customizations).map(([prodTitle, custom]: [string, any]) => (
+                                                            <div key={prodTitle} className="text-xs bg-white p-2.5 rounded-lg border border-gray-100 space-y-1 shadow-2xs text-left">
+                                                                <div className="flex justify-between items-center font-bold text-gray-800 border-b border-gray-50 pb-0.5 mb-1">
+                                                                    <span>{prodTitle}</span>
+                                                                    <span className="text-[10px] bg-brand/10 text-brand px-1.5 py-0.5 rounded-full font-mono">
+                                                                        {custom.qty} un.
+                                                                    </span>
+                                                                </div>
+                                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-1 text-gray-500 text-[11px] leading-relaxed">
+                                                                    {custom.selectedTemplate && (
+                                                                        <div>
+                                                                            <span className="font-semibold text-gray-600">Template/Design:</span> {custom.selectedTemplate}
+                                                                        </div>
+                                                                    )}
+                                                                    {custom.logoUrl && (
+                                                                        <div className="col-span-1 sm:col-span-2">
+                                                                            <span className="font-semibold text-gray-600">Logotipo:</span>{" "}
+                                                                            <a href={custom.logoUrl} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline font-medium">
+                                                                                {custom.logoName || 'Visualizar arquivo'}
+                                                                            </a>
+                                                                        </div>
+                                                                    )}
+                                                                    {custom.artworkUrl && (
+                                                                        <div className="col-span-1 sm:col-span-2">
+                                                                            <span className="font-semibold text-gray-600">Arte Própria:</span>{" "}
+                                                                            <a href={custom.artworkUrl} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline font-medium">
+                                                                                {custom.artworkName || 'Visualizar arquivo'}
+                                                                            </a>
+                                                                        </div>
+                                                                    )}
+                                                                    {custom.customText && (
+                                                                        <div className="col-span-1 sm:col-span-2 bg-gray-50 p-1.5 rounded mt-1 text-[10px] whitespace-pre-line border border-gray-100 font-medium">
+                                                                            <span className="font-bold text-gray-600 block mb-0.5">Informações enviadas:</span>
+                                                                            {custom.customText}
+                                                                        </div>
+                                                                    )}
+                                                                    {custom.format && <div><span className="font-semibold text-gray-600">Formato:</span> {custom.format}</div>}
+                                                                    {custom.finish && <div><span className="font-semibold text-gray-600">Acabamento:</span> {custom.finish}</div>}
+                                                                    {custom.printing && <div><span className="font-semibold text-gray-600">Impressão:</span> {custom.printing}</div>}
+                                                                    {custom.extra && <div><span className="font-semibold text-gray-600">Extras:</span> {custom.extra}</div>}
+                                                                    {custom.color && <div><span className="font-semibold text-gray-600">Cor Base:</span> {custom.color}</div>}
+                                                                </div>
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 </div>
+                                            ) : (
+                                                <>
+                                                    {item.subtitle && !item.details?.format && (
+                                                        <div className="flex justify-between sm:block items-center">
+                                                            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Modelo</span>
+                                                            <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.subtitle}</span>
+                                                        </div>
+                                                    )}
+                                                    {item.details?.format && (
+                                                        <div className="flex justify-between sm:block items-center">
+                                                            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Formato</span>
+                                                            <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.details.format}</span>
+                                                        </div>
+                                                    )}
+                                                    {item.details?.finish && (
+                                                        <div className="flex justify-between sm:block items-center">
+                                                            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Acabamento</span>
+                                                            <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.details.finish}</span>
+                                                        </div>
+                                                    )}
+                                                    {item.details?.paper && (
+                                                        <div className="flex justify-between sm:block items-center">
+                                                            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Papel</span>
+                                                            <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.details.paper}</span>
+                                                        </div>
+                                                    )}
+                                                    {item.details?.printing && (
+                                                        <div className="flex justify-between sm:block items-center">
+                                                            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Impressão</span>
+                                                            <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.details.printing}</span>
+                                                        </div>
+                                                    )}
+                                                    {item.details?.extra && (
+                                                        <div className="flex justify-between sm:block items-center">
+                                                            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block sm:mb-0.5">Extras</span>
+                                                            <span className="text-[11px] sm:text-sm font-medium text-gray-800">{item.details.extra}</span>
+                                                        </div>
+                                                    )}
+                                                    {hasDesigner && (
+                                                        <div className="sm:col-span-2 mt-1">
+                                                            <div className="flex items-center gap-1 text-[10px] sm:text-xs text-brand font-semibold bg-brand/5 px-2 py-1 rounded-md w-fit border border-brand/10">
+                                                                <Tag size={12} />
+                                                                Criação de Arte Inclusa (+R$ 35,00 un.)
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </>
                                             )}
                                         </div>
 

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, UploadCloud, Truck, Download, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Check, UploadCloud, Truck, Download, Plus, Trash2, Camera, Sparkles, Settings } from "lucide-react";
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { cn, formatPrice } from "@/lib/utils";
@@ -19,6 +19,15 @@ export default function ProductClient({ product }: ProductClientProps) {
     const router = useRouter();
     const { addToCart } = useCart();
     // Removed isLoading state as data comes from server
+
+    const hasTemplates = product.variations?.some(v => 
+        v.name.toLowerCase().includes("modelo") || 
+        v.name.toLowerCase().includes("template")
+    ) || false;
+
+    const [purchaseMode, setPurchaseMode] = useState<"simple" | "advanced">(
+        hasTemplates ? "simple" : "advanced"
+    );
 
     const [quantity, setQuantity] = useState(100);
     const [selectedFormat, setSelectedFormat] = useState<string>("");
@@ -67,11 +76,6 @@ export default function ProductClient({ product }: ProductClientProps) {
     const [customTextValue, setCustomTextValue] = useState("");
     const [customTextSecondaryValue, setCustomTextSecondaryValue] = useState("");
     const [dynamicTextValues, setDynamicTextValues] = useState<{ [key: number]: string }>({});
-
-    const hasTemplates = product.variations?.some(v => 
-        v.name.toLowerCase().includes("modelo") || 
-        v.name.toLowerCase().includes("template")
-    ) || false;
 
     const isCustomArtworkSelected = product.variations?.some(v => 
         (v.name.toLowerCase().includes("modelo") || v.name.toLowerCase().includes("template")) &&
@@ -354,7 +358,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                     />
                                 ) : (
                                     <div className="flex flex-col items-center justify-center text-gray-300">
-                                        <span className="text-6xl mb-2">📷</span>
+                                        <Camera size={48} className="text-gray-300 mb-2" />
                                         <span className="text-sm font-medium">Sem imagem disponível</span>
                                     </div>
                                 )}
@@ -400,6 +404,92 @@ export default function ProductClient({ product }: ProductClientProps) {
                             </div>
                         </div>
 
+                        {/* SELETOR DE MODO DE COMPRA */}
+                        {hasTemplates && (
+                            <section className="space-y-6 pt-6 border-t border-gray-100/60 animate-in fade-in duration-500">
+                                <div className="space-y-1">
+                                    <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Como deseja comprar?</h3>
+                                    <p className="text-xs text-gray-500">Escolha o modo ideal para o seu nível de personalização</p>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setPurchaseMode("simple");
+                                            // Reset to the first template if current is "Arte própria" since it's not allowed in simple mode
+                                            if (isCustomArtworkSelected) {
+                                                const tempVar = product.variations?.find(v => 
+                                                    v.name.toLowerCase().includes("modelo") || 
+                                                    v.name.toLowerCase().includes("template")
+                                                );
+                                                if (tempVar && tempVar.options.length > 0) {
+                                                    const firstOpt = tempVar.options[0];
+                                                    setSelectedVariations(prev => ({ ...prev, [tempVar.name]: firstOpt }));
+                                                    const templateImg = tempVar.images?.[firstOpt];
+                                                    if (templateImg) {
+                                                        setSelectedVariationImage(templateImg);
+                                                        const imgIndex = productImages.findIndex(img => img === templateImg);
+                                                        if (imgIndex !== -1) setActiveImage(imgIndex);
+                                                    }
+                                                }
+                                            }
+                                        }}
+                                        className={cn(
+                                            "flex flex-col text-left p-5 rounded-xl border-2 transition-all duration-300 hover:shadow-md cursor-pointer",
+                                            purchaseMode === "simple"
+                                                ? "border-brand bg-brand/5 ring-4 ring-brand/5 shadow-sm"
+                                                : "border-gray-100 bg-white hover:border-gray-200"
+                                        )}
+                                    >
+                                        <div className="flex items-center gap-2 mb-2 w-full">
+                                            <span className={cn("text-xs font-mono font-bold w-5 h-5 rounded-full flex items-center justify-center bg-gray-100 text-gray-500 shrink-0", purchaseMode === "simple" ? "bg-brand/10 text-brand" : "")}>
+                                                1
+                                            </span>
+                                            <span className={cn("text-[14px] font-bold", purchaseMode === "simple" ? "text-brand" : "text-gray-800")}>
+                                                Personalização Rápida
+                                            </span>
+                                            {purchaseMode === "simple" && (
+                                                <span className="ml-auto w-5 h-5 rounded-full bg-brand text-white flex items-center justify-center shrink-0">
+                                                    <Check size={10} strokeWidth={3} />
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-gray-500 leading-relaxed">
+                                            Escolha um modelo pronto e personalize em segundos.
+                                        </p>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setPurchaseMode("advanced")}
+                                        className={cn(
+                                            "flex flex-col text-left p-5 rounded-xl border-2 transition-all duration-300 hover:shadow-md cursor-pointer",
+                                            purchaseMode === "advanced"
+                                                ? "border-brand bg-brand/5 ring-4 ring-brand/5 shadow-sm"
+                                                : "border-gray-100 bg-white hover:border-gray-200"
+                                        )}
+                                    >
+                                        <div className="flex items-center gap-2 mb-2 w-full">
+                                            <span className={cn("text-xs font-mono font-bold w-5 h-5 rounded-full flex items-center justify-center bg-gray-100 text-gray-500 shrink-0", purchaseMode === "advanced" ? "bg-brand/10 text-brand" : "")}>
+                                                2
+                                            </span>
+                                            <span className={cn("text-[14px] font-bold", purchaseMode === "advanced" ? "text-brand" : "text-gray-800")}>
+                                                Configuração Avançada
+                                            </span>
+                                            {purchaseMode === "advanced" && (
+                                                <span className="ml-auto w-5 h-5 rounded-full bg-brand text-white flex items-center justify-center shrink-0">
+                                                    <Check size={10} strokeWidth={3} />
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-gray-500 leading-relaxed">
+                                            Configuração técnica completa: papéis, acabamentos e extras.
+                                        </p>
+                                    </button>
+                                </div>
+                            </section>
+                        )}
+
                         {/* 3. SEÇÃO DE TEMPLATES / MODELOS (NOVO) */}
                         {product.variations?.filter(v => 
                             v.name.toLowerCase().includes("modelo") || 
@@ -415,7 +505,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                 </div>
                                 
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                    {[...variation.options, "Arte própria"].map((option, oIdx) => {
+                                    {(purchaseMode === "simple" ? variation.options : [...variation.options, "Arte própria"]).map((option, oIdx) => {
                                         const isSelected = selectedVariations[variation.name] === option;
                                         const templateImg = variation.images?.[option];
                                         
@@ -544,7 +634,8 @@ export default function ProductClient({ product }: ProductClientProps) {
                         ))}
 
                         {/* 4. OPÇÕES TÉCNICAS (FORMATO, ACABAMENTO, VARIATIONS) */}
-                        <div className="space-y-16 pt-10 border-t border-gray-100/60">
+                        {purchaseMode === "advanced" && (
+                            <div className="space-y-16 pt-10 border-t border-gray-100/60 animate-in fade-in duration-500">
 
                             {/* Formato */}
                             {product.formats && product.formats.length > 0 && (
@@ -953,8 +1044,14 @@ export default function ProductClient({ product }: ProductClientProps) {
                                     </section>
                                 );
                             })}
- 
-                            {/* Quantidade (Agora em destaque) */}
+                            </div>
+                        )}
+
+                        {purchaseMode === "simple" && (
+                            <div className="border-t border-gray-100/60 pt-6 animate-in fade-in duration-300" />
+                        )}
+
+                        {/* Quantidade (Agora em destaque) */}
                             {!product.customQuantity && (
                                 <section id="quantidade-section" className="space-y-8">
                                     <div className="space-y-1">
@@ -1017,7 +1114,6 @@ export default function ProductClient({ product }: ProductClientProps) {
                                     </div>
                                 </section>
                             )}
-                        </div>
                     </div>
 
                     {/* COLUNA DIREITA: RESUMO E COMPRA (Lg: 4 cols - STICKY) */}
@@ -1299,8 +1395,8 @@ export default function ProductClient({ product }: ProductClientProps) {
                                             <Check size={20} className="text-gray-600" />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-semibold text-gray-900">Garantia de Qualidade</p>
-                                            <p className="text-[11px] text-gray-500 leading-relaxed">Reimpressão grátis em caso de erros.</p>
+                                            <p className="text-sm font-semibold text-gray-900">Garantia de Produção</p>
+                                            <p className="text-[11px] text-gray-500 leading-relaxed">Se houver erro de impressão causado pela produção, refazemos o material sem custo.</p>
                                         </div>
                                     </div>
 

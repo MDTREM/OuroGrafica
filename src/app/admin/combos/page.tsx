@@ -5,20 +5,60 @@ import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { getHomepageConfig, saveHomepageConfig, uploadImage, HomepageConfig, Section, ComboItem } from '@/actions/homepage-actions';
-import { Trash2, Plus, Edit, X, Save, ArrowLeft, Check, Image as ImageIcon } from 'lucide-react';
+import { Trash2, Plus, Edit, X, Save, ArrowLeft, Check, Image as ImageIcon, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import { useAdmin } from '@/contexts/AdminContext';
+import { cn } from '@/lib/utils';
 
 export default function AdminCombosPage() {
+    const { products } = useAdmin();
     const [config, setConfig] = useState<HomepageConfig | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
     // Combos Specific States
     const [editingCombo, setEditingCombo] = useState<any | null>(null);
-    const [newComboItemText, setNewComboItemText] = useState("");
+    const [selectedProductId, setSelectedProductId] = useState("");
+    const [selectedProductQtyString, setSelectedProductQtyString] = useState("");
+    const [selectedProductFormat, setSelectedProductFormat] = useState("");
+    const [selectedProductFinish, setSelectedProductFinish] = useState("");
+    const [selectedProductExtra, setSelectedProductExtra] = useState("");
+    const [selectedProductVariations, setSelectedProductVariations] = useState<Record<string, string>>({});
     const [uploadingComboImage, setUploadingComboImage] = useState(false);
-    const [newVarName, setNewVarName] = useState("");
-    const [newVarOptions, setNewVarOptions] = useState("");
+    const [isProductDropdownOpen, setIsProductDropdownOpen] = useState(false);
+    const [tempComboImage, setTempComboImage] = useState("");
+
+    useEffect(() => {
+        const prod = products.find(p => p.id === selectedProductId);
+        if (prod) {
+            setSelectedProductQtyString(prod.quantities?.[0] || "");
+            setSelectedProductFormat(prod.formats?.[0] || "");
+            setSelectedProductFinish(prod.finishes?.[0] || "");
+            setSelectedProductExtra(prod.extras?.[0] || "");
+            
+            const initialVars: Record<string, string> = {};
+            if (prod.variations) {
+                prod.variations
+                    .filter(v => 
+                        !v.name.toLowerCase().includes("impressão") && 
+                        !v.name.toLowerCase().includes("lado") && 
+                        !v.name.toLowerCase().includes("cor") && 
+                        !v.name.toLowerCase().includes("modelo") && 
+                        !v.name.toLowerCase().includes("template")
+                    )
+                    .forEach(v => {
+                        initialVars[v.name] = v.options?.[0] || "";
+                    });
+            }
+            setSelectedProductVariations(initialVars);
+        } else {
+            setSelectedProductQtyString("");
+            setSelectedProductFormat("");
+            setSelectedProductFinish("");
+            setSelectedProductExtra("");
+            setSelectedProductVariations({});
+        }
+    }, [selectedProductId, products]);
 
     useEffect(() => {
         loadConfig();
@@ -89,11 +129,9 @@ export default function AdminCombosPage() {
             price: 0,
             originalPrice: undefined,
             image: '',
-            items: [],
-            variations: []
+            items: []
         });
-        setNewVarName("");
-        setNewVarOptions("");
+        setSelectedProductId("");
     }
 
     function deleteCombo(comboId: string) {
@@ -217,20 +255,7 @@ export default function AdminCombosPage() {
                                 </ul>
                             </div>
 
-                            {/* Variations Preview */}
-                            {combo.variations && combo.variations.length > 0 && (
-                                <div className="space-y-1.5 pt-2 border-t border-gray-100">
-                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Variações</span>
-                                    <div className="flex flex-wrap gap-2">
-                                        {combo.variations.map((v, idx) => (
-                                            <div key={idx} className="bg-gray-50 border border-gray-200 px-2 py-1 rounded text-[10px] flex flex-col gap-0.5">
-                                                <span className="font-bold text-gray-500 uppercase text-[8px]">{v.name}</span>
-                                                <span className="text-gray-700 truncate max-w-[140px] font-medium">{v.options.join(', ')}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+                            {/* Variations Preview Removed */}
                         </div>
 
                         {/* Card Actions */}
@@ -314,65 +339,319 @@ export default function AdminCombosPage() {
                                 </div>
                             </div>
 
-                            {/* Imagem */}
-                            <div className="space-y-2 pt-2 border-t border-gray-100">
-                                <label className="text-xs font-semibold text-gray-500 uppercase block">Imagem do Combo</label>
-                                <Input type="file" accept="image/*" onChange={handleComboImageUpload} disabled={uploadingComboImage} />
-                                {uploadingComboImage && <p className="text-xs text-brand animate-pulse">Fazendo upload da imagem...</p>}
+                            {/* Imagem de Capa e Galeria de Fotos */}
+                            <div className="space-y-4 pt-2 border-t border-gray-100">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold text-gray-500 uppercase block">Imagem de Capa (3:4)</label>
+                                    <Input type="file" accept="image/*" onChange={handleComboImageUpload} disabled={uploadingComboImage} />
+                                    {uploadingComboImage && <p className="text-xs text-brand animate-pulse">Fazendo upload da imagem...</p>}
 
-                                {editingCombo.image && (
-                                    <div className="mt-2 rounded-lg overflow-hidden border border-gray-250 bg-gray-50 h-32 flex items-center justify-center relative">
-                                        <img src={editingCombo.image} alt="Preview Combo" className="w-full h-full object-contain" />
+                                    {editingCombo.image && (
+                                        <div className="mt-2 rounded-lg overflow-hidden border border-gray-250 bg-gray-50 h-32 flex items-center justify-center relative">
+                                            <img src={editingCombo.image} alt="Preview Capa" className="w-full h-full object-contain" />
+                                        </div>
+                                    )}
+
+                                    <div className="mt-1">
+                                        <p className="text-[10px] text-gray-400 mb-1">Ou insira uma URL de imagem externa:</p>
+                                        <Input
+                                            value={editingCombo.image || ''}
+                                            onChange={e => setEditingCombo({ ...editingCombo, image: e.target.value })}
+                                            placeholder="https://..."
+                                        />
                                     </div>
-                                )}
+                                </div>
 
-                                <div className="mt-1">
-                                    <p className="text-[10px] text-gray-400 mb-1">Ou insira uma URL de imagem externa:</p>
-                                    <Input
-                                        value={editingCombo.image || ''}
-                                        onChange={e => setEditingCombo({ ...editingCombo, image: e.target.value })}
-                                        placeholder="https://..."
-                                    />
+                                <div className="space-y-2 pt-2 border-t border-gray-100">
+                                    <label className="text-xs font-semibold text-gray-500 uppercase block">Galeria de Fotos do Produto (4:3)</label>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            className="flex-1"
+                                            placeholder="URL da foto do produto..."
+                                            value={tempComboImage}
+                                            onChange={(e) => setTempComboImage(e.target.value)}
+                                        />
+                                        <Button
+                                            type="button"
+                                            onClick={() => {
+                                                if (tempComboImage.trim()) {
+                                                    setEditingCombo({
+                                                        ...editingCombo,
+                                                        images: [...(editingCombo.images || []), tempComboImage.trim()]
+                                                    });
+                                                    setTempComboImage("");
+                                                }
+                                            }}
+                                            className="bg-brand text-white hover:bg-brand-dark"
+                                        >
+                                            <Plus size={16} />
+                                        </Button>
+                                    </div>
+                                    <div className="mt-1">
+                                        <Input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (!file) return;
+                                                const fData = new FormData();
+                                                fData.append('file', file);
+                                                const url = await uploadImage(fData, 'products');
+                                                if (url) {
+                                                    setEditingCombo({
+                                                        ...editingCombo,
+                                                        images: [...(editingCombo.images || []), url]
+                                                    });
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-4 gap-2 mt-2">
+                                        {editingCombo.images?.map((img: string, idx: number) => (
+                                            <div key={idx} className="relative aspect-[4/3] rounded-lg overflow-hidden border border-gray-250 bg-gray-50">
+                                                <img src={img} className="w-full h-full object-cover" alt="" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setEditingCombo({
+                                                        ...editingCombo,
+                                                        images: editingCombo.images.filter((_: any, i: number) => i !== idx)
+                                                    })}
+                                                    className="absolute top-1 right-1 bg-black/70 text-white rounded-full p-1 hover:bg-red-650 transition-colors"
+                                                >
+                                                    <X size={10} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Itens */}
-                            <div className="space-y-2 pt-2 border-t border-gray-100">
+                            <div className="space-y-4 pt-2 border-t border-gray-100">
                                 <label className="text-xs font-semibold text-gray-500 uppercase block">Itens do Combo</label>
-                                <div className="flex gap-2">
-                                    <Input
-                                        value={newComboItemText}
-                                        onChange={e => setNewComboItemText(e.target.value)}
-                                        placeholder="Ex: 1000 Cartões de Visita"
-                                        onKeyDown={e => {
-                                            if (e.key === 'Enter') {
-                                                e.preventDefault();
-                                                if (newComboItemText.trim()) {
-                                                    setEditingCombo({
-                                                        ...editingCombo,
-                                                        items: [...(editingCombo.items || []), newComboItemText.trim()]
-                                                    });
-                                                    setNewComboItemText("");
-                                                }
-                                            }
-                                        }}
-                                    />
-                                    <Button
+                                
+                                <div className="space-y-2 relative">
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Catálogo de Produtos</span>
+                                    
+                                    {/* Custom Dropdown Button */}
+                                    <button
                                         type="button"
-                                        onClick={() => {
-                                            if (newComboItemText.trim()) {
-                                                setEditingCombo({
-                                                    ...editingCombo,
-                                                    items: [...(editingCombo.items || []), newComboItemText.trim()]
-                                                });
-                                                setNewComboItemText("");
-                                            }
-                                        }}
-                                        className="bg-brand text-white hover:bg-brand-dark"
+                                        onClick={() => setIsProductDropdownOpen(!isProductDropdownOpen)}
+                                        className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-emerald-500 bg-white hover:bg-gray-50/50 transition-all text-left focus:outline-none focus:ring-2 focus:ring-emerald-500/10 cursor-pointer shadow-xs"
                                     >
-                                        +
-                                    </Button>
+                                        <div className="flex items-center gap-3">
+                                            {selectedProductId ? (() => {
+                                                const p = products.find(prod => prod.id === selectedProductId);
+                                                const prodImg = p?.image || (p?.images && p.images[0]) || "";
+                                                return (
+                                                    <>
+                                                        {prodImg ? (
+                                                            <img src={prodImg} className="w-6 h-6 rounded-md object-cover bg-gray-50 border border-gray-150 shrink-0" alt={p?.title} />
+                                                        ) : (
+                                                            <div className="w-6 h-6 rounded-md bg-gray-50 border border-gray-150 flex items-center justify-center shrink-0 text-gray-400">
+                                                                <ImageIcon size={12} />
+                                                            </div>
+                                                        )}
+                                                        <span className="text-xs font-semibold text-gray-700">{p?.title}</span>
+                                                    </>
+                                                );
+                                            })() : (
+                                                <span className="text-xs text-gray-400 font-medium">Selecione um Produto...</span>
+                                            )}
+                                        </div>
+                                        <ChevronDown size={16} className={cn("text-gray-400 transition-transform duration-200", isProductDropdownOpen && "rotate-180")} />
+                                    </button>
+
+                                    {/* Floating Dropdown List */}
+                                    {isProductDropdownOpen && (
+                                        <div className="absolute left-0 right-0 top-full mt-1.5 bg-white border border-gray-150 rounded-xl shadow-lg py-1.5 z-50 max-h-60 overflow-y-auto no-scrollbar animate-in fade-in slide-in-from-top-1 duration-150">
+                                            {products.length === 0 ? (
+                                                <div className="px-4 py-3 text-xs text-gray-400 text-center italic">Nenhum produto cadastrado</div>
+                                            ) : (
+                                                products.map(p => {
+                                                    const isSelected = selectedProductId === p.id;
+                                                    const prodImg = p.image || (p.images && p.images[0]) || "";
+                                                    return (
+                                                        <button
+                                                            key={p.id}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setSelectedProductId(p.id);
+                                                                setIsProductDropdownOpen(false);
+                                                            }}
+                                                            className={cn(
+                                                                "flex items-center gap-3 w-full px-4 py-2 hover:bg-gray-50 text-left transition-colors cursor-pointer",
+                                                                isSelected && "bg-emerald-50/50"
+                                                            )}
+                                                        >
+                                                            {prodImg ? (
+                                                                <img src={prodImg} className="w-8 h-8 rounded-lg object-cover bg-gray-50 border border-gray-200 shrink-0" alt={p.title} />
+                                                            ) : (
+                                                                <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center shrink-0 text-gray-400">
+                                                                    <ImageIcon size={14} />
+                                                                </div>
+                                                            )}
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className={cn("text-xs font-semibold truncate", isSelected ? "text-emerald-600" : "text-gray-700")}>{p.title}</p>
+                                                            </div>
+                                                            {isSelected && <Check size={14} className="text-emerald-500 shrink-0" strokeWidth={3} />}
+                                                        </button>
+                                                    );
+                                                })
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
+
+                                {selectedProductId && (() => {
+                                    const product = products.find(p => p.id === selectedProductId);
+                                    if (!product) return null;
+                                    
+                                    const filteredVariations = product.variations?.filter(v => 
+                                        !v.name.toLowerCase().includes("impressão") && 
+                                        !v.name.toLowerCase().includes("lado") && 
+                                        !v.name.toLowerCase().includes("cor") && 
+                                        !v.name.toLowerCase().includes("modelo") && 
+                                        !v.name.toLowerCase().includes("template")
+                                    ) || [];
+
+                                    return (
+                                        <div className="bg-white border border-gray-200 rounded-xl p-4 mt-3 space-y-4 animate-in fade-in duration-300 shadow-xs">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-1.5 h-4 bg-brand rounded-full"></div>
+                                                <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider">Configurar {product.title}</h4>
+                                            </div>
+                                            
+                                            <div className="grid grid-cols-2 gap-3">
+                                                {/* Tiragem */}
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Quantidade / Tiragem</label>
+                                                    {product.quantities && product.quantities.length > 0 ? (
+                                                        <select
+                                                            value={selectedProductQtyString}
+                                                            onChange={e => setSelectedProductQtyString(e.target.value)}
+                                                            className="w-full h-8 px-2 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-700 focus:outline-none focus:border-brand"
+                                                        >
+                                                            {product.quantities.map(qty => (
+                                                                <option key={qty} value={qty}>{qty}</option>
+                                                            ))}
+                                                        </select>
+                                                    ) : (
+                                                        <div className="text-xs text-red-500 italic py-1">Sem tiragem cadastrada</div>
+                                                    )}
+                                                </div>
+
+                                                {/* Formato */}
+                                                {product.formats && product.formats.length > 0 && (
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Formato</label>
+                                                        <select
+                                                            value={selectedProductFormat}
+                                                            onChange={e => setSelectedProductFormat(e.target.value)}
+                                                            className="w-full h-8 px-2 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-700 focus:outline-none focus:border-brand"
+                                                        >
+                                                            {product.formats.map(f => (
+                                                                <option key={f} value={f}>{f}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                )}
+
+                                                {/* Acabamento */}
+                                                {product.finishes && product.finishes.length > 0 && (
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Acabamento</label>
+                                                        <select
+                                                            value={selectedProductFinish}
+                                                            onChange={e => setSelectedProductFinish(e.target.value)}
+                                                            className="w-full h-8 px-2 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-700 focus:outline-none focus:border-brand"
+                                                        >
+                                                            {product.finishes.map(f => (
+                                                                <option key={f} value={f}>{f}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                )}
+
+                                                {/* Extras */}
+                                                {product.extras && product.extras.length > 0 && (
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Extras</label>
+                                                        <select
+                                                            value={selectedProductExtra}
+                                                            onChange={e => setSelectedProductExtra(e.target.value)}
+                                                            className="w-full h-8 px-2 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-700 focus:outline-none focus:border-brand"
+                                                        >
+                                                            {product.extras.map(e => (
+                                                                <option key={e} value={e}>{e}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                )}
+
+                                                {/* Outras Variações */}
+                                                {filteredVariations.map(v => {
+                                                    const currentVal = selectedProductVariations[v.name] || v.options?.[0] || "";
+                                                    return (
+                                                        <div key={v.name} className="space-y-1">
+                                                            <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{v.name}</label>
+                                                            <select
+                                                                value={currentVal}
+                                                                onChange={e => {
+                                                                    const val = e.target.value;
+                                                                    setSelectedProductVariations(prev => ({
+                                                                        ...prev,
+                                                                        [v.name]: val
+                                                                    }));
+                                                                }}
+                                                                className="w-full h-8 px-2 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-700 focus:outline-none focus:border-brand"
+                                                            >
+                                                                {v.options?.map(opt => (
+                                                                    <option key={opt} value={opt}>{opt}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            <Button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (product.quantities && product.quantities.length > 0) {
+                                                        const qtyMatch = selectedProductQtyString.match(/\d+/);
+                                                        const extractedQty = qtyMatch ? parseInt(qtyMatch[0]) : 1000;
+                                                        
+                                                        let details: string[] = [];
+                                                        if (selectedProductFormat) details.push(`Formato: ${selectedProductFormat}`);
+                                                        if (selectedProductFinish) details.push(`Acabamento: ${selectedProductFinish}`);
+                                                        if (selectedProductExtra) details.push(`Extras: ${selectedProductExtra}`);
+
+                                                        Object.entries(selectedProductVariations).forEach(([name, val]) => {
+                                                            if (val) {
+                                                                details.push(`${name}: ${val}`);
+                                                            }
+                                                        });
+
+                                                        const detailsStr = details.length > 0 ? ` (${details.join(", ")})` : "";
+                                                        const formattedItemText = `${extractedQty} ${product.title}${detailsStr}`;
+                                                        
+                                                        setEditingCombo({
+                                                            ...editingCombo,
+                                                            items: [...(editingCombo.items || []), formattedItemText]
+                                                        });
+                                                        setSelectedProductId("");
+                                                    } else {
+                                                        alert("Por favor, selecione um produto com tiragem cadastrada.");
+                                                    }
+                                                }}
+                                                className="w-full bg-brand text-white hover:bg-brand-dark h-10 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-brand/10 transition-all mt-2"
+                                            >
+                                                + Adicionar Item ao Combo
+                                            </Button>
+                                        </div>
+                                    );
+                                })()}
                                 
                                 <div className="space-y-1 max-h-36 overflow-y-auto pt-1">
                                     {editingCombo.items?.map((item: string, idx: number) => (
@@ -392,89 +671,6 @@ export default function AdminCombosPage() {
                                     ))}
                                     {(!editingCombo.items || editingCombo.items.length === 0) && (
                                         <p className="text-xs text-gray-400 italic text-center py-2">Nenhum item adicionado.</p>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Variações */}
-                            <div className="space-y-2 pt-2 border-t border-gray-100">
-                                <label className="text-xs font-semibold text-gray-500 uppercase block">Variações do Combo (ex: Papel, Acabamento)</label>
-                                
-                                <div className="space-y-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <div className="space-y-1">
-                                            <label className="text-[9px] font-bold text-gray-400 uppercase">Nome</label>
-                                            <Input
-                                                value={newVarName}
-                                                onChange={e => setNewVarName(e.target.value)}
-                                                placeholder="Ex: Papel"
-                                            />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-[9px] font-bold text-gray-400 uppercase">Opções (por vírgula)</label>
-                                            <Input
-                                                value={newVarOptions}
-                                                onChange={e => setNewVarOptions(e.target.value)}
-                                                placeholder="Couchê 300g, Reciclato 240g"
-                                            />
-                                        </div>
-                                    </div>
-                                    <Button
-                                        type="button"
-                                        size="sm"
-                                        className="w-full mt-1 bg-brand text-white hover:bg-brand-dark"
-                                        onClick={() => {
-                                            if (newVarName.trim() && newVarOptions.trim()) {
-                                                const optionsArray = newVarOptions
-                                                    .split(",")
-                                                    .map(opt => opt.trim())
-                                                    .filter(Boolean);
-                                                
-                                                if (optionsArray.length > 0) {
-                                                    setEditingCombo({
-                                                        ...editingCombo,
-                                                        variations: [
-                                                            ...(editingCombo.variations || []),
-                                                            { name: newVarName.trim(), options: optionsArray }
-                                                        ]
-                                                    });
-                                                    setNewVarName("");
-                                                    setNewVarOptions("");
-                                                }
-                                            }
-                                        }}
-                                    >
-                                        + Adicionar Variação
-                                    </Button>
-                                </div>
-
-                                <div className="space-y-2 max-h-36 overflow-y-auto pt-1">
-                                    {editingCombo.variations?.map((v: any, idx: number) => (
-                                        <div key={idx} className="bg-white p-2.5 rounded border border-gray-200 text-xs space-y-1.5 shadow-sm">
-                                            <div className="flex justify-between items-center">
-                                                <span className="font-semibold text-gray-800">{v.name}</span>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setEditingCombo({
-                                                        ...editingCombo,
-                                                        variations: editingCombo.variations.filter((_: any, i: number) => i !== idx)
-                                                    })}
-                                                    className="text-red-500 hover:text-red-600 font-semibold text-[11px]"
-                                                >
-                                                    Remover
-                                                </button>
-                                            </div>
-                                            <div className="flex flex-wrap gap-1">
-                                                {v.options.map((opt: string, optIdx: number) => (
-                                                    <span key={optIdx} className="bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded text-[10px] font-medium border border-gray-200">
-                                                        {opt}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {(!editingCombo.variations || editingCombo.variations.length === 0) && (
-                                        <p className="text-xs text-gray-400 italic text-center py-2">Sem variações adicionadas.</p>
                                     )}
                                 </div>
                             </div>

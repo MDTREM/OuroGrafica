@@ -665,18 +665,39 @@ export default function CheckoutPage() {
                                             <p className="text-[11px] text-gray-500 mt-0.5">Qtd: {item.quantity}</p>
                                             
                                             {/* Details list */}
-                                            <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-1 text-[10px] text-gray-400">
-                                                {item.details?.format && <span>Formato: {item.details.format}</span>}
-                                                {item.details?.printing && <span>Impressão: {item.details.printing}</span>}
-                                                {item.details?.finish && <span>Acabamento: {item.details.finish}</span>}
-                                                {item.details?.extra && <span>Extra: {item.details.extra}</span>}
-                                                {item.details?.paper && <span>Material: {item.details.paper}</span>}
-                                                {item.details?.selectedVariations && Object.entries(item.details.selectedVariations)
-                                                    .filter(([k, v]) => v && v !== "-" && k !== "Papel" && k !== "Material")
-                                                    .map(([key, value]) => (
-                                                        <span key={key}>{key}: {String(value)}</span>
+                                            {item.details?.customizations ? (
+                                                <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 text-left w-full">
+                                                    {Object.entries(item.details.customizations).map(([prodTitle, custom]: [string, any]) => (
+                                                        <div key={prodTitle} className="text-[10px] bg-gray-50 p-2 rounded border border-gray-100/50 w-full text-left">
+                                                            <div className="flex justify-between font-semibold text-gray-700">
+                                                                <span>{prodTitle}</span>
+                                                                <span className="text-gray-400 font-mono">{custom.qty} un.</span>
+                                                            </div>
+                                                            <div className="text-gray-400 mt-0.5 flex flex-wrap gap-x-1.5 gap-y-0.5">
+                                                                {custom.selectedTemplate && <span>• Design: {custom.selectedTemplate}</span>}
+                                                                {custom.printing && <span>• Impressão: {custom.printing}</span>}
+                                                                {custom.color && <span>• Cor: {custom.color}</span>}
+                                                                {custom.format && <span>• Formato: {custom.format}</span>}
+                                                                {custom.finish && <span>• Acab.: {custom.finish}</span>}
+                                                                {custom.extra && <span>• Extras: {custom.extra}</span>}
+                                                            </div>
+                                                        </div>
                                                     ))}
-                                            </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-1 text-[10px] text-gray-400">
+                                                    {item.details?.format && <span>Formato: {item.details.format}</span>}
+                                                    {item.details?.printing && <span>Impressão: {item.details.printing}</span>}
+                                                    {item.details?.finish && <span>Acabamento: {item.details.finish}</span>}
+                                                    {item.details?.extra && <span>Extra: {item.details.extra}</span>}
+                                                    {item.details?.paper && <span>Material: {item.details.paper}</span>}
+                                                    {item.details?.selectedVariations && Object.entries(item.details.selectedVariations)
+                                                        .filter(([k, v]) => v && v !== "-" && k !== "Papel" && k !== "Material")
+                                                        .map(([key, value]) => (
+                                                            <span key={key}>{key}: {String(value)}</span>
+                                                        ))}
+                                                </div>
+                                            )}
 
                                             <div className="font-bold text-sm text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark mt-1">
                                                 R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}

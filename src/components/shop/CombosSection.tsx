@@ -105,6 +105,7 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                         {combos.map((combo, index) => {
                             const hasImage = combo.image && !imgErrors[combo.id];
                             const originalPrice = combo.originalPrice || combo.price * 1.35;
+                            const discountPct = originalPrice > combo.price ? Math.round(((originalPrice - combo.price) / originalPrice) * 100) : 0;
 
                             return (
                                 <div 
@@ -112,8 +113,13 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                                     className="w-[280px] md:w-[240px] flex-none snap-start first:ml-4 md:first:ml-0"
                                 >
                                     <div className="group relative bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 border border-gray-100 h-full flex flex-col">
-                                        {/* Image Area - Aspect ratio 1:1, matching product cover */}
-                                        <Link href={`/combo/${combo.id}`} className="relative w-full overflow-hidden bg-gray-50 rounded-t-xl block" style={{ paddingBottom: '100%' }}>
+                                        {/* Image Area - Aspect ratio 3:4, matching cover image specifications */}
+                                        <Link href={`/combo/${combo.id}`} className="relative w-full overflow-hidden bg-gray-50 rounded-t-xl block aspect-[3/4]">
+                                            {discountPct > 0 && (
+                                                <div className="absolute top-3 left-3 bg-brand text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
+                                                    -{discountPct}%
+                                                </div>
+                                            )}
                                             <div className="absolute inset-0 flex items-center justify-center">
                                                 {hasImage ? (
                                                     <Image
@@ -144,17 +150,21 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                                                 </h3>
                                             </Link>
 
-                                            {/* Items List - No Bold */}
+                                            {/* Items List - Only qty + name */}
                                             <div className="mb-3">
                                                 <ul className="space-y-1.5">
-                                                    {combo.items.map((item, index) => (
-                                                        <li key={index} className="flex items-start gap-2">
-                                                            <Check size={12} className="text-brand shrink-0 mt-0.5" strokeWidth={3.5} />
-                                                            <span className="text-xs text-gray-500 font-normal leading-normal text-left">
-                                                                {item}
-                                                            </span>
-                                                        </li>
-                                                    ))}
+                                                    {combo.items.map((item, index) => {
+                                                        // Strip parenthetical details: "1000 Cartão de Visita (Formato: X, ...)" → "1000 Cartão de Visita"
+                                                        const cleanItem = item.replace(/\s*\(.*\)\s*$/, '');
+                                                        return (
+                                                            <li key={index} className="flex items-start gap-2">
+                                                                <Check size={12} className="text-brand shrink-0 mt-0.5" strokeWidth={3.5} />
+                                                                <span className="text-xs text-gray-500 font-normal leading-normal text-left">
+                                                                    {cleanItem}
+                                                                </span>
+                                                            </li>
+                                                        );
+                                                    })}
                                                 </ul>
                                             </div>
 
@@ -195,18 +205,12 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                                                 <span className="text-base font-medium text-brand leading-none">
                                                     {formatPrice(combo.price)}
                                                 </span>
-                                                <span className="text-[10px] text-gray-400 line-through font-normal leading-none">
-                                                    {formatPrice(originalPrice)}
-                                                </span>
+                                                {originalPrice > combo.price && (
+                                                    <span className="text-[10px] text-gray-400 line-through font-normal leading-none">
+                                                        {formatPrice(originalPrice)}
+                                                    </span>
+                                                )}
                                             </div>
-
-                                            {/* Link - "Saber mais" */}
-                                            <Link
-                                                href={`/combo/${combo.id}`}
-                                                className="mt-4 w-full bg-brand hover:bg-brand-dark text-white font-medium text-xs h-9 rounded-lg flex items-center justify-center gap-1.5 transition-all text-center leading-[2.25rem]"
-                                            >
-                                                Saber mais
-                                            </Link>
                                         </div>
                                     </div>
                                 </div>

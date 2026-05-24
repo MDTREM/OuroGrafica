@@ -19,6 +19,7 @@ export interface ComboItem {
     title: string;
     subtitle?: string;
     image?: string;
+    images?: string[];
     price: number;
     originalPrice?: number;
     items: string[];
@@ -101,10 +102,6 @@ export async function getHomepageConfig(): Promise<HomepageConfig> {
                             '1000 Cartões de Visita',
                             '500 Panfletos 10x14cm',
                             '100 Adesivos Redondos'
-                        ],
-                        variations: [
-                            { name: 'Papel', options: ['Reciclato 240g', 'Couchê 300g'] },
-                            { name: 'Acabamento', options: ['Corte Reto', 'Bordas Arredondadas'] }
                         ]
                     },
                     {
@@ -120,10 +117,6 @@ export async function getHomepageConfig(): Promise<HomepageConfig> {
                             '500 Adesivos Redondos',
                             '1 Banner 90x120cm',
                             'Logotipo Vetorial'
-                        ],
-                        variations: [
-                            { name: 'Papel', options: ['Reciclato 240g', 'Couchê 300g'] },
-                            { name: 'Enobrecimento', options: ['Verniz Local', 'Brilho Total', 'Laminação Fosca'] }
                         ]
                     }
                 ]
