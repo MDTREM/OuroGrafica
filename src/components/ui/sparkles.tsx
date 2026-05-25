@@ -1,0 +1,102 @@
+"use client"
+
+import { useId, useMemo } from "react"
+import Particles, { ParticlesProvider } from "@tsparticles/react"
+import { loadSlim } from "@tsparticles/slim"
+
+interface SparklesProps {
+  className?: string
+  size?: number
+  minSize?: number | null
+  density?: number
+  speed?: number
+  minSpeed?: number | null
+  opacity?: number
+  opacitySpeed?: number
+  minOpacity?: number | null
+  color?: string
+  background?: string
+  options?: any
+  direction?: "none" | "top" | "top-right" | "right" | "bottom-right" | "bottom" | "bottom-left" | "left" | "top-left"
+}
+
+const particlesInit = async (engine: any) => {
+  await loadSlim(engine);
+};
+
+export function Sparkles({
+  className,
+  size = 1,
+  minSize = null,
+  density = 800,
+  speed = 1,
+  minSpeed = null,
+  opacity = 1,
+  opacitySpeed = 3,
+  minOpacity = null,
+  color = "#FFFFFF",
+  background = "transparent",
+  options = {},
+  direction = "none",
+}: SparklesProps) {
+  const id = useId()
+
+  const defaultOptions = useMemo(() => ({
+    background: {
+      color: {
+        value: background,
+      },
+    },
+    fullScreen: {
+      enable: false,
+      zIndex: 1,
+    },
+    fpsLimit: 120,
+    particles: {
+      color: {
+        value: color,
+      },
+      move: {
+        enable: true,
+        direction: direction as any,
+        speed: {
+          min: minSpeed || speed / 10,
+          max: speed,
+        },
+        straight: false,
+      },
+      number: {
+        value: density,
+      },
+      opacity: {
+        value: {
+          min: minOpacity || opacity / 10,
+          max: opacity,
+        },
+        animation: {
+          enable: true,
+          sync: false,
+          speed: opacitySpeed,
+        },
+      },
+      size: {
+        value: {
+          min: minSize || size / 2.5,
+          max: size,
+        },
+      },
+    },
+    detectRetina: true,
+  }), [background, color, minSpeed, speed, density, minOpacity, opacity, opacitySpeed, minSize, size, direction])
+
+  const mergedOptions = useMemo(() => ({
+    ...defaultOptions,
+    ...options
+  }), [defaultOptions, options])
+
+  return (
+    <ParticlesProvider init={particlesInit}>
+      <Particles id={id} options={mergedOptions} className={className} />
+    </ParticlesProvider>
+  )
+}

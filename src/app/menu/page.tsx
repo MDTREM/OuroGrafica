@@ -8,6 +8,16 @@ import { ChevronRight, User, Package, Heart, Headphones, FileText, LogOut, Menu 
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import {
+    InfoCard,
+    InfoCardContent,
+    InfoCardTitle,
+    InfoCardDescription,
+    InfoCardFooter,
+    InfoCardDismiss,
+    InfoCardAction,
+    InfoCardMedia
+} from "@/components/ui/info-card";
 
 export default function MenuPage() {
     const { user, signOut } = useAuth();
@@ -114,7 +124,7 @@ export default function MenuPage() {
                 {/* 4. Branding Services */}
                 <div className="mb-6">
                     <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 pl-2">Agência Vink</h2>
-                    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
+                    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm mb-4">
                         <Link
                             href="/branding"
                             className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors"
@@ -123,6 +133,57 @@ export default function MenuPage() {
                             <span className="text-gray-700 font-medium text-sm">Serviços de Branding</span>
                         </Link>
                     </div>
+
+                    {/* Interactive Premium InfoCard Announcement */}
+                    <InfoCard storageKey="vink-menu-announcement" dismissType="forever" className="border border-gray-100 shadow-sm rounded-xl p-4 overflow-hidden relative">
+                        <InfoCardContent>
+                            <div className="relative">
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-brand rounded-full animate-ping" />
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-brand rounded-full" />
+                                
+                                <InfoCardTitle className="text-sm font-semibold text-gray-900 pr-4">
+                                    Identidade Visual Premium
+                                </InfoCardTitle>
+                                <InfoCardDescription className="text-xs text-gray-500 mt-1 mb-2 leading-relaxed">
+                                    Conheça os novos planos de identidade e embalagens sob medida que geram desejo imediato.
+                                </InfoCardDescription>
+
+                                <InfoCardMedia
+                                    shrinkHeight={70}
+                                    expandHeight={140}
+                                    media={[
+                                        {
+                                            src: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&auto=format&fit=crop",
+                                            alt: "Burguer Artesanal",
+                                        },
+                                        {
+                                            src: "https://images.unsplash.com/photo-1628102491629-77858ab216b2?w=600&auto=format&fit=crop",
+                                            alt: "Bacio di Latte",
+                                        },
+                                        {
+                                            src: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop",
+                                            alt: "Pastry",
+                                        }
+                                    ]}
+                                    className="mt-3 rounded-lg overflow-hidden"
+                                />
+
+                                <InfoCardFooter className="mt-3 flex items-center justify-between border-t border-gray-50 pt-3">
+                                    <InfoCardDismiss className="text-gray-400 hover:text-gray-600 transition-colors font-medium text-xs">
+                                        Dispensar
+                                    </InfoCardDismiss>
+                                    <InfoCardAction>
+                                        <Link
+                                            href="/branding"
+                                            className="text-brand hover:text-brand-dark font-semibold text-xs flex items-center gap-1 hover:underline transition-all"
+                                        >
+                                            Ver Planos <ChevronRight size={14} />
+                                        </Link>
+                                    </InfoCardAction>
+                                </InfoCardFooter>
+                            </div>
+                        </InfoCardContent>
+                    </InfoCard>
                 </div>
 
                 {/* 5. Policies & Logout */}

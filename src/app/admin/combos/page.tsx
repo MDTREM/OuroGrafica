@@ -162,20 +162,72 @@ export default function AdminCombosPage() {
         }
     }
 
+    function getProductPriceForQty(product: any, qty: number) {
+        if (!product) return 0;
+        if (product.priceBreakdowns && product.priceBreakdowns[qty]) {
+            return product.priceBreakdowns[qty];
+        }
+        const basePrice = product.price || 0;
+        if (product.priceBreakdowns) {
+            const keys = Object.keys(product.priceBreakdowns).map(Number).sort((a, b) => a - b);
+            if (keys.length > 0) {
+                if (qty <= keys[0]) return (product.priceBreakdowns[keys[0]] / keys[0]) * qty;
+                let lastKey = keys[0];
+                for (const key of keys) {
+                    if (qty >= key) { lastKey = key; } 
+                    else {
+                        const lastVal = product.priceBreakdowns[lastKey];
+                        const nextVal = product.priceBreakdowns[key];
+                        return lastVal + ((nextVal - lastVal) / (key - lastKey)) * (qty - lastKey);
+                    }
+                }
+                return (product.priceBreakdowns[lastKey] / lastKey) * qty;
+            }
+        }
+        const baseQty = product.quantities && product.quantities.length > 0
+            ? parseInt(product.quantities[0].match(/\d+/)?.[0] || "100") : 100;
+        return (basePrice / baseQty) * qty;
+    }
+
     function saveCombo() {
         if (!editingCombo || !editingCombo.title) return;
         
+        // Auto-calculate originalPrice from sum of individual product prices
+        let calculatedOriginalPrice = 0;
+        if (editingCombo.items && editingCombo.items.length > 0) {
+            editingCombo.items.forEach((itemStr: string) => {
+                const qtyMatch = itemStr.match(/^(\d+)\s+/);
+                const qty = qtyMatch ? parseInt(qtyMatch[1]) : 0;
+                const nameSearch = itemStr.replace(/^\d+\s+/, '').replace(/\s*\(.*\)\s*$/, '').toLowerCase();
+                
+                const matchedProduct = products.find(p => 
+                    p.title.toLowerCase() === nameSearch ||
+                    nameSearch.includes(p.title.toLowerCase()) ||
+                    p.title.toLowerCase().includes(nameSearch)
+                );
+                
+                if (matchedProduct && qty > 0) {
+                    calculatedOriginalPrice += getProductPriceForQty(matchedProduct, qty);
+                }
+            });
+        }
+
+        const comboToSave = {
+            ...editingCombo,
+            originalPrice: calculatedOriginalPrice > 0 ? calculatedOriginalPrice : editingCombo.originalPrice
+        };
+
         const combosSection = getCombosSection(config);
         const currentCombos = combosSection?.combos || [];
         
-        const existingIndex = currentCombos.findIndex(c => c.id === editingCombo.id);
+        const existingIndex = currentCombos.findIndex(c => c.id === comboToSave.id);
         let newCombos;
 
         if (existingIndex >= 0) {
             newCombos = [...currentCombos];
-            newCombos[existingIndex] = editingCombo;
+            newCombos[existingIndex] = comboToSave;
         } else {
-            const newCombo = { ...editingCombo };
+            const newCombo = { ...comboToSave };
             if (!newCombo.id) newCombo.id = 'combo-' + Date.now();
             newCombos = [...currentCombos, newCombo];
         }

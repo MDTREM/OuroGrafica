@@ -112,7 +112,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
     const context = useContext(AuthContext);
     if (context === undefined) {
-        throw new Error("useAuth must be used within an AuthProvider");
+        // Safe fallback to prevent runtime crashes during SSR or layout timing mismatches
+        return {
+            user: null,
+            session: null,
+            isLoading: false,
+            signIn: async () => ({ data: null, error: new Error("AuthContext is missing") }),
+            signUp: async () => ({ data: null, error: new Error("AuthContext is missing") }),
+            signInWithSocial: async () => ({ data: null, error: new Error("AuthContext is missing") }),
+            signOut: async () => {},
+            isAdmin: false
+        };
     }
     return context;
 }

@@ -3,6 +3,7 @@
 import { Container } from "@/components/ui/Container";
 import Link from "next/link";
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Tag, Check, X, Info, Truck, Edit2, ChevronDown } from "lucide-react";
+import { Sparkles as SparklesComp } from "@/components/ui/sparkles";
 import { useCart } from "@/contexts/CartContext";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -330,8 +331,18 @@ export default function CartPage() {
 
     if (items.length === 0) {
         return (
-            <div className="bg-gray-50 min-h-screen pb-24 flex flex-col items-center justify-center">
-                <div className="text-center p-8 bg-white rounded-xl shadow-sm border border-gray-100 max-w-md w-full">
+            <div className="bg-gray-50 min-h-screen pb-24 flex flex-col items-center justify-center relative overflow-hidden">
+                {/* Background Sparkles Effect */}
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+                    <SparklesComp
+                        density={80}
+                        direction="bottom"
+                        speed={0.4}
+                        color="#15cb98"
+                        className="absolute inset-0 h-full w-full"
+                    />
+                </div>
+                <div className="text-center p-8 bg-white rounded-xl shadow-sm border border-gray-100 max-w-md w-full relative z-10">
                     <ShoppingBag size={64} className="mx-auto text-gray-200 mb-6" />
                     <h2 className="text-lg font-semibold text-gray-900 mb-2">Seu carrinho está vazio</h2>
                     <p className="text-gray-500 mb-8">Parece que você ainda não adicionou nenhum produto.</p>
@@ -344,7 +355,18 @@ export default function CartPage() {
     }
 
     return (
-        <div className="bg-gray-50 min-h-screen pb-24">
+        <div className="bg-gray-50 min-h-screen pb-24 relative overflow-hidden">
+            {/* Background Sparkles Effect */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
+                <SparklesComp
+                    density={80}
+                    direction="bottom"
+                    speed={0.4}
+                    color="#15cb98"
+                    className="absolute inset-0 h-full w-full"
+                />
+            </div>
+            <div className="relative z-10">
             <div className="bg-white border-b border-gray-100 p-4 mb-6 sticky top-0 z-30 hidden md:flex items-center justify-center">
                 <h1 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <ShoppingBag size={22} className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark" />
@@ -703,6 +725,7 @@ export default function CartPage() {
                 onClose={() => setIsDetailsModalOpen(false)} 
                 items={items} 
             />
+            </div>
         </div>
     );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, ShoppingCart, User, Menu, X } from "lucide-react";
+import { Search, ShoppingCart, User, Menu, X, ChevronRight, Star, Headphones, Heart, FileText, LogOut } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -9,18 +9,43 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { cn } from "@/lib/utils";
+import { Banner } from "@/components/ui/banner";
+import { supabase } from "@/lib/supabase";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+    InfoCard,
+    InfoCardContent,
+    InfoCardTitle,
+    InfoCardDescription,
+    InfoCardFooter,
+    InfoCardDismiss,
+    InfoCardAction,
+    InfoCardMedia
+} from "@/components/ui/info-card";
 
 export function TopBar() {
     const [query, setQuery] = useState("");
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [categories, setCategories] = useState<any[]>([]);
     const searchRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const pathname = usePathname();
-    const { user } = useAuth();
+    const { user, signOut } = useAuth();
     const { items } = useCart();
 
     const isLandingPage = pathname === "/branding";
     const logoUrl = isLandingPage ? "https://i.imgur.com/pDwzTbi.png" : "https://i.imgur.com/aS2efN8.png";
+ 
+    useEffect(() => {
+        async function fetchCategories() {
+            const { data } = await supabase.from('categories').select('*').order('order_index', { ascending: true });
+            if (data) {
+                setCategories(data.filter((c: any) => !c.parentId && c.showOnHome !== false));
+            }
+        }
+        fetchCategories();
+    }, []);
  
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -45,9 +70,23 @@ export function TopBar() {
 
     return (
         <>
-            {/* Top Black Bar - Hide on Mobile */}
-            <div className="hidden md:block bg-[#191919] text-white text-sm py-2">
-                <Container className="flex justify-between items-center">
+            {/* Top Black Bar - Hide on Mobile with Green Flow Effect */}
+            <Banner
+                variant="rainbow"
+                changeLayout={false}
+                height="auto"
+                rainbowColors={[
+                    "rgba(21, 203, 152, 0.45)",
+                    "rgba(21, 203, 152, 0.2)",
+                    "transparent",
+                    "rgba(21, 203, 152, 0.55)",
+                    "transparent",
+                    "rgba(21, 203, 152, 0.25)",
+                    "transparent",
+                ]}
+                className="hidden md:flex bg-[#191919] text-white text-sm py-2 border-none relative z-40 w-full justify-between items-center"
+            >
+                <Container className="flex justify-between items-center w-full relative z-10">
                     <div className="flex gap-6">
                         {isLandingPage ? (
                             <Link href="/" className="hover:text-[#15cb98] transition-colors font-medium text-brand">Loja</Link>
@@ -61,7 +100,7 @@ export function TopBar() {
                         Cliente come primeiro com os olhos.
                     </div>
                 </Container>
-            </div>
+            </Banner>
             
             {/* Main Header (White) */}
             <header className="bg-white md:sticky md:top-0 z-50 border-b border-gray-100 transition-all duration-300">
@@ -72,24 +111,15 @@ export function TopBar() {
                         "flex items-center gap-3 w-full md:w-auto",
                         isLandingPage ? "relative justify-center md:justify-start" : ""
                     )}>
-                        {pathname === "/menu" ? (
-                            <button
-                                onClick={() => router.back()}
-                                className="md:hidden p-2 -ml-2 text-gray-700 hover:text-brand transition-colors"
-                            >
-                                <Menu size={24} />
-                            </button>
-                        ) : (
-                            <Link
-                                href="/menu"
-                                className={cn(
-                                    "md:hidden p-2 -ml-2 text-gray-700 hover:text-brand transition-colors",
-                                    isLandingPage ? "absolute left-0 z-10" : ""
-                                )}
-                            >
-                                <Menu size={24} />
-                            </Link>
-                        )}
+                        <button
+                            onClick={() => setIsMobileMenuOpen(true)}
+                            className={cn(
+                                "md:hidden p-2 -ml-2 text-gray-700 hover:text-brand transition-colors",
+                                isLandingPage ? "absolute left-0 z-10" : ""
+                            )}
+                        >
+                            <Menu size={24} />
+                        </button>
                         <Link
                             href="/"
                             className={cn(
@@ -171,6 +201,200 @@ export function TopBar() {
                     )}
                 </Container>
             </header>
+
+            {/* Mobile Side Drawer Menu */}
+            <AnimatePresence>
+                {isMobileMenuOpen && (
+                    <>
+                        {/* Backdrop with low opacity */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="fixed inset-0 bg-black/40 z-50 md:hidden backdrop-blur-[1px]"
+                        />
+
+                        {/* Slide-out Drawer starting on left */}
+                        <motion.div
+                            initial={{ x: "-100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "-100%" }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="fixed inset-y-0 left-0 w-[80vw] max-w-[320px] bg-gray-50 z-[100] shadow-2xl flex flex-col md:hidden overflow-y-auto no-scrollbar"
+                        >
+                            {/* Drawer Header */}
+                            <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-10 flex items-center justify-between">
+                                <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                    <Menu size={18} className="text-brand" />
+                                    Menu Vink
+                                </h2>
+                                <button
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="p-1 rounded-full text-gray-400 hover:bg-gray-100 transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            {/* Drawer Content */}
+                            <div className="p-4 flex-1 flex flex-col gap-5 pb-12">
+                                {/* 1. User Account Header */}
+                                <div className="bg-white rounded-xl p-3 border border-gray-100 flex items-center justify-between shadow-sm">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 overflow-hidden">
+                                            {user?.user_metadata?.avatar_url ? (
+                                                <img src={user.user_metadata.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <User size={20} />
+                                            )}
+                                        </div>
+                                        <div>
+                                            {user ? (
+                                                <>
+                                                    <p className="text-xs text-gray-500 font-medium">Olá, {user.user_metadata?.name || user.email?.split('@')[0]}</p>
+                                                    <Link href="/perfil" onClick={() => setIsMobileMenuOpen(false)} className="text-brand font-semibold text-xs hover:underline">Minha Conta</Link>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <p className="text-xs text-gray-500 font-medium">Olá, Visitante</p>
+                                                    <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-brand font-semibold text-xs hover:underline">Entrar / Cadastro</Link>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {user && <Link href="/perfil" onClick={() => setIsMobileMenuOpen(false)}><ChevronRight size={18} className="text-gray-300" /></Link>}
+                                </div>
+
+                                {/* 2. Core Links */}
+                                <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm flex flex-col">
+                                    <Link
+                                        href="/atendimento"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex items-center gap-3 p-3.5 hover:bg-gray-50 transition-colors border-b border-gray-50"
+                                    >
+                                        <Headphones size={16} className="text-gray-400" />
+                                        <span className="text-gray-700 font-medium text-xs">Atendimento</span>
+                                    </Link>
+                                    <Link
+                                        href="/favoritos"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="flex items-center gap-3 p-3.5 hover:bg-gray-50 transition-colors"
+                                    >
+                                        <Heart size={16} className="text-gray-400" />
+                                        <span className="text-gray-700 font-medium text-xs">Favoritos</span>
+                                    </Link>
+                                </div>
+
+                                {/* 3. Categories */}
+                                <div>
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 pl-2">Categorias</h3>
+                                    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm flex flex-col max-h-[220px] overflow-y-auto no-scrollbar">
+                                        {categories.map((cat, idx) => (
+                                            <Link
+                                                key={cat.id}
+                                                href={cat.parentId ? `/categoria/${cat.parentId}/${cat.id}` : `/categoria/${cat.id}`}
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className={`flex items-center justify-between p-3 hover:bg-gray-50 transition-colors ${idx !== categories.length - 1 ? 'border-b border-gray-50' : ''}`}
+                                            >
+                                                <span className="text-gray-700 font-medium text-xs">{cat.name}</span>
+                                                <ChevronRight size={14} className="text-gray-300" />
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* 4. Branding (Agência Vink) */}
+                                <div>
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 pl-2">Agência Vink</h3>
+                                    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm mb-3">
+                                        <Link
+                                            href="/branding"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="flex items-center gap-3 p-3.5 hover:bg-gray-50 transition-colors"
+                                        >
+                                            <Star size={16} className="text-brand" />
+                                            <span className="text-gray-700 font-medium text-xs">Serviços de Branding</span>
+                                        </Link>
+                                    </div>
+
+                                    {/* InfoCard in mobile lateral menu drawer */}
+                                    <InfoCard storageKey="vink-drawer-announcement" dismissType="forever" className="border border-gray-100 shadow-sm rounded-xl p-3 overflow-hidden relative bg-white">
+                                        <InfoCardContent>
+                                            <div className="relative">
+                                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand rounded-full animate-ping" />
+                                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand rounded-full" />
+                                                
+                                                <InfoCardTitle className="text-xs font-semibold text-gray-900 pr-4">
+                                                    Identidade Visual DEVORA
+                                                </InfoCardTitle>
+                                                <InfoCardDescription className="text-[10px] text-gray-500 mt-1 mb-2 leading-relaxed">
+                                                    Planos de branding e embalagens sob medida que geram desejo imediato no seu cliente.
+                                                </InfoCardDescription>
+
+                                                <InfoCardMedia
+                                                    shrinkHeight={55}
+                                                    expandHeight={110}
+                                                    media={[
+                                                        {
+                                                            src: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&auto=format&fit=crop",
+                                                            alt: "Burguer Artesanal",
+                                                        },
+                                                        {
+                                                            src: "https://images.unsplash.com/photo-1628102491629-77858ab216b2?w=400&auto=format&fit=crop",
+                                                            alt: "Bacio di Latte",
+                                                        },
+                                                        {
+                                                            src: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop",
+                                                            alt: "Pastry",
+                                                        }
+                                                    ]}
+                                                    className="mt-2 rounded-lg overflow-hidden"
+                                                />
+
+                                                <InfoCardFooter className="mt-2.5 flex items-center justify-between border-t border-gray-50 pt-2">
+                                                    <InfoCardDismiss className="text-gray-400 hover:text-gray-600 transition-colors font-medium text-[10px]">
+                                                        Dispensar
+                                                    </InfoCardDismiss>
+                                                    <InfoCardAction>
+                                                        <Link
+                                                            href="/branding"
+                                                            onClick={() => setIsMobileMenuOpen(false)}
+                                                            className="text-brand hover:text-brand-dark font-semibold text-[10px] flex items-center gap-0.5 hover:underline transition-all"
+                                                        >
+                                                            Ver Planos <ChevronRight size={12} />
+                                                        </Link>
+                                                    </InfoCardAction>
+                                                </InfoCardFooter>
+                                            </div>
+                                        </InfoCardContent>
+                                    </InfoCard>
+                                </div>
+
+                                {/* 5. Policies & Sign Out */}
+                                <div className="space-y-2 mt-auto pt-4 border-t border-gray-100">
+                                    <Link href="/termos-de-uso" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:bg-gray-50 text-xs font-medium text-gray-600">
+                                        <FileText size={16} className="text-gray-400" />
+                                        Políticas e Termos
+                                    </Link>
+                                    {user && (
+                                        <button
+                                            onClick={async () => {
+                                                await signOut();
+                                                setIsMobileMenuOpen(false);
+                                            }}
+                                            className="w-full flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:bg-red-50 hover:border-red-100 hover:text-red-600 transition-colors text-xs font-medium text-gray-600 text-left"
+                                        >
+                                            <LogOut size={16} className="text-gray-400" />
+                                            Sair da conta
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </>
     );
 }

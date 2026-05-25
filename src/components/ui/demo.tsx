@@ -1,17 +1,10 @@
-import * as React from "react";
-import { GooeyText } from "@/components/ui/gooey-text-morphing";
+import React from 'react';
+import Component from '@/components/ui/sticky-scroll';
 
-function GooeyTextDemo() {
+function ComponentDemo() {
   return (
-    <div className="h-[200px] flex items-center justify-center">
-      <GooeyText
-        texts={["Design", "Engineering", "Is", "Awesome"]}
-        morphTime={1}
-        cooldownTime={0.25}
-        className="font-bold"
-      />
-    </div>
+    <Component cases={[]} />
   );
 }
 
-export { GooeyTextDemo };
+export { ComponentDemo as DemoOne };

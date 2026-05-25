@@ -18,6 +18,15 @@
 
   /* Border */
   --border: #E5E7EB; /* Gray-200 */
+
+  /* Sparkles & Gradient Effects */
+  --gradient-color: var(--brand);
+  --sparkles-color: var(--brand);
+}
+
+.dark {
+  --gradient-color: var(--brand);
+  --sparkles-color: #ffffff;
 }
 
 @theme inline {
@@ -45,6 +54,10 @@
   --radius-2xl: 1rem;       /* 16px */
   --radius-3xl: 1.5rem;     /* 24px */
   --radius-full: 9999px;
+
+  /* Sparkles & Gradient Theme Properties */
+  --color-sparkles-color: var(--sparkles-color);
+  --color-gradient-color: var(--gradient-color);
 }
 
 body {
@@ -202,4 +215,111 @@ body {
 .bg-clip-text.text-transparent:hover {
   color: var(--brand-dark, #10a379) !important;
   -webkit-text-fill-color: var(--brand-dark, #10a379) !important;
+}
+
+/* Custom keyframes and utilities for Sign-In and Signup animation */
+@keyframes fadeSlideIn {
+  to {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0px);
+  }
+}
+
+@keyframes slideRightIn {
+  to {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateX(0px);
+  }
+}
+
+@keyframes testimonialIn {
+  to {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0px) scale(1);
+  }
+}
+
+.animate-element {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(20px);
+  animation: fadeSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-right {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateX(40px);
+  animation: slideRightIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-testimonial {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(20px) scale(0.95);
+  animation: testimonialIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+.animate-delay-600 { animation-delay: 600ms; }
+.animate-delay-700 { animation-delay: 700ms; }
+.animate-delay-800 { animation-delay: 800ms; }
+.animate-delay-900 { animation-delay: 900ms; }
+.animate-delay-1000 { animation-delay: 1000ms; }
+.animate-delay-1200 { animation-delay: 1200ms; }
+.animate-delay-1400 { animation-delay: 1400ms; }
+
+/* Custom Checkbox style */
+.custom-checkbox {
+  appearance: none;
+  background-color: transparent;
+  margin: 0;
+  font: inherit;
+  color: var(--brand);
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid var(--border);
+  border-radius: 0.35em;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+  transition: all 150ms ease-in-out;
+  cursor: pointer;
+}
+
+.custom-checkbox::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--brand);
+  transform-origin: center;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.custom-checkbox:checked {
+  border-color: var(--brand);
+  background-color: var(--brand-light);
+}
+
+.custom-checkbox:checked::before {
+  transform: scale(1);
+}
+
+/* Keyframes for moving banner flowing gradient */
+@keyframes fd-moving-banner {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
 }
