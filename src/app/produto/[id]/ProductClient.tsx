@@ -1447,8 +1447,8 @@ export default function ProductClient({ product }: ProductClientProps) {
                                         disabled={isBuying || isSuccess}
                                         className="w-full bg-brand text-white font-semibold py-5 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-brand/20 active:scale-[0.98] disabled:opacity-90 disabled:pointer-events-none group relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
                                     >
-                                        <span className="relative z-10 w-full">
-                                            <ScrollRevealButtonText idleText="Comprar Agora" />
+                                        <span className="relative z-10">
+                                            {isSuccess ? "Confirmado! ✓" : isBuying ? "Processando..." : "Comprar Agora"}
                                         </span>
                                     </button>
                                 </div>
@@ -1576,8 +1576,8 @@ export default function ProductClient({ product }: ProductClientProps) {
                     disabled={isBuying || isSuccess}
                     className="flex-1 bg-brand text-white font-semibold h-12 rounded text-center active:scale-95 transition-all shadow-lg shadow-brand/20 disabled:opacity-90 disabled:pointer-events-none relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379] flex items-center justify-center"
                 >
-                    <span className="relative z-10 w-full">
-                        <ScrollRevealButtonText idleText="Comprar" />
+                    <span className="relative z-10">
+                        {isSuccess ? "Confirmado! ✓" : isBuying ? "Processando..." : "Comprar"}
                     </span>
                 </button>
             </div>
