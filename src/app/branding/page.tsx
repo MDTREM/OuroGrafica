@@ -9,6 +9,7 @@ import StickyScroll from "@/components/ui/sticky-scroll";
 import BrandingHeroHeadline from "@/components/ui/BrandingHeroHeadline";
 import { ImageComparison } from "@/components/ui/image-comparison-slider";
 import { BrandingFaq } from "@/components/ui/BrandingFaq";
+import { LandingAccordionItem } from "@/components/ui/interactive-image-accordion";
 
 const FAQ_ITEMS = [
     {
@@ -21,7 +22,7 @@ const FAQ_ITEMS = [
     },
     {
         question: "Eu já tenho uma logo. Posso fazer só as embalagens?",
-        answer: "Podemos realizar o redesign ou a aplicação de marca em novos suportes, desde que a marca atual comporte um padrão de qualidade VINK. Caso contrário, sugerimos um ajuste técnico."
+        answer: "Podemos realizar o redesign ou a aplicação de marca em novos suportes, desde que a marca atual comporte um padrão de qualidade VINK. Caso contrário, sugerimos um adjustment técnico."
     }
 ];
 
@@ -42,20 +43,28 @@ export default async function BrandingPage() {
             {/* Hero Section */}
             <section className="pt-16 pb-8 md:pt-24 md:pb-12 relative overflow-hidden">
                 <Container className="relative z-10">
-                    <div className="flex flex-col items-center text-center max-w-4xl mx-auto w-full">
-                        <BrandingHeroHeadline />
-                        
-                        <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-2xl leading-relaxed font-light">
-                            Criamos identidades visuais, embalagens e materiais que geram desejo e fazem seu restaurante parecer uma grande franquia desde o primeiro olhar.
-                        </p>
-                        
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-                            <a href="#planos" className="bg-brand text-white rounded-xl px-8 py-4 font-medium transition-colors flex items-center justify-center relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]">
-                                <span className="relative z-10 flex items-center justify-center">Ver planos</span>
-                            </a>
-                            <a href="https://wa.me/5531989880161?text=Olá,%20gostaria%20de%20falar%20sobre%20o%20branding%20do%20meu%20restaurante!" target="_blank" rel="noopener noreferrer" className="bg-white text-brand border border-brand rounded-xl px-8 py-4 font-medium transition-colors flex items-center justify-center relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-gray-50">
-                                <span className="relative z-10 flex items-center justify-center">Falar com especialista</span>
-                            </a>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                        {/* Left Side: Text Content */}
+                        <div className="lg:col-span-5 text-center lg:text-left flex flex-col items-center lg:items-start w-full">
+                            <BrandingHeroHeadline />
+                            
+                            <p className="text-lg md:text-xl text-gray-500 mb-10 max-w-2xl lg:max-w-none leading-relaxed font-light mt-4">
+                                Criamos identidades visuais, embalagens e materiais que geram desejo e fazem seu restaurante parecer uma grande franquia desde o primeiro olhar.
+                            </p>
+                            
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full sm:w-auto">
+                                <a href="#planos" className="bg-brand text-white rounded-xl px-8 py-4 font-medium transition-colors flex items-center justify-center relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]">
+                                    <span className="relative z-10 flex items-center justify-center">Ver planos</span>
+                                </a>
+                                <a href="https://wa.me/5531989880161?text=Olá,%20gostaria%20de%20falar%20sobre%20o%20branding%20do%20meu%20restaurante!" target="_blank" rel="noopener noreferrer" className="bg-white text-brand border border-brand rounded-xl px-8 py-4 font-medium transition-colors flex items-center justify-center relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-gray-50">
+                                    <span className="relative z-10 flex items-center justify-center">Falar com especialista</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Right Side: Interactive Image Accordion */}
+                        <div className="lg:col-span-7 w-full overflow-hidden flex items-center justify-center">
+                            <LandingAccordionItem />
                         </div>
                     </div>
                 </Container>

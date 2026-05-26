@@ -15,10 +15,10 @@ export default function BrandingHeroHeadline() {
 
   if (!isMounted) {
     return (
-      <h1 className="text-4xl md:text-5xl lg:text-[4rem] xl:text-[4.5rem] font-medium tracking-tight leading-[1.1] mb-6 text-black min-h-[120px] md:min-h-[160px] flex flex-col md:flex-row md:flex-wrap items-center justify-center text-center">
+      <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] font-medium tracking-tight leading-[1.1] mb-6 text-black min-h-[120px] md:min-h-[160px] flex flex-col lg:flex-row lg:flex-wrap items-center lg:items-start justify-center lg:justify-start text-center lg:text-left">
         <span>Identidade visual </span>
-        <span>que <span className="text-brand font-bold italic">DEVORA</span></span>
-        <span> a concorrência.</span>
+        <span className="lg:ml-2">que <span className="text-brand font-bold italic">DEVORA</span></span>
+        <span className="lg:ml-2"> a concorrência.</span>
       </h1>
     );
   }
@@ -32,9 +32,9 @@ export default function BrandingHeroHeadline() {
   let wordIndex = 0;
 
   return (
-    <h1 className="text-4xl md:text-5xl lg:text-[4rem] xl:text-[4.5rem] font-medium tracking-tight leading-[1.1] mb-6 text-black flex flex-col md:flex-row md:flex-wrap justify-center text-center min-h-[120px] md:min-h-[160px] items-center">
+    <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] font-medium tracking-tight leading-[1.1] mb-6 text-black flex flex-col lg:flex-row lg:flex-wrap justify-center lg:justify-start text-center lg:text-left min-h-[120px] md:min-h-[160px] items-center lg:items-start">
       {lines.map((line, lineIdx) => (
-        <span key={lineIdx} className="flex flex-wrap justify-center">
+        <span key={lineIdx} className="flex flex-wrap justify-center lg:justify-start">
           {line.map((word) => {
             const currentIndex = wordIndex++;
             const cleanWord = word.toUpperCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
@@ -70,3 +70,4 @@ export default function BrandingHeroHeadline() {
     </h1>
   );
 }
+
