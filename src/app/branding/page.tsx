@@ -120,67 +120,151 @@ export default async function BrandingPage() {
             </section>
 
             {/* Ingredientes do Sucesso */}
-            <section className="py-12 md:py-24 relative overflow-hidden">
+            <section className="py-20 md:py-32 relative overflow-hidden bg-gradient-to-b from-white to-gray-50/30">
+                {/* Decorative background grid pattern */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#15cb98_1px,transparent_1px)] [background-size:24px_24px]" />
+                
                 <Container className="relative z-10">
-                    <div className="text-center mb-24 max-w-2xl mx-auto">
-                        <h2 className="text-4xl font-medium tracking-tight text-black mb-4">
+                    <div className="text-center mb-20 max-w-2xl mx-auto">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand/10 text-brand text-xs font-semibold tracking-wide uppercase mb-4">
+                            Metodologia Vink
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-black mb-4">
                             Ingredientes do <span className="text-brand font-bold italic pr-2">Sucesso</span>
                         </h2>
-                        <p className="text-gray-500 font-light">
-                            Tudo que sua marca precisa pra parar de parecer "só mais um restaurante".
+                        <p className="text-gray-500 font-light text-base md:text-lg">
+                            Tudo que sua marca precisa pra parar de parecer "só mais um restaurante" e se destacar como líder de mercado.
                         </p>
                     </div>
 
-                    <div className="space-y-16 md:space-y-28">
-                        {/* 1 */}
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-                            <div className="md:col-span-5 aspect-[4/3] bg-[#c39b74] rounded-xl overflow-hidden shadow-sm w-full max-w-sm mx-auto">
-                                <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?q=80&w=1000&auto=format&fit=crop" alt="Logo & Identidade" className="w-full h-full object-cover mix-blend-overlay opacity-80" />
-                            </div>
-                            <div className="md:col-span-7 md:pl-10">
-                                <h3 className="text-2xl md:text-3xl font-medium text-black mb-4">Logo & Identidade</h3>
-                                <p className="text-gray-500 font-light leading-relaxed">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+                        {/* 1. Logo & Identidade (Large, 7 cols) */}
+                        <div className="group relative lg:col-span-7 bg-white hover:bg-gradient-to-br hover:from-brand/[0.02] hover:to-white border border-gray-150/70 hover:border-brand/20 rounded-3xl p-8 md:p-10 transition-all duration-700 ease-out hover:shadow-2xl hover:shadow-brand/5 flex flex-col justify-between overflow-hidden min-h-[460px]">
+                            {/* Ambient Light effect on hover */}
+                            <div className="absolute -top-40 -right-40 w-96 h-96 bg-brand/5 rounded-full blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                            
+                            <div className="relative z-10">
+                                <div className="flex items-center justify-between mb-8">
+                                    <div className="w-12 h-12 rounded-2xl bg-brand/10 text-brand flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform duration-500">
+                                        <Star className="w-5 h-5 fill-brand/20" />
+                                    </div>
+                                    <span className="text-[48px] font-extrabold font-mono tracking-tight text-gray-100/80 group-hover:text-brand/10 transition-colors duration-500 select-none leading-none">
+                                        01
+                                    </span>
+                                </div>
+                                
+                                <h3 className="text-2xl md:text-3xl font-medium text-black mb-4 group-hover:text-brand transition-colors duration-300">
+                                    Logo & Identidade
+                                </h3>
+                                <p className="text-gray-500 font-light leading-relaxed max-w-md text-sm md:text-base">
                                     Criamos uma identidade visual alinhada com a proposta do seu negócio, garantindo que sua marca seja reconhecida instantaneamente. A base da sua presença no mercado. Não entregamos apenas um desenho; entregamos um ecossistema visual completo.
                                 </p>
                             </div>
+                            
+                            {/* Staggered mockup visual */}
+                            <div className="relative mt-8 lg:mt-0 lg:absolute lg:right-8 lg:bottom-8 lg:w-[280px] lg:h-[200px] xl:w-[320px] xl:h-[220px] rounded-2xl overflow-hidden border border-gray-150/60 shadow-lg group-hover:scale-[1.03] group-hover:-translate-y-2 group-hover:rotate-1 transition-all duration-700 ease-out bg-[#c39b74] shrink-0">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?q=80&w=1000&auto=format&fit=crop" 
+                                    alt="Logo & Identidade" 
+                                    className="w-full h-full object-cover mix-blend-overlay opacity-80" 
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                            </div>
                         </div>
 
-                        {/* 2 */}
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-                            <div className="order-2 md:order-1 md:col-span-7 md:pr-10">
-                                <h3 className="text-2xl md:text-3xl font-medium text-black mb-4">Cardápios Estratégicos</h3>
-                                <p className="text-gray-500 font-light leading-relaxed">
+                        {/* 2. Cardápios Estratégicos (Medium, 5 cols) */}
+                        <div className="group relative lg:col-span-5 bg-white hover:bg-gradient-to-br hover:from-brand/[0.02] hover:to-white border border-gray-150/70 hover:border-brand/20 rounded-3xl p-8 md:p-10 transition-all duration-700 ease-out hover:shadow-2xl hover:shadow-brand/5 flex flex-col justify-between overflow-hidden min-h-[460px]">
+                            <div className="absolute -top-40 -right-40 w-96 h-96 bg-brand/5 rounded-full blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                            
+                            <div className="relative z-10">
+                                <div className="flex items-center justify-between mb-8">
+                                    <div className="w-12 h-12 rounded-2xl bg-brand/10 text-brand flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform duration-500">
+                                        <Utensils className="w-5 h-5" />
+                                    </div>
+                                    <span className="text-[48px] font-extrabold font-mono tracking-tight text-gray-100/80 group-hover:text-brand/10 transition-colors duration-500 select-none leading-none">
+                                        02
+                                    </span>
+                                </div>
+                                
+                                <h3 className="text-2xl md:text-3xl font-medium text-black mb-4 group-hover:text-brand transition-colors duration-300">
+                                    Cardápios Estratégicos
+                                </h3>
+                                <p className="text-gray-500 font-light leading-relaxed text-sm md:text-base">
                                     O cardápio é sua principal ferramenta de vendas. Aplicamos estratégia e design para destacar os itens mais lucrativos e tornar a experiência do cliente mais intuitiva e irresistível.
                                 </p>
                             </div>
-                            <div className="order-1 md:order-2 md:col-span-5 aspect-[4/3] bg-[#234b3c] rounded-xl overflow-hidden shadow-sm w-full max-w-sm mx-auto">
-                                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop" alt="Cardápios Estratégicos" className="w-full h-full object-cover mix-blend-overlay opacity-60" />
+                            
+                            <div className="relative mt-8 h-[160px] lg:h-[180px] rounded-2xl overflow-hidden border border-gray-150/60 shadow-lg group-hover:scale-[1.03] group-hover:-translate-y-1 transition-all duration-700 ease-out bg-[#234b3c] shrink-0">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop" 
+                                    alt="Cardápios Estratégicos" 
+                                    className="w-full h-full object-cover mix-blend-overlay opacity-60" 
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                             </div>
                         </div>
 
-                        {/* 3 */}
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-                            <div className="md:col-span-5 aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden shadow-sm w-full max-w-sm mx-auto">
-                                <img src="https://images.unsplash.com/photo-1628102491629-77858ab216b2?q=80&w=1000&auto=format&fit=crop" alt="Viral Packing" className="w-full h-full object-cover" />
-                            </div>
-                            <div className="md:col-span-7 md:pl-10">
-                                <h3 className="text-2xl md:text-3xl font-medium text-black mb-4">O conceito de Viral Packing</h3>
-                                <p className="text-gray-500 font-light leading-relaxed">
+                        {/* 3. O conceito de Viral Packing (Medium, 5 cols) */}
+                        <div className="group relative lg:col-span-5 bg-white hover:bg-gradient-to-br hover:from-brand/[0.02] hover:to-white border border-gray-150/70 hover:border-brand/20 rounded-3xl p-8 md:p-10 transition-all duration-700 ease-out hover:shadow-2xl hover:shadow-brand/5 flex flex-col justify-between overflow-hidden min-h-[460px]">
+                            <div className="absolute -top-40 -right-40 w-96 h-96 bg-brand/5 rounded-full blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                            
+                            <div className="relative z-10">
+                                <div className="flex items-center justify-between mb-8">
+                                    <div className="w-12 h-12 rounded-2xl bg-brand/10 text-brand flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform duration-500">
+                                        <TrendingUp className="w-5 h-5" />
+                                    </div>
+                                    <span className="text-[48px] font-extrabold font-mono tracking-tight text-gray-100/80 group-hover:text-brand/10 transition-colors duration-500 select-none leading-none">
+                                        03
+                                    </span>
+                                </div>
+                                
+                                <h3 className="text-2xl md:text-3xl font-medium text-black mb-4 group-hover:text-brand transition-colors duration-300">
+                                    O conceito de Viral Packing
+                                </h3>
+                                <p className="text-gray-500 font-light leading-relaxed text-sm md:text-base">
                                     Na era do Tiktok e Instagram, embalagem bonita vira story e divulgação grátis. A ideia do Viral Packing é criar experiências que fazem o cliente querer mostrar sua marca na internet.
                                 </p>
                             </div>
+                            
+                            <div className="relative mt-8 h-[160px] lg:h-[180px] rounded-2xl overflow-hidden border border-gray-150/60 shadow-lg group-hover:scale-[1.03] group-hover:-translate-y-1 transition-all duration-700 ease-out bg-gray-100 shrink-0">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1628102491629-77858ab216b2?q=80&w=1000&auto=format&fit=crop" 
+                                    alt="Viral Packing" 
+                                    className="w-full h-full object-cover" 
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                            </div>
                         </div>
 
-                        {/* 4 */}
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-                            <div className="order-2 md:order-1 md:col-span-7 md:pr-10">
-                                <h3 className="text-2xl md:text-3xl font-medium text-black mb-4">Embalagens "Instagramáveis"</h3>
-                                <p className="text-gray-500 font-light leading-relaxed">
+                        {/* 4. Embalagens "Instagramáveis" (Large, 7 cols) */}
+                        <div className="group relative lg:col-span-7 bg-white hover:bg-gradient-to-br hover:from-brand/[0.02] hover:to-white border border-gray-150/70 hover:border-brand/20 rounded-3xl p-8 md:p-10 transition-all duration-700 ease-out hover:shadow-2xl hover:shadow-brand/5 flex flex-col justify-between overflow-hidden min-h-[460px]">
+                            <div className="absolute -top-40 -right-40 w-96 h-96 bg-brand/5 rounded-full blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                            
+                            <div className="relative z-10">
+                                <div className="flex items-center justify-between mb-8">
+                                    <div className="w-12 h-12 rounded-2xl bg-brand/10 text-brand flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform duration-500">
+                                        <Camera className="w-5 h-5" />
+                                    </div>
+                                    <span className="text-[48px] font-extrabold font-mono tracking-tight text-gray-100/80 group-hover:text-brand/10 transition-colors duration-500 select-none leading-none">
+                                        04
+                                    </span>
+                                </div>
+                                
+                                <h3 className="text-2xl md:text-3xl font-medium text-black mb-4 group-hover:text-brand transition-colors duration-300">
+                                    Embalagens "Instagramáveis"
+                                </h3>
+                                <p className="text-gray-500 font-light leading-relaxed max-w-md text-sm md:text-base">
                                     Cada entrega será uma oportunidade de marketing. As embalagens vão fazer cada entrega parecer especial, conectando o cliente com a essência da sua marca e elevando o valor percebido.
                                 </p>
                             </div>
-                            <div className="order-1 md:order-2 md:col-span-5 aspect-[4/3] bg-[#e6e6e6] rounded-xl overflow-hidden shadow-sm w-full max-w-sm mx-auto">
-                                <img src="https://images.unsplash.com/photo-1606132717833-2eb59b5832a8?q=80&w=1000&auto=format&fit=crop" alt="Embalagens" className="w-full h-full object-cover mix-blend-multiply" />
+                            
+                            <div className="relative mt-8 lg:mt-0 lg:absolute lg:right-8 lg:bottom-8 lg:w-[280px] lg:h-[200px] xl:w-[320px] xl:h-[220px] rounded-2xl overflow-hidden border border-gray-150/60 shadow-lg group-hover:scale-[1.03] group-hover:-translate-y-2 group-hover:-rotate-1 transition-all duration-700 ease-out bg-[#e6e6e6] shrink-0">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1606132717833-2eb59b5832a8?q=80&w=1000&auto=format&fit=crop" 
+                                    alt="Embalagens" 
+                                    className="w-full h-full object-cover mix-blend-multiply" 
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                             </div>
                         </div>
                     </div>
