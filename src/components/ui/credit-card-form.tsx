@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 
 type CardState = {
   number: string;
@@ -86,9 +86,14 @@ const CreditCardForm = ({
     };
   }, [number, holder, month, year, cvv]);
 
+  const onChangeRef = useRef(onChange);
   useEffect(() => {
-    onChange?.({ number, holder, month, year, cvv }, validity);
-  }, [number, holder, month, year, cvv, validity, onChange]);
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  useEffect(() => {
+    onChangeRef.current?.({ number, holder, month, year, cvv }, validity);
+  }, [number, holder, month, year, cvv, validity]);
 
   const displayDigits = useMemo(() => number.slice(0, 16).split(""), [number]);
 
