@@ -10,6 +10,8 @@ import { cn, formatPrice } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { Product } from "@/data/mockData";
 import { useCart } from "@/contexts/CartContext";
+import { motion } from "framer-motion";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 interface ProductClientProps {
     product: Product;
@@ -76,6 +78,10 @@ export default function ProductClient({ product }: ProductClientProps) {
     const [customTextValue, setCustomTextValue] = useState("");
     const [customTextSecondaryValue, setCustomTextSecondaryValue] = useState("");
     const [dynamicTextValues, setDynamicTextValues] = useState<{ [key: number]: string }>({});
+
+    // Purchase confirmation states for scroll reveal effect
+    const [isBuying, setIsBuying] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const isCustomArtworkSelected = product.variations?.some(v => 
         (v.name.toLowerCase().includes("modelo") || v.name.toLowerCase().includes("template")) &&
@@ -260,37 +266,90 @@ export default function ProductClient({ product }: ProductClientProps) {
             }
         }
 
-        addToCart({
-            productId: product.id,
-            title: product.title,
-            subtitle: `${quantity} un.`,
-            price: finalPrice / quantity,
-            quantity: quantity,
-            image: selectedVariationImage || productImages[0] || "",
-            details: {
-                paper: product.technicalSpecs?.paper || selectedVariations['Papel'] || selectedVariations['Material'] || "",
-                format: selectedFormat,
-                printing: selectedPrinting,
-                finish: selectedFinish,
-                extra: selectedExtra,
-                designOption: designOption,
-                dimensions: dimensions.width > 0 ? dimensions : undefined,
-                selectedVariations: selectedVariations,
-                fileUrl: uploadedFile?.url,
-                fileName: uploadedFile?.name,
-                customArtworkUrl: artworkFile?.url || undefined,
-                customArtworkName: artworkFile?.name || undefined,
-                customText: compiledCustomText || undefined,
-                customTextSecondary: customTextSecondaryValue || undefined,
-                customTextLabel: compiledCustomTextLabel,
-                customTextSecondaryLabel: product.customText?.secondaryLabel
-            }
-        });
+        setIsBuying(true);
 
-        router.push("/carrinho");
+        setTimeout(() => {
+            setIsSuccess(true);
+
+            addToCart({
+                productId: product.id,
+                title: product.title,
+                subtitle: `${quantity} un.`,
+                price: finalPrice / quantity,
+                quantity: quantity,
+                image: selectedVariationImage || productImages[0] || "",
+                details: {
+                    paper: product.technicalSpecs?.paper || selectedVariations['Papel'] || selectedVariations['Material'] || "",
+                    format: selectedFormat,
+                    printing: selectedPrinting,
+                    finish: selectedFinish,
+                    extra: selectedExtra,
+                    designOption: designOption,
+                    dimensions: dimensions.width > 0 ? dimensions : undefined,
+                    selectedVariations: selectedVariations,
+                    fileUrl: uploadedFile?.url,
+                    fileName: uploadedFile?.name,
+                    customArtworkUrl: artworkFile?.url || undefined,
+                    customArtworkName: artworkFile?.name || undefined,
+                    customText: compiledCustomText || undefined,
+                    customTextSecondary: customTextSecondaryValue || undefined,
+                    customTextLabel: compiledCustomTextLabel,
+                    customTextSecondaryLabel: product.customText?.secondaryLabel
+                }
+            });
+
+            setTimeout(() => {
+                router.push("/carrinho");
+            }, 1000); // Time to display "Confirmado! ✓"
+        }, 1200); // Simulation time for adding to cart
     };
 
-    // Componente de Ilustração Visual
+    // Componente de Efeito Scroll Reveal Text (Vertical Rolling Text)
+    const ScrollRevealButtonText = ({
+        idleText,
+        activeText = "Processando...",
+        successText = "Confirmado! ✓"
+    }: {
+        idleText: string;
+        activeText?: string;
+        successText?: string;
+    }) => {
+        let yValue = 0;
+        if (isSuccess) {
+            yValue = -48;
+        } else if (isBuying) {
+            yValue = -24;
+        }
+
+        return (
+            <div className="relative h-6 overflow-hidden flex flex-col items-center justify-center w-full select-none pointer-events-none">
+                <motion.div
+                    animate={{ y: yValue }}
+                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    className="flex flex-col items-center justify-start absolute w-full"
+                    style={{ top: 0 }}
+                >
+                    {/* Line 1: Idle State */}
+                    <div className="h-6 flex items-center justify-center font-semibold text-white gap-2">
+                        {idleText}
+                    </div>
+                    {/* Line 2: Processing State */}
+                    <div className="h-6 flex items-center justify-center font-semibold text-white gap-2">
+                        <BouncingDots className="bg-white w-2.5 h-2.5" dots={3} message={activeText} messagePlacement="right" />
+                    </div>
+                    {/* Line 3: Success State */}
+                    <div className="h-6 flex items-center justify-center font-bold text-white gap-2">
+                        <svg className="h-4.5 w-4.5 text-[#15cb98] bg-white rounded-full p-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>{successText}</span>
+                    </div>
+                </motion.div>
+            </div>
+        );
+    };
+
+    // Componente de Ilustração Visual
     const VisualIllustration = ({ type, option, manualType }: { type: "format" | "print", option: string, manualType?: string }) => {
         const finalManualType = manualType || product.optionIllustrations?.[option];
         
@@ -1385,10 +1444,11 @@ export default function ProductClient({ product }: ProductClientProps) {
                                     
                                     <button
                                         onClick={handleAddToCart}
-                                        className="w-full bg-brand text-white font-semibold py-5 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-brand/20 active:scale-[0.98] group relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
+                                        disabled={isBuying || isSuccess}
+                                        className="w-full bg-brand text-white font-semibold py-5 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-brand/20 active:scale-[0.98] disabled:opacity-90 disabled:pointer-events-none group relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
                                     >
-                                        <span className="relative z-10 flex items-center justify-center gap-3">
-                                            Comprar Agora
+                                        <span className="relative z-10 w-full">
+                                            <ScrollRevealButtonText idleText="Comprar Agora" />
                                         </span>
                                     </button>
                                 </div>
@@ -1513,10 +1573,11 @@ export default function ProductClient({ product }: ProductClientProps) {
                 </div>
                 <button
                     onClick={handleAddToCart}
-                    className="flex-1 bg-brand text-white font-semibold h-12 rounded text-center active:scale-95 transition-all shadow-lg shadow-brand/20 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
+                    disabled={isBuying || isSuccess}
+                    className="flex-1 bg-brand text-white font-semibold h-12 rounded text-center active:scale-95 transition-all shadow-lg shadow-brand/20 disabled:opacity-90 disabled:pointer-events-none relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379] flex items-center justify-center"
                 >
-                    <span className="relative z-10 flex items-center justify-center">
-                        Comprar
+                    <span className="relative z-10 w-full">
+                        <ScrollRevealButtonText idleText="Comprar" />
                     </span>
                 </button>
             </div>

@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import { Container } from "@/components/ui/Container";
 import { Sparkles as SparklesComp } from "@/components/ui/sparkles";
-import { TimelineContent } from "@/components/ui/timeline-animation";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { VerticalCutReveal } from "@/components/ui/vertical-cut-reveal";
 
 export default function VinkPlansSection() {
@@ -54,28 +54,24 @@ export default function VinkPlansSection() {
 
       <Container className="relative z-10">
         <div className="max-w-2xl mb-20 text-center mx-auto space-y-4">
-          <h2 className="text-4xl font-medium tracking-tight mb-4 text-black">
-            Planos <span className="text-brand font-bold italic pr-2">sob medida</span>
-          </h2>
+          <ScrollReveal>
+            <h2 className="text-4xl font-medium tracking-tight mb-4 text-black">
+              Planos <span className="text-brand font-bold italic pr-2">sob medida</span>
+            </h2>
+          </ScrollReveal>
           
-          <TimelineContent
-            as="p"
-            animationNum={0}
-            timelineRef={pricingRef}
-            customVariants={revealVariants}
-            className="text-gray-500 font-light"
-          >
-            Escolha o tamanho do seu apetite por crescimento.
-          </TimelineContent>
+          <ScrollReveal delay={150}>
+            <p className="text-gray-500 font-light">
+              Escolha o tamanho do seu apetite por crescimento.
+            </p>
+          </ScrollReveal>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch pt-6 overflow-visible">
           
           {/* Plan 1 - Basic Taste */}
-          <TimelineContent
-            animationNum={1}
-            timelineRef={pricingRef}
-            customVariants={revealVariants}
+          <ScrollReveal
+            delay={150}
             className="flex flex-col overflow-visible"
           >
             <div 
@@ -125,13 +121,11 @@ export default function VinkPlansSection() {
               </a>
               </div>
             </div>
-          </TimelineContent>
+          </ScrollReveal>
 
           {/* Plan 2 - Combo Perfeito (Mais Escolhido) */}
-          <TimelineContent
-            animationNum={2}
-            timelineRef={pricingRef}
-            customVariants={revealVariants}
+          <ScrollReveal
+            delay={300}
             className="flex flex-col overflow-visible"
           >
             <div 
@@ -192,13 +186,11 @@ export default function VinkPlansSection() {
               </a>
               </div>
             </div>
-          </TimelineContent>
+          </ScrollReveal>
 
           {/* Plan 3 - Banquete Viral */}
-          <TimelineContent
-            animationNum={3}
-            timelineRef={pricingRef}
-            customVariants={revealVariants}
+          <ScrollReveal
+            delay={450}
             className="flex flex-col overflow-visible"
           >
             <div 
@@ -256,13 +248,11 @@ export default function VinkPlansSection() {
               </a>
               </div>
             </div>
-          </TimelineContent>
+          </ScrollReveal>
 
           {/* Plan 4 - Vink Club */}
-          <TimelineContent
-            animationNum={4}
-            timelineRef={pricingRef}
-            customVariants={revealVariants}
+          <ScrollReveal
+            delay={600}
             className="flex flex-col overflow-visible"
           >
             <div 
@@ -312,7 +302,7 @@ export default function VinkPlansSection() {
               </a>
               </div>
             </div>
-          </TimelineContent>
+          </ScrollReveal>
 
         </div>
       </Container>

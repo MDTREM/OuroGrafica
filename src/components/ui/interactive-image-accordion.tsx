@@ -73,10 +73,10 @@ const AccordionItem = ({ item, isActive, onMouseEnter }: AccordionItemProps) => 
       <span
         className={cn(
           "absolute text-white text-sm sm:text-base md:text-lg font-semibold whitespace-nowrap",
-          "transition-all duration-500 ease-in-out pointer-events-none",
+          "transition-all duration-500 ease-in-out pointer-events-none select-none",
           isActive
             ? "bottom-6 left-6 rotate-0 opacity-100" // Active state: horizontal, bottom-left
-            : "bottom-12 left-1/2 -translate-x-1/2 rotate-90 origin-center opacity-70" // Inactive state: vertical
+            : "bottom-36 md:bottom-40 left-1/2 -translate-x-1/2 rotate-90 origin-center opacity-70" // Inactive state: vertical centered, no clipping
         )}
       >
         {item.title}

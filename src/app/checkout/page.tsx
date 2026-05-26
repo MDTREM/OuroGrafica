@@ -2,6 +2,7 @@
 
 import { Container } from "@/components/ui/Container";
 import { ArrowLeft, ArrowRight, CheckCircle, CreditCard, DollarSign, MapPin, Truck, Calendar, Lock, User, ChevronRight, Loader2, ShieldCheck, AlertCircle } from "lucide-react";
+import { CreditCardForm, type CardState, type CardValidity } from "@/components/ui/credit-card-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -557,9 +558,22 @@ export default function CheckoutPage() {
                                         <p className="text-sm text-gray-600 mt-2">O código QR (Copia e Cola) será gerado na próxima tela após finalizar o pedido.</p>
                                     </div>
                                 ) : (
-                                    <div className="text-center p-6 bg-gray-50 rounded-xl border border-gray-100 mb-6 animate-in fade-in">
-                                        <h3 className="text-lg font-semibold text-gray-800 mb-2">Cartão de Crédito</h3>
-                                        <p className="text-sm text-gray-600 mt-2">O pagamento será processado de forma segura na próxima etapa.</p>
+                                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 mb-6 animate-in fade-in">
+                                        <CreditCardForm
+                                            showSubmit={false}
+                                            maskMiddle
+                                            ring1="#15cb98"
+                                            ring2="#10a379"
+                                            onChange={(state: CardState) => {
+                                                setFormData(prev => ({
+                                                    ...prev,
+                                                    cardNumber: state.number,
+                                                    cardName: state.holder,
+                                                    cardExpiry: `${state.month}/${state.year}`,
+                                                    cardCvv: state.cvv,
+                                                }));
+                                            }}
+                                        />
                                     </div>
                                 )}
 
