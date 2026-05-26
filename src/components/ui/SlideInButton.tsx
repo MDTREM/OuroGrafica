@@ -67,7 +67,6 @@ export function SlideInButton({
             {/* Expanding circle fill */}
             <motion.span
                 className="absolute rounded-full"
-                style={{ backgroundColor: hoverBgColor }}
                 variants={{
                     idle: {
                         width: 0,
