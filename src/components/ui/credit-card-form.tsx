@@ -121,21 +121,27 @@ const CreditCardForm = ({
     onSubmit?.({ number, holder, month, year, cvv }, validity);
   };
 
+  const isVisa = number.startsWith("4");
+
   return (
     <section className={`ccp ${className}`}>
       <div className="wrap">
         <section id="card" className={`card ${flip ? "flip" : ""}`}>
-          <div id="highlight" className={highlightClass} />
-
           <section className="card__front" style={{ ["--ring1" as string]: ring1, ["--ring2" as string]: ring2 }}>
             <div className="card__header">
-              <div>CreditCard</div>
-              <svg xmlns="http://www.w3.org/2000/svg" height="40" width="60" viewBox="-96 -98.908 832 593.448">
-                <path fill="#ff5f00" d="M224.833 42.298h190.416v311.005H224.833z" />
-                <path d="M244.446 197.828a197.448 197.448 0 0175.54-155.475 197.777 197.777 0 100 311.004 197.448 197.448 0 01-75.54-155.53z" fill="#eb001b" />
-                <path d="M621.101 320.394v-6.372h2.747v-1.319h-6.537v1.319h2.582v6.373zm12.691 0v-7.69h-1.978l-2.307 5.493-2.308-5.494h-1.977v7.691h1.428v-5.823l2.143 5h1.483l2.143-5v5.823z" fill="#f79e1b" />
-                <path d="M640 197.828a197.777 197.777 0 01-320.015 155.474 197.777 197.777 0 000-311.004A197.777 197.777 0 01640 197.773z" fill="#f79e1b" />
-              </svg>
+              <div>Cartão de Crédito</div>
+              {isVisa ? (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="60" height="40" className="w-auto h-8 text-white fill-current">
+                  <path fill="#FFF" d="M16.5 6h2.7l-2.5 12h-2.7L16.5 6zm-7 0H4.3v.2C8.6 7.3 11.5 10 12.7 13.2l-1.2-6.1c-.2-.9-.8-1.2-1.6-1.2zM22 6h-2.8c-1 0-1.7.6-2.1 1.4L11.4 18h3.6l.7-2h4.4l.4 2H24L22 6zm-5.3 10.4c.5-1.3 2.3-6.3 2.3-6.3l1.3 6.3h-3.6zM9.5 6.2c-.7-.3-1.8-.6-3.1-.6C3 5.6.6 7.4.6 10c0 1.9 1.7 2.9 3 3.5 1.3.6 1.8 1 1.8 1.6 0 .9-1.1 1.3-2.1 1.3-1.4 0-2.2-.2-3.4-.7l-.5-.2-.5 3.1c.8.4 2.4.7 4 .7 3.6 0 6-1.8 6-4.6 0-1.5-.9-2.7-3-3.7-1.4-.7-2.3-1.2-2.3-1.9 0-.7.7-1.3 2.3-1.3 1.3 0 2.2.3 2.9.6l.3.1.5-3z"/>
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" height="40" width="60" viewBox="-96 -98.908 832 593.448">
+                  <path fill="#ff5f00" d="M224.833 42.298h190.416v311.005H224.833z" />
+                  <path d="M244.446 197.828a197.448 197.448 0 0175.54-155.475 197.777 197.777 0 100 311.004 197.448 197.448 0 01-75.54-155.53z" fill="#eb001b" />
+                  <path d="M621.101 320.394v-6.372h2.747v-1.319h-6.537v1.319h2.582v6.373zm12.691 0v-7.69h-1.978l-2.307 5.493-2.308-5.494h-1.977v7.691h1.428v-5.823l2.143 5h1.483l2.143-5v5.823z" fill="#f79e1b" />
+                  <path d="M640 197.828a197.777 197.777 0 01-320.015 155.474 197.777 197.777 0 000-311.004A197.777 197.777 0 01640 197.773z" fill="#f79e1b" />
+                </svg>
+              )}
             </div>
 
             <div id="card_number" className="card__number" aria-label="Card number">
@@ -151,13 +157,13 @@ const CreditCardForm = ({
 
             <div className="card__footer">
               <div className="card__holder">
-                <div className="card__section__title">Card Holder</div>
-                <div id="card_holder">{holder || "NAME ON CARD"}</div>
+                <div className="card__section__title">Nome do Titular</div>
+                <div id="card_holder">{holder || "NOME NO CARTÃO"}</div>
               </div>
               <div className="card__expires">
-                <div className="card__section__title">Expires</div>
+                <div className="card__section__title">Validade</div>
                 <span id="card_expires_month">{month || "MM"}</span>/
-                <span id="card_expires_year">{year ? year.slice(-2) : "YY"}</span>
+                <span id="card_expires_year">{year ? year.slice(-2) : "AA"}</span>
               </div>
             </div>
           </section>
@@ -283,55 +289,72 @@ const CreditCardForm = ({
 
         * { box-sizing: border-box; }
 
-        #highlight {
-          position: absolute;
-          border: 1px solid #fff;
-          border-radius: 12px;
-          z-index: 1;
-          width: 0; height: 0; top: 0; left: 0;
-          box-shadow: 0 0 5px #fff;
-          transition: 0.3s;
-        }
-        #highlight.highlight__number { width: 346px; height: 40px; top: 92px; left: 18px; }
-        #highlight.highlight__holder { width: 264px; height: 56px; top: 156px; left: 18px; }
-        #highlight.highlight__expire { width: 86px; height: 56px; top: 156px; left: 323px; }
-        #highlight.highlight__cvv { width: 381px; height: 91px; top: 83px; left: 18px; }
-        #highlight.hidden { display: none; }
-
         .card {
           position: relative;
           width: 100%;
           max-width: 380px;
+          aspect-ratio: 380 / 220;
           transform-style: preserve-3d;
           transition: 0.8s;
           perspective: 1000px;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          transform: translateZ(0);
+          will-change: transform;
         }
         .card.flip { transform: rotateY(180deg); }
 
         .card__front, .card__back {
           width: 100%;
-          max-width: 380px;
-          height: 220px;
+          height: 100%;
           border-radius: 16px;
           padding: 20px 24px 24px;
           background: linear-gradient(to right bottom, #323941, #061018);
           box-shadow: 0 20px 40px -12px rgba(50, 55, 63, 0.5);
           color: #fff;
           overflow: hidden;
-          margin: 0 auto;
           backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
           position: relative;
+        }
+
+        .card__header svg {
+          height: 36px;
+          width: auto;
+          display: block;
         }
 
         @media (max-width: 450px) {
           .card__front, .card__back {
-            padding: 12px 14px 16px;
-            height: 200px;
+            padding: 14px 18px 18px;
           }
-          #highlight.highlight__number { width: 300px; left: 14px; }
-          #highlight.highlight__holder { width: 220px; left: 14px; }
-          #highlight.highlight__expire { left: 280px; }
-          #highlight.highlight__cvv { width: 330px; left: 14px; }
+          .card__header {
+            margin-bottom: 20px;
+          }
+          .card__header svg {
+            height: 26px;
+          }
+          .card__number {
+            font-size: 16px !important;
+            height: 24px !important;
+            margin-bottom: 16px !important;
+          }
+          .card__number .digit {
+            height: 24px !important;
+            line-height: 24px !important;
+          }
+          .card__number .digit.filed {
+            transform: translateY(-24px) !important;
+          }
+          .card__number .row {
+            height: 24px !important;
+          }
+          .card__section__title {
+            font-size: 10px !important;
+          }
+          #card_holder, .card__expires {
+            font-size: 12px !important;
+          }
         }
 
         .card__back {
