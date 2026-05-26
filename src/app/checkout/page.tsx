@@ -349,10 +349,12 @@ export default function CheckoutPage() {
                                             <button
                                                 onClick={() => setStep(2)}
                                                 disabled={!isStep1Valid()}
-                                                className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                className="bg-brand text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[400px] hover:before:w-[400px] before:bg-[#10a379]"
                                             >
-                                                Ir para Entrega
-                                                <ArrowRight size={18} />
+                                                <span className="relative z-10 flex items-center gap-2">
+                                                    Ir para Entrega
+                                                    <ArrowRight size={18} />
+                                                </span>
                                             </button>
                                         </div>
                                     </div>
@@ -490,10 +492,12 @@ export default function CheckoutPage() {
                                     <button
                                         onClick={nextStep}
                                         disabled={!isStep2Valid()}
-                                        className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                        className="bg-brand text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[400px] hover:before:w-[400px] before:bg-[#10a379]"
                                     >
-                                        Ir para Pagamento
-                                        <ArrowRight size={18} />
+                                        <span className="relative z-10 flex items-center gap-2">
+                                            Ir para Pagamento
+                                            <ArrowRight size={18} />
+                                        </span>
                                     </button>
                                 </div>
                             </div>
@@ -562,10 +566,12 @@ export default function CheckoutPage() {
                                 <div className="flex justify-end mt-6">
                                     <button
                                         onClick={nextStep}
-                                        className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all flex items-center gap-2"
+                                        className="bg-brand text-white font-semibold py-3 px-6 rounded-xl transition-all flex items-center gap-2 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[400px] hover:before:w-[400px] before:bg-[#10a379]"
                                     >
-                                        Revisar Pedido
-                                        <ArrowRight size={18} />
+                                        <span className="relative z-10 flex items-center gap-2">
+                                            Revisar Pedido
+                                            <ArrowRight size={18} />
+                                        </span>
                                     </button>
                                 </div>
                             </div>
@@ -626,16 +632,20 @@ export default function CheckoutPage() {
                                     <button
                                         onClick={handleFinishOrder}
                                         disabled={isSubmitting}
-                                        className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-4 px-12 rounded-xl hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed w-full md:w-auto"
+                                        className="bg-brand text-white font-semibold py-4 px-12 rounded-xl transition-all shadow-xl shadow-brand/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed w-full md:w-auto relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
                                     >
-                                        {isSubmitting ? (
-                                            <>
-                                                <Loader2 className="animate-spin" />
-                                                Processando...
-                                            </>
-                                        ) : (
-                                            "Finalizar Pedido"
-                                        )}
+                                        <span className="relative z-10 flex items-center justify-center gap-2 w-full h-full">
+                                            {isSubmitting ? (
+                                                <>
+                                                    <Loader2 className="animate-spin" />
+                                                    Processando...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Finalizar Pedido
+                                                </>
+                                            )}
+                                        </span>
                                     </button>
                                 </div>
                             </div>

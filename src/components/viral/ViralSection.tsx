@@ -61,7 +61,7 @@ export function ViralSection({ title, preloadedProducts, productViews }: ViralSe
                 <div className="relative">
                     <div
                         ref={scrollRef}
-                        className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 -mx-4 px-4 no-scrollbar"
+                        className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 no-scrollbar"
                     >
                         {preloadedProducts.map((product) => (
                             <div key={product.id} className="w-[280px] md:w-[240px] flex-none snap-start relative">

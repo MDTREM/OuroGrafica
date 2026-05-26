@@ -159,8 +159,8 @@ function InfoCard({
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{
-                opacity: allImagesLoaded ? 1 : 0,
-                y: allImagesLoaded ? 0 : 10,
+                opacity: 1,
+                y: 0,
               }}
               exit={{
                 opacity: 0,

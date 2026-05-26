@@ -45,8 +45,8 @@ export default function FavoritesPage() {
                         </div>
                         <h3 className="text-gray-900 font-semibold mb-2">Sua lista está vazia</h3>
                         <p className="text-gray-500 text-sm mb-6">Salve os produtos que você mais gosta aqui.</p>
-                        <Link href="/" className="bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3 px-6 rounded-full hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-colors">
-                            Ver Produtos
+                        <Link href="/" className="inline-block bg-brand text-white font-semibold py-3 px-6 rounded-full shadow-lg shadow-brand/20 transition-all relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[400px] hover:before:w-[400px] before:bg-[#10a379]">
+                            <span className="relative z-10">Ver Produtos</span>
                         </Link>
                     </div>
                 )}

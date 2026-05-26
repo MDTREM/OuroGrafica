@@ -183,9 +183,9 @@ function OrderDetailsModal({ isOpen, onClose, items }: { isOpen: boolean, onClos
                 <div className="p-6 bg-gray-50 border-t border-gray-100">
                     <button 
                         onClick={onClose}
-                        className="w-full bg-brand text-white font-semibold py-4 rounded-xl hover:bg-brand-dark transition-all shadow-lg shadow-brand/20"
+                        className="w-full bg-brand text-white font-semibold py-4 rounded-xl shadow-lg shadow-brand/20 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
                     >
-                        Fechar Resumo
+                        <span className="relative z-10">Fechar Resumo</span>
                     </button>
                 </div>
             </div>
@@ -346,8 +346,8 @@ export default function CartPage() {
                     <ShoppingBag size={64} className="mx-auto text-gray-200 mb-6" />
                     <h2 className="text-lg font-semibold text-gray-900 mb-2">Seu carrinho está vazio</h2>
                     <p className="text-gray-500 mb-8">Parece que você ainda não adicionou nenhum produto.</p>
-                    <Link href="/" className="inline-flex items-center justify-center w-full bg-gradient-to-r from-brand to-brand-dark text-white font-semibold h-12 rounded-full hover:bg-gradient-to-r from-brand to-brand-dark/90 transition-all shadow-lg shadow-brand/20">
-                        Começar a Comprar
+                    <Link href="/" className="inline-flex items-center justify-center w-full bg-brand text-white font-semibold h-12 rounded-full shadow-lg shadow-brand/20 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]">
+                        <span className="relative z-10 flex items-center justify-center">Começar a Comprar</span>
                     </Link>
                 </div>
             </div>
@@ -607,9 +607,11 @@ export default function CartPage() {
                                 <button
                                     onClick={calculateShipping}
                                     disabled={isCalculating}
-                                    className="bg-brand text-white text-xs font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 min-w-[76px]"
+                                    className="bg-brand text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all disabled:opacity-50 min-w-[76px] relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[200px] hover:before:w-[200px] before:bg-[#10a379]"
                                 >
-                                    {isCalculating ? "..." : "Calcular"}
+                                    <span className="relative z-10">
+                                        {isCalculating ? "..." : "Calcular"}
+                                    </span>
                                 </button>
                             </div>
                             {shippingError && (
@@ -692,16 +694,20 @@ export default function CartPage() {
                             </div>
 
                             <Link href="/checkout" className="w-full">
-                                <button className="w-full bg-gradient-to-r from-brand to-brand-dark text-white font-semibold py-3.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2">
-                                    Finalizar Compra
-                                    <ArrowRight size={18} />
+                                <button className="w-full bg-brand text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-2 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]">
+                                    <span className="relative z-10 flex items-center justify-center gap-2">
+                                        Finalizar Compra
+                                        <ArrowRight size={18} />
+                                    </span>
                                 </button>
                             </Link>
 
                             <Link href="/" className="w-full block">
-                                <button className="w-full bg-white text-gray-700 border border-gray-200 font-semibold py-3.5 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-2 mt-3">
-                                    <ArrowRight size={16} className="rotate-180 text-gray-400" />
-                                    Continuar Comprando
+                                <button className="w-full bg-white text-gray-700 border border-gray-200 font-semibold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 mt-3 hover:text-white hover:border-[#15cb98] relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#15cb98] group">
+                                    <span className="relative z-10 flex items-center justify-center gap-2">
+                                        <ArrowRight size={16} className="rotate-180 text-gray-400 group-hover:text-white transition-colors" />
+                                        Continuar Comprando
+                                    </span>
                                 </button>
                             </Link>
 

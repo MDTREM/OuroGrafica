@@ -118,7 +118,7 @@ export function ProductRow({ title, filter, link, productIds, preloadedProducts 
                 <div
                     ref={scrollRef}
                     onScroll={handleScroll}
-                    className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 -mx-4 px-4 no-scrollbar"
+                    className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 no-scrollbar"
                 >
                     {displayProducts.map((product) => (
                         <div key={product.id} className="w-[280px] md:w-[240px] flex-none snap-start">

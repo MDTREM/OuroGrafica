@@ -72,9 +72,9 @@ export function DesktopNav() {
                 {/* Featured Block on the Far Right */}
                 <Link
                     href="/branding"
-                    className="h-full flex items-center justify-center px-10 bg-gradient-to-r from-[#15cb98] to-[#45e6be] text-white font-medium text-[14px] whitespace-nowrap hover:opacity-90 transition-opacity"
+                    className="h-full flex items-center justify-center px-10 bg-brand text-white font-medium text-[14px] whitespace-nowrap transition-all relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
                 >
-                    Branding
+                    <span className="relative z-10">Branding</span>
                 </Link>
 
             </Container>

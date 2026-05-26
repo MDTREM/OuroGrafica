@@ -26,6 +26,15 @@ export default function VinkPlansSection() {
     },
   };
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty("--mouse-x", `${x}px`);
+    card.style.setProperty("--mouse-y", `${y}px`);
+  };
+
   return (
     <section 
       id="planos" 
@@ -60,18 +69,28 @@ export default function VinkPlansSection() {
           </TimelineContent>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch pt-6 overflow-visible">
           
           {/* Plan 1 - Basic Taste */}
           <TimelineContent
             animationNum={1}
             timelineRef={pricingRef}
             customVariants={revealVariants}
-            className="flex flex-col"
+            className="flex flex-col overflow-visible"
           >
-            <div className="p-8 border border-gray-100 flex flex-col bg-gray-50/50 rounded-xl relative group hover:-translate-y-2 hover:shadow-xl hover:border-gray-200 transition-all duration-300 flex-1">
-              <h3 className="text-xl font-medium mb-2 text-black">Basic Taste</h3>
-              <p className="text-gray-500 text-sm font-light mb-8 h-10">O essencial para começar com o pé direito.</p>
+            <div 
+              onMouseMove={handleMouseMove}
+              className="p-8 border border-gray-100 flex flex-col bg-gray-50/50 rounded-xl relative group hover:-translate-y-2 hover:shadow-xl hover:border-gray-200 transition-all duration-300 flex-1 overflow-visible"
+            >
+              <div 
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 overflow-hidden rounded-xl"
+                style={{
+                  background: "radial-gradient(400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(21, 203, 152, 0.08), transparent 80%)"
+                }}
+              />
+              <div className="relative z-10 flex flex-col h-full flex-1">
+                <h3 className="text-xl font-medium mb-2 text-black">Basic Taste</h3>
+                <p className="text-gray-500 text-sm font-light mb-8 h-10">O essencial para começar com o pé direito.</p>
               
               <ul className="space-y-4 mb-10 flex-1 text-sm font-light text-gray-500">
                 <li className="flex items-start gap-2">
@@ -100,10 +119,11 @@ export default function VinkPlansSection() {
                 href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20plano%20Basic%20Taste!" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block w-full py-4 border border-gray-200 text-black text-xs tracking-wide uppercase font-medium text-center rounded-xl hover:border-black hover:bg-black hover:text-white transition-all duration-300"
+                className="block w-full py-4 border border-gray-200 text-black text-xs tracking-wide uppercase font-medium text-center rounded-xl transition-all duration-300 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-black hover:text-white"
               >
-                Solicitar Orçamento
+                <span className="relative z-10">Solicitar Orçamento</span>
               </a>
+              </div>
             </div>
           </TimelineContent>
 
@@ -112,14 +132,24 @@ export default function VinkPlansSection() {
             animationNum={2}
             timelineRef={pricingRef}
             customVariants={revealVariants}
-            className="flex flex-col"
+            className="flex flex-col overflow-visible"
           >
-            <div className="p-8 border-2 border-brand flex flex-col relative bg-white rounded-xl shadow-lg -translate-y-2 group hover:-translate-y-3 hover:shadow-[0_12px_40px_rgba(21,203,152,0.15)] transition-all duration-300 flex-1 z-10">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand text-white text-[10px] font-bold px-4 py-1 rounded-full uppercase tracking-widest whitespace-nowrap">
+            <div 
+              onMouseMove={handleMouseMove}
+              className="p-8 border-2 border-brand flex flex-col relative bg-white rounded-xl shadow-lg -translate-y-2 group hover:-translate-y-3 hover:shadow-[0_12px_40px_rgba(21,203,152,0.15)] transition-all duration-300 flex-1 z-10 overflow-visible"
+            >
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand text-white text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest whitespace-nowrap z-20">
                 Mais Escolhido
               </div>
-              <h3 className="text-xl font-medium mb-2 text-black">Combo Perfeito</h3>
-              <p className="text-gray-500 text-sm font-light mb-8 h-10">Branding completo + impressos.</p>
+              <div 
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 overflow-hidden rounded-xl"
+                style={{
+                  background: "radial-gradient(400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(21, 203, 152, 0.08), transparent 80%)"
+                }}
+              />
+              <div className="relative z-10 flex flex-col h-full flex-1">
+                <h3 className="text-xl font-medium mb-2 text-black">Combo Perfeito</h3>
+                <p className="text-gray-500 text-sm font-light mb-8 h-10">Branding completo + impressos.</p>
               
               <ul className="space-y-4 mb-10 flex-1 text-sm font-light text-gray-500">
                 <li className="flex items-start gap-2">
@@ -156,10 +186,11 @@ export default function VinkPlansSection() {
                 href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20plano%20Combo%20Perfeito!" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block w-full py-4 bg-brand text-white text-xs tracking-wide uppercase font-medium text-center rounded-xl hover:bg-brand-dark hover:scale-[1.02] active:scale-95 shadow-md shadow-brand/20 transition-all duration-300"
+                className="block w-full py-4 bg-brand text-white text-xs tracking-wide uppercase font-medium text-center rounded-xl hover:scale-[1.02] active:scale-95 shadow-md shadow-brand/20 transition-all duration-300 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
               >
-                Solicitar Orçamento
+                <span className="relative z-10">Solicitar Orçamento</span>
               </a>
+              </div>
             </div>
           </TimelineContent>
 
@@ -168,11 +199,21 @@ export default function VinkPlansSection() {
             animationNum={3}
             timelineRef={pricingRef}
             customVariants={revealVariants}
-            className="flex flex-col"
+            className="flex flex-col overflow-visible"
           >
-            <div className="p-8 border border-gray-200 flex flex-col bg-white rounded-xl relative group hover:-translate-y-2 hover:shadow-xl hover:border-black transition-all duration-300 flex-1">
-              <h3 className="text-xl font-medium mb-2 text-black">Banquete Viral</h3>
-              <p className="text-gray-500 text-sm font-light mb-8 h-10">O pacote definitivo para dominar sua região.</p>
+            <div 
+              onMouseMove={handleMouseMove}
+              className="p-8 border border-gray-200 flex flex-col bg-white rounded-xl relative group hover:-translate-y-2 hover:shadow-xl hover:border-black transition-all duration-300 flex-1 overflow-visible"
+            >
+              <div 
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 overflow-hidden rounded-xl"
+                style={{
+                  background: "radial-gradient(400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(21, 203, 152, 0.08), transparent 80%)"
+                }}
+              />
+              <div className="relative z-10 flex flex-col h-full flex-1">
+                <h3 className="text-xl font-medium mb-2 text-black">Banquete Viral</h3>
+                <p className="text-gray-500 text-sm font-light mb-8 h-10">O pacote definitivo para dominar sua região.</p>
               
               <ul className="space-y-4 mb-10 flex-1 text-sm font-light text-gray-500">
                 <li className="flex items-start gap-2">
@@ -209,10 +250,11 @@ export default function VinkPlansSection() {
                 href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20plano%20Banquete%20Viral!" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block w-full py-4 border border-gray-200 text-black text-xs tracking-wide uppercase font-medium text-center rounded-xl hover:border-black hover:bg-black hover:text-white transition-all duration-300"
+                className="block w-full py-4 border border-gray-200 text-black text-xs tracking-wide uppercase font-medium text-center rounded-xl transition-all duration-300 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-black hover:text-white"
               >
-                Solicitar Orçamento
+                <span className="relative z-10">Solicitar Orçamento</span>
               </a>
+              </div>
             </div>
           </TimelineContent>
 
@@ -221,11 +263,21 @@ export default function VinkPlansSection() {
             animationNum={4}
             timelineRef={pricingRef}
             customVariants={revealVariants}
-            className="flex flex-col"
+            className="flex flex-col overflow-visible"
           >
-            <div className="p-8 border border-[#333] flex flex-col bg-[#141414] rounded-xl relative group hover:-translate-y-2 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] transition-all duration-300 flex-1">
-              <h3 className="text-xl font-medium mb-2 text-white">Vink Club</h3>
-              <p className="text-gray-400 text-sm font-light mb-8 h-10">Padronização e recorrência de materiais.</p>
+            <div 
+              onMouseMove={handleMouseMove}
+              className="p-8 border border-[#333] flex flex-col bg-[#141414] rounded-xl relative group hover:-translate-y-2 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] transition-all duration-300 flex-1 overflow-visible"
+            >
+              <div 
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 overflow-hidden rounded-xl"
+                style={{
+                  background: "radial-gradient(400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(21, 203, 152, 0.12), transparent 80%)"
+                }}
+              />
+              <div className="relative z-10 flex flex-col h-full flex-1">
+                <h3 className="text-xl font-medium mb-2 text-white">Vink Club</h3>
+                <p className="text-gray-400 text-sm font-light mb-8 h-10">Padronização e recorrência de materiais.</p>
               
               <ul className="space-y-4 mb-10 flex-1 text-sm font-light text-gray-400">
                 <li className="flex items-start gap-2">
@@ -254,10 +306,11 @@ export default function VinkPlansSection() {
                 href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20Vink%20Club!" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="block w-full py-4 bg-white text-black text-xs tracking-wide uppercase font-medium text-center rounded-xl hover:bg-gray-100 hover:scale-[1.02] active:scale-95 transition-all duration-300"
+                className="block w-full py-4 bg-white text-black text-xs tracking-wide uppercase font-medium text-center rounded-xl hover:scale-[1.02] active:scale-95 transition-all duration-300 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-gray-100"
               >
-                Solicitar Orçamento
+                <span className="relative z-10">Solicitar Orçamento</span>
               </a>
+              </div>
             </div>
           </TimelineContent>
 

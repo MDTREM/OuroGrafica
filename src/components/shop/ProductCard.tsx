@@ -56,19 +56,38 @@ export function ProductCard({ id, title, price, unit, description, image, priceB
         });
     };
 
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const card = e.currentTarget;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty("--mouse-x", `${x}px`);
+        card.style.setProperty("--mouse-y", `${y}px`);
+    };
+
     return (
-        <div className="group relative bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col">
+        <div 
+            onMouseMove={handleMouseMove}
+            className="group relative bg-white rounded-xl shadow-xs hover:shadow-md transition-all duration-300 border border-gray-100 h-full flex flex-col overflow-visible"
+        >
+            {/* Spotlight Dynamic Shine Tracker */}
+            <div 
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 overflow-hidden rounded-xl"
+                style={{
+                    background: "radial-gradient(320px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(21, 203, 152, 0.08), transparent 80%)"
+                }}
+            />
+
             {/* Favorites Button */}
             <button
                 onClick={handleToggleFavorite}
-                className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all shadow-sm ${isFav ? "bg-red-50 text-red-500" : "bg-white/80 backdrop-blur text-gray-400 hover:text-red-500 hover:bg-white"
-                    }`}
+                className={`absolute top-3 right-3 z-30 p-2 rounded-full transition-all shadow-xs ${isFav ? "bg-red-50 text-red-500" : "bg-white/80 backdrop-blur text-gray-400 hover:text-red-500 hover:bg-white"}`}
             >
                 <Heart size={18} className={isFav ? "fill-current" : ""} />
             </button>
 
             {/* Image Area */}
-            <div className="relative w-full overflow-hidden bg-gray-50" style={{ paddingBottom: '100%' }}>
+            <div className="relative w-full overflow-hidden bg-gray-50 rounded-t-xl z-10" style={{ paddingBottom: '100%' }}>
                 <div className="absolute inset-0 flex items-center justify-center">
                     {image && !imgError ? (
                         <Image
@@ -77,11 +96,11 @@ export function ProductCard({ id, title, price, unit, description, image, priceB
                             fill
                             sizes="(max-width: 768px) 50vw, 33vw"
                             onError={() => setImgError(true)}
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="object-cover group-hover:scale-105 transition-transform duration-500 rounded-t-xl"
                         />
                     ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                            <div className="p-3 bg-white rounded-full mb-2 shadow-sm">
+                            <div className="p-3 bg-white rounded-full mb-2 shadow-xs">
                                 <span className="text-xl font-semibold">V</span>
                             </div>
                             <span className="text-xs">Sem Imagem</span>
@@ -91,8 +110,8 @@ export function ProductCard({ id, title, price, unit, description, image, priceB
             </div>
 
             {/* Content */}
-            <div className="p-4 flex flex-col flex-1">
-                <h3 className="font-semibold text-gray-900 leading-tight mb-1 group-hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors line-clamp-2">
+            <div className="p-4 flex flex-col flex-1 relative z-10">
+                <h3 className="font-semibold text-gray-900 leading-tight mb-1 group-hover:text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-dark transition-colors line-clamp-2 text-base">
                     {title}
                 </h3>
                 <p className="text-xs text-gray-500 mb-4 line-clamp-2">
@@ -109,7 +128,7 @@ export function ProductCard({ id, title, price, unit, description, image, priceB
             </div>
 
             {/* Whole card is clickable */}
-            <Link href={`/produto/${id}`} className="absolute inset-0 z-0">
+            <Link href={`/produto/${id}`} className="absolute inset-0 z-20">
                 <span className="sr-only">Ver detalhes de {title}</span>
             </Link>
         </div>

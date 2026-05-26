@@ -64,6 +64,15 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
         window.open(`https://wa.me/${phone}?text=${text}`, "_blank", "noopener,noreferrer");
     };
 
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const card = e.currentTarget;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty("--mouse-x", `${x}px`);
+        card.style.setProperty("--mouse-y", `${y}px`);
+    };
+
     const scrollBy = (offset: number) => {
         if (!scrollRef.current) return;
         scrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
@@ -97,10 +106,10 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                 </div>
 
                 {/* Scroll Container Wrapper */}
-                <div className="relative">
+                <div className="relative overflow-visible">
                     <div
                         ref={scrollRef}
-                        className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 -mx-4 px-4 no-scrollbar"
+                        className="flex overflow-x-auto snap-x snap-mandatory pb-4 gap-4 no-scrollbar overflow-y-visible"
                     >
                         {combos.map((combo, index) => {
                             const hasImage = combo.image && !imgErrors[combo.id];
@@ -110,11 +119,23 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                             return (
                                 <div 
                                     key={combo.id} 
-                                    className="w-[280px] md:w-[240px] flex-none snap-start first:ml-4 md:first:ml-0"
+                                    className="w-[280px] md:w-[250px] flex-none snap-start pb-2 overflow-visible"
+                                	style={{ minHeight: '380px' }}
                                 >
-                                    <div className="group relative bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 border border-gray-100 h-full flex flex-col">
-                                        {/* Image Area - Aspect ratio 3:4, matching cover image specifications */}
-                                        <Link href={`/combo/${combo.id}`} className="relative w-full overflow-hidden bg-gray-50 rounded-t-xl block aspect-[3/4]">
+                                    <div 
+                                        onMouseMove={handleMouseMove}
+                                        className="group relative bg-white rounded-xl shadow-xs hover:shadow-md transition-all duration-300 border border-gray-100 h-full flex flex-col overflow-visible"
+                                    >
+                                        {/* Spotlight Dynamic Shine Tracker */}
+                                        <div 
+                                            className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 overflow-hidden rounded-xl"
+                                            style={{
+                                                background: "radial-gradient(320px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(21, 203, 152, 0.08), transparent 80%)"
+                                            }}
+                                        />
+
+                                        {/* Image Area - Aspect ratio 3:4 */}
+                                        <Link href={`/combo/${combo.id}`} className="relative w-full overflow-hidden bg-gray-50 rounded-t-xl block aspect-[3/4] z-10">
                                             {discountPct > 0 && (
                                                 <div className="absolute top-3 left-3 bg-brand text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
                                                     -{discountPct}%
@@ -132,7 +153,7 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                                                     />
                                                 ) : (
                                                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                                                        <div className="p-3 bg-white rounded-full mb-2 shadow-sm">
+                                                        <div className="p-3 bg-white rounded-full mb-2 shadow-xs">
                                                             <span className="text-xl font-semibold">V</span>
                                                         </div>
                                                         <span className="text-[10px]">Sem Imagem</span>
@@ -141,20 +162,19 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                                             </div>
                                         </Link>
 
-                                        {/* Content - Left Aligned, No Bold */}
-                                        <div className="p-4 flex flex-col flex-1">
-                                            {/* Combo Title - smaller, not bold, left-aligned, no subtitle */}
+                                        {/* Content - Left Aligned */}
+                                        <div className="p-4 flex flex-col flex-1 relative z-10">
+                                            {/* Combo Title */}
                                             <Link href={`/combo/${combo.id}`} className="block">
-                                                <h3 className="font-medium text-gray-900 leading-tight mb-3 group-hover:text-brand transition-colors text-sm text-left">
+                                                <h3 className="font-semibold text-gray-900 leading-tight mb-3 group-hover:text-brand transition-colors text-base text-left">
                                                     {combo.title}
                                                 </h3>
                                             </Link>
 
-                                            {/* Items List - Only qty + name */}
+                                            {/* Items List */}
                                             <div className="mb-3">
                                                 <ul className="space-y-1.5">
                                                     {combo.items.map((item, index) => {
-                                                        // Strip parenthetical details: "1000 Cartão de Visita (Formato: X, ...)" → "1000 Cartão de Visita"
                                                         const cleanItem = item.replace(/\s*\(.*\)\s*$/, '');
                                                         return (
                                                             <li key={index} className="flex items-start gap-2">
@@ -168,9 +188,9 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                                                 </ul>
                                             </div>
 
-                                            {/* Interactive Variation Selectors directly on card */}
+                                            {/* Interactive Variation Selectors */}
                                             {combo.variations && combo.variations.length > 0 && (
-                                                <div className="my-2 border-t border-gray-150/40 pt-2 space-y-2">
+                                                <div className="my-2 border-t border-gray-100 pt-2 space-y-2 select-none">
                                                     {combo.variations.map((v) => {
                                                         const currentVal = selectedVars[combo.id]?.[v.name] || v.options[0] || "";
                                                         return (
@@ -201,12 +221,12 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                                             )}
 
                                             {/* Price - Crossed-out value side-by-side with Real value */}
-                                            <div className="mt-auto pt-3 border-t border-gray-50 flex items-baseline gap-2">
+                                            <div className="mt-auto pt-3 border-t border-gray-100 flex items-baseline gap-2">
                                                 <span className="text-base font-medium text-brand leading-none">
                                                     {formatPrice(combo.price)}
                                                 </span>
                                                 {originalPrice > combo.price && (
-                                                    <span className="text-[10px] text-gray-400 line-through font-normal leading-none">
+                                                    <span className="text-[13px] text-gray-400 line-through font-normal leading-none">
                                                         {formatPrice(originalPrice)}
                                                     </span>
                                                 )}

@@ -12,16 +12,7 @@ import { cn } from "@/lib/utils";
 import { Banner } from "@/components/ui/banner";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-    InfoCard,
-    InfoCardContent,
-    InfoCardTitle,
-    InfoCardDescription,
-    InfoCardFooter,
-    InfoCardDismiss,
-    InfoCardAction,
-    InfoCardMedia
-} from "@/components/ui/info-card";
+
 
 export function TopBar() {
     const [query, setQuery] = useState("");
@@ -221,7 +212,7 @@ export function TopBar() {
                             animate={{ x: 0 }}
                             exit={{ x: "-100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 left-0 w-[80vw] max-w-[320px] bg-gray-50 z-[100] shadow-2xl flex flex-col md:hidden overflow-y-auto no-scrollbar"
+                            className="fixed inset-y-0 left-0 w-[80vw] max-w-[320px] bg-gray-50 z-[100] shadow-2xl flex flex-col md:hidden"
                         >
                             {/* Drawer Header */}
                             <div className="bg-white border-b border-gray-100 p-4 sticky top-0 z-10 flex items-center justify-between">
@@ -238,7 +229,7 @@ export function TopBar() {
                             </div>
 
                             {/* Drawer Content */}
-                            <div className="p-4 flex-1 flex flex-col gap-5 pb-12">
+                            <div className="p-4 flex flex-col gap-5 pb-12 flex-1 overflow-y-auto no-scrollbar">
                                 {/* 1. User Account Header */}
                                 <div className="bg-white rounded-xl p-3 border border-gray-100 flex items-center justify-between shadow-sm">
                                     <div className="flex items-center gap-3">
@@ -318,76 +309,53 @@ export function TopBar() {
                                         </Link>
                                     </div>
 
-                                    {/* InfoCard in mobile lateral menu drawer */}
-                                    <InfoCard storageKey="vink-drawer-announcement" dismissType="forever" className="border border-gray-100 shadow-sm rounded-xl p-3 overflow-hidden relative bg-white">
-                                        <InfoCardContent>
-                                            <div className="relative">
-                                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand rounded-full animate-ping" />
-                                                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand rounded-full" />
-                                                
-                                                <InfoCardTitle className="text-xs font-semibold text-gray-900 pr-4">
-                                                    Identidade Visual DEVORA
-                                                </InfoCardTitle>
-                                                <InfoCardDescription className="text-[10px] text-gray-500 mt-1 mb-2 leading-relaxed">
-                                                    Planos de branding e embalagens sob medida que geram desejo imediato no seu cliente.
-                                                </InfoCardDescription>
-
-                                                <InfoCardMedia
-                                                    shrinkHeight={55}
-                                                    expandHeight={110}
-                                                    media={[
-                                                        {
-                                                            src: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&auto=format&fit=crop",
-                                                            alt: "Burguer Artesanal",
-                                                        },
-                                                        {
-                                                            src: "https://images.unsplash.com/photo-1628102491629-77858ab216b2?w=400&auto=format&fit=crop",
-                                                            alt: "Bacio di Latte",
-                                                        },
-                                                        {
-                                                            src: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop",
-                                                            alt: "Pastry",
-                                                        }
-                                                    ]}
-                                                    className="mt-2 rounded-lg overflow-hidden"
-                                                />
-
-                                                <InfoCardFooter className="mt-2.5 flex items-center justify-between border-t border-gray-50 pt-2">
-                                                    <InfoCardDismiss className="text-gray-400 hover:text-gray-600 transition-colors font-medium text-[10px]">
-                                                        Dispensar
-                                                    </InfoCardDismiss>
-                                                    <InfoCardAction>
-                                                        <Link
-                                                            href="/branding"
-                                                            onClick={() => setIsMobileMenuOpen(false)}
-                                                            className="text-brand hover:text-brand-dark font-semibold text-[10px] flex items-center gap-0.5 hover:underline transition-all"
-                                                        >
-                                                            Ver Planos <ChevronRight size={12} />
-                                                        </Link>
-                                                    </InfoCardAction>
-                                                </InfoCardFooter>
-                                            </div>
-                                        </InfoCardContent>
-                                    </InfoCard>
                                 </div>
 
-                                {/* 5. Policies & Sign Out */}
-                                <div className="space-y-2 mt-auto pt-4 border-t border-gray-100">
-                                    <Link href="/termos-de-uso" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:bg-gray-50 text-xs font-medium text-gray-600">
-                                        <FileText size={16} className="text-gray-400" />
-                                        Políticas e Termos
-                                    </Link>
+                                {/* 5. Políticas & Sign Out */}
+                                <div className="flex flex-col gap-5">
+                                    <div>
+                                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 pl-2">Legal</h3>
+                                        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm flex flex-col">
+                                            <Link
+                                                href="/termos-de-uso"
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className="flex items-center gap-3 p-3.5 hover:bg-gray-50 transition-colors border-b border-gray-50"
+                                            >
+                                                <FileText size={16} className="text-gray-400" />
+                                                <span className="text-gray-700 font-medium text-xs">Termos de Uso</span>
+                                            </Link>
+                                            <Link
+                                                href="/politica-de-privacidade"
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className="flex items-center gap-3 p-3.5 hover:bg-gray-50 transition-colors border-b border-gray-50"
+                                            >
+                                                <FileText size={16} className="text-gray-400" />
+                                                <span className="text-gray-700 font-medium text-xs">Política de Privacidade</span>
+                                            </Link>
+                                            <Link
+                                                href="/politica-de-cookies"
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className="flex items-center gap-3 p-3.5 hover:bg-gray-50 transition-colors"
+                                            >
+                                                <FileText size={16} className="text-gray-400" />
+                                                <span className="text-gray-700 font-medium text-xs">Política de Cookies</span>
+                                            </Link>
+                                        </div>
+                                    </div>
+
                                     {user && (
-                                        <button
-                                            onClick={async () => {
-                                                await signOut();
-                                                setIsMobileMenuOpen(false);
-                                            }}
-                                            className="w-full flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:bg-red-50 hover:border-red-100 hover:text-red-600 transition-colors text-xs font-medium text-gray-600 text-left"
-                                        >
-                                            <LogOut size={16} className="text-gray-400" />
-                                            Sair da conta
-                                        </button>
+                                        <div>
+                                            <button
+                                                onClick={async () => {
+                                                    await signOut();
+                                                    setIsMobileMenuOpen(false);
+                                                }}
+                                                className="w-full flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:bg-red-50 hover:border-red-100 hover:text-red-600 transition-colors text-xs font-medium text-gray-600 text-left shadow-sm"
+                                            >
+                                                <LogOut size={16} className="text-gray-400" />
+                                                Sair da conta
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
                             </div>

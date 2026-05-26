@@ -128,7 +128,7 @@ export default function ComboClient({ combo }: ComboClientProps) {
     const [selectedVariations, setSelectedVariations] = useState<{ [key: string]: string }>({});
     const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
     const [loadingProducts, setLoadingProducts] = useState(true);
-    const [expandedItems, setExpandedItems] = useState<{ [key: number]: boolean }>({ 0: true });
+    const [expandedItems, setExpandedItems] = useState<{ [key: number]: boolean }>({});
     const [showFullDesc, setShowFullDesc] = useState(false);
     const [activeImage, setActiveImage] = useState(0);
 
@@ -1013,9 +1013,11 @@ export default function ComboClient({ combo }: ComboClientProps) {
                                                         <Link 
                                                             href={`/produto/${product.id}`}
                                                             target="_blank"
-                                                            className="text-[11px] font-semibold text-gray-500 hover:text-brand border border-gray-200 hover:border-brand/30 rounded-lg px-2.5 py-1.5 flex items-center gap-1 transition-all"
+                                                            className="text-[11px] font-semibold text-gray-500 hover:text-white border border-gray-200 hover:border-[#15cb98] rounded-lg px-2.5 py-1.5 flex items-center gap-1 transition-all group relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[150px] hover:before:w-[150px] before:bg-[#15cb98]"
                                                         >
-                                                            Ver produto <ArrowUpRight size={12} />
+                                                            <span className="relative z-10 flex items-center gap-1">
+                                                                Ver produto <ArrowUpRight size={12} className="text-gray-400 group-hover:text-white transition-colors" />
+                                                            </span>
                                                         </Link>
                                                         <button
                                                             type="button"
@@ -1096,9 +1098,9 @@ export default function ComboClient({ combo }: ComboClientProps) {
                                     <button
                                         onClick={handleAddToCart}
                                         disabled={loadingProducts}
-                                        className="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-brand/20 active:scale-[0.98] disabled:opacity-50"
+                                        className="w-full bg-brand text-white font-semibold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-brand/20 active:scale-[0.98] disabled:opacity-50 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
                                     >
-                                        Comprar Combo
+                                        <span className="relative z-10">Comprar Combo</span>
                                     </button>
                                 </div>
                             </div>
@@ -1181,9 +1183,11 @@ export default function ComboClient({ combo }: ComboClientProps) {
                             <p className="text-[11px] text-gray-500 leading-relaxed">
                                 Use nosso gabarito para garantir que sua arte esteja nas medidas corretas e com as margens de segurança adequadas.
                             </p>
-                            <button className="w-full flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-gray-100 hover:border-brand hover:bg-brand/5 hover:text-brand transition-all font-semibold text-gray-700 text-xs group">
-                                <Download size={16} className="text-gray-400 group-hover:text-brand" />
-                                Baixar Gabarito
+                            <button className="w-full flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-gray-100 transition-all font-semibold text-gray-700 hover:text-white text-xs group relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#15cb98] hover:border-[#15cb98]">
+                                <span className="relative z-10 flex items-center justify-center gap-2">
+                                    <Download size={16} className="text-gray-400 group-hover:text-white transition-colors" />
+                                    Baixar Gabarito
+                                </span>
                             </button>
                         </div>
 

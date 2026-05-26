@@ -8,6 +8,22 @@ import { Sparkles as SparklesComp } from "@/components/ui/sparkles";
 import StickyScroll from "@/components/ui/sticky-scroll";
 import BrandingHeroHeadline from "@/components/ui/BrandingHeroHeadline";
 import { ImageComparison } from "@/components/ui/image-comparison-slider";
+import { BrandingFaq } from "@/components/ui/BrandingFaq";
+
+const FAQ_ITEMS = [
+    {
+        question: "Quanto tempo leva para criar uma marca completa?",
+        answer: "O processo estratégico de branding leva em média de 30 a 45 dias, dependendo da complexidade dos materiais físicos e rodadas de aprovação."
+    },
+    {
+        question: "Vocês também fabricam as embalagens?",
+        answer: "Sim! Temos uma rede de parceiros industriais homologados para garantir que o design do papel saia exatamente como o projeto digital, com preços competitivos de fábrica."
+    },
+    {
+        question: "Eu já tenho uma logo. Posso fazer só as embalagens?",
+        answer: "Podemos realizar o redesign ou a aplicação de marca em novos suportes, desde que a marca atual comporte um padrão de qualidade VINK. Caso contrário, sugerimos um ajuste técnico."
+    }
+];
 
 export const metadata = {
     title: "Vink | Branding para Gastronomia",
@@ -34,11 +50,11 @@ export default async function BrandingPage() {
                         </p>
                         
                         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-                            <a href="#planos" className="bg-brand text-white rounded-xl px-8 py-4 font-medium hover:bg-brand-dark transition-colors flex items-center justify-center">
-                                Ver planos
+                            <a href="#planos" className="bg-brand text-white rounded-xl px-8 py-4 font-medium transition-colors flex items-center justify-center relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]">
+                                <span className="relative z-10 flex items-center justify-center">Ver planos</span>
                             </a>
-                            <a href="https://wa.me/5531989880161?text=Olá,%20gostaria%20de%20falar%20sobre%20o%20branding%20do%20meu%20restaurante!" target="_blank" rel="noopener noreferrer" className="bg-white text-brand border border-brand rounded-xl px-8 py-4 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center">
-                                Falar com especialista
+                            <a href="https://wa.me/5531989880161?text=Olá,%20gostaria%20de%20falar%20sobre%20o%20branding%20do%20meu%20restaurante!" target="_blank" rel="noopener noreferrer" className="bg-white text-brand border border-brand rounded-xl px-8 py-4 font-medium transition-colors flex items-center justify-center relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-gray-50">
+                                <span className="relative z-10 flex items-center justify-center">Falar com especialista</span>
                             </a>
                         </div>
                     </div>
@@ -262,43 +278,7 @@ export default async function BrandingPage() {
                         <h2 className="text-4xl font-medium tracking-tight text-black mb-12 text-center">
                             Perguntas <span className="text-brand font-bold italic pr-2">Frequentes</span>
                         </h2>
-                        <div className="space-y-4">
-                            <details className="group border border-gray-200 bg-white rounded-xl p-6 [&_summary::-webkit-details-marker]:hidden">
-                                <summary className="flex cursor-pointer items-center justify-between font-medium text-black">
-                                    <h4 className="text-lg">Quanto tempo leva para criar uma marca completa?</h4>
-                                    <span className="transition duration-300 group-open:-rotate-180 text-gray-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                                    </span>
-                                </summary>
-                                <p className="mt-4 text-gray-500 font-light leading-relaxed pr-8">
-                                    O processo estratégico de branding leva em média de 30 a 45 dias, dependendo da complexidade dos materiais físicos e rodadas de aprovação.
-                                </p>
-                            </details>
-
-                            <details className="group border border-gray-200 bg-white rounded-xl p-6 [&_summary::-webkit-details-marker]:hidden">
-                                <summary className="flex cursor-pointer items-center justify-between font-medium text-black">
-                                    <h4 className="text-lg">Vocês também fabricam as embalagens?</h4>
-                                    <span className="transition duration-300 group-open:-rotate-180 text-gray-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                                    </span>
-                                </summary>
-                                <p className="mt-4 text-gray-500 font-light leading-relaxed pr-8">
-                                    Sim! Temos uma rede de parceiros industriais homologados para garantir que o design do papel saia exatamente como o projeto digital, com preços competitivos de fábrica.
-                                </p>
-                            </details>
-
-                            <details className="group border border-gray-200 bg-white rounded-xl p-6 [&_summary::-webkit-details-marker]:hidden">
-                                <summary className="flex cursor-pointer items-center justify-between font-medium text-black">
-                                    <h4 className="text-lg">Eu já tenho uma logo. Posso fazer só as embalagens?</h4>
-                                    <span className="transition duration-300 group-open:-rotate-180 text-gray-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                                    </span>
-                                </summary>
-                                <p className="mt-4 text-gray-500 font-light leading-relaxed pr-8">
-                                    Podemos realizar o redesign ou a aplicação de marca em novos suportes, desde que a marca atual comporte um padrão de qualidade VINK. Caso contrário, sugerimos um ajuste técnico.
-                                </p>
-                            </details>
-                        </div>
+                        <BrandingFaq items={FAQ_ITEMS} />
                     </div>
                 </Container>
             </section>

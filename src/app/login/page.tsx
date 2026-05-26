@@ -192,9 +192,11 @@ export default function LoginPage() {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="animate-element animate-delay-600 w-full rounded-2xl bg-brand text-white py-4 font-semibold hover:bg-brand-dark hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-brand/10 transition-all disabled:opacity-75 disabled:cursor-not-allowed"
+                className="animate-element animate-delay-600 w-full rounded-2xl bg-brand text-white py-4 font-semibold hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-brand/10 transition-all disabled:opacity-75 disabled:cursor-not-allowed relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
               >
-                {loading ? "Entrando..." : "Entrar na Conta"}
+                <span className="relative z-10">
+                  {loading ? "Entrando..." : "Entrar na Conta"}
+                </span>
               </button>
             </form>
           </div>
