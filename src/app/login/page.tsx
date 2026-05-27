@@ -120,7 +120,7 @@ export default function LoginPage() {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <Link href="/" className="mb-4 w-fit block animate-element animate-delay-100">
-                <img src="https://i.imgur.com/aS2efN8.png" alt="Vink" className="h-6 md:h-7 w-auto object-contain" />
+                <img src="/logo.png" alt="Vink" className="h-6 md:h-7 w-auto object-contain" />
               </Link>
               <h1 className="animate-element animate-delay-100 text-3xl font-semibold tracking-tight text-gray-900 leading-tight">
                 Bem-vindo de volta

@@ -26,7 +26,7 @@ export function AdminSidebar() {
         <aside className="w-64 bg-white border-r border-gray-100 hidden lg:flex flex-col h-screen sticky top-0">
             <div className="p-6 border-b border-gray-100">
                 <Link href="/admin" className="flex items-center gap-2">
-                    <img src='https://i.imgur.com/aS2efN8.png' alt='Vink' className='h-8 w-auto object-contain' />
+                    <img src='/logo.png' alt='Vink' className='h-8 w-auto object-contain' />
                     <span className="text-xs font-bold bg-gray-900 text-white px-2 py-0.5 rounded-full">ADMIN</span>
                 </Link>
             </div>

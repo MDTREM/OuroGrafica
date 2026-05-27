@@ -26,7 +26,7 @@ export function TopBar() {
     const { items } = useCart();
 
     const isLandingPage = pathname === "/branding";
-    const logoUrl = isLandingPage ? "https://i.imgur.com/pDwzTbi.png" : "https://i.imgur.com/aS2efN8.png";
+    const logoUrl = isLandingPage ? "/logo-branding.png" : "/logo.png";
  
     useEffect(() => {
         async function fetchCategories() {
