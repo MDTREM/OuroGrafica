@@ -81,6 +81,28 @@ export async function getHomepageConfig(): Promise<HomepageConfig> {
 
         const config = data.value as HomepageConfig;
         
+        // Intercept and replace free shipping references in benefits (to respect user directive)
+        if (config && config.sections) {
+            config.sections.forEach(section => {
+                if (section.type === 'info-banner' && (section as any).benefits) {
+                    (section as any).benefits = (section as any).benefits.map((benefit: any) => {
+                        const hasFreeShipping = 
+                            (benefit.title && (benefit.title.toLowerCase().includes("frete grátis") || benefit.title.toLowerCase().includes("frete gratis"))) ||
+                            (benefit.subtitle && (benefit.subtitle.toLowerCase().includes("frete grátis") || benefit.subtitle.toLowerCase().includes("frete gratis") || benefit.subtitle.toLowerCase().includes("grátis acima")));
+                        
+                        if (hasFreeShipping) {
+                            return {
+                                ...benefit,
+                                title: "Vink GO!",
+                                subtitle: "Entrega rápida para sua região"
+                            };
+                        }
+                        return benefit;
+                    });
+                }
+            });
+        }
+        
         // Auto-migrate: check if combos section exists, if not, append it!
         const hasCombos = config.sections.some(s => s.type === 'combos');
         if (!hasCombos) {

@@ -256,7 +256,7 @@ export default function AdminOrdersPage() {
                                                     )}
 
                                                     {(() => {
-                                                        const prodId = item.productId || item.id?.split('-')[0] || item.id;
+                                                        const prodId = (item as any).productId || item.id?.split('-')[0] || item.id;
                                                         const matchedProd = products.find(p => p.id === prodId || p.title.toLowerCase() === item.title.toLowerCase());
                                                         if (matchedProd?.supplierLink) {
                                                             return (

@@ -814,7 +814,7 @@ export default function AdminHomeConfigPage() {
                                                 </div>
                                             </div>
                                             <div className="flex gap-1">
-                                                <Button size="sm" variant="ghost" onClick={() => setEditingCombo({ ...combo, originalPrice: combo.originalPrice ?? combo.original_price })}>
+                                                <Button size="sm" variant="ghost" onClick={() => setEditingCombo({ ...combo, originalPrice: combo.originalPrice ?? (combo as any).original_price })}>
                                                     <Edit size={14} />
                                                 </Button>
                                                 <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-600" onClick={() => removeComboFromSection(combo.id)}>

@@ -41,7 +41,7 @@ export function InfoBanner({ items }: InfoBannerProps) {
     // Fallback padrão no estilo Printi
     const displayItems = items && items.length > 0 ? items : [
         { icon: "gift", title: "Primeira compra?", subtitle: "Seu cupom tá aqui!", link: "/cupons", linkText: "Confira" },
-        { icon: "truck", title: "Frete até 100% OFF", subtitle: "Use FRETEVINK", link: "/cupons", linkText: "Regras" },
+        { icon: "truck", title: "Envio rápido e seguro", subtitle: "Entrega para todo o Brasil", link: "/termos", linkText: "Entenda" },
         { icon: "shield", title: "Compra Segura", subtitle: "Satisfação garantida", link: "/termos", linkText: "Entenda" },
         { icon: "pen", title: "Design Profissional", subtitle: "Fazemos a sua arte", link: "/branding", linkText: "Confira" }
     ];

@@ -317,7 +317,7 @@ export default function AdminCombosPage() {
 
                         {/* Card Actions */}
                         <div className="bg-gray-50/50 px-5 py-3 border-t border-gray-150 flex justify-end gap-2">
-                            <Button size="sm" variant="outline" onClick={() => setEditingCombo({ ...combo, originalPrice: combo.originalPrice ?? combo.original_price })} className="flex items-center gap-1">
+                            <Button size="sm" variant="outline" onClick={() => setEditingCombo({ ...combo, originalPrice: combo.originalPrice ?? (combo as any).original_price })} className="flex items-center gap-1">
                                 <Edit size={14} /> Editar
                             </Button>
                             <Button size="sm" variant="outline" onClick={() => deleteCombo(combo.id)} className="text-red-500 hover:text-red-600 hover:bg-red-50 border-gray-200 flex items-center gap-1">
