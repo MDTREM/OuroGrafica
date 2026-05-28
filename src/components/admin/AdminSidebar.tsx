@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, Settings, LogOut, Image, FileText, ShoppingBag, FolderOpen, Tag, Home, Layers } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Settings, LogOut, Image, FileText, ShoppingBag, FolderOpen, Tag, Home, Layers, Sparkles, Calculator, Users } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export function AdminSidebar() {
@@ -16,7 +16,10 @@ export function AdminSidebar() {
         { label: "Categorias", href: "/admin/categorias", icon: FolderOpen },
         { label: "Pedidos", href: "/admin/pedidos", icon: Package },
         { label: "Cupons", href: "/admin/cupons", icon: Tag },
+        { label: "Precificação", href: "/admin/precificacao", icon: Calculator },
+        { label: "CRM / Leads", href: "/admin/leads", icon: Users },
 
+        { label: "Planos Branding", href: "/admin/branding", icon: Sparkles },
         { label: "Config. Home", href: "/admin/configuracao/home", icon: Image },
         { label: "Portfólio", href: "/admin/portfolio", icon: Image },
         { label: "Blog", href: "/admin/blog", icon: FileText },

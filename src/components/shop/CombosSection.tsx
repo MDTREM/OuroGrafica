@@ -113,7 +113,7 @@ export function CombosSection({ title = "Combos Especiais", combos = [] }: Combo
                     >
                         {combos.map((combo, index) => {
                             const hasImage = combo.image && !imgErrors[combo.id];
-                            const originalPrice = combo.originalPrice || combo.price * 1.35;
+                            const originalPrice = combo.originalPrice || (combo as any).original_price;
                             const discountPct = originalPrice > combo.price ? Math.round(((originalPrice - combo.price) / originalPrice) * 100) : 0;
 
                             return (

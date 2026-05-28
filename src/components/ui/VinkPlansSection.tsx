@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Sparkles as SparklesComp } from "@/components/ui/sparkles";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { VerticalCutReveal } from "@/components/ui/vertical-cut-reveal";
+import Link from "next/link";
 
 export default function VinkPlansSection() {
   const pricingRef = useRef<HTMLDivElement>(null);
@@ -111,14 +112,12 @@ export default function VinkPlansSection() {
                 </li>
               </ul>
 
-              <a 
-                href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20plano%20Basic%20Taste!" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <Link 
+                href="/branding/formulario?plano=Basic%20Taste" 
                 className="block w-full py-4 border border-gray-200 text-black text-xs tracking-wide uppercase font-medium text-center rounded-xl transition-all duration-300 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-black hover:text-white"
               >
                 <span className="relative z-10">Solicitar Orçamento</span>
-              </a>
+              </Link>
               </div>
             </div>
           </ScrollReveal>
@@ -176,14 +175,12 @@ export default function VinkPlansSection() {
                 </li>
               </ul>
 
-              <a 
-                href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20plano%20Combo%20Perfeito!" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <Link 
+                href="/branding/formulario?plano=Combo%20Perfeito" 
                 className="block w-full py-4 bg-brand text-white text-xs tracking-wide uppercase font-medium text-center rounded-xl hover:scale-[1.02] active:scale-95 shadow-md shadow-brand/20 transition-all duration-300 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-[#10a379]"
               >
                 <span className="relative z-10">Solicitar Orçamento</span>
-              </a>
+              </Link>
               </div>
             </div>
           </ScrollReveal>
@@ -238,14 +235,12 @@ export default function VinkPlansSection() {
                 </li>
               </ul>
 
-              <a 
-                href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20plano%20Banquete%20Viral!" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <Link 
+                href="/branding/formulario?plano=Banquete%20Viral" 
                 className="block w-full py-4 border border-gray-200 text-black text-xs tracking-wide uppercase font-medium text-center rounded-xl transition-all duration-300 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-black hover:text-white"
               >
                 <span className="relative z-10">Solicitar Orçamento</span>
-              </a>
+              </Link>
               </div>
             </div>
           </ScrollReveal>
@@ -292,14 +287,12 @@ export default function VinkPlansSection() {
                 </li>
               </ul>
 
-              <a 
-                href="https://wa.me/5531989880161?text=Olá,%20quero%20saber%20mais%20sobre%20o%20Vink%20Club!" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <Link 
+                href="/branding/formulario?plano=Vink%20Club" 
                 className="block w-full py-4 bg-white text-black text-xs tracking-wide uppercase font-medium text-center rounded-xl hover:scale-[1.02] active:scale-95 transition-all duration-300 relative overflow-hidden z-10 before:content-[''] before:absolute before:left-1/2 before:bottom-0 before:z-0 before:h-0 before:w-0 before:-translate-x-1/2 before:translate-y-1/2 before:rounded-full before:transition-all before:duration-500 before:ease-out hover:before:h-[600px] hover:before:w-[600px] before:bg-gray-100"
               >
                 <span className="relative z-10">Solicitar Orçamento</span>
-              </a>
+              </Link>
               </div>
             </div>
           </ScrollReveal>

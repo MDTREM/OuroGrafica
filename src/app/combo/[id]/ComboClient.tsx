@@ -72,10 +72,6 @@ function parseComboItem(itemStr: string, products: Product[]) {
         }
     }
 
-    if (!matchedProduct && products.length > 0) {
-        matchedProduct = products[0];
-    }
-
     return {
         qty,
         nameSearch,
@@ -290,17 +286,22 @@ export default function ComboClient({ combo }: ComboClientProps) {
 
     // Calculate dynamic pricing
     let calculatedOriginalPrice = 0;
+    let allItemsMatched = true;
     if (combo && catalogProducts.length > 0) {
         combo.items.forEach(itemStr => {
             const { qty, product } = parseComboItem(itemStr, catalogProducts);
             if (product) {
                 calculatedOriginalPrice += getProductPriceForQty(product, qty);
+            } else {
+                allItemsMatched = false;
             }
         });
     }
 
     const finalPrice = combo.price;
-    const originalPrice = calculatedOriginalPrice || combo.originalPrice || combo.price * 1.35;
+    const originalPrice = (allItemsMatched && calculatedOriginalPrice > 0)
+        ? calculatedOriginalPrice
+        : (combo.originalPrice || (combo as any).original_price);
     const discount = originalPrice > finalPrice ? Math.round((1 - (finalPrice / originalPrice)) * 100) : 0;
 
     const handleAddToCart = () => {

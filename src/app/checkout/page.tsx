@@ -44,6 +44,7 @@ export default function CheckoutPage() {
 
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [connectionStatus, setConnectionStatus] = useState<string>('Aguardando...');
+    const [acceptTerms, setAcceptTerms] = useState(false);
 
     // --- Masks & Handlers ---
 
@@ -148,6 +149,10 @@ export default function CheckoutPage() {
 
     const handleFinishOrder = async () => {
         setErrorMessage(null);
+        if (!acceptTerms) {
+            setErrorMessage("Você precisa aceitar os Termos de Uso e a Política de Privacidade para continuar.");
+            return;
+        }
         if (step === 4) {
             setIsSubmitting(true);
             setErrorMessage('');
@@ -631,9 +636,19 @@ export default function CheckoutPage() {
                                      </span>
                                  </div>
 
-                                 <p className="text-xs text-gray-500 text-center mb-6 px-4">
-                                     Ao clicar em finalizar, você concorda com nossos termos de serviço e políticas de privacidade. Seu pedido será processado imediatamente.
-                                 </p>
+                                 <div className="mb-6 flex items-start gap-2.5 bg-gray-50 p-4 rounded-xl border border-gray-150 max-w-md mx-auto">
+                                     <input
+                                         type="checkbox"
+                                         id="checkout-accept-terms"
+                                         checked={acceptTerms}
+                                         onChange={(e) => setAcceptTerms(e.target.checked)}
+                                         className="mt-0.5 h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand cursor-pointer"
+                                         required
+                                     />
+                                     <label htmlFor="checkout-accept-terms" className="text-xs text-gray-550 font-light leading-normal select-none cursor-pointer text-left">
+                                         Aceito os <Link href="/termos-de-uso" className="font-semibold text-brand hover:underline">Termos de Uso</Link> e concordo com a <Link href="/politica-de-privacidade" className="font-semibold text-brand hover:underline">Política de Privacidade</Link> para o processamento seguro dos meus dados de faturamento e entrega.
+                                     </label>
+                                 </div>
 
                                 {errorMessage && (
                                     <div className="mb-6 p-4 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100 flex items-start gap-2 animate-in slide-in-from-bottom-2">

@@ -86,6 +86,9 @@ export interface Product {
 
     // Mapping for illustrations (works for formats, finishes, or variations)
     optionIllustrations?: { [optionName: string]: string };
+
+    // Supplier details (Admin Only)
+    supplierLink?: string;
 }
 
 export interface User {

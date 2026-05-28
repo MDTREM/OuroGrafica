@@ -118,7 +118,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
                 formatPrices: p.technical_specs?.formatPrices || p.formatPrices || {},
                 finishPrices: p.technical_specs?.finishPrices || p.finishPrices || {},
                 printingPrices: p.technical_specs?.printingPrices || p.printingPrices || {},
-                extraPrices: p.technical_specs?.extraPrices || p.extraPrices || {}
+                extraPrices: p.technical_specs?.extraPrices || p.extraPrices || {},
+                supplierLink: p.supplier_link || p.technical_specs?.supplierLink || ""
             }));
             setProducts(mappedProducts);
         }
@@ -190,8 +191,76 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         formatPrices: p.technical_specs?.formatPrices || p.formatPrices || {},
         finishPrices: p.technical_specs?.finishPrices || p.finishPrices || {},
         printingPrices: p.technical_specs?.printingPrices || p.printingPrices || {},
-        extraPrices: p.technical_specs?.extraPrices || p.extraPrices || {}
+        extraPrices: p.technical_specs?.extraPrices || p.extraPrices || {},
+        supplierLink: p.supplier_link || p.technical_specs?.supplierLink || ""
     });
+
+    const syncProductToPricingItems = async (product: any) => {
+        try {
+            const formatsStr = product.formats && product.formats.length > 0 ? product.formats.join(', ') : '';
+            const printingStr = product.printing && product.printing.length > 0 ? product.printing.join(', ') : '';
+            const combinedType = [formatsStr, printingStr].filter(Boolean).join(' | ') || 'Padrão';
+            
+            const materialStr = product.technicalSpecs?.paper || 'Papel Couchê';
+            const finishesStr = product.finishes && product.finishes.length > 0 ? product.finishes.join(', ') : 'Nenhum';
+            const extrasStr = product.extras && product.extras.length > 0 ? product.extras.join(', ') : 'Nenhum';
+            const qtyVal = product.quantities && product.quantities.length > 0 ? parseInt(product.quantities[0]) || 100 : 100;
+
+            const { data: existingItems, error: fetchError } = await supabase
+                .from('pricing_items')
+                .select('id')
+                .eq('product_id', product.id);
+
+            if (fetchError) {
+                console.error('Error fetching existing pricing item for sync:', fetchError);
+                return;
+            }
+
+            if (existingItems && existingItems.length > 0) {
+                for (const item of existingItems) {
+                    await supabase
+                        .from('pricing_items')
+                        .update({
+                            product_name: product.title,
+                            type: combinedType,
+                            material: materialStr,
+                            finish: finishesStr,
+                            extras: extrasStr
+                        })
+                        .eq('id', item.id);
+                }
+                console.log(`Synced updated product details for ${product.title} to existing pricing items!`);
+            } else {
+                const newPricingItem = {
+                    id: crypto.randomUUID(),
+                    product_id: product.id,
+                    product_name: product.title,
+                    quantity: qtyVal,
+                    type: combinedType,
+                    material: materialStr,
+                    finish: finishesStr,
+                    extras: extrasStr,
+                    cost: 0.00,
+                    markup: 1.50,
+                    base_price: Number(product.price) || 0.00,
+                    card_fee_percentage: 3.49,
+                    shipping_cost: 25.00
+                };
+
+                const { error: insertError } = await supabase
+                    .from('pricing_items')
+                    .insert([newPricingItem]);
+
+                if (insertError) {
+                    console.error('Error inserting auto-synced pricing item:', insertError);
+                } else {
+                    console.log(`Auto-created pricing item for new product ${product.title}!`);
+                }
+            }
+        } catch (e) {
+            console.error('Error in syncProductToPricingItems:', e);
+        }
+    };
 
     const addProduct = async (product: Product) => {
         const safePayload = {
@@ -204,8 +273,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             image: product.image,
             images: product.images,
             variations: product.variations,
+            supplier_link: product.supplierLink || "",
             technical_specs: {
                 ...(product.technicalSpecs || {}),
+                supplierLink: product.supplierLink || "",
                 formatPrices: product.formatPrices || {},
                 finishPrices: product.finishPrices || {},
                 printingPrices: product.printingPrices || {},
@@ -236,8 +307,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         const { data, error } = await supabase.from('products').insert([safePayload]).select().single();
         if (data && !error) {
-            setProducts(prev => [mapProductFromDB(data), ...prev]);
-            return { success: true, data: mapProductFromDB(data) };
+            const mapped = mapProductFromDB(data);
+            setProducts(prev => [mapped, ...prev]);
+            await syncProductToPricingItems(mapped);
+            return { success: true, data: mapped };
         }
         console.error("Error adding product:", error);
         return { success: false, error };
@@ -253,8 +326,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             image: updatedProduct.image,
             images: updatedProduct.images,
             variations: updatedProduct.variations,
+            supplier_link: updatedProduct.supplierLink || "",
             technical_specs: {
                 ...(updatedProduct.technicalSpecs || {}),
+                supplierLink: updatedProduct.supplierLink || "",
                 formatPrices: updatedProduct.formatPrices || {},
                 finishPrices: updatedProduct.finishPrices || {},
                 printingPrices: updatedProduct.printingPrices || {},
@@ -287,6 +362,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         if (!error) {
             setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+            await syncProductToPricingItems(updatedProduct);
             return { success: true };
         }
         console.error("Error updating product:", error);
@@ -311,8 +387,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             image: product.image,
             images: product.images,
             variations: product.variations,
+            supplier_link: product.supplierLink || "",
             technical_specs: {
                 ...(product.technicalSpecs || {}),
+                supplierLink: product.supplierLink || "",
                 formatPrices: product.formatPrices || {},
                 finishPrices: product.finishPrices || {},
                 printingPrices: product.printingPrices || {},
@@ -343,7 +421,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
         const { data, error } = await supabase.from('products').insert([safePayload]).select().single();
         if (data && !error) {
-            setProducts(prev => [mapProductFromDB(data), ...prev]);
+            const mapped = mapProductFromDB(data);
+            setProducts(prev => [mapped, ...prev]);
+            await syncProductToPricingItems(mapped);
         } else {
             console.error("Error duplicating product:", error);
             alert("Erro ao duplicar produto. Veja o console.");

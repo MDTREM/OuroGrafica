@@ -283,6 +283,12 @@ export default function NewProductPage() {
                             </select>
                         </div>
                     </div>
+                    <Input
+                        label="Link do Produto no Fornecedor (Apenas Admin)"
+                        placeholder="Ex: https://parceiro.com.br/produto-especifico"
+                        value={formData.supplierLink || ""}
+                        onChange={(e) => setFormData(prev => ({ ...prev, supplierLink: e.target.value }))}
+                    />
                 </div>
 
                 {/* 2 - Imagens */}

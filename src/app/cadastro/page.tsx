@@ -54,6 +54,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -82,6 +83,12 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    if (!acceptTerms) {
+      setError("Você precisa aceitar os Termos de Uso e a Política de Privacidade para continuar.");
+      setLoading(false);
+      return;
+    }
 
     const { data, error } = await signUp(email.trim(), password, name);
 
@@ -219,6 +226,20 @@ export default function RegisterPage() {
                     </button>
                   </div>
                 </GlassInputWrapper>
+              </div>
+
+              <div className="animate-element animate-delay-600 flex items-start gap-2.5 my-2">
+                <input
+                  type="checkbox"
+                  id="accept-terms"
+                  checked={acceptTerms}
+                  onChange={(e) => setAcceptTerms(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand cursor-pointer"
+                  required
+                />
+                <label htmlFor="accept-terms" className="text-xs text-gray-500 font-light leading-normal select-none cursor-pointer">
+                  Aceito os <Link href="/termos-de-uso" className="font-semibold text-brand hover:underline">Termos de Uso</Link> e concordo com a <Link href="/politica-de-privacidade" className="font-semibold text-brand hover:underline">Política de Privacidade</Link>.
+                </label>
               </div>
 
               <button 

@@ -319,15 +319,25 @@ export default function AdminHomeConfigPage() {
     function saveCombo() {
         if (!editingSection || !editingCombo || !editingCombo.title) return;
 
+        const comboToSave = {
+            ...editingCombo,
+            originalPrice: (editingCombo.originalPrice !== undefined && Number(editingCombo.originalPrice) > 0)
+                ? Number(editingCombo.originalPrice)
+                : undefined,
+            original_price: (editingCombo.originalPrice !== undefined && Number(editingCombo.originalPrice) > 0)
+                ? Number(editingCombo.originalPrice)
+                : undefined
+        };
+
         const combos = editingSection.combos || [];
-        const existingIndex = combos.findIndex(c => c.id === editingCombo.id);
+        const existingIndex = combos.findIndex(c => c.id === comboToSave.id);
 
         let newCombos;
         if (existingIndex >= 0) {
             newCombos = [...combos];
-            newCombos[existingIndex] = editingCombo;
+            newCombos[existingIndex] = comboToSave;
         } else {
-            const newCombo = { ...editingCombo };
+            const newCombo = { ...comboToSave };
             if (!newCombo.id) newCombo.id = 'combo-' + Date.now();
             newCombos = [...combos, newCombo];
         }
@@ -804,7 +814,7 @@ export default function AdminHomeConfigPage() {
                                                 </div>
                                             </div>
                                             <div className="flex gap-1">
-                                                <Button size="sm" variant="ghost" onClick={() => setEditingCombo(combo)}>
+                                                <Button size="sm" variant="ghost" onClick={() => setEditingCombo({ ...combo, originalPrice: combo.originalPrice ?? combo.original_price })}>
                                                     <Edit size={14} />
                                                 </Button>
                                                 <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-600" onClick={() => removeComboFromSection(combo.id)}>

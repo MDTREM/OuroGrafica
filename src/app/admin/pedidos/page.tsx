@@ -2,12 +2,12 @@
 
 import { useAdmin, Order } from "@/contexts/AdminContext";
 import { formatPrice } from "@/lib/utils";
-import { Search, Eye, Trash2 } from "lucide-react";
+import { Search, Eye, Trash2, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/Input";
 
 export default function AdminOrdersPage() {
-    const { orders, updateOrderStatus, deleteOrder } = useAdmin();
+    const { orders, updateOrderStatus, deleteOrder, products } = useAdmin();
     const [query, setQuery] = useState("");
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
@@ -254,6 +254,27 @@ export default function AdminOrdersPage() {
                                                             </a>
                                                         </div>
                                                     )}
+
+                                                    {(() => {
+                                                        const prodId = item.productId || item.id?.split('-')[0] || item.id;
+                                                        const matchedProd = products.find(p => p.id === prodId || p.title.toLowerCase() === item.title.toLowerCase());
+                                                        if (matchedProd?.supplierLink) {
+                                                            return (
+                                                                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-150">
+                                                                    <span className="text-xs font-semibold text-gray-500">Fornecedor:</span>
+                                                                    <a 
+                                                                        href={matchedProd.supplierLink} 
+                                                                        target="_blank" 
+                                                                        rel="noopener noreferrer" 
+                                                                        className="inline-flex items-center gap-1 text-xs text-brand hover:text-brand-dark font-bold hover:underline"
+                                                                    >
+                                                                        <ExternalLink size={12} /> Ver Produto no Fornecedor
+                                                                    </a>
+                                                                </div>
+                                                            );
+                                                        }
+                                                        return null;
+                                                    })()}
                                                 </div>
                                             </div>
                                         </div>
