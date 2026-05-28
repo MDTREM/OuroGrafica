@@ -4,6 +4,7 @@ import { CountUp } from "@/components/ui/CountUp";
 import { getCases } from "@/actions/portfolio-actions";
 import Link from "next/link";
 import VinkPlansSection from "@/components/ui/VinkPlansSection";
+import BrandExpansionSection from "@/components/ui/BrandExpansionSection";
 import { Sparkles as SparklesComp } from "@/components/ui/sparkles";
 import StickyScroll from "@/components/ui/sticky-scroll";
 import BrandingHeroHeadline from "@/components/ui/BrandingHeroHeadline";
@@ -257,6 +258,9 @@ export default async function BrandingPage() {
 
             {/* Pricing Section */}
             <VinkPlansSection />
+
+            {/* Brand Expansion Section */}
+            <BrandExpansionSection />
 
             {/* FAQ */}
             <section className="py-12 md:py-20 bg-gray-50/50 border-t border-gray-100 relative overflow-hidden">
